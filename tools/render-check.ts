@@ -153,13 +153,47 @@ try {
     'el estado sembrado no quedó dominado',
   )
 
+  // --- persistencia de la sesión ---
+  const sesionMod = await servidor.ssrLoadModule('/src/dominio/sesion.ts')
+
+  /** Una ApiSesion de mentira, sobre una sesión fija. */
+  const apiSesion = (s: unknown) => ({
+    sesion: s,
+    item: (clave: string) => sesionMod.itemDeSesion(s, clave),
+    anotarItem: () => {},
+    reiniciarItem: () => {},
+    anotarSimulacro: () => {},
+    reiniciar: () => {},
+  })
+
+  // Con el ítem (a) del 1.4 ya resuelto, al volver a la guía tiene que
+  // aparecer resuelto, con sus tags y con el botón de reintentar.
+  const conItemHecho = sesionMod.guardarItem(sesionMod.SESION_VACIA, 'g1-04:a', {
+    estado: 'correcto',
+    envios: 1,
+    entrada: '1/6',
+    pistasAbiertas: 0,
+  })
+  const guiaRetomada = render(
+    createElement(VistaGuia, { numero: 1, sesion: apiSesion(conItemHecho) }),
+  )
+  afirmar(guiaRetomada.includes('item item--correcto'), 'el ítem resuelto no vuelve resuelto')
+  afirmar(guiaRetomada.includes('Reintentar'), 'no se ve el botón de reintentar')
+  afirmar(guiaRetomada.includes('value="1/6"'), 'no se recuperó lo tipeado')
+  afirmar(guiaRetomada.includes('class="tags"'), 'con un ítem resuelto no aparecen los tags')
+  // El resto de los ítems tiene que seguir pendiente.
+  afirmar(guiaRetomada.includes('item item--pendiente'), 'se marcaron resueltos ítems que no lo estaban')
+
   // --- simulacro (fase 5) ---
   const { VistaSimulacro } = await servidor.ssrLoadModule('/src/vistas/VistaSimulacro.tsx')
 
   afirmar(contenido.examenes.length > 0, 'no se cargó ningún examen')
 
   const simulacro = render(
-    createElement(VistaSimulacro, { api: api(progresoMod.PROGRESO_VACIO) }),
+    createElement(VistaSimulacro, {
+      api: api(progresoMod.PROGRESO_VACIO),
+      sesion: apiSesion(sesionMod.SESION_VACIA),
+    }),
   )
   afirmar(simulacro.includes('Simulacro'), 'la pantalla de simulacro no se dibuja')
   afirmar(simulacro.includes('Empezar simulacro'), 'no se ve el botón de empezar')
@@ -172,6 +206,46 @@ try {
     !simulacro.includes('class="reloj'),
     'el reloj aparece antes de empezar el simulacro',
   )
+
+  // Un simulacro guardado y sin vencer tiene que retomarse al volver.
+  const unExamen = contenido.examenes.find(
+    (e: { id: string }) => contenido.examenPorId.get(e.id),
+  )
+  const enCurso = sesionMod.guardarSimulacro(sesionMod.SESION_VACIA, {
+    examenId: unExamen.id,
+    terminaEn: Date.now() + 90 * 60_000,
+    entregado: false,
+    correctos: {},
+  })
+  const retomado = render(
+    createElement(VistaSimulacro, {
+      api: api(progresoMod.PROGRESO_VACIO),
+      sesion: apiSesion(enCurso),
+    }),
+  )
+  afirmar(retomado.includes('class="reloj'), 'el simulacro guardado no se retoma')
+  afirmar(retomado.includes('Entregar'), 'al retomar no se ve el botón de entregar')
+  afirmar(retomado.includes('1:30:00'), `el reloj retomado no marca 1:30:00`)
+  // Mientras se rinde no hay pistas ni ver respuesta.
+  afirmar(!retomado.includes('Ver respuesta'), 'en el simulacro se ve "Ver respuesta"')
+  afirmar(!retomado.includes('Pistas ('), 'en el simulacro se ven las pistas')
+
+  // Y uno vencido mientras no estabas vuelve ya entregado, con la nota.
+  const vencido = sesionMod.guardarSimulacro(sesionMod.SESION_VACIA, {
+    examenId: unExamen.id,
+    terminaEn: Date.now() - 1000,
+    entregado: false,
+    correctos: {},
+  })
+  const tarde = render(
+    createElement(VistaSimulacro, {
+      api: api(progresoMod.PROGRESO_VACIO),
+      sesion: apiSesion(vencido),
+    }),
+  )
+  afirmar(tarde.includes('entregado'), 'un simulacro vencido no vuelve entregado')
+  afirmar(tarde.includes('class="nota"'), 'un simulacro vencido no muestra la nota')
+  afirmar(tarde.includes('Ver respuesta'), 'tras entregar no vuelven las ayudas')
 
   console.log(`render-check: ${ok} afirmaciones OK.`)
   for (const f of fallas) console.error(`  ✗ ${f}`)

@@ -5,13 +5,25 @@
  * calcula la nota y el veredicto. Sin pistas y sin ver la respuesta: eso es
  * lo que lo distingue de estudiar una guía. Después de entregar se revela
  * todo y los ítems cuentan como intentos para las insignias.
+ *
+ * El simulacro en curso se guarda, así que recargar la página no lo pierde.
+ * Lo que se guarda es el **vencimiento**, no los segundos que faltan: si no,
+ * recargar regalaría tiempo, que es lo contrario de lo que haría un examen.
  */
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
+import { useEffect, useMemo, useState } from 'preact/hooks'
 
-import { Enunciado } from '../componentes/Mate'
 import { ItemEjercicio } from '../componentes/ItemEjercicio'
-import { claveItemExamen, examenes } from '../datos/contenido'
+import { Enunciado } from '../componentes/Mate'
+import { claveItemExamen, examenes, examenPorId } from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
+import type { ApiSesion } from '../datos/usarSesion'
+import {
+  anotarRespuesta,
+  respuestasDeSimulacro,
+  segundosRestantes,
+  simulacroRetomable,
+  type SesionSimulacro,
+} from '../dominio/sesion'
 import {
   calificar,
   ejerciciosJugables,
@@ -19,12 +31,9 @@ import {
   esCompleto,
   formatearTiempo,
   type Examen,
-  type Respuestas,
 } from '../dominio/simulacro'
 
-type Fase = 'config' | 'rindiendo' | 'entregado'
-
-const CLAVE_CONFIG = 'probabilidad-app:simulacro:v1'
+const CLAVE_CONFIG = 'probabilidad-app:simulacro-config:v1'
 
 type Config = {
   duracionMin: number
@@ -53,17 +62,32 @@ function guardarConfig(c: Config): void {
   try {
     localStorage.setItem(CLAVE_CONFIG, JSON.stringify(c))
   } catch {
-    /* sin persistencia, pero la sesión sigue */
+    /* sin persistencia de la config, pero el simulacro sigue */
   }
 }
 
-export function VistaSimulacro({ api }: { api: ApiProgreso }) {
+type Props = { api: ApiProgreso; sesion: ApiSesion }
+
+export function VistaSimulacro({ api, sesion }: Props) {
   const [config, setConfig] = useState<Config>(cargarConfig)
-  const [fase, setFase] = useState<Fase>('config')
-  const [examen, setExamen] = useState<Examen | null>(null)
-  const [restante, setRestante] = useState(0)
-  /** numero de ejercicio -> por ítem, si salió correcto. */
-  const correctos = useRef<Respuestas>(new Map())
+  /** Sólo existe para que el reloj se redibuje cada segundo. */
+  const [, setTic] = useState(0)
+
+  const sim = simulacroRetomable(sesion.sesion)
+  const examen = sim ? examenPorId.get(sim.examenId) : undefined
+
+  // Si el simulacro se venció mientras no estabas, `simulacroRetomable` lo
+  // devuelve ya marcado como entregado; hay que fijarlo en la sesión.
+  useEffect(() => {
+    if (sim?.entregado && !sesion.sesion.simulacro?.entregado) sesion.anotarSimulacro(sim)
+  }, [sim?.entregado])
+
+  // El reloj corre mientras haya un simulacro sin entregar.
+  useEffect(() => {
+    if (!sim || sim.entregado) return
+    const id = setInterval(() => setTic((t) => t + 1), 1000)
+    return () => clearInterval(id)
+  }, [sim?.examenId, sim?.entregado])
 
   function cambiar(parcial: Partial<Config>) {
     const siguiente = { ...config, ...parcial }
@@ -71,39 +95,45 @@ export function VistaSimulacro({ api }: { api: ApiProgreso }) {
     guardarConfig(siguiente)
   }
 
+  /** Limpia el estado de los ítems de un examen, para arrancarlo de cero. */
+  function limpiarItems(ex: Examen) {
+    for (const ej of ex.ejercicios) {
+      for (const item of ej.items ?? []) {
+        sesion.reiniciarItem(claveItemExamen(ex.id, ej.numero, item.id))
+      }
+    }
+  }
+
   function arrancar() {
     const elegido = elegirExamen(examenes, {
       incluirIntegradoras: config.incluirIntegradoras,
     })
     if (!elegido) return
-    correctos.current = new Map()
-    setExamen(elegido)
-    setRestante(config.duracionMin * 60)
-    setFase('rindiendo')
+    limpiarItems(elegido)
+    sesion.anotarSimulacro({
+      examenId: elegido.id,
+      terminaEn: Date.now() + config.duracionMin * 60_000,
+      entregado: false,
+      correctos: {},
+    })
   }
 
-  // Timer: baja de a un segundo y al llegar a cero entrega solo.
-  useEffect(() => {
-    if (fase !== 'rindiendo') return
-    const id = setInterval(() => {
-      setRestante((s) => {
-        if (s <= 1) {
-          setFase('entregado')
-          return 0
-        }
-        return s - 1
-      })
-    }, 1000)
-    return () => clearInterval(id)
-  }, [fase])
+  function entregar(actual: SesionSimulacro) {
+    sesion.anotarSimulacro({ ...actual, entregado: true })
+  }
 
-  const jugables = useMemo(() => (examen ? ejerciciosJugables(examen) : []), [examen])
+  function cerrar(ex: Examen) {
+    limpiarItems(ex)
+    sesion.anotarSimulacro(undefined)
+  }
 
-  if (fase === 'config' || !examen) {
+  if (!sim || !examen) {
     return <Configuracion config={config} onCambiar={cambiar} onArrancar={arrancar} />
   }
 
-  const resultado = fase === 'entregado' ? calificar(examen, correctos.current) : null
+  const jugables = ejerciciosJugables(examen)
+  const restante = segundosRestantes(sim)
+  const resultado = sim.entregado ? calificar(examen, respuestasDeSimulacro(sim)) : null
 
   return (
     <>
@@ -116,8 +146,8 @@ export function VistaSimulacro({ api }: { api: ApiProgreso }) {
               presentados
             </p>
           </div>
-          <div class={'reloj' + (restante < 300 ? ' reloj--poco' : '')}>
-            {formatearTiempo(restante)}
+          <div class={'reloj' + (!sim.entregado && restante < 300 ? ' reloj--poco' : '')}>
+            {sim.entregado ? 'entregado' : formatearTiempo(restante)}
           </div>
         </div>
 
@@ -129,16 +159,16 @@ export function VistaSimulacro({ api }: { api: ApiProgreso }) {
           </p>
         )}
 
-        {fase === 'rindiendo' && (
-          <div class="item__acciones">
-            <button class="boton boton--acento" onClick={() => setFase('entregado')}>
+        <div class="item__acciones">
+          {!sim.entregado && (
+            <button class="boton boton--acento" onClick={() => entregar(sim)}>
               Entregar
             </button>
-            <button class="boton boton--fantasma" onClick={() => setFase('config')}>
-              Abandonar
-            </button>
-          </div>
-        )}
+          )}
+          <button class="boton boton--fantasma" onClick={() => cerrar(examen)}>
+            {sim.entregado ? 'Cerrar y volver al pool' : 'Abandonar'}
+          </button>
+        </div>
       </section>
 
       {resultado && <Devolucion examen={examen} resultado={resultado} />}
@@ -150,31 +180,39 @@ export function VistaSimulacro({ api }: { api: ApiProgreso }) {
             {ej.variante && <span class="insignia-prioridad">{ej.variante}</span>}
           </header>
 
-          <Enunciado texto={ej.enunciado} mostrarMarcas={fase === 'entregado' && config.mostrarTags} />
+          <Enunciado texto={ej.enunciado} mostrarMarcas={sim.entregado && config.mostrarTags} />
 
           <ol class="items">
-            {ej.items.map((item, i) => (
-              <ItemEjercicio
-                key={item.id}
-                item={item}
-                clave={claveItemExamen(examen.id, ej.numero, item.id)}
-                modoExamen={fase === 'rindiendo'}
-                permitirFormulas={config.mostrarFormulas}
-                onResaltar={() => {}}
-                onIntento={(intento, limpio) => {
-                  const marcas = correctos.current.get(ej.numero) ?? []
-                  marcas[i] = intento.correcto
-                  correctos.current.set(ej.numero, marcas)
-                  api.registrar(intento, limpio)
-                }}
-              />
-            ))}
+            {ej.items.map((item, i) => {
+              const clave = claveItemExamen(examen.id, ej.numero, item.id)
+              return (
+                <ItemEjercicio
+                  key={clave}
+                  item={item}
+                  clave={clave}
+                  inicial={sesion.item(clave)}
+                  onGuardar={(e) => sesion.anotarItem(clave, e)}
+                  modoExamen={!sim.entregado}
+                  permitirFormulas={config.mostrarFormulas || sim.entregado}
+                  onResaltar={() => {}}
+                  onIntento={(intento, limpio) => {
+                    const actual = sesion.sesion.simulacro
+                    if (actual) {
+                      sesion.anotarSimulacro(
+                        anotarRespuesta(actual, ej.numero, i, intento.correcto),
+                      )
+                    }
+                    api.registrar(intento, limpio)
+                  }}
+                />
+              )
+            })}
           </ol>
         </article>
       ))}
 
       {/* Los que no se presentaron, para que se vea qué falta del examen real. */}
-      {examen.ejercicios.filter((e) => !jugables.includes(e)).length > 0 && (
+      {examen.ejercicios.length > jugables.length && (
         <section class="detalle-skill">
           <h3>Ejercicios que este examen tiene y todavía no se pueden rendir</h3>
           <ul class="lista-items">
@@ -202,7 +240,10 @@ function Configuracion({
   onCambiar: (c: Partial<Config>) => void
   onArrancar: () => void
 }) {
-  const disponibles = examenes.filter((e) => ejerciciosJugables(e).length > 0)
+  const disponibles = useMemo(
+    () => examenes.filter((e) => ejerciciosJugables(e).length > 0),
+    [],
+  )
   const parciales = disponibles.filter((e) => e.tipo === 'parcial')
 
   return (
@@ -262,7 +303,7 @@ function Configuracion({
                   onCambiar({ mostrarFormulas: (e.target as HTMLInputElement).checked })
                 }
               />
-              <span>Permitir el panel de fórmulas</span>
+              <span>Permitir el panel de fórmulas mientras rendís</span>
             </label>
           </div>
 
@@ -271,6 +312,11 @@ function Configuracion({
               Empezar simulacro
             </button>
           </div>
+
+          <p class="dato-chico">
+            El reloj corre contra la hora, así que si cerrás la página el tiempo sigue pasando,
+            igual que en un examen. Lo que respondiste no se pierde.
+          </p>
 
           <h3>Exámenes en el pool</h3>
           <ul class="lista-items">
@@ -329,4 +375,3 @@ function Devolucion({
     </section>
   )
 }
-

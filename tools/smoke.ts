@@ -36,6 +36,21 @@ import {
   type Examen,
   type Respuestas,
 } from '../src/dominio/simulacro.ts'
+import {
+  anotarRespuesta,
+  aJson as aJsonSesion,
+  desdeJson as desdeJsonSesion,
+  guardarItem,
+  guardarSimulacro,
+  itemDeSesion,
+  olvidarItem,
+  podar,
+  respuestasDeSimulacro,
+  segundosRestantes,
+  SESION_VACIA,
+  seVencio,
+  simulacroRetomable,
+} from '../src/dominio/sesion.ts'
 import { claveItem, type Ejercicio, type Intento, type Item } from '../src/dominio/tipos.ts'
 
 /** Un intento mínimo, para los casos donde sólo importan el ítem y la fecha. */
@@ -394,6 +409,115 @@ for (const [valor, alternativa] of equivalentes) {
   afirmar(formatearTiempo(240 * 60) === '4:00:00', 'el reloj no formatea 4 horas')
   afirmar(formatearTiempo(65) === '01:05', 'el reloj no formatea 65 segundos')
   afirmar(formatearTiempo(-5) === '00:00', 'el reloj no corta en cero')
+}
+
+// --------------------------------------------- sesión / persistencia
+
+{
+  const AHORA = Date.parse('2026-03-01T12:00:00.000Z')
+
+  // Un ítem nuevo no tiene estado guardado.
+  afirmar(
+    itemDeSesion(SESION_VACIA, 'g1-04:a').estado === 'pendiente',
+    'un ítem sin guardar no arranca pendiente',
+  )
+
+  let s = guardarItem(SESION_VACIA, 'g1-04:a', {
+    estado: 'correcto',
+    envios: 1,
+    entrada: '5/12',
+    pistasAbiertas: 2,
+  })
+  afirmar(itemDeSesion(s, 'g1-04:a').estado === 'correcto', 'no se guardó el estado del ítem')
+  afirmar(itemDeSesion(s, 'g1-04:a').entrada === '5/12', 'no se guardó lo tipeado')
+
+  // Reintentar borra el estado del ítem y nada más.
+  s = guardarItem(s, 'g1-04:b', { estado: 'revelado', envios: 3, pistasAbiertas: 0 })
+  const tras = olvidarItem(s, 'g1-04:a')
+  afirmar(itemDeSesion(tras, 'g1-04:a').estado === 'pendiente', 'reintentar no limpió el ítem')
+  afirmar(
+    itemDeSesion(tras, 'g1-04:b').estado === 'revelado',
+    'reintentar un ítem tocó el estado de otro',
+  )
+
+  // Podar saca lo que ya no existe en el contenido.
+  const podada = podar(s, new Set(['g1-04:a']))
+  afirmar('g1-04:a' in podada.items, 'podar borró un ítem vigente')
+  afirmar(!('g1-04:b' in podada.items), 'podar no borró un ítem que ya no existe')
+  afirmar(podar(s, new Set(['g1-04:a', 'g1-04:b'])) === s, 'podar sin cambios devolvió otro objeto')
+
+  // Ida y vuelta por JSON, que es lo que pasa al recargar la página.
+  const vuelta = desdeJsonSesion(aJsonSesion(s))
+  afirmar(vuelta !== null, 'la sesión no sobrevive el ida y vuelta por JSON')
+  afirmar(
+    vuelta !== null && itemDeSesion(vuelta, 'g1-04:a').entrada === '5/12',
+    'al recargar se perdió lo tipeado',
+  )
+  afirmar(desdeJsonSesion('no soy json') === null, 'importar basura no dio null')
+  afirmar(desdeJsonSesion('{"version":9,"items":{}}') === null, 'otra versión no dio null')
+  // Un estado de ítem corrupto no tiene que tumbar la sesión entera.
+  const conBasura = desdeJsonSesion('{"version":1,"items":{"x":null,"g1-04:a":{"estado":"correcto"}}}')
+  afirmar(conBasura !== null, 'un ítem corrupto tumbó la sesión')
+  afirmar(
+    conBasura !== null && !('x' in conBasura.items) && 'g1-04:a' in conBasura.items,
+    'no se filtró el ítem corrupto conservando el bueno',
+  )
+
+  // --- el simulacro y su reloj ---
+  const sim = {
+    examenId: 'ep-20250524',
+    terminaEn: AHORA + 240 * 60_000,
+    entregado: false,
+    correctos: {},
+  }
+  afirmar(
+    segundosRestantes(sim, AHORA) === 240 * 60,
+    'el reloj no arranca en la duración completa',
+  )
+  // Recargar no regala tiempo: el vencimiento es absoluto.
+  afirmar(
+    segundosRestantes(sim, AHORA + 60_000) === 239 * 60,
+    'pasado un minuto el reloj no bajó un minuto',
+  )
+  afirmar(segundosRestantes(sim, AHORA + 1e9) === 0, 'el reloj no corta en cero')
+  afirmar(!seVencio(sim, AHORA), 'un simulacro recién empezado figura vencido')
+  afirmar(seVencio(sim, AHORA + 1e9), 'un simulacro viejo no figura vencido')
+
+  const conSim = guardarSimulacro(SESION_VACIA, sim)
+  afirmar(
+    simulacroRetomable(conSim, AHORA)?.entregado === false,
+    'un simulacro en curso no se puede retomar',
+  )
+  // Si se venció mientras no estabas, se retoma pero ya entregado: lo
+  // respondido no se pierde y el reloj no se reinicia.
+  afirmar(
+    simulacroRetomable(conSim, AHORA + 1e9)?.entregado === true,
+    'un simulacro vencido no vuelve marcado como entregado',
+  )
+  afirmar(simulacroRetomable(SESION_VACIA) === undefined, 'inventó un simulacro inexistente')
+  afirmar(
+    guardarSimulacro(conSim, undefined).simulacro === undefined,
+    'cerrar el simulacro no lo saca de la sesión',
+  )
+
+  // Anotar respuestas no pisa las de otros ejercicios ni de otros ítems.
+  let anotado = anotarRespuesta(sim, 1, 0, true)
+  anotado = anotarRespuesta(anotado, 1, 2, true)
+  anotado = anotarRespuesta(anotado, 3, 0, false)
+  const mapa = respuestasDeSimulacro(anotado)
+  afirmar(mapa.get(1)?.[0] === true, 'se perdió la respuesta del ej 1 ítem 0')
+  afirmar(mapa.get(1)?.[2] === true, 'se perdió la respuesta del ej 1 ítem 2')
+  afirmar(mapa.get(3)?.[0] === false, 'se perdió la respuesta del ej 3')
+  // Volver a contestar el mismo ítem lo sobreescribe, no lo duplica.
+  const corregido = anotarRespuesta(anotado, 1, 0, false)
+  afirmar(
+    respuestasDeSimulacro(corregido).get(1)?.[0] === false,
+    'corregir una respuesta no la sobreescribió',
+  )
+  afirmar(
+    respuestasDeSimulacro(corregido).get(1)?.length === 3,
+    'corregir una respuesta cambió la cantidad de ítems anotados',
+  )
 }
 
 console.log(`smoke: ${ejercicios.length} ejercicios, ${ok} afirmaciones OK.`)

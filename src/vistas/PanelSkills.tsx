@@ -12,6 +12,7 @@ import { Formula } from '../componentes/Mate'
 import { descargar } from '../datos/almacenamiento'
 import { itemsPorSkill, skillPorId, skillsPorGuia, ubicacionDeItem } from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
+import type { ApiSesion } from '../datos/usarSesion'
 import {
   avanceSkill,
   contarPorEstado,
@@ -31,7 +32,7 @@ function inicial(nombre: string): string {
   return nombre.trim().charAt(0).toUpperCase()
 }
 
-export function PanelSkills({ api }: { api: ApiProgreso }) {
+export function PanelSkills({ api, sesion }: { api: ApiProgreso; sesion?: ApiSesion }) {
   const { progreso, reemplazar, reiniciar } = api
   const [abierto, setAbierto] = useState<string | null>(null)
   const [aviso, setAviso] = useState<string | null>(null)
@@ -111,7 +112,10 @@ export function PanelSkills({ api }: { api: ApiProgreso }) {
       <section class="datos">
         <h3>Tus datos</h3>
         <p class="guia__descripcion">
-          El progreso se guarda en este navegador. Exportalo si querés llevarlo a otra máquina.
+          Todo se guarda en este navegador, sin servidor ni base de datos. Son dos cosas
+          separadas: el <strong>historial</strong> de intentos, que es de donde salen las
+          insignias, y <strong>dónde quedaste</strong> (ítems resueltos, lo que escribiste, el
+          simulacro a medio rendir). Exportá el historial si querés llevarlo a otra máquina.
         </p>
         <div class="item__acciones">
           <button class="boton" onClick={() => descargar(progreso)}>
@@ -124,17 +128,39 @@ export function PanelSkills({ api }: { api: ApiProgreso }) {
           <button
             class="boton boton--fantasma"
             onClick={() => {
-              if (confirm('¿Borrar todo el progreso de este navegador?')) {
+              if (confirm('¿Borrar el historial de intentos? Se pierden las insignias.')) {
                 reiniciar()
-                setAviso('Progreso borrado.')
+                setAviso('Historial borrado.')
               }
             }}
           >
-            Borrar progreso
+            Borrar historial
           </button>
+          {sesion && (
+            <button
+              class="boton boton--fantasma"
+              onClick={() => {
+                if (
+                  confirm(
+                    'Esto deja todos los ejercicios sin resolver de nuevo, pero no toca el ' +
+                      'historial ni las insignias. ¿Seguís?',
+                  )
+                ) {
+                  sesion.reiniciar()
+                  setAviso('Listo: todos los ejercicios quedaron para rehacer.')
+                }
+              }}
+            >
+              Empezar las guías de cero
+            </button>
+          )}
         </div>
         {aviso && <p class="feedback feedback--aviso">{aviso}</p>}
-        <p class="dato-chico">{progreso.intentos.length} intentos registrados.</p>
+        <p class="dato-chico">
+          {progreso.intentos.length} intentos registrados
+          {sesion && <> · {Object.keys(sesion.sesion.items).length} ítems con estado guardado</>}
+          {sesion?.sesion.simulacro && <> · hay un simulacro en curso</>}
+        </p>
       </section>
     </>
   )

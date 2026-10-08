@@ -170,6 +170,20 @@ export const ubicacionDeItem: Map<string, { ejercicio: Ejercicio; item: string }
   return m
 })()
 
+/** Todas las claves de ítem vigentes: guías y exámenes. */
+export const clavesDeItems: ReadonlySet<string> = (() => {
+  const c = new Set<string>()
+  for (const ej of ejercicios) {
+    for (const item of ej.items) c.add(claveItem(ej.id, item.id))
+  }
+  for (const ex of examenes) {
+    for (const ej of ex.ejercicios) {
+      for (const item of ej.items ?? []) c.add(claveItemExamen(ex.id, ej.numero, item.id))
+    }
+  }
+  return c
+})()
+
 /** Los skills agrupados por la guía donde se introducen. */
 export function skillsPorGuia(): { guia: number; skills: Skill[] }[] {
   const m = new Map<number, Skill[]>()

@@ -4,6 +4,10 @@
  * Cada ítem tiene su input, sus ayudas (fórmulas, pistas graduadas, ver
  * respuesta) y su feedback en línea. Los tags están ocultos hasta que se
  * resuelve o se revela: recuperación activa antes que lectura.
+ *
+ * El estado vive en un solo objeto y se persiste completo en cada cambio, así
+ * recargar la página no te hace perder el lugar. Lo único que no se guarda es
+ * si el panel de fórmulas está abierto, que no vale la pena.
  */
 import { useState } from 'preact/hooks'
 
@@ -14,6 +18,7 @@ import {
   evaluarNumerica,
   evaluarOpcion,
 } from '../dominio/respuesta'
+import { ITEM_NUEVO, type SesionItem } from '../dominio/sesion'
 import type { Intento, Item } from '../dominio/tipos'
 import { Formula, Mate } from './Mate'
 
@@ -24,12 +29,15 @@ function esLimpio(item: Item, envios: number, revelo: boolean): boolean {
   return item.respuesta.tipo === 'opcion' ? envios <= 1 : envios <= 2
 }
 
-type Estado = 'pendiente' | 'correcto' | 'incorrecto' | 'revelado'
-
 type Props = {
   item: Item
   /** Clave global del ítem (`g1-04:b`): es con la que se registra el intento. */
   clave: string
+  /** Estado guardado de la sesión, para retomar donde quedaste. */
+  inicial?: SesionItem
+  onGuardar?: (item: SesionItem) => void
+  /** Borra el estado del ítem para rehacerlo. El historial no se toca. */
+  onReiniciar?: () => void
   /**
    * En el simulacro no hay pistas ni ver respuesta (PLAN.md §6). Al entregar
    * se apaga y las ayudas vuelven a estar disponibles.
@@ -44,25 +52,29 @@ type Props = {
 export function ItemEjercicio({
   item,
   clave,
+  inicial,
+  onGuardar,
+  onReiniciar,
   modoExamen,
   permitirFormulas = true,
   onResaltar,
   onIntento,
 }: Props) {
-  const [estado, setEstado] = useState<Estado>('pendiente')
-  const [envios, setEnvios] = useState(0)
-  const [entrada, setEntrada] = useState('')
-  const [celdas, setCeldas] = useState<string[]>([])
-  const [opcion, setOpcion] = useState<string | null>(null)
-  const [errorTipico, setErrorTipico] = useState<string | null>(null)
-  const [detalleCp, setDetalleCp] = useState<boolean[] | null>(null)
-  const [pistasAbiertas, setPistasAbiertas] = useState(0)
+  const [est, setEst] = useState<SesionItem>(inicial ?? ITEM_NUEVO)
+  // Efímero: no tiene sentido recordar si el panel estaba abierto.
   const [formulasAbiertas, setFormulasAbiertas] = useState(false)
   const [mensaje, setMensaje] = useState<string | null>(null)
-  /** Distractores elegidos a lo largo del intento: alimenta los puntos ciegos. */
-  const [distractores, setDistractores] = useState<string[]>([])
+  const [errorTipico, setErrorTipico] = useState<string | null>(null)
+  const [detalleCp, setDetalleCp] = useState<boolean[] | null>(null)
 
-  const resuelto = estado === 'correcto' || estado === 'revelado'
+  /** Mezcla el cambio en el estado y lo persiste de una. */
+  function actualizar(parcial: Partial<SesionItem>): void {
+    const siguiente = { ...est, ...parcial }
+    setEst(siguiente)
+    onGuardar?.(siguiente)
+  }
+
+  const resuelto = est.estado === 'correcto' || est.estado === 'revelado'
   const r = item.respuesta
 
   function registrar(correcto: boolean, revelo: boolean, nEnvios: number, elegidos: string[]) {
@@ -71,7 +83,7 @@ export function ItemEjercicio({
       ts: new Date().toISOString(),
       envios: nEnvios,
       correcto,
-      pistas: pistasAbiertas,
+      pistas: est.pistasAbiertas,
       revelo,
       distractores: elegidos.length ? elegidos : undefined,
     }
@@ -79,62 +91,68 @@ export function ItemEjercicio({
   }
 
   function enviar() {
-    const n = envios + 1
-    setEnvios(n)
+    const n = est.envios + 1
     setMensaje(null)
     setErrorTipico(null)
+    const distractores = est.distractores ?? []
 
     if (r.tipo === 'opcion') {
-      if (!opcion) {
+      if (!est.opcion) {
         setMensaje('Elegí una opción.')
         return
       }
-      const v = evaluarOpcion(opcion, r)
+      const v = evaluarOpcion(est.opcion, r)
       if (v.ok) {
-        setEstado('correcto')
+        actualizar({ envios: n, estado: 'correcto' })
         registrar(true, false, n, distractores)
       } else {
-        setEstado('incorrecto')
-        const elegidos = distractores.includes(opcion) ? distractores : [...distractores, opcion]
-        setDistractores(elegidos)
+        const elegidos = distractores.includes(est.opcion)
+          ? distractores
+          : [...distractores, est.opcion]
+        actualizar({ envios: n, estado: 'incorrecto', distractores: elegidos })
         if (v.error_tipico) setErrorTipico(v.error_tipico)
       }
       return
     }
 
     if (r.tipo === 'checkpoints') {
-      const v = evaluarCheckpoints(celdas, r)
+      const v = evaluarCheckpoints(est.celdas ?? [], r)
       setDetalleCp(v.detalle.map((d) => d.ok))
-      if (v.ok) {
-        setEstado('correcto')
-        registrar(true, false, n, distractores)
-      } else {
-        setEstado('incorrecto')
-      }
+      actualizar({ envios: n, estado: v.ok ? 'correcto' : 'incorrecto' })
+      if (v.ok) registrar(true, false, n, distractores)
       return
     }
 
+    const entrada = est.entrada ?? ''
     const v = r.tipo === 'numerica' ? evaluarNumerica(entrada, r) : evaluarExpresion(entrada, r)
     if (v.ok) {
-      setEstado('correcto')
+      actualizar({ envios: n, estado: 'correcto' })
       registrar(true, false, n, distractores)
       return
     }
-    setEstado('incorrecto')
+    actualizar({ envios: n, estado: 'incorrecto' })
     if (v.motivo === 'vacio') setMensaje('Escribí una respuesta.')
     else if (v.motivo === 'no_parsea') setMensaje(v.detalle ?? 'No pude interpretar eso.')
   }
 
   function revelar() {
-    setEstado('revelado')
-    registrar(false, true, envios, distractores)
+    actualizar({ estado: 'revelado' })
+    registrar(false, true, est.envios, est.distractores ?? [])
+  }
+
+  function reintentar() {
+    setEst(ITEM_NUEVO)
+    setMensaje(null)
+    setErrorTipico(null)
+    setDetalleCp(null)
+    onReiniciar?.()
   }
 
   const formulas = formulasDeItem(item.skills)
   const puedeMostrarFormulas = formulas.length > 0 && permitirFormulas
 
   return (
-    <li class={'item item--' + estado}>
+    <li class={'item item--' + est.estado}>
       <div class="item__cabeza">
         <span class="item__id">({item.id})</span>
         <div class="item__pregunta">
@@ -147,14 +165,14 @@ export function ItemEjercicio({
         <ul class="opciones">
           {r.opciones.map((o) => (
             <li key={o.id}>
-              <label class={'opcion' + (opcion === o.id ? ' opcion--elegida' : '')}>
+              <label class={'opcion' + (est.opcion === o.id ? ' opcion--elegida' : '')}>
                 <input
                   type="radio"
-                  name={'op-' + item.id}
+                  name={'op-' + clave}
                   value={o.id}
-                  checked={opcion === o.id}
+                  checked={est.opcion === o.id}
                   disabled={resuelto}
-                  onChange={() => setOpcion(o.id)}
+                  onChange={() => actualizar({ opcion: o.id })}
                 />
                 <Mate>{o.texto}</Mate>
               </label>
@@ -171,14 +189,13 @@ export function ItemEjercicio({
               <input
                 class="entrada entrada--corta"
                 type="text"
-                inputMode="text"
-                value={celdas[i] ?? ''}
+                value={est.celdas?.[i] ?? ''}
                 disabled={resuelto}
                 placeholder="?"
                 onInput={(e) => {
-                  const v = [...celdas]
-                  v[i] = (e.target as HTMLInputElement).value
-                  setCeldas(v)
+                  const celdas = [...(est.celdas ?? [])]
+                  celdas[i] = (e.target as HTMLInputElement).value
+                  actualizar({ celdas })
                 }}
                 onKeyDown={(e) => e.key === 'Enter' && enviar()}
               />
@@ -195,10 +212,14 @@ export function ItemEjercicio({
           <input
             class="entrada"
             type="text"
-            value={entrada}
+            value={est.entrada ?? ''}
             disabled={resuelto}
-            placeholder={r.tipo === 'expresion' ? 'en función de ' + Object.keys(r.vars).join(', ') : 'por ejemplo 47/120'}
-            onInput={(e) => setEntrada((e.target as HTMLInputElement).value)}
+            placeholder={
+              r.tipo === 'expresion'
+                ? 'en función de ' + Object.keys(r.vars).join(', ')
+                : 'por ejemplo 47/120'
+            }
+            onInput={(e) => actualizar({ entrada: (e.target as HTMLInputElement).value })}
             onKeyDown={(e) => e.key === 'Enter' && enviar()}
           />
           {r.tipo === 'numerica' && r.sufijo && <span class="sufijo">{r.sufijo}</span>}
@@ -220,10 +241,14 @@ export function ItemEjercicio({
         {item.pistas.length > 0 && !resuelto && !modoExamen && (
           <button
             class="boton boton--fantasma"
-            disabled={pistasAbiertas >= item.pistas.length}
-            onClick={() => setPistasAbiertas((v) => Math.min(v + 1, item.pistas.length))}
+            disabled={est.pistasAbiertas >= item.pistas.length}
+            onClick={() =>
+              actualizar({
+                pistasAbiertas: Math.min(est.pistasAbiertas + 1, item.pistas.length),
+              })
+            }
           >
-            Pistas ({pistasAbiertas}/{item.pistas.length})
+            Pistas ({est.pistasAbiertas}/{item.pistas.length})
           </button>
         )}
         {!resuelto && !modoExamen && (
@@ -231,11 +256,18 @@ export function ItemEjercicio({
             Ver respuesta
           </button>
         )}
+        {/* Sin esto, el ítem quedaría congelado para siempre una vez resuelto.
+            El intento ya contó; rehacerlo no vuelve a contar el mismo día. */}
+        {resuelto && !modoExamen && (
+          <button class="boton boton--fantasma" onClick={reintentar}>
+            Reintentar
+          </button>
+        )}
       </div>
 
       {/* --- feedback --- */}
-      {estado === 'correcto' && <p class="feedback feedback--ok">✓ Correcto.</p>}
-      {estado === 'incorrecto' && !mensaje && !errorTipico && (
+      {est.estado === 'correcto' && <p class="feedback feedback--ok">✓ Correcto.</p>}
+      {est.estado === 'incorrecto' && !mensaje && !errorTipico && (
         <p class="feedback feedback--mal">✗ No es correcto. Probá de nuevo.</p>
       )}
       {errorTipico && (
@@ -261,9 +293,9 @@ export function ItemEjercicio({
         </div>
       )}
 
-      {pistasAbiertas > 0 && (
+      {est.pistasAbiertas > 0 && (
         <ol class="pistas">
-          {item.pistas.slice(0, pistasAbiertas).map((p, i) => (
+          {item.pistas.slice(0, est.pistasAbiertas).map((p, i) => (
             <li key={i}>
               <Mate>{p}</Mate>
             </li>
@@ -271,7 +303,7 @@ export function ItemEjercicio({
         </ol>
       )}
 
-      {estado === 'revelado' && <Respuesta item={item} />}
+      {est.estado === 'revelado' && <Respuesta item={item} />}
 
       {/* --- tags: sólo después de resolver o revelar --- */}
       {resuelto && item.skills.length > 0 && (

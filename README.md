@@ -28,6 +28,7 @@ no hace falta activar el venv a mano.
 | Guías 2–8 | borradores extraídos, sin cargar |
 | Simulacro | motor completo; 2 parciales con 1 ejercicio verificado cada uno |
 | Progreso | log de intentos, estados de skill, insignias, export/import |
+| Persistencia | todo en `localStorage`, sin servidor: historial de intentos y dónde quedaste |
 
 Los 44 valores numéricos del contenido están verificados y el build los
 contrasta en cada corrida.
@@ -68,7 +69,19 @@ content/         el contenido, como datos.
 src/             renderer puro. No sabe nada de ningún ejercicio.
 ```
 
-El estado del alumno (`localStorage`) queda aparte de todo eso.
+El estado del alumno queda aparte de todo eso, en `localStorage`, y son dos
+cosas separadas a propósito:
+
+- **el historial** (`dominio/progreso.ts`): el log de intentos, de donde salen
+  las insignias. No se borra solo, y se exporta e importa como JSON.
+- **la sesión** (`dominio/sesion.ts`): dónde quedaste. Qué ítems resolviste,
+  qué escribiste, qué pistas abriste, si hay un simulacro a medio rendir. Se
+  puede tirar sin perder nada importante, y es lo que hace que recargar la
+  página no te saque del lugar.
+
+Reintentar un ejercicio borra su sesión pero no toca el historial: el intento
+ya contó. El simulacro guarda el **vencimiento** y no los segundos que faltan,
+así que recargar no regala tiempo.
 
 ## Agregar un ejercicio
 

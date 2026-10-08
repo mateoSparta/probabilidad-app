@@ -7,6 +7,12 @@
  * navegador.
  */
 import { aJson, PROGRESO_VACIO, type Progreso } from '../dominio/progreso'
+import {
+  aJson as aJsonSesion,
+  desdeJson as desdeJsonSesion,
+  SESION_VACIA,
+  type Sesion,
+} from '../dominio/sesion'
 
 const CLAVE = 'probabilidad-app:progreso:v1'
 
@@ -62,4 +68,42 @@ export function descargar(p: Progreso): void {
   a.download = `progreso-probabilidad-${new Date().toISOString().slice(0, 10)}.json`
   a.click()
   URL.revokeObjectURL(url)
+}
+
+// --------------------------------------------------------------- sesión
+
+/**
+ * La sesión se guarda aparte del progreso: el progreso es el historial y no
+ * se borra, la sesión es dónde quedaste y se puede tirar sin perder nada
+ * importante.
+ */
+const CLAVE_SESION = 'probabilidad-app:sesion:v1'
+
+export function cargarSesion(): Sesion {
+  const s = almacen()
+  if (!s) return SESION_VACIA
+  try {
+    const crudo = s.getItem(CLAVE_SESION)
+    return crudo ? (desdeJsonSesion(crudo) ?? SESION_VACIA) : SESION_VACIA
+  } catch {
+    return SESION_VACIA
+  }
+}
+
+export function guardarSesion(sesion: Sesion): void {
+  const s = almacen()
+  if (!s) return
+  try {
+    s.setItem(CLAVE_SESION, aJsonSesion(sesion))
+  } catch {
+    /* cuota llena: se pierde el guardado, no la sesión en curso */
+  }
+}
+
+export function borrarSesion(): void {
+  try {
+    almacen()?.removeItem(CLAVE_SESION)
+  } catch {
+    /* nada que hacer */
+  }
 }

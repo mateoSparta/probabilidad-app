@@ -7,14 +7,16 @@ import { useMemo, useState } from 'preact/hooks'
 import { TarjetaEjercicio } from '../componentes/TarjetaEjercicio'
 import { Teoria } from '../componentes/Teoria'
 import { ejercicioPorId, guiaPorNumero, skillsDeGuia, teoriaPorId } from '../datos/contenido'
+import type { ApiSesion } from '../datos/usarSesion'
 import type { Intento } from '../dominio/tipos'
 
 type Props = {
   numero: number
+  sesion?: ApiSesion
   onIntento?: (intento: Intento, limpio: boolean) => void
 }
 
-export function VistaGuia({ numero, onIntento }: Props) {
+export function VistaGuia({ numero, sesion, onIntento }: Props) {
   const guia = guiaPorNumero.get(numero)
   const skills = useMemo(() => skillsDeGuia(numero), [numero])
 
@@ -84,7 +86,9 @@ export function VistaGuia({ numero, onIntento }: Props) {
           }
           if (!visible(paso.id)) return null
           const ej = ejercicioPorId.get(paso.id)
-          return ej ? <TarjetaEjercicio key={i} ejercicio={ej} onIntento={onIntento} /> : null
+          return ej ? (
+            <TarjetaEjercicio key={i} ejercicio={ej} sesion={sesion} onIntento={onIntento} />
+          ) : null
         })}
       </div>
     </>
