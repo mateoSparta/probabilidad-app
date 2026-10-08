@@ -1,0 +1,19 @@
+numero: 4
+titulo: Transformaciones de variables aleatorias
+descripcion: >-
+  Qué distribución tiene una función de una variable aleatoria. El método de la
+  función de distribución, que funciona siempre y no pide que la
+  transformación sea inyectiva; el mínimo y el máximo de varias variables, con
+  la competencia de exponenciales como caso central; y la suma de variables
+  independientes.
+
+secuencia:
+  - teoria: t-metodo-F
+  - ejercicio: g4-06
+  - ejercicio: g4-24
+
+  - teoria: t-min-max
+  - ejercicio: g4-14
+
+  - teoria: t-suma-independientes
+  - ejercicio: g4-19

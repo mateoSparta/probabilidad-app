@@ -1,0 +1,62 @@
+id: g4-24
+guia: 4
+numero: "4.24"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p27
+
+enunciado: |
+  Sean $X$ e $Y$ dos variables aleatorias independientes con distribución
+  uniforme sobre el intervalo $(0, 1]$. Sea
+  [[transformacion-F|$R = \sqrt{X^2 + Y^2}$]].
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar la función de distribución de $R$, y evaluarla donde se pide.
+    skills: [transformacion-F, conjunta-marginales, prob-geometrica]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$F_R(1/2)$'
+          valor: "pi/16"
+        - pregunta: '$F_R(1)$'
+          valor: "pi/4"
+        - pregunta: '$F_R(1{,}2)$'
+          valor: "pi*1.44/4 - 1.44*acos(1/1.2) + sqrt(1.44 - 1)"
+    pistas:
+      - >-
+        $(X, Y)$ es uniforme sobre el cuadrado unitario, así que
+        $F_R(r) = P(X^2+Y^2 \le r^2)$ es un **área**.
+      - >-
+        Dibujá el círculo de radio $r$ centrado en el origen sobre el cuadrado.
+        ¿Entra siempre completo el cuarto de círculo?
+      - >-
+        Plan: hay dos tramos. Mientras $r \le 1$ el cuarto de círculo entra en
+        el cuadrado y el área es $\pi r^2/4$. Cuando $r > 1$ el círculo se sale
+        por los dos lados y hay que restarle los pedazos que sobran. Control:
+        en $r = \sqrt{2}$ tiene que valer 1.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_24.py
+          valor: "pi/16, pi/4, 0.950911"
+        - origen: "tools/verify/g4_24.py (control: F_R(sqrt 2) = 1)"
+          valor: "1"
+
+  - id: b
+    pregunta: 'Calcular $P(R > 1/2)$.'
+    skills: [transformacion-F]
+    respuesta:
+      tipo: numerica
+      valor: "1 - pi/16"
+    pistas:
+      - Es el complemento de algo que ya calculaste.
+      - 'Plan: $1 - F_R(1/2)$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_24.py
+          valor: "1 - pi/16"

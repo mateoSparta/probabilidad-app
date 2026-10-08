@@ -253,3 +253,39 @@
   formulas:
     - 'P(X \ge a) \le \dfrac{E[X]}{a} \quad (X \ge 0,\ a > 0)'
     - 'P(\lvert X - \mu \rvert \ge \varepsilon) \le \dfrac{\operatorname{var}[X]}{\varepsilon^2}'
+
+# --- guía 4 -----------------------------------------------------------
+
+- id: transformacion-F
+  nombre: Transformaciones por el método de la F
+  guia: 4
+  descripcion: >-
+    Hallar la distribución de $Y = g(X)$ traduciendo el evento
+    $\{g(X) \le t\}$ a un evento sobre $X$.
+  formulas:
+    - 'F_Y(t) = P(g(X) \le t)'
+    - 'g \text{ creciente: } F_Y(t) = F_X\!\left(g^{-1}(t)\right)'
+    - 'f_Y(t) = f_X\!\left(g^{-1}(t)\right) \left\lvert \dfrac{d}{dt} g^{-1}(t) \right\rvert'
+
+- id: min-max
+  nombre: Mínimo, máximo y competencia de exponenciales
+  guia: 4
+  descripcion: >-
+    La distribución del mínimo y del máximo de variables independientes, y
+    quién gana una carrera entre exponenciales.
+  formulas:
+    - 'P(\min > t) = \displaystyle\prod_i P(X_i > t)'
+    - 'P(\max \le t) = \displaystyle\prod_i P(X_i \le t)'
+    - '\min(X_1, X_2) \sim \text{Exp}(\lambda_1 + \lambda_2)'
+    - 'P(X_1 < X_2) = \dfrac{\lambda_1}{\lambda_1 + \lambda_2}'
+
+- id: suma-independientes
+  nombre: Suma de variables independientes
+  guia: 4
+  descripcion: >-
+    La distribución de una suma por convolución, y los casos que se cierran
+    solos (Poisson con Poisson, normal con normal).
+  formulas:
+    - 'f_{X+Y}(z) = \displaystyle\int f_X(x)\, f_Y(z - x)\, dx'
+    - '\text{Poisson}(\lambda) + \text{Poisson}(\mu) = \text{Poisson}(\lambda + \mu)'
+    - 'X \mid (X + Y = n) \sim \text{Bin}\!\left(n, \dfrac{\lambda}{\lambda + \mu}\right)'

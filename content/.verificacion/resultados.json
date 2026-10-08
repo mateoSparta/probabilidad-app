@@ -759,5 +759,133 @@
         "metodo": "exacto"
       }
     }
+  },
+  "g4-06": {
+    "numero": "4.6",
+    "items": {
+      "a1": {
+        "valor": "1/4",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.250565,
+        "coincide": true
+      },
+      "a2": {
+        "valor": "1/2",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.499092,
+        "coincide": true
+      },
+      "a3": {
+        "valor": "7/10",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.698812,
+        "coincide": true
+      },
+      "a4": {
+        "valor": "1/4",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.25009,
+        "coincide": true
+      }
+    }
+  },
+  "g4-14": {
+    "numero": "4.14",
+    "items": {
+      "a": {
+        "valor": "(l1 + l2)*exp(-t*(l1 + l2))",
+        "metodo": "exacto"
+      },
+      "b": {
+        "valor": "l1/(l1 + l2)",
+        "metodo": "exacto"
+      },
+      "c": {
+        "valor": "l1*l2*(exp(l1*t) + exp(l2*t))*exp(-t*(l1 + l2))/(l1 + l2)",
+        "metodo": "exacto"
+      },
+      "a_en_t1": {
+        "valor": "2*exp(-2)",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.271725,
+        "coincide": true
+      },
+      "b_num": {
+        "valor": "3/4",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.749683,
+        "coincide": true
+      },
+      "c_en_t1": {
+        "valor": "3*(1 + E)*exp(-3/2)/8",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.309987,
+        "coincide": true
+      }
+    }
+  },
+  "g4-19": {
+    "numero": "4.19",
+    "items": {
+      "a": {
+        "valor": "1562500*exp(-10)/567",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.124425,
+        "coincide": true
+      },
+      "b1": {
+        "valor": "589824/1953125",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.30239,
+        "coincide": true
+      },
+      "b2": {
+        "valor": "1048576/9765625",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.106625,
+        "coincide": true
+      },
+      "b3": {
+        "valor": "1/9765625",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.0,
+        "coincide": true
+      },
+      "c": {
+        "valor": "9764864/9765625",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.999935,
+        "coincide": true
+      }
+    }
+  },
+  "g4-24": {
+    "numero": "4.24",
+    "items": {
+      "a1": {
+        "valor": "pi/16",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.196208,
+        "coincide": true
+      },
+      "a2": {
+        "valor": "pi/4",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.784162,
+        "coincide": true
+      },
+      "a3": {
+        "valor": "-18*asin(sqrt(11)/6)/25 + sqrt(11)/5 + 18*asin(5/6)/25",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.95086,
+        "coincide": true
+      },
+      "b": {
+        "valor": "1 - pi/16",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.803793,
+        "coincide": true
+      }
+    }
   }
 }

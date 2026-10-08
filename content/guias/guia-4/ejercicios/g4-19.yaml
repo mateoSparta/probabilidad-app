@@ -1,0 +1,89 @@
+id: g4-19
+guia: 4
+numero: "4.19"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p26
+
+enunciado: |
+  La cantidad $L$ de langostas que arriban a la mesa de un asado tiene una
+  distribución Poisson de media 2 y la cantidad $M$ de moscas tiene una
+  distribución Poisson de media 8.
+  [[suma-independientes|$L$ y $M$ son independientes.]]
+
+items:
+  - id: a
+    pregunta: 'Hallar la función de probabilidad de $L + M$ y calcular $P(L + M = 10)$.'
+    skills: [suma-independientes]
+    respuesta:
+      tipo: numerica
+      valor: "10^10 * exp(-10) / 10!"
+    pistas:
+      - La suma de dos Poisson independientes vuelve a ser Poisson.
+      - '¿Cuál es su media? Pensá qué pasa con las medias al sumar.'
+      - >-
+        Plan: $L + M \sim \text{Poisson}(2 + 8)$. Evaluá su función de
+        probabilidad en 10. Si querés verificarlo, hacé la convolución:
+        sumá $P(L = j)\,P(M = 10 - j)$ para $j$ de 0 a 10 y tiene que dar lo
+        mismo.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_19.py
+          valor: "10^10 exp(-10)/10!"
+        - origen: "tools/verify/g4_19.py (control: la convolucion da Poisson(10))"
+          valor: "coincide"
+
+  - id: b
+    pregunta: >-
+      Hallar la función de probabilidad de $M$ dado que $L + M = 10$, y
+      evaluarla donde se pide.
+    skills: [suma-independientes, condicional]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$P(M = 8 \mid L + M = 10)$'
+          valor: "589824/1953125"
+        - pregunta: '$P(M = 10 \mid L + M = 10)$'
+          valor: "1048576/9765625"
+        - pregunta: '$P(M = 0 \mid L + M = 10)$'
+          valor: "1/9765625"
+    pistas:
+      - >-
+        Escribí la definición de condicional y usá que $\{M = k, L+M = 10\}$ es
+        lo mismo que $\{M = k, L = 10 - k\}$.
+      - >-
+        Al simplificar, las exponenciales se cancelan y queda algo que no
+        depende de las medias por separado, sólo de su proporción.
+      - >-
+        Plan: va a quedar una binomial de 10 intentos con probabilidad
+        $8/(2+8)$. Es como si cada uno de los 10 bichos tirara una moneda para
+        decidir si es mosca.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_19.py
+          valor: "Bin(10, 4/5): 589824/1953125, 1048576/9765625, 1/9765625"
+
+  - id: c
+    pregunta: 'Calcular $P(M > 2 \mid L + M = 10)$.'
+    skills: [suma-independientes, condicional]
+    respuesta:
+      tipo: numerica
+      valor: "9764864/9765625"
+      tol_rel: 0.0005
+    pistas:
+      - Usá la distribución condicional del ítem anterior.
+      - 'El complemento tiene sólo tres términos: $M = 0$, $1$ y $2$.'
+      - >-
+        Plan: $1 - P(M \le 2)$ con la binomial. El resultado tiene que quedar
+        muy cerca de 1: con 10 bichos y 80 % de chance de ser mosca, que haya
+        2 o menos moscas es rarísimo.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_19.py
+          valor: "9764864/9765625"
