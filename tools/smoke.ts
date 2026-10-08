@@ -27,11 +27,31 @@ import {
   PROGRESO_VACIO,
   type Progreso,
 } from '../src/dominio/progreso.ts'
-import { claveItem, type Ejercicio, type Intento } from '../src/dominio/tipos.ts'
+import {
+  calificar,
+  ejerciciosJugables,
+  elegirExamen,
+  esCompleto,
+  formatearTiempo,
+  type Examen,
+  type Respuestas,
+} from '../src/dominio/simulacro.ts'
+import { claveItem, type Ejercicio, type Intento, type Item } from '../src/dominio/tipos.ts'
 
 /** Un intento mínimo, para los casos donde sólo importan el ítem y la fecha. */
 function mkIntento(item: string, ts: string): Intento {
   return { item, ts, envios: 1, correcto: true, pistas: 0, revelo: false }
+}
+
+/** Un ítem mínimo pero válido, para armar exámenes de prueba. */
+function unItem(id: string): Item {
+  return {
+    id,
+    pregunta: 'x',
+    skills: ['laplace'],
+    respuesta: { tipo: 'numerica', valor: '1/2' },
+    pistas: ['una'],
+  }
 }
 
 const RAIZ = resolve(import.meta.dirname, '..')
@@ -243,6 +263,137 @@ for (const [valor, alternativa] of equivalentes) {
     claveItem('g1-04', 'b') !== claveItem('g1-05', 'b'),
     'dos ítems de ejercicios distintos comparten clave',
   )
+}
+
+// ------------------------------------------------------ simulacro (§6)
+
+{
+  const DIR_EX = join(RAIZ, 'content', 'examenes')
+  const examenes: Examen[] = existsSync(DIR_EX)
+    ? readdirSync(DIR_EX)
+        .filter((f) => f.endsWith('.yaml'))
+        .map((f) => load(readFileSync(join(DIR_EX, f), 'utf8')) as Examen)
+    : []
+
+  afirmar(examenes.length > 0, 'no se cargó ningún examen')
+
+  for (const ex of examenes) {
+    const jugables = ejerciciosJugables(ex)
+    // Un ejercicio jugable tiene que tener todos sus ítems con respuesta.
+    for (const ej of jugables) {
+      for (const item of ej.items) {
+        afirmar(
+          !!item.respuesta?.tipo,
+          `${ex.id} ej ${ej.numero}(${item.id}): está jugable pero no tiene respuesta`,
+        )
+      }
+    }
+    // Y uno no cargado nunca tiene que entrar al pool.
+    for (const ej of ex.ejercicios.filter((e) => !e.cargado)) {
+      afirmar(
+        !jugables.includes(ej),
+        `${ex.id} ej ${ej.numero}: no está cargado pero entró al pool`,
+      )
+    }
+
+    // Nota perfecta y nota cero, sobre los ejercicios presentados.
+    const todoBien: Respuestas = new Map(
+      jugables.map((ej) => [ej.numero, ej.items.map(() => true)]),
+    )
+    const todoMal: Respuestas = new Map(
+      jugables.map((ej) => [ej.numero, ej.items.map(() => false)]),
+    )
+
+    const perfecto = calificar(ex, todoBien)
+    afirmar(perfecto.nota === 10, `${ex.id}: todo correcto no da 10, da ${perfecto.nota}`)
+    afirmar(
+      perfecto.ejerciciosEnteros === jugables.length,
+      `${ex.id}: todo correcto no cuenta todos los ejercicios como enteros`,
+    )
+
+    const cero = calificar(ex, todoMal)
+    afirmar(cero.nota === 0, `${ex.id}: todo incorrecto no da 0, da ${cero.nota}`)
+    afirmar(cero.ejerciciosEnteros === 0, `${ex.id}: todo incorrecto cuenta ejercicios enteros`)
+
+    // Sin responder nada es lo mismo que responder todo mal.
+    const vacio = calificar(ex, new Map())
+    afirmar(vacio.nota === 0, `${ex.id}: no responder nada no da 0`)
+
+    // El veredicto tiene que marcarse parcial cuando el examen va recortado.
+    afirmar(
+      perfecto.veredictoParcial === !esCompleto(ex),
+      `${ex.id}: el veredicto parcial no coincide con si el examen está completo`,
+    )
+    // Y con un examen recortado no puede decir que aprobaría de verdad:
+    // la cátedra pide 3 ejercicios y no hay 3 para rendir.
+    if (jugables.length < ex.aprueba_con) {
+      afirmar(
+        !perfecto.aprobaria,
+        `${ex.id}: dice que aprobaría con menos ejercicios de los que la cátedra pide`,
+      )
+    }
+  }
+
+  // Un examen de prueba completo: la nota se reparte por ejercicio, no por ítem.
+  const falso: Examen = {
+    id: 'falso',
+    tipo: 'parcial',
+    titulo: 'de prueba',
+    fecha: '2026-01-01',
+    duracion_min: 240,
+    aprueba_con: 1,
+    ejercicios: [
+      {
+        numero: 1,
+        guias: [1],
+        en_alcance: true,
+        cargado: true,
+        enunciado: 'x',
+        items: [unItem('a'), unItem('b')],
+      },
+      {
+        numero: 2,
+        guias: [1],
+        en_alcance: true,
+        cargado: true,
+        enunciado: 'y',
+        items: [unItem('a')],
+      },
+    ],
+  }
+
+  // Ejercicio 1 a medias (1 de 2 ítems) y el 2 entero: 2.5 + 5 = 7.5.
+  const mitad = calificar(
+    falso,
+    new Map([
+      [1, [true, false]],
+      [2, [true]],
+    ]),
+  )
+  afirmar(
+    mitad.nota === 7.5,
+    `la nota no reparte por ejercicio: dio ${mitad.nota} en vez de 7.5`,
+  )
+  afirmar(mitad.ejerciciosEnteros === 1, 'no contó 1 ejercicio entero')
+  afirmar(!mitad.veredictoParcial, 'marcó parcial un examen completo')
+  afirmar(mitad.aprobaria, 'con 1 ejercicio entero y aprueba_con 1 tendría que aprobar')
+
+  // elegirExamen: por defecto no trae integradoras.
+  const integradora: Examen = { ...falso, id: 'int', tipo: 'integradora' }
+  afirmar(
+    elegirExamen([integradora], { azar: () => 0 }) === null,
+    'eligió una integradora sin que se pidiera',
+  )
+  afirmar(
+    elegirExamen([integradora], { incluirIntegradoras: true, azar: () => 0 })?.id === 'int',
+    'no eligió la integradora con el toggle prendido',
+  )
+  afirmar(elegirExamen([], { azar: () => 0 }) === null, 'eligió algo de un pool vacío')
+
+  // El reloj.
+  afirmar(formatearTiempo(240 * 60) === '4:00:00', 'el reloj no formatea 4 horas')
+  afirmar(formatearTiempo(65) === '01:05', 'el reloj no formatea 65 segundos')
+  afirmar(formatearTiempo(-5) === '00:00', 'el reloj no corta en cero')
 }
 
 console.log(`smoke: ${ejercicios.length} ejercicios, ${ok} afirmaciones OK.`)

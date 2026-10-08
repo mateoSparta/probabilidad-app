@@ -30,11 +30,25 @@ type Props = {
   item: Item
   /** Clave global del ítem (`g1-04:b`): es con la que se registra el intento. */
   clave: string
+  /**
+   * En el simulacro no hay pistas ni ver respuesta (PLAN.md §6). Al entregar
+   * se apaga y las ayudas vuelven a estar disponibles.
+   */
+  modoExamen?: boolean
+  /** En el simulacro, el panel de fórmulas depende de un toggle. */
+  permitirFormulas?: boolean
   onResaltar: (skill: string | null) => void
   onIntento?: (intento: Intento, limpio: boolean) => void
 }
 
-export function ItemEjercicio({ item, clave, onResaltar, onIntento }: Props) {
+export function ItemEjercicio({
+  item,
+  clave,
+  modoExamen,
+  permitirFormulas = true,
+  onResaltar,
+  onIntento,
+}: Props) {
   const [estado, setEstado] = useState<Estado>('pendiente')
   const [envios, setEnvios] = useState(0)
   const [entrada, setEntrada] = useState('')
@@ -117,7 +131,7 @@ export function ItemEjercicio({ item, clave, onResaltar, onIntento }: Props) {
   }
 
   const formulas = formulasDeItem(item.skills)
-  const puedeMostrarFormulas = formulas.length > 0
+  const puedeMostrarFormulas = formulas.length > 0 && permitirFormulas
 
   return (
     <li class={'item item--' + estado}>
@@ -203,7 +217,7 @@ export function ItemEjercicio({ item, clave, onResaltar, onIntento }: Props) {
             Fórmulas
           </button>
         )}
-        {item.pistas.length > 0 && !resuelto && (
+        {item.pistas.length > 0 && !resuelto && !modoExamen && (
           <button
             class="boton boton--fantasma"
             disabled={pistasAbiertas >= item.pistas.length}
@@ -212,7 +226,7 @@ export function ItemEjercicio({ item, clave, onResaltar, onIntento }: Props) {
             Pistas ({pistasAbiertas}/{item.pistas.length})
           </button>
         )}
-        {!resuelto && (
+        {!resuelto && !modoExamen && (
           <button class="boton boton--fantasma" onClick={revelar}>
             Ver respuesta
           </button>

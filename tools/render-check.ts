@@ -151,6 +151,26 @@ try {
     'el estado sembrado no quedó dominado',
   )
 
+  // --- simulacro (fase 5) ---
+  const { VistaSimulacro } = await servidor.ssrLoadModule('/src/vistas/VistaSimulacro.tsx')
+
+  afirmar(contenido.examenes.length > 0, 'no se cargó ningún examen')
+
+  const simulacro = render(
+    createElement(VistaSimulacro, { api: api(progresoMod.PROGRESO_VACIO) }),
+  )
+  afirmar(simulacro.includes('Simulacro'), 'la pantalla de simulacro no se dibuja')
+  afirmar(simulacro.includes('Empezar simulacro'), 'no se ve el botón de empezar')
+  afirmar(simulacro.includes('240'), 'la duración por defecto no es 240 minutos')
+  afirmar(simulacro.includes('Incluir integradoras'), 'falta el toggle de integradoras')
+  afirmar(simulacro.includes('Exámenes en el pool'), 'no se lista el pool')
+  // Arranca en la pantalla de configuración: no puede haber un enunciado
+  // de examen visible antes de empezar.
+  afirmar(
+    !simulacro.includes('class="reloj'),
+    'el reloj aparece antes de empezar el simulacro',
+  )
+
   console.log(`render-check: ${ok} afirmaciones OK.`)
   for (const f of fallas) console.error(`  ✗ ${f}`)
   if (fallas.length > 0) {

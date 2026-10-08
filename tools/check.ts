@@ -151,6 +151,90 @@ for (const dir of dirsGuia) {
 
 const idsEjercicios = new Set(ejercicios.map((e) => e.id))
 
+// --------------------------------------------------------------- exámenes
+
+type EjercicioExamen = {
+  numero: number
+  guias?: number[]
+  en_alcance?: boolean
+  cargado?: boolean
+  enunciado?: string
+  items?: Item[]
+  nota?: string
+}
+type Examen = {
+  id: string
+  tipo?: string
+  titulo?: string
+  fecha?: string
+  duracion_min?: number
+  aprueba_con?: number
+  ejercicios?: EjercicioExamen[]
+}
+
+const examenes: Examen[] = listar(join(CONTENT, 'examenes'), '.yaml').map((r) =>
+  leerYaml<Examen>(r),
+)
+
+for (const ex of examenes) {
+  const donde = `examen ${ex.id ?? '(sin id)'}`
+  if (!ex.id) err(`${donde}: falta \`id\``)
+  if (ex.tipo !== 'parcial' && ex.tipo !== 'integradora') {
+    err(`${donde}: \`tipo\` tiene que ser parcial o integradora`)
+  }
+  if (typeof ex.duracion_min !== 'number') err(`${donde}: falta \`duracion_min\``)
+  if (typeof ex.aprueba_con !== 'number') err(`${donde}: falta \`aprueba_con\``)
+  if (!ex.ejercicios?.length) err(`${donde}: no tiene ejercicios`)
+
+  const vistos = new Set<number>()
+  for (const ej of ex.ejercicios ?? []) {
+    const quienEj = `${donde} ej ${ej.numero}`
+    if (typeof ej.numero !== 'number') err(`${donde}: un ejercicio sin \`numero\``)
+    if (vistos.has(ej.numero)) err(`${quienEj}: número repetido`)
+    vistos.add(ej.numero)
+    if (!ej.guias?.length) err(`${quienEj}: no declara de qué guías sale`)
+    if (!ej.enunciado?.trim()) err(`${quienEj}: no tiene enunciado`)
+
+    const items = ej.items ?? []
+    // `cargado` tiene que decir la verdad: es lo que decide si el simulacro
+    // presenta el ejercicio.
+    if (ej.cargado && items.length === 0) {
+      err(`${quienEj}: está marcado \`cargado\` pero no tiene ítems`)
+    }
+    if (!ej.cargado && items.length > 0) {
+      err(`${quienEj}: tiene ítems pero no está marcado \`cargado\``)
+    }
+    if (!ej.cargado && !ej.nota?.trim()) {
+      avisar(`${quienEj}: no está cargado y no explica por qué`)
+    }
+
+    const skillsDelEjercicio = new Set(items.flatMap((i) => i.skills ?? []))
+    for (const item of items) {
+      const quien = `${quienEj}(${item.id})`
+      if (!item.skills?.length) err(`${quien}: no declara skills`)
+      for (const s of item.skills ?? []) {
+        if (!idsSkills.has(s)) err(`${quien}: el skill \`${s}\` no existe`)
+        evaluadoPor.set(s, [...(evaluadoPor.get(s) ?? []), quien])
+      }
+      // En el simulacro no se muestran pistas, pero al entregar sí, así que
+      // igual hacen falta.
+      if (!item.pistas?.length) err(`${quien}: no tiene pistas`)
+      validarRespuesta(quien, item.respuesta)
+      if (item.verificacion?.estado !== 'verificado') {
+        avisar(`${quien}: estado de verificación \`${item.verificacion?.estado ?? 'ausente'}\``)
+      }
+    }
+
+    for (const m of (ej.enunciado ?? '').matchAll(RE_MARCA)) {
+      if (!idsSkills.has(m[1])) {
+        err(`${quienEj}: la marca \`[[${m[1]}|…]]\` usa un skill que no existe`)
+      } else if (items.length > 0 && !skillsDelEjercicio.has(m[1])) {
+        err(`${quienEj}: la marca \`[[${m[1]}|…]]\` usa un skill que ningún ítem declara`)
+      }
+    }
+  }
+}
+
 // ------------------------------------------------------------------ guías
 
 for (const dir of dirsGuia) {
@@ -317,6 +401,23 @@ if (existsSync(VERIFICACION)) {
     }
   }
 
+  // Los examenes se contrastan igual: la clave del modelo es
+  // `<id del examen>-<numero del ejercicio>`.
+  for (const ex of examenes) {
+    for (const ej of ex.ejercicios ?? []) {
+      const calculado = res[`${ex.id}-${ej.numero}`]
+      if (!calculado) continue
+      for (const item of ej.items ?? []) {
+        const r = item.respuesta
+        if (r?.tipo !== 'numerica') continue
+        const esperado = calculado.items[item.id]
+        if (!esperado) continue
+        contrastar(`${ex.id} ej ${ej.numero}(${item.id})`, String(r.valor), esperado.valor)
+        contrastados++
+      }
+    }
+  }
+
   console.log(`check: ${contrastados} valores contrastados contra tools/verify/.`)
 } else {
   avisar('no existe content/.verificacion/resultados.json: corré `npm run verificar`')
@@ -325,9 +426,13 @@ if (existsSync(VERIFICACION)) {
 // ------------------------------------------------------------------ salida
 
 const nItems = ejercicios.reduce((n, e) => n + (e.items?.length ?? 0), 0)
+const nItemsExamen = examenes.reduce(
+  (n, ex) => n + (ex.ejercicios ?? []).reduce((m, ej) => m + (ej.items?.length ?? 0), 0),
+  0,
+)
 console.log(
   `check: ${skills.length} skills, ${ejercicios.length} ejercicios, ${nItems} ítems, ` +
-    `${teoriaIds.size} bloques de teoría.`,
+    `${teoriaIds.size} bloques de teoría, ${examenes.length} exámenes (${nItemsExamen} ítems).`,
 )
 
 for (const a of avisos) console.warn(`  aviso: ${a}`)

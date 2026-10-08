@@ -30,9 +30,15 @@ SALIDA = RAIZ / "content" / ".verificacion" / "resultados.json"
 sys.path.insert(0, str(AQUI))
 
 
+#  Los modulos de infraestructura no son modelos.
+NO_SON_MODELOS = {"comun", "runner"}
+
+
 def modelos(filtro: str | None) -> list[str]:
     nombres = sorted(
-        p.stem for p in AQUI.glob("g*_*.py") if not p.stem.startswith("_")
+        p.stem
+        for p in AQUI.glob("*.py")
+        if not p.stem.startswith("_") and p.stem not in NO_SON_MODELOS
     )
     if filtro:
         clave = filtro.replace("-", "_")

@@ -1,0 +1,111 @@
+id: ep-20250524
+tipo: parcial
+titulo: Parcial, primera fecha
+fecha: "2025-05-24"
+duracion_min: 240
+fuente: fuentes/examenes/finales/EP_20250524.pdf
+# "El examen se aprueba con al menos 3 ejercicios correctamente resueltos y
+# justificados", según el encabezado del PDF.
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [1]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      En una caja hay 5 bolitas blancas, 1 verde y 3 azules. Se extraen al azar
+      dos bolitas. [[condicional|Si son del mismo color, no se sacan más
+      bolitas; en caso contrario, se extraen otras dos (sin reponer ninguna
+      bola extraída).]]
+    items:
+      - id: a
+        pregunta: >-
+          Si se sabe que hubo una segunda extracción, en la cual se obtuvieron
+          dos bolitas del mismo color, ¿cuál es la probabilidad de que en la
+          primera hayan salido exactamente una blanca y una verde?
+        skills: [bayes, condicional, laplace]
+        respuesta:
+          tipo: numerica
+          valor: "15/61"
+        pistas:
+          - >-
+            El dato "hubo una segunda extracción" ya dice algo sobre la
+            primera: las dos primeras bolitas fueron de distinto color.
+          - >-
+            Hay tres formas de que la primera extracción dé colores distintos.
+            Para cada una, lo que queda en la caja es diferente, y eso cambia
+            la probabilidad de que la segunda dé dos del mismo color.
+          - >-
+            Plan: condicionar sobre cuál fue el par de colores de la primera
+            extracción (blanca-verde, blanca-azul, verde-azul), calcular para
+            cada caso la probabilidad de que la segunda dé dos iguales, y
+            aplicar Bayes.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: tools/verify/ep20250524_1.py
+              valor: "15/61"
+
+  - numero: 2
+    guias: [5]
+    en_alcance: true
+    cargado: false
+    nota: >-
+      Requiere la guía 5 (esperanza condicional). El examen trae dos
+      variantes: el Curso 4 tiene que hallar E(Y|X=3) y los otros cursos
+      calcular P(E(Y|X) < 10).
+    variante: "Curso 4 / Otros cursos"
+    enunciado: |
+      Sea $(X, Y)$ un vector aleatorio continuo con función densidad de
+      probabilidad
+      $$f_{(X,Y)}(x, y) = \frac{y}{2x^4}\, e^{-y/x^2}\, \mathbf{1}\{2 < x < 4,\ y > 0\}$$
+      **Curso 4:** Hallar $E(Y \mid X = 3)$.
+      **Otros cursos:** Calcular $P(E(Y \mid X) < 10)$.
+    items: []
+
+  - numero: 3
+    guias: [2, 4]
+    en_alcance: true
+    cargado: false
+    nota: >-
+      Requiere la guía 2 (distribución conjunta) y la guía 4 (transformaciones).
+      Al cargarlo va como `checkpoints`, porque pide hallar y graficar una
+      función de distribución.
+    enunciado: |
+      Se usan dos métodos para medir la humedad de la atmósfera. La
+      distribución de probabilidad conjunta de las dos mediciones $(X, Y)$ es
+      una distribución uniforme en la región
+      $$R = \{(x, y) : 0 < x < 3,\ x - 2 < y < x + 1\}$$
+      Hallar y graficar la función de distribución de $W = |Y - X|$.
+    items: []
+
+  - numero: 4
+    guias: [7]
+    en_alcance: true
+    cargado: false
+    nota: >-
+      Requiere la guía 7 (proceso de Poisson: superposición y condicionamiento a N(t)=n).
+    enunciado: |
+      A una dirección de correo electrónico llegan mensajes de SPAM y NO SPAM.
+      Los tiempos de arribo de los SPAM siguen un proceso de Poisson de tasa 4
+      por hora, y los de NO SPAM un proceso de Poisson de tasa 6 por hora. Los
+      dos procesos son independientes. Sabiendo que entre las 10:00 y 11:00 se
+      recibieron exactamente 8 mensajes SPAM y 6 mensajes NO SPAM, calcular la
+      probabilidad de que entre 10:00 y 10:06 haya llegado exactamente un
+      mensaje (en total).
+    items: []
+
+  - numero: 5
+    guias: [8]
+    en_alcance: true
+    cargado: false
+    nota: >-
+      Requiere la guía 8 (teorema central del límite). El enunciado quedó
+      cortado en la transcripción automática: hay que completarlo leyendo el
+      PDF antes de cargarlo.
+    enunciado: |
+      Un reconocido influencer inicia una campaña solidaria.
+      *(Enunciado incompleto: completar desde `fuentes/examenes/finales/EP_20250524.pdf`.)*
+    items: []

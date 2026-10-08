@@ -376,3 +376,55 @@
 .datos label.boton { cursor: pointer; }
 
 .dato-chico { font-size: var(--t-xs); color: var(--tinta-3); margin-top: var(--e-2); }
+
+/* --------------------------------------------------- simulacro (§6) */
+
+.simulacro__barra {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--e-4);
+  flex-wrap: wrap;
+}
+.simulacro__barra h2 { margin-bottom: var(--e-1); }
+
+.reloj {
+  font-family: var(--mono);
+  font-size: var(--t-xl);
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta-2);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  padding: var(--e-1) var(--e-3);
+  background: var(--superficie);
+}
+.reloj--poco { color: var(--flojo); border-color: var(--flojo); }
+
+.campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-4);
+  align-items: flex-end;
+  margin-block: var(--e-4);
+}
+.campo { display: flex; flex-direction: column; gap: var(--e-1); font-size: var(--t-sm); }
+.campo > span { color: var(--tinta-2); font-size: var(--t-xs); }
+.campo--check { flex-direction: row; align-items: center; gap: var(--e-2); }
+.campo--check > span { font-size: var(--t-sm); color: var(--tinta); }
+
+.devolucion {
+  background: var(--superficie-alta);
+  border: 1px solid var(--borde-fuerte);
+  border-left: 3px solid var(--acento);
+  border-radius: var(--radio-lg);
+  padding: var(--e-4) var(--e-5);
+  margin-block: var(--e-5);
+}
+.devolucion h3 { margin-bottom: var(--e-2); }
+
+.nota {
+  font-family: var(--mono);
+  font-size: var(--t-xl);
+  margin: 0 0 var(--e-2);
+}
+.nota strong { color: var(--acento); }

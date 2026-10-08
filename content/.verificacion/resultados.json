@@ -1,4 +1,30 @@
 {
+  "ep-20250524-1": {
+    "numero": "1",
+    "items": {
+      "a": {
+        "valor": "15/61",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.246536,
+        "coincide": true
+      }
+    }
+  },
+  "ep-20250614-1": {
+    "numero": "1",
+    "items": {
+      "a": {
+        "valor": "6/11",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.544683,
+        "coincide": true
+      },
+      "p_rechazo": {
+        "valor": "11/45",
+        "metodo": "exacto"
+      }
+    }
+  },
   "g1-01": {
     "numero": "1.1",
     "items": {

@@ -9,6 +9,7 @@
  */
 import { load } from 'js-yaml'
 
+import type { Examen } from '../dominio/simulacro'
 import { claveItem } from '../dominio/tipos'
 import type { BloqueTeoria, Ejercicio, Guia, PasoSecuencia, Skill } from '../dominio/tipos'
 
@@ -36,6 +37,12 @@ const crudoEjercicios = import.meta.glob('/content/guias/*/ejercicios/*.yaml', {
 }) as Crudo
 
 const crudoTeoria = import.meta.glob('/content/guias/*/teoria/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Crudo
+
+const crudoExamenes = import.meta.glob('/content/examenes/*.yaml', {
   query: '?raw',
   import: 'default',
   eager: true,
@@ -101,6 +108,28 @@ export const guias: Guia[] = Object.values(crudoGuias)
 
 export const guiaPorNumero = new Map(guias.map((g) => [g.numero, g]))
 
+// --------------------------------------------------------------- exámenes
+
+export const examenes: Examen[] = Object.values(crudoExamenes)
+  .map((txt) => load(txt) as Examen)
+  .filter(Boolean)
+  .sort((a, b) => a.fecha.localeCompare(b.fecha))
+
+export const examenPorId = new Map(examenes.map((e) => [e.id, e]))
+
+/**
+ * Clave global de un ítem de examen: `ep-20250524-1:a`.
+ * Los ítems del simulacro cuentan como intentos para las insignias
+ * (PLAN.md §6), así que necesitan convivir con los de las guías.
+ */
+export function claveItemExamen(
+  idExamen: string,
+  numeroEjercicio: number,
+  idItem: string,
+): string {
+  return claveItem(`${idExamen}-${numeroEjercicio}`, idItem)
+}
+
 // ------------------------------------------------------- skills -> ítems
 
 /**
@@ -109,11 +138,21 @@ export const guiaPorNumero = new Map(guias.map((g) => [g.numero, g]))
  */
 export const itemsPorSkill: Map<string, Set<string>> = (() => {
   const m = new Map<string, Set<string>>()
+  const sumar = (skillId: string, clave: string) => {
+    if (!m.has(skillId)) m.set(skillId, new Set())
+    m.get(skillId)!.add(clave)
+  }
   for (const ej of ejercicios) {
     for (const item of ej.items) {
-      for (const id of item.skills) {
-        if (!m.has(id)) m.set(id, new Set())
-        m.get(id)!.add(claveItem(ej.id, item.id))
+      for (const id of item.skills) sumar(id, claveItem(ej.id, item.id))
+    }
+  }
+  // Los ítems del simulacro son los intentos más valiosos, porque vienen
+  // mezclados y sin aviso del tema: cuentan igual que los de las guías.
+  for (const ex of examenes) {
+    for (const ej of ex.ejercicios) {
+      for (const item of ej.items ?? []) {
+        for (const id of item.skills) sumar(id, claveItemExamen(ex.id, ej.numero, item.id))
       }
     }
   }
