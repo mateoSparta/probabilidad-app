@@ -1,0 +1,152 @@
+id: g7-01
+guia: 7
+numero: "7.1"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p42
+
+enunciado: |
+  Sea $\{N(t),\ t \ge 0\}$ el proceso de conteo asociado a un
+  [[poisson-incrementos|proceso de Poisson de intensidad 2]] y sea
+  $N(a, b) = N(b) - N(a)$ el incremento del proceso en el intervalo $(a, b]$.
+  Sea además $S_3$ el tiempo de espera hasta que ocurre el tercer evento.
+
+items:
+  - id: a
+    pregunta: 'Calcular $P(N(1) = 0)$.'
+    skills: [poisson-incrementos]
+    respuesta:
+      tipo: numerica
+      valor: "exp(-2)"
+    pistas:
+      - 'El conteo en un intervalo es Poisson. ¿Con qué media?'
+      - 'Plan: Poisson de media $\lambda \cdot 1 = 2$, evaluada en 0.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_01.py
+          valor: "exp(-2)"
+
+  - id: b
+    pregunta: 'Calcular $P(N(1, 2) = 1)$.'
+    skills: [poisson-incrementos]
+    respuesta:
+      tipo: numerica
+      valor: "2*exp(-2)"
+    pistas:
+      - 'El intervalo $(1, 2]$ tiene el mismo largo que $(0, 1]$. ¿Importa dónde está?'
+      - 'Plan: por estacionariedad, sólo cuenta el largo. Poisson de media 2, evaluada en 1.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_01.py
+          valor: "2*exp(-2)"
+
+  - id: c
+    pregunta: 'Calcular $P(N(1) = 0,\ N(1, 2) = 1,\ N(2, 4) = 2)$.'
+    skills: [poisson-incrementos]
+    respuesta:
+      tipo: numerica
+      valor: "16*exp(-8)"
+    pistas:
+      - 'Fijate si los tres intervalos se solapan o no: $(0,1]$, $(1,2]$ y $(2,4]$.'
+      - Sobre intervalos disjuntos los incrementos son independientes.
+      - >-
+        Plan: multiplicá las tres probabilidades, cada una con la media que le
+        corresponde según su largo ($2$, $2$ y $4$).
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_01.py
+          valor: "16*exp(-8)"
+
+  - id: d
+    pregunta: 'Calcular $\operatorname{cov}(N(1, 3),\ N(2, 4))$.'
+    skills: [poisson-incrementos, covarianza]
+    respuesta:
+      tipo: numerica
+      valor: "2"
+      tol_rel: 0.005
+    pistas:
+      - 'Acá los intervalos **sí** se solapan. ¿En qué parte?'
+      - >-
+        Escribí cada incremento como suma de la parte común más la parte
+        propia, y usá que las partes disjuntas son independientes.
+      - >-
+        Plan: $N(1,3) = N(1,2) + N(2,3)$ y $N(2,4) = N(2,3) + N(3,4)$. Al
+        desarrollar la covarianza, todo lo que involucra partes disjuntas se
+        anula y queda $\operatorname{var}(N(2,3)) = \lambda \cdot 1$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_01.py
+          valor: "2"
+
+  - id: e
+    pregunta: 'Calcular $P(S_3 > 1/2)$.'
+    skills: [tiempos-espera, poisson-incrementos]
+    respuesta:
+      tipo: numerica
+      valor: "5*exp(-1)/2"
+    pistas:
+      - 'Traducí el evento sobre el tiempo a un evento sobre el conteo.'
+      - 'Que el tercer evento no haya llegado en $(0, 1/2]$ es que hubo a lo sumo 2.'
+      - 'Plan: $P(S_3 > 1/2) = P(N(1/2) \le 2)$, con $N(1/2)$ Poisson de media 1.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_01.py
+          valor: "5*exp(-1)/2"
+
+  - id: f
+    pregunta: 'Calcular $P(N(1/4) = 1 \mid S_3 = 1/2)$.'
+    skills: [condicionar-Nt]
+    respuesta:
+      tipo: numerica
+      valor: "1/2"
+    pistas:
+      - >-
+        Si el tercer evento ocurrió exactamente en $1/2$, ¿qué se puede decir
+        de los dos primeros?
+      - >-
+        Condicionado a eso, los dos primeros son uniformes independientes en
+        $(0, 1/2)$.
+      - >-
+        Plan: cada uno cae en $(0, 1/4]$ con probabilidad $1/2$, así que es una
+        binomial de 2 intentos. Fijate que la intensidad 2 no aparece en la
+        respuesta: es la señal de que usaste bien la propiedad.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_01.py
+          valor: "1/2"
+
+  - id: g
+    pregunta: 'Calcular $P(S_3 > 1/2 \mid N(1/4) = 1)$.'
+    skills: [tiempos-espera, poisson-incrementos]
+    respuesta:
+      tipo: numerica
+      valor: "3*exp(-1/2)/2"
+    pistas:
+      - >-
+        Si en $(0, 1/4]$ hubo 1 evento, ¿cuántos más pueden ocurrir en
+        $(1/4, 1/2]$ para que el tercero todavía no haya llegado?
+      - >-
+        Lo que pasa después de $1/4$ es independiente de lo que pasó antes.
+      - >-
+        Plan: hace falta que $N(1/4, 1/2) \le 1$, con ese incremento Poisson de
+        media $2 \cdot 1/4$. Ojo: a diferencia del ítem (f), acá la intensidad
+        **sí** aparece, porque el condicionante es un conteo parcial y no el
+        total.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_01.py
+          valor: "3*exp(-1/2)/2"

@@ -1,0 +1,56 @@
+id: g7-07
+guia: 7
+numero: "7.7"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p43
+
+enunciado: |
+  Llamadas arriban a una central telefónica de acuerdo con un proceso de
+  Poisson de intensidad 4 por hora.
+  [[condicionar-Nt|Sabiendo que entre las 9:00 y las 10:00 arribaron
+  exactamente 3 llamadas]], calcular la probabilidad de que
+
+items:
+  - id: a
+    pregunta: la primera llamada después de las 9:00 haya arribado antes de las 9:15.
+    skills: [condicionar-Nt]
+    respuesta:
+      tipo: numerica
+      valor: "37/64"
+    pistas:
+      - >-
+        Condicionado a que hubo exactamente 3 llamadas en la hora, sus tiempos
+        son uniformes independientes en esa hora.
+      - >-
+        "La primera antes de las 9:15" es lo mismo que "al menos una de las
+        tres cayó en el primer cuarto de hora".
+      - >-
+        Plan: cada llamada cae en el primer cuarto con probabilidad $1/4$,
+        independientemente. Usá el complemento: $1 - (3/4)^3$. La intensidad 4
+        no tiene que aparecer en la respuesta.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_07.py
+          valor: "37/64"
+
+  - id: b
+    pregunta: la segunda llamada después de las 9:00 haya arribado antes de las 9:30.
+    skills: [condicionar-Nt]
+    respuesta:
+      tipo: numerica
+      valor: "1/2"
+    pistas:
+      - Traducí lo de "la segunda antes de las 9:30" a un conteo.
+      - Es que al menos dos de las tres cayeron en la primera media hora.
+      - >-
+        Plan: binomial de 3 intentos con probabilidad $1/2$. Calculá
+        $1 - P(0) - P(1)$. El resultado es exactamente $1/2$, por simetría.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_07.py
+          valor: "1/2"

@@ -1,0 +1,49 @@
+id: g7-15
+guia: 7
+numero: "7.15"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p46
+
+enunciado: |
+  Clientes arriban a un servidor de acuerdo con un proceso de Poisson de
+  intensidad 4 por hora. [[poisson-compuesto|El tiempo de trabajo consumido en
+  cada servicio tiene distribución normal de media 5 minutos y desvío estándar
+  $1/2$.]]
+
+items:
+  - id: a
+    pregunta: >-
+      Calcular la media y la varianza del tiempo de trabajo consumido por el
+      servidor entre las 11:00 y las 12:00.
+    skills: [poisson-compuesto, varianza-total]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: 'la media, en minutos'
+          valor: "20"
+          tol_rel: 0.002
+        - pregunta: 'la varianza'
+          valor: "101"
+          tol_rel: 0.002
+    pistas:
+      - >-
+        El total es una suma con una cantidad **aleatoria** de términos. ¿Cuál
+        es la distribución de esa cantidad en una hora?
+      - >-
+        Para la media alcanza con $E[N]\,E[X]$. Para la varianza hay **dos**
+        términos, y salen de condicionar a $N$ con la varianza total.
+      - >-
+        Plan: $\operatorname{var}[T] = E[N]\operatorname{var}[X] + \operatorname{var}[N]\,(E[X])^2$,
+        y para una Poisson $\operatorname{var}[N] = E[N] = 4$. Si te da 1,
+        usaste sólo el primer término: el que domina es el segundo, porque la
+        variabilidad viene de cuántos clientes llegan y no de cuánto dura cada
+        servicio.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_15.py
+          valor: "20, 101"
+        - origen: "tools/verify/g7_15.py (error tipico: quedarse con E[N] var[X] = 1)"
+          valor: "1"

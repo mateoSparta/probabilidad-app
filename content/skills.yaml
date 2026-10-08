@@ -373,3 +373,57 @@
     son independientes.
   formulas:
     - 'P(X = k) = \dfrac{\dbinom{B}{k}\dbinom{N - B}{n - k}}{\dbinom{N}{n}}'
+
+# --- guía 7 -----------------------------------------------------------
+
+- id: poisson-incrementos
+  nombre: Proceso de Poisson e incrementos
+  guia: 7
+  descripcion: >-
+    Contar eventos en intervalos. Lo único que importa es el largo del
+    intervalo, y los intervalos disjuntos son independientes.
+  formulas:
+    - 'N(a, b] \sim \text{Poisson}(\lambda (b-a))'
+    - '\text{intervalos disjuntos} \implies \text{incrementos independientes}'
+    - '\operatorname{cov}(N(a,b],\, N(c,d]) = \lambda \cdot \text{largo del solapamiento}'
+
+- id: tiempos-espera
+  nombre: Tiempos de espera del proceso de Poisson
+  guia: 7
+  descripcion: >-
+    Pasar del conteo al tiempo: el $n$-ésimo evento tarda lo que tarda que el
+    conteo llegue a $n$.
+  formulas:
+    - 'S_n > t \iff N(t) \le n - 1'
+    - 'S_1 \sim \text{Exp}(\lambda)'
+    - 'S_n \sim \text{Gamma}(n, \lambda), \quad E[S_n] = \dfrac{n}{\lambda}'
+
+- id: condicionar-Nt
+  nombre: Condicionamiento a N(t) = n
+  guia: 7
+  descripcion: >-
+    Si se sabe cuántos eventos hubo, sus tiempos son uniformes independientes
+    y la intensidad desaparece de la cuenta.
+  formulas:
+    - 'N(t) = n \implies \text{los } n \text{ tiempos son i.i.d. } U(0, t)'
+    - 'P(N(s) = k \mid N(t) = n) = \dbinom{n}{k}\left(\tfrac{s}{t}\right)^{k}\left(1 - \tfrac{s}{t}\right)^{n-k}'
+
+- id: superposicion-adelgazamiento
+  nombre: Superposición y adelgazamiento
+  guia: 7
+  descripcion: >-
+    Juntar dos procesos de Poisson suma las intensidades; filtrar uno al azar
+    la multiplica por la probabilidad de pasar el filtro.
+  formulas:
+    - '\text{superposición: } \lambda = \lambda_1 + \lambda_2'
+    - '\text{adelgazamiento con probabilidad } p: \ \lambda_p = p\,\lambda'
+    - 'P(\text{el primero es del proceso 1}) = \dfrac{\lambda_1}{\lambda_1 + \lambda_2}'
+
+- id: poisson-compuesto
+  nombre: Poisson compuesto
+  guia: 7
+  descripcion: >-
+    Sumar una cantidad aleatoria de términos, cuando esa cantidad es Poisson.
+  formulas:
+    - 'T = \displaystyle\sum_{i=1}^{N} X_i, \quad E[T] = E[N]\, E[X]'
+    - '\operatorname{var}[T] = E[N]\operatorname{var}[X] + \operatorname{var}[N]\,(E[X])^2'

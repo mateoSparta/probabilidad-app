@@ -1,0 +1,65 @@
+id: g7-10
+guia: 7
+numero: "7.10"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p45
+
+enunciado: |
+  Una máquina produce rollos de alambre. El alambre tiene fallas distribuidas
+  como un proceso de Poisson de intensidad 1 cada 20 metros.
+  [[superposicion-adelgazamiento|La máquina detecta cada falla con probabilidad
+  $0{,}75$ y corta el alambre en la primera falla detectada.]]
+
+items:
+  - id: a
+    pregunta: Hallar la media y la varianza de la longitud de los rollos de alambre.
+    skills: [superposicion-adelgazamiento, tiempos-espera]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: 'la media, en metros'
+          valor: "80/3"
+        - pregunta: 'la varianza'
+          valor: "6400/9"
+          tol_rel: 0.001
+    pistas:
+      - ¿Qué proceso forman las fallas **detectadas**?
+      - >-
+        Al filtrar un proceso de Poisson quedándose con cada evento con
+        probabilidad $p$, lo que queda es otro Poisson de intensidad
+        $p\lambda$.
+      - >-
+        Plan: la intensidad de las detectadas es $0{,}75/20$ por metro. El
+        largo del rollo es el tiempo de espera hasta la primera, o sea
+        exponencial. Para una exponencial, la varianza es el cuadrado de la
+        media.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_10.py
+          valor: "80/3, 6400/9"
+
+  - id: b
+    pregunta: Hallar la cantidad media de fallas en los rollos.
+    skills: [superposicion-adelgazamiento, geometrica-pascal]
+    respuesta:
+      tipo: numerica
+      valor: "4/3"
+      tol_rel: 0.005
+    pistas:
+      - Ojo que pregunta por **todas** las fallas, no sólo las detectadas.
+      - >-
+        En el rollo hay la falla detectada que lo cortó, más las que pasaron
+        sin detectarse antes de ella. ¿Cuántas son esas, en media?
+      - >-
+        Plan: las no detectadas antes de la primera detectada son los fracasos
+        antes del primer éxito con $p = 0{,}75$, o sea geométrica de media
+        $(1-p)/p$. Sumale la detectada.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_10.py
+          valor: "4/3"
