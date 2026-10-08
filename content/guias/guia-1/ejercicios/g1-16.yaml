@@ -1,0 +1,55 @@
+id: g1-16
+guia: 1
+numero: "1.16"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p6
+
+enunciado: |
+  Se colocarán 7 gatos en 5 cajas.
+  [[ocupacion|Suponiendo que los gatos son indistinguibles y que todas las
+  configuraciones distintas son equiprobables.]]
+
+items:
+  - id: a
+    pregunta: >-
+      Calcular la probabilidad de que la primera caja contenga exactamente dos
+      gatos y la última caja quede vacía.
+    skills: [ocupacion]
+    respuesta:
+      tipo: numerica
+      valor: "7/110"
+    pistas:
+      - >-
+        Cuidado con el espacio muestral: como los gatos son indistinguibles,
+        los casos equiprobables son las configuraciones $(n_1,\dots,n_5)$ con
+        $\sum n_i = 7$, no los repartos de gatos con nombre.
+      - '¿Cuántas configuraciones hay en total? Es el conteo de soluciones enteras no negativas de $n_1 + \dots + n_5 = 7$.'
+      - >-
+        Plan: fijá $n_1 = 2$ y $n_5 = 0$, contá las configuraciones de los
+        5 gatos que sobran en las 3 cajas del medio, y dividí por el total.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_16.py
+          valor: "7/110"
+
+  - id: b
+    pregunta: Calcular la probabilidad de que la cuarta caja contenga más de 3 gatos.
+    skills: [ocupacion]
+    respuesta:
+      tipo: numerica
+      valor: "7/66"
+    pistas:
+      - '"Más de 3" con 7 gatos en total deja pocos valores posibles para la cuarta caja.'
+      - Para cada cantidad posible en la cuarta caja, el resto se reparte libremente en las otras cuatro.
+      - >-
+        Plan: para $k = 4, 5, 6, 7$ contá las configuraciones con $n_4 = k$,
+        sumalas y dividí por el total de configuraciones.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_16.py
+          valor: "7/66"

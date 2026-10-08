@@ -1,0 +1,45 @@
+id: g1-25
+guia: 1
+numero: "1.25"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p8
+
+enunciado: |
+  El 5 % de los bits transmitidos por un canal de comunicación binario es $0$.
+  [[bayes|El programa receptor indica que hay un $0$ en el mensaje cuando
+  efectivamente el $0$ ha sido emitido, con probabilidad $0{,}9$.]]
+
+items:
+  - id: a
+    pregunta: >-
+      ¿Cuál debe ser la probabilidad de que el receptor indique que hay un $1$
+      cuando efectivamente el $1$ ha sido emitido, para que la probabilidad de
+      que haya sido emitido un $0$ cuando el receptor indica que hay un $0$ sea
+      $0{,}99$?
+    skills: [bayes, prob-total]
+    respuesta:
+      tipo: numerica
+      valor: "2089/2090"
+      tol_rel: 0.00001
+    pistas:
+      - >-
+        Nombrá la incógnita: $q = P(\text{indica } 1 \mid \text{se emitió } 1)$.
+        Fijate que entonces $P(\text{indica } 0 \mid \text{se emitió } 1) = 1 - q$.
+      - >-
+        Escribí Bayes para $P(\text{se emitió } 0 \mid \text{indica } 0)$ dejando
+        $q$ como incógnita, y poné esa expresión igual a $0{,}99$.
+      - >-
+        Plan: el denominador es $P(\text{indica } 0)$ por probabilidad total,
+        con los dos caminos (se emitió $0$ y se emitió $1$). Despejá $q$ de la
+        ecuación. Va a quedar muy cerca de 1: el canal tiene que ser casi
+        perfecto para los $1$, porque los $1$ son el 95 % del tráfico y
+        cualquier falso "$0$" arruina el posterior.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_25.py
+          valor: "2089/2090"
+        - origen: "tools/verify/g1_25.py (control: posterior con esa q)"
+          valor: "99/100"

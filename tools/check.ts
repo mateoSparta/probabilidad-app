@@ -274,25 +274,50 @@ if (existsSync(VERIFICACION)) {
   type Res = Record<string, { items: Record<string, { valor: string }> }>
   const res = JSON.parse(readFileSync(VERIFICACION, 'utf8')) as Res
 
+  const num = (x: unknown) => (typeof x === 'number' ? x : Number(x))
+
+  /** Compara un valor del YAML contra el que calculó el pipeline. */
+  function contrastar(quien: string, delYaml: string, calculado: string): void {
+    if (Math.abs(num(evaluate(delYaml)) - num(evaluate(calculado))) > 1e-9) {
+      err(
+        `${quien}: el YAML dice \`${delYaml}\` pero tools/verify calculó ` +
+          `\`${calculado}\`. Volvé a correr \`npm run verificar\` o corregí el valor.`,
+      )
+    }
+  }
+
+  let contrastados = 0
+
   for (const ej of ejercicios) {
     const calculado = res[ej.id]
     if (!calculado) continue
     for (const item of ej.items ?? []) {
-      const esperado = calculado.items[item.id]
-      if (!esperado) continue
       const r = item.respuesta
-      if (r?.tipo !== 'numerica') continue
-      const a = evaluate(String(r.valor))
-      const b = evaluate(String(esperado.valor))
-      const num = (x: unknown) => (typeof x === 'number' ? x : Number(x))
-      if (Math.abs(num(a) - num(b)) > 1e-9) {
-        err(
-          `${ej.id}(${item.id}): el YAML dice \`${r.valor}\` pero tools/verify calculó ` +
-            `\`${esperado.valor}\`. Volvé a correr \`npm run verificar\` o corregí el valor.`,
-        )
+      if (!r) continue
+
+      if (r.tipo === 'numerica') {
+        const esperado = calculado.items[item.id]
+        if (!esperado) continue
+        contrastar(`${ej.id}(${item.id})`, String(r.valor), esperado.valor)
+        contrastados++
+      }
+
+      // Los checkpoints se buscan por posición: el ítem `a` con cuatro
+      // checkpoints se contrasta contra las claves a1, a2, a3 y a4.
+      if (r.tipo === 'checkpoints') {
+        const cps = (r.checkpoints ?? []) as { valor?: string }[]
+        for (const [i, c] of cps.entries()) {
+          const clave = `${item.id}${i + 1}`
+          const esperado = calculado.items[clave]
+          if (!esperado || c.valor === undefined) continue
+          contrastar(`${ej.id}(${item.id}) checkpoint ${i + 1}`, String(c.valor), esperado.valor)
+          contrastados++
+        }
       }
     }
   }
+
+  console.log(`check: ${contrastados} valores contrastados contra tools/verify/.`)
 } else {
   avisar('no existe content/.verificacion/resultados.json: corré `npm run verificar`')
 }

@@ -24,12 +24,15 @@ NUMERO = "1.3"
 PESOS = {"a": Fraction(1, 2), "b": Fraction(1, 3), "c": Fraction(1, 6)}
 
 # Los subconjuntos que se le piden al alumno como checkpoints.
+# Las claves siguen el orden de los checkpoints del item (a) en el YAML:
+# a1 = P(vacio), a2 = P({a}), a3 = P({a,b}), a4 = P(Omega).
 PEDIDOS = {
-    "vacio": frozenset(),
-    "a": frozenset("a"),
-    "ab": frozenset("ab"),
+    "a1": frozenset(),
+    "a2": frozenset("a"),
+    "a3": frozenset("ab"),
+    "a4": frozenset("abc"),
+    # extra, no va al contenido: sirve de control de coherencia
     "bc": frozenset("bc"),
-    "omega": frozenset("abc"),
 }
 
 

@@ -38,9 +38,9 @@ def exacto() -> dict[str, Fraction]:
         # (b) P(A_1), P(A_8)
         "b1": p_igual(1),
         "b8": p_igual(8),
-        # (c) P(B_1), P(B_8)
+        # (c) P(B_8); P(B_1) se deja como control
+        "c": p_mayor(8),
         "c1": p_mayor(1),
-        "c8": p_mayor(8),
         # (e) P(B) con B = interseccion de todos los B_n: el dado nunca sale 6
         "e": Fraction(0),
     }
@@ -58,8 +58,8 @@ def estimado() -> dict[str, float]:
     return {
         "b1": montecarlo(lambda rng: _tirar_hasta_seis(rng) == 1),
         "b8": montecarlo(lambda rng: _tirar_hasta_seis(rng) == 8),
+        "c": montecarlo(lambda rng: _tirar_hasta_seis(rng) > 8),
         "c1": montecarlo(lambda rng: _tirar_hasta_seis(rng) > 1),
-        "c8": montecarlo(lambda rng: _tirar_hasta_seis(rng) > 8),
         "e": montecarlo(lambda rng: _tirar_hasta_seis(rng) > 400),
     }
 

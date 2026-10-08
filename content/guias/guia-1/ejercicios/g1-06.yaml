@@ -1,0 +1,65 @@
+id: g1-06
+guia: 1
+numero: "1.6"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p4
+
+enunciado: |
+  Cada noche, después de cenar, el matrimonio Galíndez tira 4 dados.
+  [[independencia|Si no sale ningún 1, le toca al Sr. Galíndez lavar los platos.
+  En caso contrario, a su esposo.]]
+
+items:
+  - id: a
+    pregunta: >-
+      Calcular la probabilidad de que le toque lavar al Sr. Galíndez, es decir
+      la de que no salga ningún $1$ en las cuatro tiradas.
+    skills: [independencia, laplace]
+    respuesta:
+      tipo: numerica
+      valor: "625/1296"
+    pistas:
+      - "\"Ningún 1\" quiere decir que los cuatro dados a la vez no son 1."
+      - Las cuatro tiradas son independientes, así que la probabilidad se multiplica.
+      - 'Plan: elevá a la cuarta la probabilidad de que un dado no salga 1.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_06.py
+          valor: "625/1296"
+
+  - id: b
+    pregunta: ¿Quién lava los platos más seguido?
+    skills: [independencia]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: b1
+          texto: El esposo del Sr. Galíndez
+          correcta: true
+        - id: b2
+          texto: El Sr. Galíndez
+          error_tipico: >-
+            $(5/6)^4 \approx 0{,}482$ es menor que $1/2$, así que "ningún 1"
+            pasa menos de la mitad de las noches. Al Sr. le toca menos.
+        - id: b3
+          texto: Los dos lavan con la misma frecuencia
+          error_tipico: >-
+            Darían iguales sólo si $(5/6)^4$ fuera exactamente $1/2$, y no lo es.
+        - id: b4
+          texto: No se puede saber sin conocer cuántas noches cenan juntos
+          error_tipico: >-
+            La comparación es entre dos probabilidades por noche: no depende de
+            cuántas noches haya.
+    pistas:
+      - Ya tenés la probabilidad de un caso; la del otro es el complemento.
+      - Compará ese número con $1/2$.
+      - 'Plan: si $(5/6)^4 < 1/2$, lava más seguido el del otro caso.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_06.py
+          valor: "P(esposo) = 671/1296 > 625/1296 = P(Sr.)"

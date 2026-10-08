@@ -65,3 +65,61 @@
   formulas:
     - 'B_{n+1} \subset B_n \implies P\!\left(\bigcap_{n \ge 1} B_n\right) = \lim_{n \to \infty} P(B_n)'
     - 'A_n \subset A_{n+1} \implies P\!\left(\bigcup_{n \ge 1} A_n\right) = \lim_{n \to \infty} P(A_n)'
+
+- id: conteo-muestras
+  nombre: Muestras con y sin reposición
+  guia: 1
+  descripcion: >-
+    Elegir el espacio muestral según si importa el orden y si hay reposición,
+    que es lo que define cuántos casos equiprobables hay.
+  formulas:
+    - '\text{con orden, con reposición: } n^k'
+    - '\text{con orden, sin reposición: } \dfrac{n!}{(n-k)!}'
+    - '\text{sin orden, sin reposición: } \binom{n}{k}'
+
+- id: ocupacion
+  nombre: Problemas de ocupación
+  guia: 1
+  descripcion: >-
+    Repartir objetos en cajas. Lo que cambia todo es si los objetos son
+    distinguibles o no, porque cambia cuáles son los casos equiprobables.
+  formulas:
+    - '\text{distinguibles en } r \text{ cajas: } r^n'
+    - '\text{indistinguibles: } \binom{n + r - 1}{r - 1}'
+    - '\text{reparto }(n_1,\dots,n_r)\text{ de objetos distinguibles: } \dfrac{n!}{n_1!\cdots n_r!}'
+
+- id: prob-geometrica
+  nombre: Probabilidad geométrica
+  guia: 1
+  descripcion: >-
+    Cuando el espacio muestral es un intervalo o una región, la probabilidad
+    es la medida del evento sobre la medida del total.
+  formulas:
+    - 'P(A) = \dfrac{\text{medida}(A)}{\text{medida}(\Omega)}'
+
+- id: condicional
+  nombre: Probabilidad condicional
+  guia: 1
+  descripcion: >-
+    Recalcular una probabilidad cuando se sabe que ocurrió otro evento:
+    restringir el espacio y renormalizar.
+  formulas:
+    - 'P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}, \quad P(B) > 0'
+    - 'P(A \cap B) = P(B)\,P(A \mid B)'
+
+- id: prob-total
+  nombre: Probabilidad total
+  guia: 1
+  descripcion: >-
+    Descomponer un evento según una partición y sumar los caminos que llevan
+    a él.
+  formulas:
+    - 'P(A) = \sum_i P(A \mid B_i)\,P(B_i)'
+
+- id: bayes
+  nombre: Regla de Bayes
+  guia: 1
+  descripcion: >-
+    Invertir un condicional: pasar de P(efecto | causa) a P(causa | efecto).
+  formulas:
+    - 'P(B_j \mid A) = \dfrac{P(A \mid B_j)\,P(B_j)}{\sum_i P(A \mid B_i)\,P(B_i)}'
