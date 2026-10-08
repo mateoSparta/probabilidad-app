@@ -1,0 +1,84 @@
+id: g1-04
+guia: 1
+numero: "1.4"
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p3
+
+enunciado: |
+  [[laplace|Un dado equilibrado se arroja dos veces.]] Hallar la probabilidad
+  de que
+
+items:
+  - id: a
+    pregunta: la suma de los resultados sea $7$.
+    skills: [laplace]
+    respuesta:
+      tipo: numerica
+      valor: "1/6"
+    pistas:
+      - ¿Cuántos pares ordenados $(i, j)$ hay en total?
+      - Las sumas no son equiprobables, pero los pares sí. Contá sobre los pares.
+      - 'Plan: listá los pares que suman 7 y dividí por 36.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_04.py
+          valor: "1/6"
+
+  - id: b
+    pregunta: el primer resultado sea mayor que el segundo.
+    skills: [laplace]
+    respuesta:
+      tipo: numerica
+      valor: "5/12"
+    pistas:
+      - Los 36 pares se parten en tres grupos según cómo se comparen las dos tiradas.
+      - Por simetría, "el primero mayor" y "el segundo mayor" tienen la misma probabilidad.
+      - >-
+        Plan: contá los pares con empate, restalos de 36 y repartí el resto en
+        dos mitades iguales.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_04.py
+          valor: "5/12"
+
+  - id: c
+    pregunta: los dos resultados sean distintos y su suma no supere $7$.
+    skills: [laplace]
+    respuesta:
+      tipo: numerica
+      valor: "1/2"
+    pistas:
+      - Son dos condiciones a la vez sobre el mismo par.
+      - Conviene recorrer los valores posibles del primer dado y ver cuántos segundos lo cumplen.
+      - >-
+        Plan: para cada $i$ de 1 a 6, contá los $j \ne i$ con $i + j \le 7$, y
+        sumá sobre $i$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_04.py
+          valor: "1/2"
+
+  - id: d
+    pregunta: el módulo de la diferencia de los resultados sea mayor que $1$.
+    skills: [laplace]
+    respuesta:
+      tipo: numerica
+      valor: "5/9"
+    pistas:
+      - 'El complemento es más corto de contar: $|i - j| \le 1$.'
+      - '$|i - j| \le 1$ son los empates y los pares de valores consecutivos.'
+      - >-
+        Plan: contá los pares con $|i - j| = 0$ y los con $|i - j| = 1$, sumalos
+        y pasá al complemento.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_04.py
+          valor: "5/9"

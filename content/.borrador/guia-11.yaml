@@ -1,0 +1,169 @@
+_generado_por: tools/extract/guia.py -- NO EDITAR A MANO
+guia: 11
+fuente: fuentes/guias/parte2.pdf
+ejercicios:
+- numero: '11.1'
+  paginas:
+  - 11
+  marcas: []
+  en_alcance: true
+  enunciado: 'Un emisor transmite una señal de valor µ. El canal de comunicación corrompe la transmisión
+    con un ruido normal aditivo N \sim \mathcal{N} (0, 1). El receptor recibe una señal de valor X = µ
+    + N. El emisor transmitió 9 veces la señal y el receptor recibió los siguientes valores: 8.016, 8.488,
+    7.395, 9.011, 7.532, 7.841, 8.651, 6.917, 8.490. En base a esa información muestral construir un intervalo
+    de confianza de nivel 0.95 para el valor de la señal transmitida.'
+- numero: '11.2'
+  paginas:
+  - 11
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Un emisor transmite una señal de valor µ. El canal de comunicación corrompe la transmisión
+    con un ruido normal aditivo N \sim \mathcal{N} (0, σ^{2}), donde σ^{2} = 1/100. El receptor recibe
+    una señal de valor X = µ + N. Para que el receptor pueda decodificar la señal con cierta precisión
+    el emisor repite la transmisión n veces. El receptor decodifica la señal promediando los valores recibidos.
+    Hallar el mínimo valor de n tal que, con un nivel de confianza de 0.99, el receptor pueda decodificar
+    la señal con un error \le 0.01.
+- numero: '11.3'
+  paginas:
+  - 11
+  marcas: []
+  en_alcance: true
+  enunciado: Para calcular la distancia entre la Tierra y el Sol, James Short realizó en 1761 varias mediciones
+    de la paralaje solar (ángulo bajo el que se ve el radio ecuatorial de la tierra desde el centro del
+    sol). Los datos siguientes son algunas de las mediciones, en segundos de grado, obtenidas por Short
+    9.11, 8.66, 8.34, 8.60, 7.99, 8.58, 8.34, 7.33, 8.64, 9.27, 9.06, 9.25. Suponiendo que las mediciones
+    tienen distribución normal \mathcal{N} (µ, σ^{2}), usar esas observaciones muestrales para construir
+    un intervalo de confianza de nivel 0.95 para µ.
+- numero: '11.4'
+  paginas:
+  - 11
+  marcas: []
+  en_alcance: true
+  enunciado: El voltaje de ruptura de ciertos capacitores obedece a una distribución normal. Se pusieron
+    a prueba 10 capacitores y se obtuvieron los voltajes de ruptura 196.73, 204.37, 201.57, 197.58, 205.89,
+    199.03, 201.75, 206.53, 199.31, 202.27. En base a la información muestral construir una cota inferior
+    de confianza de nivel 0.95 para la media del voltaje de ruptura de dichos capacitores.
+- numero: '11.5'
+  paginas:
+  - 11
+  marcas: []
+  en_alcance: true
+  enunciado: Sea T una variable aleatoria con distribución exponencial de intensidad λ. Hallar un intervalo
+    de confianza de nivel 0.90 para λ suponiendo que
+  items:
+  - id: a
+    texto: en una muestra aleatoria de tamaño 10 se observó que \sum^{10} i=1 t^{i} = 29.51,
+  - id: b
+    texto: en una muestra aleatoria de tamaño 100 se observó que \sum^{100} i=1 t^{i} = 223.21.
+  revisar:
+  - revisar los limites del operador grande
+- numero: '11.6'
+  paginas:
+  - 11
+  marcas: []
+  en_alcance: true
+  enunciado: Clientes arriban a un banco de acuerdo con proceso de Poisson de intensidad λ por minuto.
+    El banco abre sus puertas a las 10:00; los primeros clientes arribaron a las 10:01, 10:03, 10:11,
+    10:12, 10:13, 10:16. En base a estos datos construir una cota inferior de confianza de nivel 0.9 para
+    la intensidad λ.
+- numero: '11.7'
+  paginas:
+  - 11
+  - 12
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: '[Ver Ejercicio 10.13] La duración (en horas) de cada lámpara en un lote es una variable
+    aleatoria con distribución exponencial de intensidad λ. Se pusieron a prueba 5 lámparas y se observó
+    una duración mínima de 200 horas. Construir una cota inferior de confianza de nivel 0.95 para la intensidad
+    λ.'
+- numero: '11.8'
+  paginas:
+  - 12
+  marcas: []
+  en_alcance: true
+  enunciado: '[Ver Ejercicio 10.15] La longitud en metros de cada rollo de tela en un lote es una variable
+    aleatoria con distribución uniforme sobre el intervalo [15, 15 + θ]. Se examinaron 4 rollos y la máxima
+    longitud observada resultó ser 25 metros. En base a la información muestral construir una cota superior
+    de confianza de nivel 0.99 para θ.'
+- numero: '11.9'
+  paginas:
+  - 12
+  marcas: []
+  en_alcance: true
+  enunciado: '[Ver Ejercicio 10.16] Sea X una variable aleatoria cuya función de densidad es de la forma
+    f_{θ} (x) = \frac{2x}{θ2} 1\{0 \le x \le θ\}, θ > 0 Construir un intervalo de confianza de nivel 0.9
+    para θ basado en la siguiente muestra aleatoria: 0.8, 0.1, 0.3.'
+  revisar:
+  - parece tener items pero no se detectaron
+- numero: '11.10'
+  paginas:
+  - 12
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Se recibe un lote de artículos provenientes de un fabricante que asegura que el porcentaje
+    de artículos defectuosos es como máximo 2 %. Al observar una muestra de 200 artículos se descubren
+    11 defectuosos.
+  items:
+  - id: a
+    texto: Construir un intervalo de confianza de nivel asintótico 0.9 para la proporción de artículos
+      defectuosos.
+  - id: b
+    texto: Hallar una cota inferior de nivel asintótico 0.95 para la proporción de artículos defectuosos
+      y en base a ese resultado evaluar la afirmación del fabricante.
+- numero: '11.11'
+  paginas:
+  - 12
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: El 50 % de los bits emitidos por un canal de comunicación binario son 1. El receptor indica
+    que hay un 1 cuando efectivamente se ha enviado un 1 con probabilidad p e indica que hay un 0 cuando
+    efectivamente se ha enviado un 0 con probabilidad 6/10. Cuántos bits deberán emitirse para que sea
+    posible construir un intervalo de confianza de nivel asintótico 0.95 para p cuya longitud sea menor
+    que 0.01.
+- numero: '11.12'
+  paginas:
+  - 12
+  marcas: []
+  en_alcance: true
+  enunciado: 'En una elección se presentarán dos candidatos: el amarillo y el azul. Se realizó una encuesta
+    a 100 ciudadanos y exactamente 44 respondieron que votarán al candidato azul. Usando esa información
+    construir una cota inferior de confianza de nivel asintótico 0.95 para la proporción de votantes a
+    favor del candidato azul.'
+- numero: '11.13'
+  paginas:
+  - 12
+  marcas: []
+  en_alcance: true
+  enunciado: Una fuente de polonio emite partículas alfa de acuerdo con un proceso de Poisson de intensidad
+    λ por segundo. Se la observó durante 4 horas y se registraron 11150 emisiones. En base a esta información
+    muestral construir un intervalo de confianza de nivel asintótico 0.99 para la intensidad del proceso.
+- numero: '11.14'
+  paginas:
+  - 12
+  marcas: []
+  en_alcance: true
+  enunciado: Los terremotos ocurren en una región con riesgo sísmico de acuerdo con un proceso de Poisson
+    de intensidad λ por año. En los últimos 200 años se registraron 7 terremotos en esa región. En base
+    a esa información, hallar una cota inferior de confianza de nivel asintótico 0.95 para λ.
+- numero: '11.15'
+  paginas:
+  - 12
+  - 13
+  - 14
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Una sustancia radiactiva emite partículas alfa de acuerdo con un proceso de Poisson de intensidad
+    λ por segundo.
+  items:
+  - id: a
+    texto: Se la observó durante 10 segundos y se registraron 4 emisiones. En base a esta información
+      muestral construir un intervalo de confianza de nivel asintótico 0.95 para λ.
+  - id: b
+    texto: Se volvió a observar la misma sustancia radiactiva hasta que emitió la cuarta partícula alfa,
+      lo que sucedió a los 10 segundos. En base a esta información muestral construir un intervalo de
+      confianza de nivel asintótico 0.95 para λ. Guía 12

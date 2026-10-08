@@ -1,0 +1,229 @@
+_generado_por: tools/extract/guia.py -- NO EDITAR A MANO
+guia: 9
+fuente: fuentes/guias/parte2.pdf
+ejercicios:
+- numero: '9.1'
+  paginas:
+  - 3
+  marcas:
+  - siga_siga
+  en_alcance: true
+  enunciado: Sea X_{1}, X_{2}, X_{3} una muestra aleatoria de la distribución Bernoulli(p).
+  items:
+  - id: a
+    texto: Verificar que T = X_{1} + X_{2} + X_{3} es un estadístico suficiente para p.
+  - id: b
+    texto: ¿T = X_{1} + 2X_{2} + X_{3} es un estadístico suficiente para p?.:no es difícil analizar los
+      8 casos.
+- numero: '9.2'
+  paginas:
+  - 3
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea X_{n} una muestra aleatoria de tamaño n de una distribución con densidad f_{θ} (x) =
+    e^{-(x-θ)} 1\{x > θ\}. Verificar que T = mín(X_{1},\ldots, X_{n}) es un estadístico suficiente para
+    θ.
+  revisar:
+  - parece tener items pero no se detectaron
+- numero: '9.3'
+  paginas:
+  - 3
+  marcas: []
+  en_alcance: true
+  enunciado: Sea X_{n} una muestra aleatoria de tamaño n de la distribución Poisson(λ) y sea T = \sum^{n}
+    i=1 X^{i}. Hallar la distribución de X^{n} \mid T = t y deducir que T es un estadístico suficiente
+    para λ.
+  revisar:
+  - revisar los limites del operador grande
+- numero: '9.4'
+  paginas:
+  - 3
+  marcas: []
+  en_alcance: true
+  enunciado: 'Mostrar que las siguientes familias de distribuciones son familias exponenciales a 1 parámetro:'
+  items:
+  - id: a
+    texto: Bernoulli(p);
+  - id: b
+    texto: Pascal(4, p);
+  - id: c
+    texto: Poisson(λ);
+  - id: d
+    texto: Exponencial(λ).
+- numero: '9.5'
+  paginas:
+  - 3
+  marcas: []
+  en_alcance: true
+  enunciado: Una moneda tiene una probabilidad de cara p, p \in \{2/5, 4/5\}. En 10 lanzamientos de la
+    moneda se observaron exactamente 3 caras. Estimar por máxima verosimilitud la probabilidad de que
+    en otros tres lanzamientos se observe exactamente una cara.
+- numero: '9.6'
+  paginas:
+  - 3
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: La cantidad de accidentes de tránsito por semana en la intersección de Paseo Colón y Estados
+    Unidos tiene una distribución de Poisson de media λ.
+  items:
+  - id: a
+    texto: Hallar el estimador de máxima verosimilitud de λ basado en una muestra aleatoria de la cantidad
+      de accidentes durante n semanas. Mostrar que se trata de un estimador insesgado para λ y hallar
+      la expresión de su error cuadrático medio.
+  - id: b
+    texto: 'En una muestra de 100 semanas se observaron las frecuencias: Cantidad de accidentes 0 1 2
+      3 4 5 Frecuencia 10 29 25 17 13 6 En virtud de la información muestral calcular el estimador de
+      máxima verosimilitud de λ y estimar la probabilidad de que en la semana del 24 de diciembre de 2017
+      no ocurra ningún accidente en la mencionada esquina.'
+- numero: '9.7'
+  paginas:
+  - 3
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Sea X_{n} una muestra aleatoria de tamaño n de la distribución uniforme sobre el intervalo
+    [0, θ].
+  items:
+  - id: a
+    texto: Hallar un estadístico suficiente para θ basado en X_{n}.
+  - id: b
+    texto: Hallar el estimador de máxima verosimilitud de θ basado en X_{n}.
+  - id: c
+    texto: Sea ˆθ_{n} el estimador\frac{den}{n+1θ} máxima verosimilitud\frac{denθ2}{(n+1)2(n+2)}θ hallado
+      en el inciso anterior. Mostrar que E_{θ} [ ˆθ_{n}] = θ y var_{θ} (ˆθ_{n}) = para concluir que ˆθ^{n}
+      converge en media cuadrática a cuando n \to \infty.
+- numero: '9.8'
+  paginas:
+  - 4
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: El tamaño, X (en GB), de ciertos archivos es una variable aleatoria cuya densidad es f_{θ}
+    (x) = 3θ^{3}x^{-4}1 \{x \ge θ\}, θ > 0.
+  items:
+  - id: a
+    texto: Hallar el estimador de máxima verosimilitud de θ basado en una muestra aleatoria de los tamaños
+      de n archivos.
+  - id: b
+    texto: Hallar expresiones para la esperanza y la varianza del estimador de máxima verosimilitud de
+      θ.
+  - id: c
+    texto: Mostrar que el estimador de máxima verosimilitud de θ converge en media cuadrática al verdadero
+      valor de θ.
+- numero: '9.9'
+  paginas:
+  - 4
+  marcas:
+  - curva_peligrosa
+  - siga_siga
+  en_alcance: true
+  enunciado: La duración, X, en años de ciertos discos rígidos tiene la distribución Pareto con densidad
+    f_{θ} (x) = θx^{-(θ+1)} 1 \{x > 1\}, θ > 1.
+  items:
+  - id: a
+    texto: Usar el criterio de factorización de Neyman-Fisher para hallar un estadístico suficiente para
+      θ, basado en una muestra aleatoria de la duración de n discos.
+  - id: b
+    texto: Mostrar que las distribuciones f_{θ}, θ > 1, pertenecen a una familia exponencial y usar esa
+      propiedad para hallar un estadístico suficiente para θ. ¿Cuál es su distribución?:notar que log
+      X \sim Exponencial(θ).
+  - id: c
+    texto: Hallar el estimador de máxima verosimilitud de θ basado en una muestra aleatoria de la duración
+      de n discos rígidos. Mostrar que se trata de un estimador asintóticamente insesgado y cuya varianza
+      tiende a 0 cuando n \to \infty.
+  - id: d
+    texto: 'Hallar la distribución asintótica del estimador de máxima verosimilitud de θ.: es fácil ver
+      que I (θ) = θ^{-2}.'
+- numero: '9.10'
+  paginas:
+  - 4
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: La duración en años de cierto tipo de dispositivos es una variable aleatoria X con función
+    intensidad λ(x) = 3θ^{-3}x^{2}1\{x > 0\}.
+  items:
+  - id: a
+    texto: Hallar un estadístico suficiente para θ basado en una muestra aleatoria de la duración de n
+      dispositivos.
+  - id: b
+    texto: Hallar el estimador de máxima verosimilitud de θ basado en una muestra aleatoria de la duración
+      de n dispositivos.
+  - id: c
+    texto: Usando los números aleatorios 0.186, 0.178, 0.488, 0.255, 0.392, 0.234, 0.597, 0.205, 0.611,
+      0.651. simular 10 valores de X cuando θ = 1 y en base a esa información muestral calcular el estimador
+      de máxima verosimilitud de θ.
+  - id: d
+    texto: 'Se pusieron a prueba 10 de esas máquinas y se obtuvieron los siguientes tiempos: 2.00, 5.48,
+      2.43, 1.90, 5.85, 1.58, 2.30, 2.87, 3.62, 2.71. Basándose en la información muestral calcular el
+      estimador de máxima verosimilitud de la probabilidad de que una máquina del mismo tipo funcione
+      sin fallas más de dos años y medio.'
+- numero: '9.11'
+  paginas:
+  - 5
+  marcas: []
+  en_alcance: true
+  enunciado: En una mesa electoral votaron 129 ciudadanos. Se extrajeron (sin reposición) 7 sobres al
+    azar de la urna, se examinaron y resultó que el candidato verde obtuvo exactamente 3 votos. Estimar
+    por máxima verosimilitud la cantidad de votos por el candidato verde que había en la urna.
+- numero: '9.12'
+  paginas:
+  - 5
+  marcas: []
+  en_alcance: true
+  enunciado: Mostrar que la familia de distribuciones Γ(ν, λ) es una familia exponencial a 2 parámetros.
+    Hallar un estadístico suficiente para (ν, λ) basado en una muestra aleatoria de tamaño n
+- numero: '9.13'
+  paginas:
+  - 5
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: ''
+  items:
+  - id: a
+    texto: Mostrar que la familia de distribuciones \mathcal{N} (µ, σ^{2}) puede expresarse en la forma
+      f_{θ} (x) = \frac{1}{2} \frac{?}{\sqrtπσ} exp ⟨?TeX-mathx:ˆ⟩ -\frac{µ2}{2σ2} ⟨?TeX-mathx:˙⟩ exp
+      ⟨?TeX-mathx:ˆ⟩\frac{µ}{σ2} x \frac{1}{2σ2} x^{2} ⟨?TeX-mathx:˙⟩, donde θ = (µ, σ^{2}).
+  - id: b
+    texto: Sea X_{1},\ldots, X_{n} una muestra aleatoria de tamaño n de la distribución \mathcal{N} (µ,
+      σ^{2}). Hallar la expresión de la densidad conjunta y mostrar que T = ⟨?TeX-mathx:`⟩\sum_{n} i=1
+      X^{i}, \sum^{n} i=1 X^{2} i ⟨?TeX-mathx:˘⟩ es un estadístico suficiente para θ.
+  - id: c
+    texto: Sea ¯X = \frac{1}{n} \sum_{n} i=1 X^{i}. Mostrar que \sum^{n} _{i=1}(X_{i} - ¯X)^{2} = \sum^{n}
+      i=1 X^{2} i - n ¯X^{2} y deducir que T ^{'} = (¯X, S^{2}), donde S^{2}:= \frac{1}{n-1} n \sum i=1
+      (X_{i} - ¯X)^{2}, es un estadístico suficiente para θ.
+  - id: d
+    texto: Hallar el estimador de máxima verosimilitud para θ basado en la muestra aleatoria X_{1},\ldots,
+      X_{n}.
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:`'
+  - 'glifo sin traducir: TeX-mathx:ˆ'
+  - 'glifo sin traducir: TeX-mathx:˘'
+  - 'glifo sin traducir: TeX-mathx:˙'
+  - fraccion incompleta
+  - revisar los limites del operador grande
+- numero: '9.14'
+  paginas:
+  - 5
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Se arroja un dado piramidal n veces. El dado tiene las caras numeradas 1, 2, 3, 4 y están
+    cargadas con probabilidades p_{1}, p_{2}, p_{3}, p_{4}, respectivamente. Sean X_{1}, X_{2}, X_{3},
+    X_{4} la cantidad de lanzamientos en los que el dado cae en la cara 1, 2, 3, 4, respectivamente. Mostrar
+    que la distribución de (X_{1}, X_{2}, X_{3}, X_{4}) pertenece a una familia exponencial a 3 parámetros.
+- numero: '9.15'
+  paginas:
+  - 5
+  - 6
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Al finalizar el primer semestre de gobierno se realizó una encuesta entre 1200 ciudadanos,
+    414 de los cuales declararon ser oficialistas, 196 declararon no ser ni oficialistas ni opositores
+    y el resto declaró ser opositor. En base a esa información muestral estimar por máxima verosimilitud
+    (p_{1}, p_{2}), donde p_{1} es la probabilidad de que un ciudadano elegido al azar sea oficialista
+    y p_{2} la de que sea opositor. Guía 10

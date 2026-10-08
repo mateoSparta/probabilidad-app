@@ -1,0 +1,117 @@
+/**
+ * Renderiza la app de verdad y revisa el HTML que sale.
+ *
+ * Que `npm run check` y `npm run build` pasen no garantiza que la página se
+ * dibuje: un error en tiempo de render no aparece ni en el typecheck ni en el
+ * bundle. Este script monta un servidor Vite en modo SSR (que es lo que
+ * resuelve `import.meta.glob`), renderiza los componentes a texto y verifica
+ * que esté lo que tiene que estar.
+ *
+ * Uso:  npm run render-check
+ */
+import { createElement } from 'preact'
+import { render } from 'preact-render-to-string'
+import { createServer } from 'vite'
+
+const fallas: string[] = []
+let ok = 0
+
+function afirmar(cond: boolean, mensaje: string) {
+  if (cond) ok++
+  else fallas.push(mensaje)
+}
+
+const servidor = await createServer({
+  server: { middlewareMode: true },
+  appType: 'custom',
+  logLevel: 'warn',
+})
+
+try {
+  const { VistaGuia } = await servidor.ssrLoadModule('/src/vistas/VistaGuia.tsx')
+  const { Cabecera } = await servidor.ssrLoadModule('/src/componentes/Cabecera.tsx')
+  const contenido = await servidor.ssrLoadModule('/src/datos/contenido.ts')
+
+  // --- el contenido se cargó ---
+  afirmar(contenido.skills.length > 0, 'no se cargó ningún skill')
+  afirmar(contenido.ejercicios.length > 0, 'no se cargó ningún ejercicio')
+  afirmar(contenido.teoria.length > 0, 'no se cargó ningún bloque de teoría')
+  afirmar(contenido.guias.length > 0, 'no se cargó ninguna guía')
+  afirmar(
+    contenido.guiaTieneContenido(1),
+    'la guía 1 quedó sin contenido: la secuencia no resolvió',
+  )
+
+  // --- la cabecera ---
+  const cabecera = render(
+    createElement(Cabecera, {
+      vista: 'guia',
+      guiaActiva: 1,
+      onVista: () => {},
+      onGuia: () => {},
+    }),
+  )
+  for (let n = 1; n <= 8; n++) {
+    afirmar(cabecera.includes(`Guía ${n}`), `falta la tab de la guía ${n}`)
+  }
+  afirmar(cabecera.includes('Simulacro'), 'falta el botón Simulacro')
+  afirmar(cabecera.includes('Panel de skills'), 'falta el botón Panel de skills')
+
+  // --- la guía 1 ---
+  const html = render(createElement(VistaGuia, { numero: 1 }))
+
+  afirmar(html.includes('Espacios de probabilidad'), 'no se ve el título de la guía')
+  afirmar(html.includes('class="chip'), 'no se ven los chips de skills')
+  afirmar(html.includes('class="teoria"'), 'no se ve ningún bloque de teoría')
+  afirmar(html.includes('class="tarjeta"'), 'no se ve ninguna tarjeta de ejercicio')
+
+  // KaTeX tiene que haber corrido: si no, quedaría el `$...$` crudo.
+  afirmar(html.includes('katex'), 'KaTeX no renderizó nada')
+  afirmar(!html.includes('mate-roto'), 'hay LaTeX que KaTeX no pudo parsear')
+
+  // Cada ejercicio de la secuencia tiene que estar, con su número.
+  const guia = contenido.guiaPorNumero.get(1)
+  for (const paso of guia.secuencia) {
+    if (paso.tipo !== 'ejercicio') continue
+    const ej = contenido.ejercicioPorId.get(paso.id)
+    afirmar(html.includes(`>${ej.numero}<`), `no se ve el número del ejercicio ${ej.numero}`)
+    afirmar(html.includes(`id="ej-${ej.id}"`), `no se ve la tarjeta de ${ej.id}`)
+  }
+
+  // Los cuatro tipos de respuesta tienen que dibujar su entrada.
+  afirmar(html.includes('class="entrada"'), 'no se ve ningún input de respuesta numérica')
+  afirmar(html.includes('type="radio"'), 'no se ve ninguna opción múltiple')
+  afirmar(html.includes('class="checkpoints"'), 'no se ve ningún bloque de checkpoints')
+  afirmar(
+    html.includes('en función de'),
+    'no se ve el placeholder del tipo expresión',
+  )
+
+  // Las ayudas tienen que estar disponibles, y los tags NO: están ocultos
+  // hasta resolver (PLAN.md §3).
+  afirmar(html.includes('Comprobar'), 'no se ve el botón Comprobar')
+  afirmar(html.includes('Ver respuesta'), 'no se ve el botón Ver respuesta')
+  afirmar(html.includes('Pistas ('), 'no se ve el botón de pistas')
+  afirmar(!html.includes('class="tags"'), 'los tags se ven sin haber resuelto nada')
+
+  // Y la respuesta no puede estar en el HTML inicial.
+  afirmar(
+    !html.includes('class="respuesta"'),
+    'la respuesta aparece en el HTML sin haberla pedido',
+  )
+
+  // Una guía sin contenido tiene que avisar, no explotar.
+  const vacia = render(createElement(VistaGuia, { numero: 6 }))
+  afirmar(vacia.includes('todavía no tiene contenido'), 'la guía vacía no avisa')
+
+  console.log(`render-check: ${ok} afirmaciones OK.`)
+  for (const f of fallas) console.error(`  ✗ ${f}`)
+  if (fallas.length > 0) {
+    console.error(`\nrender-check: ${fallas.length} falla(s).`)
+    process.exitCode = 1
+  } else {
+    console.log('render-check: la página se dibuja completa.')
+  }
+} finally {
+  await servidor.close()
+}

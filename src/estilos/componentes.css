@@ -1,0 +1,257 @@
+/* Tarjeta de ejercicio, ítems, ayudas y teoría — PLAN.md §8. */
+
+/* ------------------------------------------------------- intro de guía */
+
+.guia__intro { margin-bottom: var(--e-6); }
+.guia__descripcion { color: var(--tinta-2); }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+  margin-top: var(--e-4);
+}
+
+.chip {
+  appearance: none;
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: var(--t-xs);
+  padding: 2px var(--e-3);
+  border-radius: var(--radio-pill);
+  border: 1px solid var(--borde-fuerte);
+  background: transparent;
+  color: var(--tinta-3);
+  transition: background 120ms, color 120ms, border-color 120ms;
+}
+.chip:hover { border-color: var(--acento); color: var(--tinta); }
+.chip--on {
+  background: var(--acento-suave);
+  border-color: color-mix(in srgb, var(--acento) 40%, transparent);
+  color: var(--acento);
+}
+.chip--reset { font-style: italic; }
+
+/* ------------------------------------------------------------- teoría */
+
+.teoria {
+  background: var(--superficie);
+  border-left: 2px solid var(--borde-fuerte);
+  padding: var(--e-4) var(--e-5);
+  margin-block: var(--e-6);
+  border-radius: 0 var(--radio-lg) var(--radio-lg) 0;
+}
+.teoria h2, .teoria h3 { margin-top: 0; font-size: var(--t-md); }
+.teoria > :last-child { margin-bottom: 0; }
+.teoria ul, .teoria ol { padding-left: var(--e-5); margin-bottom: var(--e-4); }
+
+/* ----------------------------------------------------------- tarjeta */
+
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  padding: var(--e-5);
+  margin-block: var(--e-6);
+  box-shadow: var(--sombra);
+}
+
+.tarjeta__cabeza {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  margin-bottom: var(--e-3);
+}
+
+.tarjeta__numero {
+  margin: 0;
+  font-size: var(--t-sm);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--acento);
+  font-variant-numeric: tabular-nums;
+}
+
+.insignia-prioridad {
+  font-size: var(--t-xs);
+  color: var(--tinta-3);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-pill);
+  padding: 0 var(--e-2);
+}
+
+.enunciado { margin-bottom: var(--e-4); }
+
+/* Fragmento que justifica un tag. Neutro hasta que se resuelve el ítem. */
+.fragmento {
+  border-radius: 2px;
+  transition: background 140ms, box-shadow 140ms;
+}
+.fragmento--activo {
+  background: var(--acento-suave);
+  box-shadow: 0 0 0 2px var(--acento-suave);
+}
+
+/* -------------------------------------------------------------- ítems */
+
+.items { list-style: none; margin: 0; padding: 0; }
+
+.item {
+  border-top: 1px solid var(--borde);
+  padding-block: var(--e-4);
+}
+.item:last-child { padding-bottom: 0; }
+
+.item__cabeza { display: flex; gap: var(--e-2); align-items: baseline; }
+
+.item__id {
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  color: var(--tinta-3);
+  flex: none;
+}
+
+.item__pregunta { flex: 1; }
+
+.item--correcto { background: linear-gradient(90deg, var(--dominado-suave), transparent 40%); }
+.item--revelado { background: linear-gradient(90deg, var(--desarrollo-suave), transparent 40%); }
+
+/* ------------------------------------------------------------ entrada */
+
+.fila-entrada { display: flex; align-items: center; gap: var(--e-2); margin-top: var(--e-3); }
+
+.entrada {
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  padding: var(--e-2) var(--e-3);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio);
+  background: var(--superficie-alta);
+  color: var(--tinta);
+  width: 100%;
+  max-width: 22rem;
+}
+.entrada--corta { max-width: 9rem; }
+.entrada:disabled { background: transparent; color: var(--tinta-2); }
+
+.sufijo { font-size: var(--t-sm); color: var(--tinta-2); }
+
+.opciones, .checkpoints { list-style: none; margin: var(--e-3) 0 0; padding: 0; }
+
+.opcion {
+  display: flex;
+  gap: var(--e-2);
+  align-items: baseline;
+  padding: var(--e-1) var(--e-2);
+  border-radius: var(--radio);
+  cursor: pointer;
+}
+.opcion:hover { background: var(--borde); }
+.opcion--elegida { background: var(--acento-suave); }
+
+.checkpoint {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  padding-block: var(--e-1);
+  flex-wrap: wrap;
+}
+.checkpoint__pregunta { min-width: 8rem; }
+
+.marca { font-family: var(--mono); }
+.marca--ok { color: var(--ok); }
+.marca--mal { color: var(--error); }
+
+/* ----------------------------------------------------------- acciones */
+
+.item__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+  margin-top: var(--e-3);
+}
+
+/* ----------------------------------------------------------- feedback */
+
+.feedback {
+  margin: var(--e-3) 0 0;
+  font-size: var(--t-sm);
+}
+.feedback--ok { color: var(--ok); }
+.feedback--mal { color: var(--error); }
+.feedback--aviso { color: var(--desarrollo); }
+
+/* ------------------------------------------------------------- ayudas */
+
+.panel {
+  margin-top: var(--e-3);
+  padding: var(--e-3) var(--e-4);
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+.panel__grupo + .panel__grupo { margin-top: var(--e-3); }
+.panel h4 {
+  margin: 0 0 var(--e-2);
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tinta-2);
+  font-weight: 500;
+}
+.formula { overflow-x: auto; padding-block: var(--e-1); }
+
+.pistas {
+  margin: var(--e-3) 0 0;
+  padding-left: var(--e-5);
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+.pistas li { margin-bottom: var(--e-1); }
+
+.respuesta {
+  margin: var(--e-3) 0 0;
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+.respuesta code {
+  background: var(--desarrollo-suave);
+  padding: 1px var(--e-1);
+  border-radius: 2px;
+  color: var(--tinta);
+}
+.respuesta--lista { list-style: none; padding: 0; }
+
+/* --------------------------------------------------------------- tags */
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+  list-style: none;
+  margin: var(--e-4) 0 0;
+  padding: 0;
+}
+
+.tag {
+  appearance: none;
+  cursor: help;
+  font-family: var(--serif);
+  font-size: var(--t-xs);
+  padding: 1px var(--e-2);
+  border-radius: var(--radio-pill);
+  border: 1px dashed color-mix(in srgb, var(--acento) 45%, transparent);
+  background: transparent;
+  color: var(--acento);
+}
+.tag:hover { background: var(--acento-suave); border-style: solid; }
+
+/* ---------------------------------------------------------- matemática */
+
+.katex { font-size: 1.03em; }
+.mate-roto {
+  background: var(--flojo-suave);
+  color: var(--flojo);
+  padding: 0 2px;
+  border-radius: 2px;
+}

@@ -1,0 +1,95 @@
+# -*- coding: utf-8 -*-
+"""
+Primitivas para los modelos de verificacion (PLAN.md seccion 7, paso 4).
+
+La regla de CLAUDE.md es que ningun valor entra al contenido sin venir de una
+resuelta y/o de un calculo independiente. Estos helpers son el calculo
+independiente: cada ejercicio declara su modelo y el runner lo resuelve por
+dos caminos, exacto y Monte Carlo, que tienen que coincidir.
+"""
+from __future__ import annotations
+
+import itertools
+import random
+from fractions import Fraction
+from typing import Callable, Iterable, Sequence
+
+# Semilla fija: el reporte tiene que ser reproducible.
+SEMILLA = 20260408
+N_MONTECARLO = 400_000
+
+# Tolerancia del Monte Carlo. El error estandar de una proporcion con
+# n = 4e5 es como mucho 0.0008, asi que 0.005 es ~6 sigma: pasa si el modelo
+# esta bien y falla si hay un error conceptual.
+TOL_MONTECARLO = 0.005
+
+
+def exacto_sobre(espacio: Iterable[tuple], evento: Callable[[tuple], bool]) -> Fraction:
+    """
+    Probabilidad exacta por conteo sobre un espacio equiprobable finito.
+    Es Laplace: casos favorables sobre casos totales, sin punto flotante.
+    """
+    total = favorables = 0
+    for w in espacio:
+        total += 1
+        if evento(w):
+            favorables += 1
+    if total == 0:
+        raise ValueError("el espacio muestral esta vacio")
+    return Fraction(favorables, total)
+
+
+def dados(n: int, caras: int = 6) -> Iterable[tuple]:
+    """Espacio muestral de n dados equilibrados."""
+    return itertools.product(range(1, caras + 1), repeat=n)
+
+
+def montecarlo(
+    sortear: Callable[[random.Random], bool],
+    n: int = N_MONTECARLO,
+    semilla: int = SEMILLA,
+) -> float:
+    """Estima P(evento) repitiendo el experimento n veces."""
+    rng = random.Random(semilla)
+    aciertos = sum(1 for _ in range(n) if sortear(rng))
+    return aciertos / n
+
+
+def extraer_sin_reponer(rng: random.Random, urna: Sequence[str], k: int) -> list[str]:
+    """k extracciones sin reposicion de una urna dada como lista de colores."""
+    return rng.sample(list(urna), k)
+
+
+def urna(**colores: int) -> list[str]:
+    """urna(roja=5, blanca=3) -> ['roja']*5 + ['blanca']*3"""
+    bolas: list[str] = []
+    for color, n in colores.items():
+        bolas.extend([color] * n)
+    return bolas
+
+
+def algebra_generada(omega: frozenset, generadores: Sequence[frozenset]) -> set[frozenset]:
+    """
+    La menor algebra de subconjuntos de omega que contiene a los generadores.
+
+    Se cierra por complemento y union hasta que no entra nada nuevo. Sobre un
+    omega finito el proceso termina, y como el algebra generada es unica, el
+    resultado es la respuesta: no hay nada que adivinar.
+    """
+    actual: set[frozenset] = {frozenset(), frozenset(omega)}
+    actual.update(frozenset(g) for g in generadores)
+    while True:
+        nuevo = set(actual)
+        for a in actual:
+            nuevo.add(frozenset(omega) - a)
+        for a in actual:
+            for b in actual:
+                nuevo.add(a | b)
+        if nuevo == actual:
+            return actual
+        actual = nuevo
+
+
+def como_texto(f: Fraction) -> str:
+    """La fraccion tal como va al YAML: exacta, no un decimal redondeado."""
+    return str(f.numerator) if f.denominator == 1 else f"{f.numerator}/{f.denominator}"

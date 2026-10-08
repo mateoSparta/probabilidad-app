@@ -1,0 +1,67 @@
+# Catálogo único de skills (PLAN.md §4.2).
+#
+# Un skill puede evaluarse en varias guías; `guia` es donde se introduce.
+# Las fórmulas son LaTeX sin delimitadores y se muestran en el panel de
+# fórmulas de cada ítem que declara el skill.
+
+- id: algebras
+  nombre: Álgebras de eventos
+  guia: 1
+  descripcion: >-
+    Reconocer y construir la menor álgebra que contiene ciertos eventos:
+    cerrar por complemento y unión.
+  formulas:
+    - '\Omega \in \mathcal{A}'
+    - 'A \in \mathcal{A} \implies A^c \in \mathcal{A}'
+    - 'A, B \in \mathcal{A} \implies A \cup B \in \mathcal{A}'
+
+- id: prob-discreta
+  nombre: Probabilidad en espacios discretos
+  guia: 1
+  descripcion: >-
+    Asignar una probabilidad por pesos sobre los puntos de Ω y calcular la de
+    un evento sumando los pesos que contiene.
+  formulas:
+    - 'P(A) = \sum_{\omega \in A} p(\omega)'
+    - '\sum_{\omega \in \Omega} p(\omega) = 1'
+
+- id: laplace
+  nombre: Conteo y regla de Laplace
+  guia: 1
+  descripcion: >-
+    Contar casos favorables sobre casos totales en un espacio equiprobable,
+    con y sin orden, con y sin reposición.
+  formulas:
+    - 'P(A) = \dfrac{\#A}{\#\Omega}'
+    - '\binom{n}{k} = \dfrac{n!}{k!\,(n-k)!}'
+
+- id: inclusion-exclusion
+  nombre: Unión, complemento e inclusión-exclusión
+  guia: 1
+  descripcion: >-
+    Calcular la probabilidad de una unión descontando las intersecciones, y
+    pasar al complemento cuando conviene.
+  formulas:
+    - 'P(A \cup B) = P(A) + P(B) - P(A \cap B)'
+    - 'P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(AB) - P(AC) - P(BC) + P(ABC)'
+    - 'P(A^c) = 1 - P(A)'
+
+- id: independencia
+  nombre: Independencia
+  guia: 1
+  descripcion: >-
+    Multiplicar probabilidades cuando los eventos no se influyen, y reconocer
+    cuándo eso vale.
+  formulas:
+    - 'P(A \cap B) = P(A)\,P(B)'
+    - 'P\!\left(\bigcap_{i=1}^{n} A_i\right) = \prod_{i=1}^{n} P(A_i)'
+
+- id: continuidad-P
+  nombre: Continuidad de P
+  guia: 1
+  descripcion: >-
+    Pasar al límite en una sucesión monótona de eventos para calcular la
+    probabilidad de la intersección o la unión de todos.
+  formulas:
+    - 'B_{n+1} \subset B_n \implies P\!\left(\bigcap_{n \ge 1} B_n\right) = \lim_{n \to \infty} P(B_n)'
+    - 'A_n \subset A_{n+1} \implies P\!\left(\bigcup_{n \ge 1} A_n\right) = \lim_{n \to \infty} P(A_n)'

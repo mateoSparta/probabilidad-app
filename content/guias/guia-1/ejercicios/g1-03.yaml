@@ -1,0 +1,42 @@
+id: g1-03
+guia: 1
+numero: "1.3"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p3
+
+enunciado: |
+  Sea $\Omega = \{a, b, c\}$. Definimos en los subconjuntos $A \subset \Omega$
+  una probabilidad $P$ mediante
+  [[prob-discreta|$P(A) = \sum_{\omega \in A} p(\omega)$]], donde
+  $p(a) = \tfrac{1}{2}$, $p(b) = \tfrac{1}{3}$, $p(c) = \tfrac{1}{6}$.
+
+items:
+  - id: a
+    pregunta: >-
+      Calcular la probabilidad de estos subconjuntos de $\Omega$. (El enunciado
+      pide los 8; alcanza con estos cuatro para saber si lo tenés.)
+    skills: [prob-discreta]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$P(\emptyset)$'
+          valor: "0"
+        - pregunta: '$P(\{a\})$'
+          valor: "1/2"
+        - pregunta: '$P(\{a, b\})$'
+          valor: "5/6"
+        - pregunta: '$P(\Omega)$'
+          valor: "1"
+    pistas:
+      - La probabilidad de un evento es la suma de los pesos de los puntos que contiene.
+      - ¿Cuántos puntos tiene el conjunto vacío? ¿Cuánto suma una suma sin términos?
+      - >-
+        Plan: para cada subconjunto, sumá los pesos de sus elementos. Como
+        control, los pesos de los tres puntos tienen que sumar 1.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_03.py
+          valor: "0, 1/2, 5/6, 1"

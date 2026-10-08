@@ -6,8 +6,9 @@ __pycache__/
 .DS_Store
 .vite/
 
-# salida derivada del pipeline: se regenera con npm run extraer
-content/.borrador/
+# El borrador de los enunciados SI se commitea, aunque sea derivado: es el
+# artefacto que se revisa al promover cada ejercicio, y asi el repaso queda
+# en el diff. Se regenera con `npm run extraer`.
 tools/verify/.cache/
 
 # rasterizados de las resueltas (pesan mucho, se regeneran)

@@ -1,0 +1,468 @@
+_generado_por: tools/extract/guia.py -- NO EDITAR A MANO
+guia: 3
+fuente: fuentes/guias/parte1.pdf
+ejercicios:
+- numero: '3.1'
+  paginas:
+  - 21
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea X un variable aleatoria con función de distribución F_{X} (x) = \frac{x3}{3} 1\{0 \le
+    x < 1\} + \frac{2x+1}{6} 1\{1 \le x < 2\} + 1\{x \ge 2\}.
+  items:
+  - id: a
+    texto: Calcular E[X].
+  - id: b
+    texto: Calcular E[X \mid X < 1] y E[X \mid X \le 1].
+- numero: '3.2'
+  paginas:
+  - 21
+  marcas: []
+  en_alcance: true
+  enunciado: Sea X una variable aleatoria con la función de distribución definida en el Ejercicio 2.2.
+  items:
+  - id: a
+    texto: Calcular E[X].
+  - id: b
+    texto: Calcular E[X \mid \mid X \mid = 2].
+- numero: '3.3'
+  paginas:
+  - 21
+  marcas: []
+  en_alcance: true
+  enunciado: Hallar la media de las variables aleatorias definidas en el Ejercicio 2.4.
+- numero: '3.4'
+  paginas:
+  - 21
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea (Ω, \mathcal{A}, P) un espacio de probabilidad en el que Ω = \{1, 2, 3, 4, 5, 6\}, \mathcal{A}
+    = \{\emptyset, \{1, 2\}, \{3, 4\}, \{5, 6\}, \{1, 2, 3, 4\}, \{1, 2, 5, 6\}, \{3, 4, 5, 6\}, Ω\} y
+    P(\{1, 2\}) = 1/6, P(\{3, 4\}) = 1/3, P(\{5, 6\}) = 1/2.
+  items:
+  - id: a
+    texto: 'Definir una variable aleatoria X: Ω \to \mathbb{R} tal que ⟨?TeX-mathx:␣⟩ -1, \frac{1}{2}
+      \left(\subset X (Ω) y E[X] = 0. ¿Es única?'
+  - id: b
+    texto: Calcular E[X \mid X > -1] para la variable aleatoria definida en el Inciso
+  - id: a
+    texto: ''
+  - id: c
+    texto: Repetir el Inciso
+  - id: a
+    texto: y el Inciso
+  - id: b
+    texto: para el caso en que \{-1, 1\} \subset X (Ω).
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:␣'
+- numero: '3.5'
+  paginas:
+  - 21
+  marcas: []
+  en_alcance: true
+  enunciado: La cantidad de moscas que arriban a la mesa de un asado tiene una distribución Poisson de
+    media 10. Calcular la media de la cantidad de moscas que podrán arribar a la mesa del asado si se
+    sabe que no podrán arribar más de 4.
+- numero: '3.6'
+  paginas:
+  - 21
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Sea T una variable aleatoria con distribución exponencial de media 3. Calcular E[T \mid T
+    \le 2].
+- numero: '3.7'
+  paginas:
+  - 21
+  marcas: []
+  en_alcance: true
+  enunciado: 'Sea X un variable aleatoria con función de densidad f_{X}: \mathbb{R} \to \mathbb{R}.'
+  items:
+  - id: a
+    texto: Si f_{X} (x) = \frac{9!}{3!5!} x^{3}(1 - x)^{5} 1\{0 < x < 1\}, calcular E[X].
+  - id: b
+    texto: Si f_{X} (x) = \frac{1}{6} x^{3}e^{-x} 1\{x > 0\}, hallar E[X].
+  - id: c
+    texto: Hallar E[X \mid X > 1/2] con los datos del Inciso
+  - id: b
+    texto: .
+- numero: '3.8'
+  paginas:
+  - 21
+  - 22
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea Z una variable normal estándar, ϕ su función de densidad, y sea z_{0} > 0.
+  items:
+  - id: a
+    texto: Hallar la media de Z \mid Z > z_{0\frac{ϕ(z0)}{z0}}(en función de z_{0}).
+  - id: b
+    texto: Deducir que 1 - Φ(z_{0}) \le.
+  - id: c
+    texto: Comparar la estimación que brinda el inciso anterior para P(Z > 3) con el valor tabulado.
+  - id: d
+    texto: Si X = σZ + µ y x_{0} > µ, hallar la media de X \mid X > x_{0} (en función de x_{0}, µ y σ).
+- numero: '3.9'
+  paginas:
+  - 22
+  marcas: []
+  en_alcance: true
+  enunciado: Sean Z_{1} y Z_{2} dos variables aleatorias normales estándar (no necesariamente independientes).
+    Demostrar que P(máx(Z_{1}, Z_{2}) > 5) \le \frac{2e-25}{5\sqrtπ} \frac{2}{2}.
+- numero: '3.10'
+  paginas:
+  - 22
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Se construye un círculo uniendo los extremos de un alambre.
+  items:
+  - id: a
+    texto: Si la longitud del alambre L es una variable aleatoria con distribución exponencial de media
+      60 cm., calcular la media del área del círculo.
+  - id: b
+    texto: Si el área del círculo A es una variable aleatoria con distribución exponencial de media 15
+      cm^{2}, calcular la media del perímetro del círculo.
+- numero: '3.11'
+  paginas:
+  - 22
+  marcas: []
+  en_alcance: true
+  enunciado: Sea T ^{^{*}} la variable aleatoria definida en el Ejercicio 2.12. Calcular E[T ^{^{*}}]
+    y var[T ^{^{*}}].
+- numero: '3.12'
+  paginas:
+  - 22
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sean X e Y dos variables aleatorias independientes uniformes sobre el intervalo (0, π). Calcular
+    E[X sen(XY)].
+- numero: '3.13'
+  paginas:
+  - 22
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Sea (X, Y) un vector aleatorio con distribución uniforme sobre el triángulo de vértices (1,
+    1), (6, 2), (2, 9). Calcular E[X] y E[Y].
+- numero: '3.14'
+  paginas:
+  - 22
+  marcas:
+  - siga_siga
+  en_alcance: true
+  enunciado: Sea X una variable aleatoria a valores en \{2, 3, 4\} tal que P(X = x) = p_{x}, x \in \{2,
+    3, 4\}, de media 3.
+  items:
+  - id: a
+    texto: Hallar p_{2}, p_{3}, p_{4} para que var[X] sea la máxima posible.
+  - id: b
+    texto: Hallar p_{2}, p_{3}, p_{4} para que var[X] sea la mínima posible.
+- numero: '3.15'
+  paginas:
+  - 22
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Sea X una variable aleatoria con distribución uniforme sobre el intervalo (8, 10).
+  items:
+  - id: a
+    texto: Calcular la media y la varianza de Y = 2(X - 1).
+  - id: b
+    texto: Calcular la media de Y = 2X^{2} + 1.
+  - id: c
+    texto: Calcular la media de Y = 2(X - 1)(X - 3).
+  - id: d
+    texto: Hallar mín_{c\in\mathbb{R}} E[(X - c)^{2}].
+  - id: e
+    texto: Hallar a y b tales que aX + b tenga media 0 y desvío 1.
+- numero: '3.16'
+  paginas:
+  - 22
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: La potencia W disipada por una resistencia es proporcional al cuadrado del voltaje V (i.e.,
+    W = rV ^{2}, donde r es una constante). Calcular E[W] cuando r = 3 y el voltaje tiene distribución
+    normal de media 6 y varianza 1.
+- numero: '3.17'
+  paginas:
+  - 22
+  - 23
+  marcas: []
+  en_alcance: true
+  enunciado: '[ver Ejercicio 2.34] Sean X_{1} y X_{2} variables de Bernoulli, de parámetros p_{1} y p_{2}.'
+  items:
+  - id: a
+    texto: Mostrar que si cov(X_{1}, X_{2}) = 0, entonces X_{1} y X_{2} son independientes.
+  - id: b
+    texto: Si p_{1} = p_{2} = 0.7 y cov(X_{1}, X_{2}) = 0.1, hallar ρ(Y_{1}, Y_{2}), siendo Y_{1} = X_{1}(1
+      - X_{2}), Y_{2} = X_{2}(1 - X_{1}).
+- numero: '3.18'
+  paginas:
+  - 23
+  marcas: []
+  en_alcance: true
+  enunciado: '[ver Ejercicio 2.37] Se colocan 3 bolas en 3 urnas c_{1}, c_{2}, c_{3} eligiendo al azar,
+    para cada bola, la urna en que se coloca. Sea X_{i} la cantidad de bolas en c_{i} y sea N la cantidad
+    de urnas que contienen alguna bola.'
+  items:
+  - id: a
+    texto: Calcular E[N], var[N] y cov(N, X_{1}).
+  - id: b
+    texto: Mostrar que N y X_{1} no son independientes.
+  - id: c
+    texto: Calcular cov(X_{i}, X_{j}), 1 \le i \le j \le 3.
+- numero: '3.19'
+  paginas:
+  - 23
+  marcas: []
+  en_alcance: true
+  enunciado: En cada uno de los casos que se ilustran en las siguientes figuras se define una distribución
+    conjunta para las variables X e Y. (a) (b) (c) (a) La densidad vale 1 en la región blanca, 1/2 en
+    la región gris clara y 3/2 en la región gris oscura. (b) y (c) La distribución es uniforme en la región
+    grisada. Hallar en cada caso el signo de la covarianza sin escribir cuentas.
+  revisar:
+  - parece tener items pero no se detectaron
+- numero: '3.20'
+  paginas:
+  - 23
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea (X, Y) un vector aleatorio con distribución uniforme sobre el triángulo de vértices (0,
+    0), (2, 2), (0, 2).
+  items:
+  - id: a
+    texto: Calcular cov(X, Y).
+  - id: b
+    texto: Calcular var[X + Y]
+  - id: c
+    texto: Calcular cov(3X - Y + 2, X + Y).
+- numero: '3.21'
+  paginas:
+  - 23
+  marcas: []
+  en_alcance: true
+  enunciado: 'Juan y María hacen una prueba para comparar sus reflejos. Cada uno tiene un pulsador y,
+    cuando una luz se enciende, el que presiona primero gana el duelo. Los tiempos de reacción (en segundos)
+    de cada uno son variables aleatorias independientes uniformes sobre el intervalo U (0, 2). Considerar
+    las variables W: “tiempo de reacción del ganador” y L: “tiempo de reacción del perdedor”.'
+  items:
+  - id: a
+    texto: Hallar la ecuación de la recta de regresión de L dado W.
+  - id: b
+    texto: Calcular el tiempo medio de reacción del ganador si se sabe que el perdedor reaccionó en más
+      de 1 segundo.
+- numero: '3.22'
+  paginas:
+  - 24
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sean X e Y dos variables aleatorias con densidad conjunta f_{X,Y (}x, y) = \frac{5}{8π} e^{-\frac{?}{2532}}
+    (^{x2-\frac{?}{65}} ^{xy+y2}). Hallar la ecuación de la recta de regresión de Y dada X.
+  revisar:
+  - fraccion incompleta
+- numero: '3.23'
+  paginas:
+  - 24
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea X una variable aleatoria positiva de media 15. Demostrar que P(X \ge 60) \le 0.25.
+- numero: '3.24'
+  paginas:
+  - 24
+  marcas: []
+  en_alcance: true
+  enunciado: Sea X una variable aleatoria de media 10 y varianza 15. Demostrar que P(5 < X < 15) \ge 0.4.
+- numero: '3.25'
+  paginas:
+  - 24
+  marcas: []
+  en_alcance: true
+  enunciado: Los pesos de ciertos paquetes de café son variables aleatorias independientes con distribución
+    normal de media 500 g. y desvío estándar σ. ¿Cómo deben ser los valores de σ para tener una seguridad
+    del 99 % de que el peso promedio de 100 paquetes no se desviará en más de 10 g. de 500 g.?
+- numero: '3.26'
+  paginas:
+  - 24
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Se quiere saber la proporción de fumadores en una población. Para ello se eligen n individuos
+    al azar y se halla la proporción de los que fuman. ¿Qué valor debe tener n para que esta proporción
+    no difiera de la real en más de 0.01, con probabilidad mayor o igual que 0.95? Ejercicios Complementarios
+- numero: '3.27'
+  paginas:
+  - 24
+  marcas: []
+  en_alcance: true
+  enunciado: La Gorda (110 kg.) y El Flaco (60 kg.) quieren poner un subibaja en su jardín. Tienen un
+    tablón de tres metros, pero no se deciden acerca de en que punto apoyarlo para que resulte equilibrado
+    cuando ambos se sientan, y ya se han golpeado bastante haciendo pruebas. ¿Podría ayudarlos?
+- numero: '3.28'
+  paginas:
+  - 24
+  marcas: []
+  en_alcance: true
+  enunciado: Sea X una variable aleatoria discreta con distribución equiprobable sobre los valores x_{1},
+    x_{2},\ldots, x_{n}. Hallar expresiones para E[X] y var(X).
+- numero: '3.29'
+  paginas:
+  - 24
+  marcas: []
+  en_alcance: true
+  enunciado: '[ver Ejercicio 2.40] Se arroja repetidas veces una moneda equilibrada. Llamamos N a la variable
+    aleatoria “cantidad de tiradas hasta que por primera se obtiene cara en dos tiradas consecutivas”.
+    Calcular E[N].'
+- numero: '3.30'
+  paginas:
+  - 24
+  marcas: []
+  en_alcance: true
+  enunciado: 'Sean X e Y dos variables aleatorias discretas cuya función de probabilidad conjunta p_{X,Y}
+    (x, y) se define por: p_{X,Y} (-2, -8) = p_{X,Y} (-1, -1) = p_{X,Y} (0, 0) = p_{X,Y} (1, 1) = p_{X,Y}
+    (2, 8) = 1/5. Sin calcularla, indicar, justificando la respuesta, cuál es el signo de la covarianza
+    entre X e Y.'
+- numero: '3.31'
+  paginas:
+  - 24
+  marcas:
+  - simulacion
+  en_alcance: false
+  enunciado: Sea B una variable de Bernoulli con parámetro p = 0.01.
+  items:
+  - id: a
+    texto: Si B_{1},\ldots, B_{100} son n = 100 réplicas independientes de B y ¯B = \frac{1}{n} \sum_{n}
+      m=1 B^{m} es su promedio. Estimar por simulación P(\mid ¯B - p\mid < 0.03) y P(\mid ¯B - p\mid <
+      0.01).
+  - id: b
+    texto: Lo mismo del inciso anterior pero con n = 10000.
+  revisar:
+  - revisar los limites del operador grande
+- numero: '3.32'
+  paginas:
+  - 25
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea X una variable aleatoria, µ_{X} = µ, σ^{2} X = σ^{2}. Sea X^{1}, X^{2},\ldots una secuencia
+    independiente de réplicas de X, y se definen ¯X = \frac{\sum nm=1Xm}{n\sum} W ^{2} = _{n} _{m=1}(X_{m}
+    - µ)^{2} n T ^{2} = \sum_{n} _{m=1}(X_{m} - ¯X)^{2} n
+  items:
+  - id: a
+    texto: Hallar E ⟨?TeX-mathx:“⟩ ¯X ⟨?TeX-mathx:‰⟩ y var ⟨?TeX-mathx:“⟩ ¯X ⟨?TeX-mathx:‰⟩, en función
+      de µ y σ^{2}.
+  - id: b
+    texto: Hallar E ⟨?TeX-mathx:“⟩ W ^{2}⟨?TeX-mathx:‰⟩, en función de µ y σ^{2}.
+  - id: c
+    texto: Mostrar que T ^{2} = W ^{2} - (¯X - µ)^{2}.
+  - id: d
+    texto: Usar los incisos anteriores para mostrar que E ⟨?TeX-mathx:“⟩ S^{2}⟨?TeX-mathx:‰⟩ = σ^{2},
+      donde S^{2} = \frac{n}{n-1} T 2.
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:“'
+  - 'glifo sin traducir: TeX-mathx:‰'
+  - revisar los limites del operador grande
+- numero: '3.33'
+  paginas:
+  - 25
+  marcas: []
+  en_alcance: true
+  enunciado: 'Sea X una variable aleatoria que representa la relación de níquel al resto de los metales
+    en una aleación. Los siguientes datos corresponden a 18 muestras de una aleación: 1.75, 1.80, 1.29,
+    1.58, 0.95, 1.87, 1.99, 1.49, 1.12, 0.39, 1.62, 1.41, 1.35, 0.83, 0.71, 0.51, 1.19, 1.95.'
+  items:
+  - id: a
+    texto: Calcular ¯X y S^{2} (ver Ejercicio 3.32).
+  - id: b
+    texto: Según una publicación, la concentración de níquel en dicha aleación puede ser modelada a través
+      de la distribución f_{X} (x) = x/2 1\{0 < x < 2\}. Comparar los resultados obtenidos en Inciso
+  - id: a
+    texto: con los valores teóricos de media y varianza asociados al modelo propuesto.
+  - id: c
+    texto: Construir un histograma y explorar informalmente si el modelo propuesto podría considerarse
+      correcto.
+- numero: '3.34'
+  paginas:
+  - 25
+  marcas: []
+  en_alcance: true
+  enunciado: Sea (X, Y) una variable aleatoria bidimensional, tal que X e Y tienen media y varianza finitas,
+    y sea c = cov(X, Y).
+  items:
+  - id: a
+    texto: Si (X_{1}, Y_{1}),\ldots, (X_{n}, Y_{n}) son n réplicas independientes de (X, Y) y definimos
+      A = \frac{1}{?} \frac{n1}{n} \sum_{n} _{i=1}(X_{i} - E[X])(Y_{i} - E[Y]) B = \sum_{n} _{i=1}(X_{i}
+      - ¯X)(Y_{i} - ¯Y)
+  - id: b
+    texto: Hallar (en términos de c) E[A].
+  - id: c
+    texto: Mostrar que B = A - (¯X - E[X])(¯Y - E[Y])
+  - id: d
+    texto: Hallar (en términos de c) cov(¯X, ¯Y).
+  - id: e
+    texto: Usando los incisos anteriores, hallar (en términos de c) E[B].
+  revisar:
+  - fraccion incompleta
+  - revisar los limites del operador grande
+- numero: '3.35'
+  paginas:
+  - 25
+  - 26
+  marcas:
+  - recomendado
+  - simulacion
+  en_alcance: false
+  enunciado: Sea S_{n} = ^{n}\sum i=1 X_{i}, donde las X_{i} son un conjunto de variables i.i.d. Sea S^{^{*}}
+    n su correspondiente variable estandarizada. En cada uno de los siguientes casos, simular 100000 valores
+    de S^{^{*}} _{n}; computar y graficar la función de distribución empírica. Comparar la gráfica obtenida
+    con la de la función de distribución de una variable N (0, 1).
+  items:
+  - id: a
+    texto: X_{i} es uniforme entre 0 y 1. Analizar los casos de n = 2, 5, 12.
+  - id: b
+    texto: X_{i} es Bernoulli de parámetro p = 1/2. Analizar los casos de n = 10, 30.
+  - id: c
+    texto: X_{i} es Bernoulli de parámetro p = 0.001. Analizar los casos de n = 30, 100, 500.
+  - id: d
+    texto: X_{i} es geométrica de parámetro p = 0.001. Analizar los casos de n = 30, 100, 500.
+  - id: e
+    texto: X_{i} es exponencial de parámetro λ = 1. Analizar los casos de n = 10, 30, 100.
+  - id: f
+    texto: X_{i} es Poisson de parámetro µ = 0.01. Analizar los casos de n = 30, 100, 500.
+  - id: g
+    texto: X_{i} es Poisson de parámetro µ = 1. Analizar los casos de n = 1, 5 (comparar con el inciso
+      anterior).
+  revisar:
+  - revisar los limites del operador grande
+- numero: '3.36'
+  paginas:
+  - 26
+  - 27
+  marcas: []
+  en_alcance: true
+  enunciado: Dado un vector x = (x_{1},\ldots, x_{n}) \in \mathbb{R}^{n}, consideramos ¯x = \frac{1}{n}
+    \sum_{n} i=1 x^{i}. Notamos e al vector de \mathbb{R}^{n} cuyas coordenadas son todas 1.
+  items:
+  - id: a
+    texto: Mostrar que (x - ¯xe) \perp e. ¿Qué relación geométrica hay entre x y ¯xe?
+  - id: b
+    texto: Dada cualquier constante c, x - ce = (x - ¯xe)+(¯x - c)e. Mostrar que la relación del Ejercicio
+      3.32 Inciso
+  - id: c
+    texto: es consecuencia del teorema de Pitágoras. ¿Cuál es la relación con el teorema de Steiner acerca
+      del cambio paralelo de eje en el momento de inercia?
+  - id: d
+    texto: Deducir usando propiedades del producto escalar en \mathbb{R}^{n}, la relación del Ejercicio
+      3.34 Inciso
+  - id: c
+    texto: . Guía 4
+  revisar:
+  - revisar los limites del operador grande

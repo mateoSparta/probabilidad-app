@@ -1,0 +1,186 @@
+{
+  "g1-01": {
+    "numero": "1.1",
+    "items": {
+      "a": {
+        "valor": "{∅, {1,2,3}, {4,5,6}, {1,2,3,4,5,6}}",
+        "metodo": "exacto"
+      },
+      "b": {
+        "valor": "{∅, {1,2}, {3,4}, {5,6}, {1,2,3,4}, {1,2,5,6}, {3,4,5,6}, {1,2,3,4,5,6}}",
+        "metodo": "exacto"
+      },
+      "a_cardinal": {
+        "valor": "4",
+        "metodo": "exacto"
+      },
+      "b_cardinal": {
+        "valor": "8",
+        "metodo": "exacto"
+      }
+    }
+  },
+  "g1-02": {
+    "numero": "1.2",
+    "items": {
+      "a": {
+        "valor": "41/50",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.819085,
+        "coincide": true
+      },
+      "b": {
+        "valor": "9/50",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.180915,
+        "coincide": true
+      },
+      "c": {
+        "valor": "37/40",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.92481,
+        "coincide": true
+      },
+      "d": {
+        "valor": "67/200",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.335525,
+        "coincide": true
+      },
+      "e": {
+        "valor": "3/40",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.07519,
+        "coincide": true
+      }
+    }
+  },
+  "g1-03": {
+    "numero": "1.3",
+    "items": {
+      "vacio": {
+        "valor": "0",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.0,
+        "coincide": true
+      },
+      "a": {
+        "valor": "1/2",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.499092,
+        "coincide": true
+      },
+      "ab": {
+        "valor": "5/6",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.833315,
+        "coincide": true
+      },
+      "bc": {
+        "valor": "1/2",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.500907,
+        "coincide": true
+      },
+      "omega": {
+        "valor": "1",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 1.0,
+        "coincide": true
+      }
+    }
+  },
+  "g1-04": {
+    "numero": "1.4",
+    "items": {
+      "a": {
+        "valor": "1/6",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.165785,
+        "coincide": true
+      },
+      "b": {
+        "valor": "5/12",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.418453,
+        "coincide": true
+      },
+      "c": {
+        "valor": "1/2",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.499625,
+        "coincide": true
+      },
+      "d": {
+        "valor": "5/9",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.556377,
+        "coincide": true
+      }
+    }
+  },
+  "g1-05": {
+    "numero": "1.5",
+    "items": {
+      "a": {
+        "valor": "1/4",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.250208,
+        "coincide": true
+      },
+      "b": {
+        "valor": "19/40",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.475038,
+        "coincide": true
+      },
+      "c": {
+        "valor": "21/40",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.524962,
+        "coincide": true
+      },
+      "d": {
+        "valor": "3/5",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.600085,
+        "coincide": true
+      }
+    }
+  },
+  "g1-07": {
+    "numero": "1.7",
+    "items": {
+      "b1": {
+        "valor": "1/6",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.166447,
+        "coincide": true
+      },
+      "b8": {
+        "valor": "78125/1679616",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.045917,
+        "coincide": true
+      },
+      "c1": {
+        "valor": "5/6",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.833553,
+        "coincide": true
+      },
+      "c8": {
+        "valor": "390625/1679616",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.231958,
+        "coincide": true
+      },
+      "e": {
+        "valor": "0",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.0,
+        "coincide": true
+      }
+    }
+  }
+}

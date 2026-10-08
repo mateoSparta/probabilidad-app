@@ -1,0 +1,101 @@
+id: g1-02
+guia: 1
+numero: "1.2"
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p3
+
+enunciado: |
+  [DeGroot, pp. 38-42] En un grupo de 200 estudiantes de Ingeniería Industrial,
+  137 cursan Álgebra II, 60 Probabilidad y 124 Materiales Industriales.
+  [[inclusion-exclusion|Además, 33 cursan Álgebra II y Probabilidad; 29 Probabilidad y Materiales Industriales; y 92 Álgebra II y Materiales Industriales. Finalmente, 18 cursan las tres materias.]]
+  Se elige un estudiante al azar en ese grupo.
+
+items:
+  - id: a
+    pregunta: Calcular la probabilidad de que curse Álgebra II o Probabilidad.
+    skills: [inclusion-exclusion]
+    respuesta:
+      tipo: numerica
+      valor: "41/50"
+    pistas:
+      - Son dos eventos que se solapan: hay estudiantes que cursan las dos.
+      - Si sumás los que cursan cada una, los que cursan ambas quedan contados dos veces.
+      - 'Plan: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$, con los tres números leídos del enunciado.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_02.py
+          valor: "41/50"
+
+  - id: b
+    pregunta: Calcular la probabilidad de que no curse ni Álgebra II ni Probabilidad.
+    skills: [inclusion-exclusion]
+    respuesta:
+      tipo: numerica
+      valor: "9/50"
+    pistas:
+      - '"Ni una ni la otra" es el complemento de un evento que ya calculaste.'
+      - 'Plan: $P((A \cup B)^c) = 1 - P(A \cup B)$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_02.py
+          valor: "9/50"
+
+  - id: c
+    pregunta: Calcular la probabilidad de que curse alguna de las tres materias.
+    skills: [inclusion-exclusion]
+    respuesta:
+      tipo: numerica
+      valor: "37/40"
+    pistas:
+      - Con tres eventos hay que descontar las intersecciones de a pares.
+      - Al descontar las tres intersecciones de a pares, los que cursan las tres quedan restados de más.
+      - >-
+        Plan: sumá las tres, restá las tres intersecciones de a pares y volvé a
+        sumar la de las tres.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_02.py
+          valor: "37/40"
+
+  - id: d
+    pregunta: Calcular la probabilidad de que curse solo una de las tres materias.
+    skills: [inclusion-exclusion]
+    respuesta:
+      tipo: numerica
+      valor: "67/200"
+    pistas:
+      - "\"Solo Álgebra II\" no es lo mismo que \"Álgebra II\": hay que sacarle los que además cursan otra."
+      - >-
+        Conviene armar el diagrama de Venn de adentro hacia afuera: primero los
+        18 del centro, después las zonas de a pares, después las de una sola.
+      - >-
+        Plan: para cada materia, restale las dos intersecciones de a pares y
+        volvé a sumar la de las tres. Sumá las tres zonas que te quedan.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_02.py
+          valor: "67/200"
+
+  - id: e
+    pregunta: Calcular la probabilidad de que no curse ninguna de las tres materias.
+    skills: [inclusion-exclusion]
+    respuesta:
+      tipo: numerica
+      valor: "3/40"
+    pistas:
+      - Es el complemento de uno de los ítems anteriores.
+      - 'Plan: $1 - P(A \cup B \cup C)$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_02.py
+          valor: "3/40"

@@ -1,0 +1,448 @@
+_generado_por: tools/extract/guia.py -- NO EDITAR A MANO
+guia: 5
+fuente: fuentes/guias/parte1.pdf
+ejercicios:
+- numero: '5.1'
+  paginas:
+  - 33
+  marcas: []
+  en_alcance: true
+  enunciado: En una urna hay 4 bolas verdes, 3 amarillas y 3 rojas. Se extraen tres. Sean X la cantidad
+    de bolas verdes extraídas e Y la cantidad de rojas. Hallar las funciones de probabilidad de las variables
+    condicionales Y \mid X = x.
+- numero: '5.2'
+  paginas:
+  - 33
+  marcas: []
+  en_alcance: true
+  enunciado: Sea (X, Y) un vector aleatorio continuo. Hallar la densidad condicional de Y \mid X = x y
+    la densidad marginal de X cuando
+  items:
+  - id: a
+    texto: (X, Y) tiene distribución uniforme sobre el círculo de centro (0, 0) y radio 1.
+  - id: b
+    texto: f_{X,Y} (x, y) = \frac{1}{2x+1} e^{-}(^{2x+} \frac{y}{4x+2}) 1\{x > 0, y > 0\}.
+  - id: c
+    texto: f_{X,Y} (x, y) = e^{-x} 1\{0 < y < x\}.
+  - id: d
+    texto: f_{X,Y} (x, y) = \frac{1}{6} x^{4}y^{3}e^{-xy} 1\{1 < x < 2, y > 0\}.
+- numero: '5.3'
+  paginas:
+  - 33
+  marcas: []
+  en_alcance: true
+  enunciado: Al comenzar el día un tanque contiene una cantidad aleatoria Y de miles de litros de leche.
+    Durante el día se vende una cantidad aleatoria X de la leche contenida en el tanque en forma tal que
+    la de densidad conjunta es f_{X,Y} (x, y) = 0.5 1\{0 < x < y < 2\}.
+  items:
+  - id: a
+    texto: Hallar f_{Y \mid X=1.5}(y) y f_{X\mid Y =0.8}(x).
+  - id: b
+    texto: Calcular P(1.75 < Y < 2\mid X = 1.5) y P(0.5 < X < 0.75\mid Y = 0.8).
+  - id: c
+    texto: X e Y, ¿son independientes?
+- numero: '5.4'
+  paginas:
+  - 33
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea (X, Y) un vector aleatorio con la densidad conjunta del Ejercicio 3.22.
+  items:
+  - id: a
+    texto: Hallar f_{Y} (y) y f_{Y \mid X=x}(y) para todo x \in \mathbb{R}. ¿Qué se puede decir respecto
+      a la independencia de X e Y ?
+  - id: b
+    texto: Calcular P(1 < XY < 5\mid X = \sqrt \frac{?}{5}).
+  revisar:
+  - fraccion incompleta
+- numero: '5.5'
+  paginas:
+  - 33
+  marcas: []
+  en_alcance: true
+  enunciado: Sean X e Y dos variables aleatorias tales que X tiene distribución uniforme sobre el intervalo
+    (3, 4) y para cada x \in (3, 4), Y \mid X = x tiene distribución normal de media x y varianza 1. Calcular
+    f_{Y} (5) y P(X > 3.5\mid Y = 5).
+- numero: '5.6'
+  paginas:
+  - 33
+  marcas: []
+  en_alcance: true
+  enunciado: Sean T_{1} y T_{2} variables exponenciales independientes de intensidad λ. Sean S_{1} = T_{1}
+    y S_{2} = T_{1} + T_{2}.
+  items:
+  - id: a
+    texto: Hallar la densidad conjunta de S_{1} y S_{2}. ¿Son S_{1} y S_{2} independientes?
+  - id: b
+    texto: Calcular P(S_{1} \in [1/2, 1]\mid S_{2} = 2).
+- numero: '5.7'
+  paginas:
+  - 33
+  - 34
+  marcas: []
+  en_alcance: true
+  enunciado: 'Un viajante tiene tres alternativas de viaje a su trabajo: A, B y C. Se sabe que la proporción
+    de veces que usa estos medios es respectivamente: 0.5, 0.3 y 0.2. El tiempo (en horas) de viaje con
+    el transporte i es una variable aleatoria T_{i} con densidad: f_{TA} (t) = 2t 1\{0 \le t \le 1\} para
+    el medio A, f_{TB} (t) = 0.5t 1\{0 \le t \le 2\} para el medio B, y f_{TC} (t) = 0.125t 1\{0 \le t
+    \le 4\} para el medio C.'
+  items:
+  - id: a
+    texto: Si ha transcurrido media hora de viaje y aun no ha llegado al trabajo, calcular la probabilidad
+      de que llegue por el medio de transporte A.
+  - id: b
+    texto: Si tardó exactamente media hora en llegar al trabajo, calcular la probabilidad de que lo haya
+      hecho por el medio de transporte A.
+- numero: '5.8'
+  paginas:
+  - 34
+  marcas: []
+  en_alcance: true
+  enunciado: '[ver Ejercicio 4.14] Drácula y Renfield se dieron cita en una esquina de Mataderos a las
+    0:00. Drácula llegará a las 0:00+X y Renfield a las 0:00+Y, donde X e Y (en minutos) son variables
+    aleatorias con función de densidad conjunta f_{X,Y} (x, y) = \frac{1}{35} e^{-}(\frac{?}{x5} +\frac{?}{y7})
+    1\{x > 0, y > 0\}. Sabiendo que el primero en llegar a la cita tuvo que esperar exactamente 5 minutos
+    al otro calcular la probabilidad de que el primero en llegar a la cita haya sido Drácula.'
+  revisar:
+  - fraccion incompleta
+- numero: '5.9'
+  paginas:
+  - 34
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Un receptor recibe una señal de amplitud aleatoria X = S + N, donde S es una señal equiprobable
+    sobre el alfabeto \{0.1, 0.2, 0.3\} y N es un ruido con distribución normal estándar independiente
+    de S. Si se recibe una señal de amplitud 0.87 ¿cuál es la probabilidad de que contenga la letra 0.2?
+- numero: '5.10'
+  paginas:
+  - 34
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: La corporación Cobani Products produjo 6 RoboCops, cada uno de los cuales está fallado con
+    probabilidad 1/4. Cada RoboCop es sometido a una prueba tal que si el Robocop está fallado se detecta
+    la falla con probabilidad 4/5. Sea X la cantidad de RoboCops fallados y sea Y la cantidad detectada
+    de RoboCops fallados.
+  items:
+  - id: a
+    texto: Hallar una expresión de la función de regresión ϕ(x) = E[Y \mid X = x].
+  - id: b
+    texto: Hallar una expresión de la función de regresión ϕ(y) = E[X \mid Y = y].
+- numero: '5.11'
+  paginas:
+  - 34
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: 'Sea (Ω, \mathcal{A}, P) un espacio de probabilidad en el que Ω = \{1, 2,\ldots, 11, 12\},
+    \mathcal{A} = 2^{Ω} y P(\{ω\}) = 1/12 para todo ω \in Ω. Sea X: Ω \to \mathbb{R} la variable aleatoria
+    definida por X (ω) = 1\{ω \in \{1, 2\}\} + 2 1\{ω \in \{3, 4, 5, 6\}\} + 3 1\{ω \in \{7, 8, 9, 10,
+    11, 12\}\}.'
+  items:
+  - id: a
+    texto: 'Hallar la expresión de E[Y \mid X] para la variable aleatoria Y: Ω \to \mathbb{R} definida
+      por 1. Y (ω) = ω. 2. Y (ω) = sen ⟨?TeX-mathx:`⟩\frac{π}{2} ω - \frac{π}{4} ⟨?TeX-mathx:˘⟩.'
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:`'
+  - 'glifo sin traducir: TeX-mathx:˘'
+- numero: '5.12'
+  paginas:
+  - 34
+  marcas:
+  - curva_peligrosa
+  - recomendado
+  en_alcance: true
+  enunciado: Se arroja un dado 36 veces. Sean X e Y las cantidades de resultados pares e impares respectivamente.
+    Hallar la esperanza condicional E[Y \mid X] y el valor de cov(X, Y).
+- numero: '5.13'
+  paginas:
+  - 34
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Una rata está atrapada en un laberinto. Inicialmente puede elegir una de tres sendas. Si
+    elige la primera se perderá en el laberinto y luego de 12 minutos volverá a su posición inicial; si
+    elige la segunda volverá a su posición inicial luego de 14 minutos; si elige la tercera saldrá del
+    laberinto luego de 9 minutos. En cada intento, la rata elige con igual probabilidad cualquiera de
+    las tres sendas. Calcular la esperanza del tiempo que demora en salir del laberinto.
+- numero: '5.14'
+  paginas:
+  - 35
+  marcas: []
+  en_alcance: true
+  enunciado: Una rata está atrapada en un laberinto. Inicialmente elige al azar una de tres sendas. Cada
+    vez que vuelve a su posición inicial elige al azar entre las dos sendas que no eligió la vez anterior.
+    Por la primera senda, retorna a la posición inicial en 8 horas, por la segunda retorna a la posición
+    inicial en 13 horas, por la tercera sale del laberinto en 5 horas. Calcular la esperanza del tiempo
+    que tardará en salir del laberinto.
+- numero: '5.15'
+  paginas:
+  - 35
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea X una variable aleatoria con distribución normal estándar y sea Y una variable aleatoria
+    tal que E[Y \mid X] = X^{2}. Calcular cov(X, Y).
+- numero: '5.16'
+  paginas:
+  - 35
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea (X, Y) un vector aleatorio tal que X tiene distribución exponencial de media 2, E[Y \mid
+    X] = X y var[Y \mid X] = X. Usando el Teorema de Pitágoras calcular el valor de var[Y].
+- numero: '5.17'
+  paginas:
+  - 35
+  marcas: []
+  en_alcance: true
+  enunciado: En el contexto del Ejercicio 5.1.
+  items:
+  - id: a
+    texto: Hallar y graficar la función de regresión ϕ(x) = E[Y \mid X = x] y la función φ(x) = var[Y
+      \mid X = x].
+  - id: b
+    texto: Hallar la esperanza y varianza condicional de Y dada X.
+- numero: '5.18'
+  paginas:
+  - 35
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea (X, Y) el vector aleatorio considerado en el Inciso
+  items:
+  - id: b
+    texto: del Ejercicio 5.2.
+  - id: a
+    texto: 1. Hallar la distribución de las variables condicionales Y \mid X = x. 2. Hallar y graficar
+      la función de regresión ϕ(x) = E[Y \mid X = x]. 3. Hallar la esperanza condicional de Y dada X.
+      4. Hallar y graficar la función de distribución de la esperanza condicional de Y dada X. 5. Calcular
+      P(1 < E[Y \mid X] < 2). 6. Hallar y graficar la “varianza de regresión” φ(x) = var(Y \mid X = x).
+      7. Hallar la varianza condicional de Y dada X. 8. Hallar y graficar la función de distribución de
+      la varianza condicional de Y dada X. 9. Calcular P(var(Y \mid X) > 1). 10. Calcular var(Y).
+  - id: b
+    texto: Repetir el inciso anterior para los restantes incisos del Ejercicio 5.2
+- numero: '5.19'
+  paginas:
+  - 35
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Sean X e Y variables aleatorias con densidad conjunta f_{X,Y} (x, y) = \frac{13}{48π} exp
+    ⟨?TeX-mathx:ˆ⟩ -\frac{169}{288} ⟨?TeX-mathx:ˆ⟩\frac{(x-1)2}{4} - \frac{5(x-1)y}{13} + y^{2} ⟨?TeX-mathx:˙⟩⟨?TeX-mathx:˙⟩.
+  items:
+  - id: a
+    texto: Hallar E[Y \mid X].
+  - id: b
+    texto: Hallar la ecuación de la recta de regresión de Y dada X.
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:ˆ'
+  - 'glifo sin traducir: TeX-mathx:˙'
+- numero: '5.20'
+  paginas:
+  - 35
+  - 36
+  marcas:
+  - siga_siga
+  en_alcance: true
+  enunciado: 'Sea (X, Y) un vector aleatorio con distribución uniforme sobre la región \{(x, y) \in \mathbb{R}^{2}:
+    0 < x < 3/4, 0 < y < 3/4\} \cup \{(x, y) \in \mathbb{R}^{2}: 3/4 < x < 1, 3/4 < y < 1\}. Hallar la
+    función de distribución de E[Y \mid X] y var[Y \mid X]. ¿Cuál es la probabilidad de que esta varianza
+    condicional tome un valor inferior a 1/32?'
+- numero: '5.21'
+  paginas:
+  - 36
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: La longitud de los rollos de tela producidos por cierta máquina obedece a una distribución
+    uniforme entre 20 y 30 metros. Un buen día un cliente requiere un rollo con por lo menos 28 metros,
+    de los que no hay ninguno en stock.
+  items:
+  - id: a
+    texto: Calcular la cantidad media de rollos que será necesario producir para satisfacer la demanda
+      del cliente.
+  - id: b
+    texto: Calcular la longitud total media de tela producida para satisfacer esa demanda.
+  - id: c
+    texto: Calcular la longitud total media de tela de los rollos que irán a stock (es decir sin incluir
+      el vendido al cliente).
+- numero: '5.22'
+  paginas:
+  - 36
+  marcas: []
+  en_alcance: true
+  enunciado: Una partícula suspendida en agua es bombardeada por moléculas en movimiento térmico y recibe
+    (por segundo) una cantidad de impactos con distribución Poisson de media 2. Por cada impacto la partícula
+    se mueve un milímetro hacia la derecha con probabilidad 3/5 o un milímetro hacia la izquierda con
+    probabilidad 2/5. Hallar la posición media de la partícula al cabo de un segundo.
+- numero: '5.23'
+  paginas:
+  - 36
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: El peso de ciertas bolsas de naranjas es una variable aleatoria uniforme entre 3 y 6 kilos.
+    Se van agregando bolsas en una balanza hasta que el peso supere 5 kilos. Hallar la media y la varianza
+    del peso final así obtenido.
+- numero: '5.24'
+  paginas:
+  - 36
+  marcas: []
+  en_alcance: true
+  enunciado: En el contexto del Ejercicio 5.9 hallar la media y la varianza de la señal recibida. Ejercicios
+    Complementarios
+- numero: '5.25'
+  paginas:
+  - 36
+  marcas:
+  - curva_peligrosa
+  - simulacion
+  en_alcance: false
+  enunciado: '[Grimmett, pág. 111] Sean T_{1} y T_{2} variables exponenciales independientes de media
+    1. Sean X_{1} = T_{1} + T_{2}, X_{2} = T_{1} - T_{2} y X_{3} = T_{1}/T_{2}.'
+  items:
+  - id: a
+    texto: Hallar la densidad conjunta de X_{1} y X_{2}. ¿Son X_{1} y X_{2} independientes?
+  - id: b
+    texto: Hallar la densidad conjunta de X_{1} y X_{3}. ¿Son X_{1} y X_{3} independientes?
+  - id: c
+    texto: Hallar las densidades condicionales f_{X1\mid X2=0}(x_{1}), f_{X1\mid X3=1}(x_{1}).
+  - id: d
+    texto: Calcular p_{1} = P(X_{1} > 1\mid X_{2} = 0) y p_{2} = P(X_{1} > 1\mid X_{3} = 1). Observe que
+      X_{2} = 0 y X_{3} = 1 son eventos equivalentes. ¿Cómo se explica que p_{1} < p_{2}?
+  - id: e
+    texto: Estimar por simulación las probabilidades del inciso anterior. Para ello simular 100000 pares
+      (T_{1}, T_{2}) y usarlos para estimar las probabilidades P(X_{1} > 1\mid \mid X_{2}\mid < 0.01)
+      y P(X_{1} > 1\mid \mid X_{3} - 1\mid < 0.01). Hacer un gráfico representando las diversas zonas
+      de integración involucradas, y explicar por qué la segunda probabilidad es aproximadamente el doble
+      de la primera.
+- numero: '5.26'
+  paginas:
+  - 36
+  marcas: []
+  en_alcance: true
+  enunciado: Sea (X, Y) una variable bidimensional con la densidad conjunta del ??. Encuentrar la densidad
+    de Z = XY sabiendo que Y = 0.25.
+- numero: '5.27'
+  paginas:
+  - 37
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: 'Sean X e Y variables aleatorias independientes tal que X \sim U (0, 1) y f_{Y} (y) = 2y
+    1\{0 < y < 1\}. Se desea calcular P(X + Y < 1\mid X = Y). Jekyll propone: P(X + Y < 1\mid X = Y) =
+    P(2X < 1) = P(X < 1/2) = 1/2. Pero Hyde no está de acuerdo y dice: P(X + Y < 1\mid X = Y) = P(2Y <
+    1) = P(Y < 1/2) = 1/4. Si ambos hubieran razonado correctamente, ¿convenimos que 1/2 = 1/4? Explicar
+    lo sucedido.'
+  revisar:
+  - parece tener items pero no se detectaron
+- numero: '5.28'
+  paginas:
+  - 37
+  marcas: []
+  en_alcance: true
+  enunciado: '[ver Ejercicio 5.10] La corporación Cobani Products produjo n RoboCops, cada uno de los
+    cuales está fallado con probabilidad φ. Cada RoboCop es sometido a una prueba tal que si el Robocop
+    está fallado se detecta la falla con probabilidad δ. Sea X la cantidad de RoboCops fallados y sea
+    Y la cantidad detectada de RoboCops fallados.'
+  items:
+  - id: a
+    texto: Hallar una expresión de la función de regresión ϕ(y) = E[X \mid Y = y].
+  - id: b
+    texto: Mostrar que E[X \mid Y] = nφ(1 - δ) + (1 - φ)Y 1 - φδ.
+- numero: '5.29'
+  paginas:
+  - 37
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: 'Sean X e Y variables aleatorias con distribución uniforme sobre la región del plano Λ. Hallar
+    E[Y \mid X] cuando:'
+  items:
+  - id: a
+    texto: Λ es el cuadrado de vértices (1, -1), (1, 1)\frac{,}{2} (-1, 1)\frac{?}{2}y (-1, -1).
+  - id: b
+    texto: Λ es el cuadrado de vértices (\sqrt \frac{?}{2}, 0), (0, \sqrt), (\sqrt, 0) y (0, \sqrt \frac{?}{2}).
+      ¿X e Y son independientes?
+  revisar:
+  - fraccion incompleta
+- numero: '5.30'
+  paginas:
+  - 37
+  marcas:
+  - solo_audaces
+  en_alcance: true
+  enunciado: '[ver Ejercicio 3.29 y Ejercicio 5.13] Se arroja sucesivas veces un dado equilibrado. Sea
+    K el número de tiradas hasta obtener por primera vez un resultado distinto de as, y sea, para cada
+    entero m > 1, X_{m} el número de tiradas hasta obtener por primera vez m ases seguidos (por ejemplo
+    si las primeras 9 tiradas resultan 1, 1, 2, 1, 4, 5, 1, 1, 1 sería K = 3 X_{2} = 2, X_{3} = 9).'
+  items:
+  - id: a
+    texto: ¿Qué distribución tiene K ? Hallar E[K].
+  - id: b
+    texto: Se sabe que E[X_{2}] = 42. Describir la variable aleatoria E[X_{2}\mid K]. Comprobar la consistencia
+      de esta descripción con el dato E[X_{2}] = 42.
+  - id: c
+    texto: Describir la expresión general de E[X_{m}\mid K] en términos de E[X_{m}]. Deducir una expresión
+      general para E[X_{m}].
+  - id: d
+    texto: Calcular E[X_{5}].
+  - id: e
+    texto: Si cada tirada del dado insumiera un segundo, estimar (en años) el tiempo medio necesario hasta
+      obtener 20 ases seguidos.
+- numero: '5.31'
+  paginas:
+  - 37
+  - 38
+  marcas:
+  - muy_dificil
+  en_alcance: true
+  enunciado: 'Juan y Roberto concursan por un trabajo en IBM. Mientras esperan a ser atendidos por el
+    Examinador, Juan descubre desesperado que olvidó su calculadora. Cuando el Examinador los atiende,
+    Juan le pide una, pero el Examinador (que no cursó esta materia ni leyó la columna de Adrián Paenza
+    en la contratapa de Página 12 del domingo 18 de julio del 2010), se la niega y le dice que piensa
+    que no le será necesaria. Uno de los enunciados de la prueba dice: “Escriba una secuencia de 200 bits
+    elegidos al azar en \{0, 1\}.”. El Examinador saca copia de los exámenes, identificando las copias,
+    y se los entrega al Corrector (que cursó esta materia el primer cuatrimestre del 2010) que no puede
+    identificarlos, pero sabe que su amigo Juan olvidó la calculadora. El Corrector mira las pruebas y
+    sin dudarlo sabe cuál es la de su amigo Juan. Uno: 01001110111001000011101010110010011110110101101110011010011001010110
+    00010011100001010111011010110001010010001100001110101011000011101100 0100010000101001101101110011110101010111001100001010001000101100
+    Otro: 01111001011010100110110111000011101110110010100001011001101011001101 10001001100011010111001101111011110111111101000111000101001000000000
+    1110110000010001001110101111010001011011010100001110011110110001 ¿Podría, a la luz del Ejercicio 5.30,
+    explicar cómo hizo, y cuál de las dos secuencias pertenecía a Juan?'
+- numero: '5.32'
+  paginas:
+  - 38
+  marcas: []
+  en_alcance: true
+  enunciado: Sea (X, Y) una variable aleatoria bidimensional. Sabiendo que X \sim N (0, 2) y E[Y \mid
+    X] = 2X^{2} + 1.
+  items:
+  - id: a
+    texto: Hallar E[Y] y cov(X, Y).
+  - id: b
+    texto: Hallar una ecuación de la recta de regresión de Y dado X.
+- numero: '5.33'
+  paginas:
+  - 38
+  - 39
+  marcas:
+  - muy_dificil
+  en_alcance: true
+  enunciado: Dado un vector (x_{1},\ldots, x_{n}) \in R^{n}, sea T (x_{1},\ldots, x_{n}) la variable aleatoria
+    discreta con rango \{x_{1},\ldots, x_{n} \} definida por P (T = x_{i}) = 1/n. Consideramos además
+    n réplicas independientes X_{1},\ldots, X_{n} de una variable aleatoria X con media µ y varianza σ^{2}.
+  items:
+  - id: a
+    texto: Hallar E[T].
+  - id: b
+    texto: Hallar var[T].
+  - id: c
+    texto: Describir la variable aleatoria E[T (X_{1},\ldots, X_{n})\mid(X_{1},\ldots, X_{n})]. Comparar
+      con Ejercicio 3.32. Hallar E[T (X_{1},\ldots, X_{n})] (en términos de µ).
+  - id: d
+    texto: Describir la variable aleatoria var[T (X_{1},\ldots, X_{n})\mid(X_{1},\ldots, X_{n})]. Comparar
+      con Ejercicio 3.32. Hallar E[var[T (X_{1},\ldots, X_{n})]] (en términos de σ^{2}). Guía 6
