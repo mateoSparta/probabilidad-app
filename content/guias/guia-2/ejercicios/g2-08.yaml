@@ -1,0 +1,68 @@
+id: g2-08
+guia: 2
+numero: "2.8"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p12
+
+enunciado: |
+  El tiempo en segundos que tarda una fuente de polonio en emitir $k$
+  partículas alfa es una variable aleatoria $T_k$ con función densidad
+  [[densidad|$f_{T_k}(t) = \dfrac{(1/2)^k}{(k-1)!}\, t^{k-1} e^{-t/2}\, \mathbf{1}\{t > 0\}$]].
+
+items:
+  - id: a
+    pregunta: >-
+      Calcular $P(T_1 > 3)$ y $P(T_1 > 5 \mid T_1 > 2)$.
+    skills: [densidad, truncamiento, funcion-distribucion]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$P(T_1 > 3)$'
+          valor: "exp(-3/2)"
+        - pregunta: '$P(T_1 > 5 \mid T_1 > 2)$'
+          valor: "exp(-3/2)"
+    pistas:
+      - 'Con $k = 1$ la densidad se simplifica mucho. ¿Qué distribución queda?'
+      - 'Para el condicional, escribí $P(T_1 > 5 \mid T_1 > 2) = \dfrac{P(T_1 > 5)}{P(T_1 > 2)}$ y simplificá.'
+      - >-
+        Plan: integrá la densidad de $3$ a infinito para la primera, y hacé el
+        cociente para la segunda. Si los dos números dan iguales no es
+        casualidad: es la pérdida de memoria de la exponencial.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g2_08.py
+          valor: "exp(-3/2), exp(-3/2)"
+
+  - id: b
+    pregunta: >-
+      Calcular $P(T_3 > 3)$ y $P(T_3 > 5 \mid T_3 > 2)$.
+    skills: [densidad, truncamiento]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$P(T_3 > 3)$'
+          valor: "29*exp(-3/2)/8"
+        - pregunta: '$P(T_3 > 5 \mid T_3 > 2)$'
+          valor: "53*exp(-3/2)/20"
+    pistas:
+      - >-
+        Son las mismas dos cuentas del ítem anterior, pero ahora con $k = 3$.
+        Integrar por partes resuelve la cola.
+      - >-
+        Comparalos entre sí antes de seguir: ¿tendrían que dar iguales como en
+        el ítem (a)?
+      - >-
+        Plan: integrá la densidad de $T_3$ de $3$ a infinito, y después hacé el
+        cociente para el condicional. $T_3$ es una suma de tres exponenciales y
+        **no** tiene pérdida de memoria, así que los dos números tienen que dar
+        distintos: que ya hayan pasado 2 segundos sin las tres partículas es
+        información.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g2_08.py
+          valor: "29*exp(-3/2)/8, 53*exp(-3/2)/20"

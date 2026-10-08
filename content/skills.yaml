@@ -123,3 +123,68 @@
     Invertir un condicional: pasar de P(efecto | causa) a P(causa | efecto).
   formulas:
     - 'P(B_j \mid A) = \dfrac{P(A \mid B_j)\,P(B_j)}{\sum_i P(A \mid B_i)\,P(B_i)}'
+
+# --- guía 2 -----------------------------------------------------------
+
+- id: variable-aleatoria
+  nombre: Variable aleatoria y medibilidad
+  guia: 2
+  descripcion: >-
+    Reconocer cuándo una función de Ω en los reales es variable aleatoria:
+    que sus preimágenes pertenezcan al álgebra.
+  formulas:
+    - '\{\omega : X(\omega) \le t\} \in \mathcal{A} \quad \forall t \in \mathbb{R}'
+
+- id: funcion-distribucion
+  nombre: Función de distribución
+  guia: 2
+  descripcion: >-
+    Leer y usar $F_X(x) = P(X \le x)$: dónde concentra masa, cómo salen las
+    probabilidades de intervalos abiertos y cerrados.
+  formulas:
+    - 'F_X(x) = P(X \le x)'
+    - 'P(a < X \le b) = F_X(b) - F_X(a)'
+    - 'P(X = a) = F_X(a) - F_X(a^-)'
+    - 'P(X > a) = 1 - F_X(a)'
+
+- id: densidad
+  nombre: Densidad de una variable continua
+  guia: 2
+  descripcion: >-
+    Integrar una densidad para obtener probabilidades, y usar que integra 1
+    como control.
+  formulas:
+    - 'P(a < X < b) = \int_a^b f_X(x)\,dx'
+    - '\int_{-\infty}^{\infty} f_X(x)\,dx = 1'
+    - 'F_X(x) = \int_{-\infty}^{x} f_X(u)\,du'
+
+- id: truncamiento
+  nombre: Condicionamiento a un evento
+  guia: 2
+  descripcion: >-
+    La distribución de una variable restringida a un evento: quedarse con el
+    pedazo y renormalizar.
+  formulas:
+    - 'f_{X \mid A}(x) = \dfrac{f_X(x)\,\mathbf{1}\{x \in A\}}{P(A)}'
+    - 'F_{X \mid A}(x) = \dfrac{P(X \le x,\ A)}{P(A)}'
+
+- id: conjunta-marginales
+  nombre: Conjunta y marginales
+  guia: 2
+  descripcion: >-
+    Pasar de la densidad conjunta de un vector a las marginales de cada
+    coordenada, integrando sobre la otra.
+  formulas:
+    - 'f_X(x) = \int_{-\infty}^{\infty} f_{(X,Y)}(x, y)\,dy'
+    - 'f_Y(y) = \int_{-\infty}^{\infty} f_{(X,Y)}(x, y)\,dx'
+    - 'P((X,Y) \in A) = \iint_A f_{(X,Y)}(x, y)\,dx\,dy'
+
+- id: independencia-va
+  nombre: Independencia de variables aleatorias
+  guia: 2
+  descripcion: >-
+    Reconocer independencia por la factorización de la conjunta, y el soporte
+    rectangular como condición necesaria.
+  formulas:
+    - 'f_{(X,Y)}(x, y) = f_X(x)\,f_Y(y)'
+    - 'F_{(X,Y)}(x, y) = F_X(x)\,F_Y(y)'

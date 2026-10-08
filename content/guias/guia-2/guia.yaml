@@ -1,0 +1,22 @@
+numero: 2
+titulo: Variables aleatorias y vectores
+descripcion: >-
+  De eventos a números. Qué hace falta para que una función de Ω en los reales
+  sea una variable aleatoria, cómo se describe su distribución —por la función
+  de distribución si hay saltos, por la densidad si es continua—, qué pasa
+  cuando se la condiciona a un evento, y qué cambia al pasar de una variable a
+  un vector: conjunta, marginales e independencia.
+
+secuencia:
+  - teoria: t-variable-aleatoria
+  - ejercicio: g2-01
+
+  - teoria: t-distribucion
+  - ejercicio: g2-08
+
+  - teoria: t-truncamiento
+  - ejercicio: g2-19
+
+  - teoria: t-conjunta
+  - ejercicio: g2-22
+  - ejercicio: g2-26

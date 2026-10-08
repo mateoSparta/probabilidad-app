@@ -93,3 +93,110 @@ def algebra_generada(omega: frozenset, generadores: Sequence[frozenset]) -> set[
 def como_texto(f: Fraction) -> str:
     """La fraccion tal como va al YAML: exacta, no un decimal redondeado."""
     return str(f.numerator) if f.denominator == 1 else f"{f.numerator}/{f.denominator}"
+
+
+# ---------------------------------------------------------------------------
+# Variables continuas (guias 2 en adelante)
+#
+# El exacto va con sympy: integrar la densidad en forma simbolica y quedarse
+# con el valor exacto, no con un decimal. El Monte Carlo sortea la variable y
+# cuenta, que es lo que verifica que la densidad este bien interpretada.
+# ---------------------------------------------------------------------------
+
+def p_densidad(densidad, x, desde, hasta):
+    """
+    Integra una densidad simbolica en [desde, hasta]. Devuelve la expresion
+    exacta de sympy, simplificada.
+    """
+    import sympy as sp
+
+    return sp.simplify(sp.integrate(densidad, (x, desde, hasta)))
+
+
+def area_region(dentro, x, y, x0, x1, y0, y1):
+    """
+    Area de una region del plano, por integracion doble sobre el rectangulo
+    que la contiene. `dentro` es una condicion de sympy.
+    """
+    import sympy as sp
+
+    return sp.simplify(
+        sp.integrate(sp.Piecewise((1, dentro), (0, True)), (y, y0, y1), (x, x0, x1))
+    )
+
+
+def montecarlo_2d(
+    sortear_punto,
+    evento,
+    n: int = N_MONTECARLO,
+    semilla: int = SEMILLA,
+) -> float:
+    """
+    Estima P(evento) sobre puntos del plano. `sortear_punto` devuelve (x, y)
+    o None si el sorteo hay que descartarlo (rechazo).
+    """
+    rng = random.Random(semilla)
+    casos = aciertos = 0
+    while casos < n:
+        p = sortear_punto(rng)
+        if p is None:
+            continue
+        casos += 1
+        if evento(*p):
+            aciertos += 1
+    return aciertos / n
+
+
+def exponencial(rng: random.Random, intensidad: float) -> float:
+    """Una exponencial de intensidad (tasa) dada."""
+    return rng.expovariate(intensidad)
+
+
+def gamma_suma(rng: random.Random, k: int, intensidad: float) -> float:
+    """
+    Suma de k exponenciales independientes de la misma intensidad, que es el
+    tiempo hasta el k-esimo evento. Se simula asi a proposito: verifica que la
+    densidad Gamma del enunciado describa ese experimento.
+    """
+    return sum(rng.expovariate(intensidad) for _ in range(k))
+
+
+# Semiancho de la ventana para estimar una densidad por Monte Carlo.
+# Chico para que el sesgo sea despreciable, grande para que caigan
+# suficientes muestras adentro.
+VENTANA_DENSIDAD = 0.1
+
+
+def montecarlo_densidad(
+    sortear: Callable[[random.Random], float],
+    punto: float,
+    h: float = VENTANA_DENSIDAD,
+    n: int = N_MONTECARLO,
+    semilla: int = SEMILLA,
+    lado: str = "ambos",
+) -> float:
+    """
+    Estima f(punto) contando que fraccion de las muestras cae en una ventana
+    chica alrededor del punto, dividida por el ancho de la ventana.
+
+    Un valor de densidad no es una frecuencia, asi que no se puede contar
+    directo; pero el area bajo la densidad en una ventana chica si lo es. Es
+    lo que permite verificar una densidad por dos caminos y no solo con la
+    integral simbolica.
+
+    `lado` importa en los **bordes del soporte**: si el punto esta en el
+    extremo, la mitad de la ventana cae donde la densidad vale cero y la
+    estimacion sale justo a la mitad. Ahi hay que pedir la ventana de un solo
+    lado, con "derecha" o "izquierda".
+    """
+    rng = random.Random(semilla)
+    if lado == "derecha":
+        dentro = sum(1 for _ in range(n) if punto <= sortear(rng) < punto + h)
+        ancho = h
+    elif lado == "izquierda":
+        dentro = sum(1 for _ in range(n) if punto - h < sortear(rng) <= punto)
+        ancho = h
+    else:
+        dentro = sum(1 for _ in range(n) if abs(sortear(rng) - punto) < h)
+        ancho = 2 * h
+    return dentro / n / ancho

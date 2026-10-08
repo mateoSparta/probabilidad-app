@@ -47,9 +47,22 @@ def modelos(filtro: str | None) -> list[str]:
 
 
 def como_texto(v) -> str:
+    """
+    El valor tal como va al YAML. Tiene que quedar en una sintaxis que math.js
+    entienda, porque tools/check.ts lo evalua con math.js para contrastarlo
+    contra el contenido: de ahi el `**` -> `^`.
+    """
     if isinstance(v, Fraction):
         return str(v.numerator) if v.denominator == 1 else f"{v.numerator}/{v.denominator}"
-    return str(v)
+    return str(v).replace("**", "^")
+
+
+def como_numero(v):
+    """El valor como float, o None si no es un escalar."""
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
 
 
 def main() -> int:
@@ -75,9 +88,10 @@ def main() -> int:
             txt = como_texto(valor)
             fila: dict = {"valor": txt, "metodo": "exacto"}
 
-            if clave in estimados and isinstance(valor, Fraction):
+            exacto_num = como_numero(valor)
+            if clave in estimados and exacto_num is not None:
                 est = estimados[clave]
-                dif = abs(float(valor) - est)
+                dif = abs(exacto_num - est)
                 coincide = dif <= tol
                 fila["montecarlo"] = round(est, 6)
                 fila["metodo"] = "exacto+montecarlo"
@@ -85,9 +99,12 @@ def main() -> int:
                 marca = "ok " if coincide else "NO "
                 if not coincide:
                     fallas += 1
-                print(f"    {marca} {clave:8s} {txt:>14s} = {float(valor):.6f}   mc {est:.6f}  dif {dif:.6f}")
+                print(
+                    f"    {marca} {clave:10s} {txt:>22s} = {exacto_num:.6f}"
+                    f"   mc {est:.6f}  dif {dif:.6f}"
+                )
             else:
-                print(f"    --  {clave:8s} {txt}   (sin Monte Carlo)")
+                print(f"    --  {clave:10s} {txt}   (sin Monte Carlo)")
 
             items[clave] = fila
         resultados[ident] = {"numero": getattr(mod, "NUMERO", None), "items": items}
