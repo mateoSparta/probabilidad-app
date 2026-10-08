@@ -1,0 +1,7 @@
+# Pipeline de contenido (tools/). Instalar con:
+#   python -m venv .venv
+#   .venv/Scripts/python -m pip install -r requirements.txt
+pymupdf==1.28.2
+sympy==1.14.0
+numpy==2.5.3
+PyYAML==6.0.3

@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.vite/
+
+# salida derivada del pipeline: se regenera con npm run extraer
+content/.borrador/
+tools/verify/.cache/
+
+# rasterizados de las resueltas (pesan mucho, se regeneran)
+fuentes/.raster/

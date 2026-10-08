@@ -1,0 +1,31 @@
+{
+  "name": "probabilidad-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "App local para estudiar Probabilidad y Estadistica B (FIUBA 61.09/81.04) con guias gamificadas",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run check && vite build",
+    "preview": "vite preview",
+    "check": "tsc --noEmit && node tools/check.ts",
+    "extraer": ".venv/Scripts/python tools/extract/guia.py",
+    "inventario": ".venv/Scripts/python tools/extract/inventario.py",
+    "rasterizar": ".venv/Scripts/python tools/rasterize.py"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/newsreader": "^5.3.0",
+    "js-yaml": "^5.4.3",
+    "katex": "^0.19.0",
+    "mathjs": "^15.2.0",
+    "preact": "^11.0.0"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.6",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^26.6.4",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.3"
+  }
+}
