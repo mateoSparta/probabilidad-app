@@ -1,0 +1,42 @@
+id: g8-15
+guia: 8
+numero: "8.15"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p51
+
+enunciado: |
+  La longitud de ciertas varillas es [[tcl|una variable aleatoria de media
+  30 cm y desvío estándar 2]]. El precio de venta en pesos de cada varilla es
+  igual a su longitud medida en cm. El costo de producción de cada varilla es
+  constante e igual a \$20.
+
+items:
+  - id: a
+    pregunta: >-
+      Calcular aproximadamente la probabilidad de que la ganancia total por
+      vender 50 varillas sea mayor que \$460.
+    skills: [tcl, normal]
+    respuesta:
+      tipo: numerica
+      valor: "1/2 + erf(2)/2"
+    pistas:
+      - >-
+        Fijate que el enunciado **no dice** de qué distribución es la longitud.
+        ¿Hace falta saberlo?
+      - >-
+        La ganancia por varilla es $L - 20$. Restar una constante corre la
+        media pero no cambia el desvío.
+      - >-
+        Plan: la ganancia total tiene media $50 \cdot 10 = 500$ y varianza
+        $50 \cdot 4 = 200$. Por el TCL se la aproxima por una normal,
+        estandarizás y buscás en la tabla. El resultado va a quedar muy cerca
+        de 1: 460 está casi tres desvíos por debajo de la media.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g8_15.py
+          valor: "Phi(2 sqrt 2) = 0.997661"
+        - origen: "tools/verify/g8_15.py (verificado simulando con longitudes normales Y con longitudes uniformes de la misma media y desvio: las dos dan 0.9978, que es lo que afirma el TCL)"
+          valor: "0.9978"

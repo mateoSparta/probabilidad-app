@@ -200,3 +200,35 @@ def montecarlo_densidad(
         dentro = sum(1 for _ in range(n) if abs(sortear(rng) - punto) < h)
         ancho = 2 * h
     return dentro / n / ancho
+
+
+# ---------------------------------------------------------------------------
+# Distribucion normal (guia 8)
+#
+# No hay scipy, asi que Phi y su inversa se escriben con erf y erfinv de
+# sympy. Quedan exactas en forma simbolica, que es lo que se quiere para el
+# contenido.
+# ---------------------------------------------------------------------------
+
+def Phi(z):
+    """Funcion de distribucion normal estandar, exacta."""
+    import sympy as sp
+
+    return (1 + sp.erf(sp.nsimplify(z) / sp.sqrt(2))) / 2
+
+
+def phi(z):
+    """Densidad normal estandar, exacta."""
+    import sympy as sp
+
+    return sp.exp(-sp.nsimplify(z) ** 2 / 2) / sp.sqrt(2 * sp.pi)
+
+
+def cuantil_normal(p):
+    """
+    El z tal que Phi(z) = p. Se obtiene con erfinv, asi que no depende de
+    una tabla redondeada: es el valor exacto.
+    """
+    import sympy as sp
+
+    return sp.sqrt(2) * sp.erfinv(2 * sp.nsimplify(p) - 1)

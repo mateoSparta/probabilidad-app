@@ -427,3 +427,47 @@
   formulas:
     - 'T = \displaystyle\sum_{i=1}^{N} X_i, \quad E[T] = E[N]\, E[X]'
     - '\operatorname{var}[T] = E[N]\operatorname{var}[X] + \operatorname{var}[N]\,(E[X])^2'
+
+# --- guía 8 -----------------------------------------------------------
+
+- id: normal
+  nombre: Distribución normal
+  guia: 8
+  descripcion: >-
+    Estandarizar para poder usar la tabla, y trabajar con la densidad cuando
+    hay que optimizar.
+  formulas:
+    - 'X \sim N(\mu, \sigma^2) \implies Z = \dfrac{X - \mu}{\sigma} \sim N(0, 1)'
+    - 'P(X \le x) = \Phi\!\left(\dfrac{x - \mu}{\sigma}\right)'
+    - '\Phi(-z) = 1 - \Phi(z)'
+    - '\varphi(z) = \dfrac{1}{\sqrt{2\pi}}\, e^{-z^2/2}'
+
+- id: combinacion-normales
+  nombre: Combinación lineal de normales
+  guia: 8
+  descripcion: >-
+    Una combinación lineal de normales independientes vuelve a ser normal, con
+    los coeficientes al cuadrado en la varianza.
+  formulas:
+    - '\textstyle\sum_i a_i X_i + b \sim N\!\left(\sum_i a_i \mu_i + b,\ \sum_i a_i^2 \sigma_i^2\right)'
+
+- id: tcl
+  nombre: Teorema central del límite
+  guia: 8
+  descripcion: >-
+    La suma de muchas variables independientes es aproximadamente normal, sin
+    importar de qué distribución vengan.
+  formulas:
+    - 'S_n = \textstyle\sum_{i=1}^{n} X_i \approx N\!\left(n\mu,\ n\sigma^2\right)'
+    - '\dfrac{S_n - n\mu}{\sigma\sqrt{n}} \xrightarrow{d} N(0, 1)'
+
+- id: aproximacion-normal
+  nombre: Aproximación normal de una discreta
+  guia: 8
+  descripcion: >-
+    Aproximar una binomial o una Poisson por la normal, con la corrección por
+    continuidad que hace falta porque una es discreta y la otra no.
+  formulas:
+    - '\text{Bin}(n, p) \approx N\big(np,\ np(1-p)\big)'
+    - 'P(X = k) \approx \Phi\!\left(\dfrac{k + 0.5 - \mu}{\sigma}\right) - \Phi\!\left(\dfrac{k - 0.5 - \mu}{\sigma}\right)'
+    - 'P(X > k) = P(X \ge k+1) \approx 1 - \Phi\!\left(\dfrac{k + 0.5 - \mu}{\sigma}\right)'

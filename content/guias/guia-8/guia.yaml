@@ -1,0 +1,19 @@
+numero: 8
+titulo: Normal y teorema central del límite
+descripcion: >-
+  La distribución normal y por qué aparece en todas partes. Estandarizar para
+  usar la tabla, combinar normales independientes, y el teorema central del
+  límite, que permite aproximar la suma de muchas variables sin saber de qué
+  distribución vienen. Más la corrección por continuidad, que es lo que hace
+  falta cuando lo que se aproxima es discreto.
+
+secuencia:
+  - teoria: t-normal
+  - ejercicio: g8-05
+  - ejercicio: g8-02
+
+  - teoria: t-tcl
+  - ejercicio: g8-15
+  - ejercicio: g8-09
+  - ejercicio: g8-12
+  - ejercicio: g8-22

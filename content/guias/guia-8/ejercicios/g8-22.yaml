@@ -1,0 +1,51 @@
+id: g8-22
+guia: 8
+numero: "8.22"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p53
+
+enunciado: |
+  Lucas y Monk palean arena cargando un volquete.
+  [[mezclas|La probabilidad de que una palada sea de Monk es $0{,}7$ y la de
+  que sea de Lucas es $0{,}3$.]] El volumen en decímetros cúbicos de la palada
+  de Lucas es una variable aleatoria uniforme entre 2 y 4, y el de la palada de
+  Monk es una variable aleatoria uniforme entre 1 y 3.
+
+items:
+  - id: a
+    pregunta: >-
+      ¿Cuántas paladas son necesarias para que la probabilidad de que el
+      volquete tenga más de 4 metros cúbicos de arena supere $0{,}95$?
+    skills: [tcl, mezclas, varianza-total]
+    respuesta:
+      tipo: numerica
+      valor: "1762"
+      # Es el mínimo n exacto: la tolerancia no puede admitir otro entero.
+      tol_rel: 0.000001
+    pistas:
+      - >-
+        Primero el volumen de **una** palada: es una mezcla de dos uniformes.
+        Calculá su media y su varianza condicionando a quién paleó.
+      - >-
+        Ojo con la varianza de la mezcla: **no** es el promedio de las dos
+        varianzas. Las dos uniformes tienen varianza $1/3$, pero la mezcla
+        tiene más, porque las medias son distintas. Es el término
+        $\operatorname{var}[E[V \mid \text{quién}]]$ de la varianza total.
+      - >-
+        Plan: con $E[V] = 2{,}3$ y $\operatorname{var}[V] = 163/300$, la suma
+        de $n$ paladas es aproximadamente normal de media $2{,}3n$ y varianza
+        $n \operatorname{var}[V]$. Pedí
+        $P(\text{suma} > 4000) > 0{,}95$ —ojo, 4 m³ son 4000 dm³— y despejá
+        $n$. Sustituyendo $u = \sqrt{n}$ queda una cuadrática. Verificá la
+        minimalidad: con ese $n$ tiene que cumplirse y con $n-1$ no.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g8_22.py
+          valor: "1762"
+        - origen: "tools/verify/g8_22.py (controles: E[V] = 23/10, var[V] = 163/300, mayor que el promedio 1/3 de las varianzas)"
+          valor: "163/300"
+        - origen: "tools/verify/g8_22.py (minimalidad simulada: con 1762 la probabilidad da 0.9551 y con 1761 da 0.9476)"
+          valor: "0.9551"

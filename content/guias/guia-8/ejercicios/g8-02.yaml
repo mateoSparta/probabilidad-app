@@ -1,0 +1,45 @@
+id: g8-02
+guia: 8
+numero: "8.2"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p48
+
+enunciado: |
+  Un receptor recibe una señal de amplitud aleatoria $X = S + N$, donde $S$ es
+  una variable Bernoulli de parámetro $3/4$ y
+  [[normal|$N$ es un ruido con distribución normal de media 0 y desvío estándar
+  $1/2$]] independiente de $S$. Cuando $S$ vale 1 la señal contiene información
+  útil y cuando vale 0 no. El detector deja pasar la señal si $X > c$ y no la
+  deja pasar si $X \le c$. Se incurre en error cuando no se deja pasar una
+  señal con información útil o cuando se deja pasar una señal sin información.
+
+items:
+  - id: a
+    pregunta: Determinar el valor de $c$ que garantice la probabilidad mínima de error.
+    skills: [normal, mezclas]
+    respuesta:
+      tipo: numerica
+      valor: "1/2 - log(3)/4"
+    pistas:
+      - >-
+        Escribí $P(\text{error})$ como suma de los dos casos, pesados por
+        $P(S=1)$ y $P(S=0)$.
+      - >-
+        Te va a quedar
+        $\tfrac{3}{4}\Phi\!\left(\tfrac{c-1}{1/2}\right) + \tfrac{1}{4}\left(1 - \Phi\!\left(\tfrac{c}{1/2}\right)\right)$.
+        Derivá respecto de $c$ e igualá a cero.
+      - >-
+        Plan: al derivar aparecen las dos densidades $\varphi$. Igualándolas y
+        tomando logaritmo, los términos cuadráticos se cancelan y queda una
+        ecuación lineal en $c$. El resultado va a ser **menor** que $1/2$: como
+        la señal útil es tres veces más probable, conviene correr el umbral
+        hacia abajo para equivocarse menos de ese lado.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g8_02.py
+          valor: "1/2 - log(3)/4 = 0.225347"
+        - origen: "tools/verify/g8_02.py (control: ningun c de una grilla fina alrededor da menos error; el error minimo es 0.127017)"
+          valor: "0.127017"

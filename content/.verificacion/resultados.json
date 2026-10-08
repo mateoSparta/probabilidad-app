@@ -1341,5 +1341,135 @@
         "metodo": "exacto"
       }
     }
+  },
+  "g8-02": {
+    "numero": "8.2",
+    "items": {
+      "a": {
+        "valor": "1/2 - log(3)/4",
+        "metodo": "exacto"
+      },
+      "error_minimo": {
+        "valor": "-3*erf(sqrt(2)*(log(3) + 2)/4)/8 - erf(sqrt(2)*(2 - log(3))/4)/8 + 1/2",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.126983,
+        "coincide": true
+      },
+      "umbral_sin_priors": {
+        "valor": "1/2",
+        "metodo": "exacto"
+      }
+    }
+  },
+  "g8-05": {
+    "numero": "8.5",
+    "items": {
+      "a": {
+        "valor": "1/2 - erf(sqrt(2))/2",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.022898,
+        "coincide": true
+      },
+      "media": {
+        "valor": "-1",
+        "metodo": "exacto"
+      },
+      "varianza": {
+        "valor": "1/4",
+        "metodo": "exacto"
+      },
+      "varianza_error_tipico": {
+        "valor": "4/9",
+        "metodo": "exacto"
+      }
+    }
+  },
+  "g8-09": {
+    "numero": "8.9",
+    "items": {
+      "a": {
+        "valor": "-erf(sqrt(6)/4)/2 + erf(5*sqrt(6)/12)/2",
+        "metodo": "exacto"
+      },
+      "aprox_sin_correccion": {
+        "valor": "sqrt(6)*exp(-2/3)/(6*sqrt(pi))",
+        "metodo": "exacto"
+      },
+      "binomial_exacta": {
+        "valor": "495/4096",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.121262,
+        "coincide": true
+      },
+      "urna_mas_probable": {
+        "valor": "6",
+        "metodo": "exacto"
+      }
+    }
+  },
+  "g8-12": {
+    "numero": "8.12",
+    "items": {
+      "a": {
+        "valor": "103",
+        "metodo": "exacto"
+      },
+      "n_por_la_binomial_exacta": {
+        "valor": "104",
+        "metodo": "exacto"
+      },
+      "p_aprox_con_ese_n": {
+        "valor": "1/2 - erf(13*sqrt(206)/103)/2",
+        "metodo": "exacto"
+      },
+      "p_aprox_con_uno_mas": {
+        "valor": "1/2 - erf(23*sqrt(13)/52)/2",
+        "metodo": "exacto"
+      },
+      "p_exacta_con_104": {
+        "valor": "572437722511852633265705227404088426981395646252510494605109254217043442673450498378165189759979711149/100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "metodo": "exacto"
+      }
+    }
+  },
+  "g8-15": {
+    "numero": "8.15",
+    "items": {
+      "a": {
+        "valor": "erf(2)/2 + 1/2",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.99782,
+        "coincide": true
+      },
+      "media_total": {
+        "valor": "500",
+        "metodo": "exacto"
+      },
+      "desvio_total": {
+        "valor": "10*sqrt(2)",
+        "metodo": "exacto"
+      }
+    }
+  },
+  "g8-22": {
+    "numero": "8.22",
+    "items": {
+      "a": {
+        "valor": "1762",
+        "metodo": "exacto"
+      },
+      "media_palada": {
+        "valor": "23/10",
+        "metodo": "exacto"
+      },
+      "varianza_palada": {
+        "valor": "163/300",
+        "metodo": "exacto"
+      },
+      "promedio_de_las_varianzas": {
+        "valor": "1/3",
+        "metodo": "exacto"
+      }
+    }
   }
 }
