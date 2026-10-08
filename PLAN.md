@@ -440,9 +440,9 @@ Cada fase termina con algo usable. La idea es estudiar desde la fase 2.
 | 0. Setup | Repo, Vite + TS + Preact, KaTeX, math.js, fuentes, tokens CSS, `CLAUDE.md`, `fuentes/` cargadas. | `npm run dev` muestra la página crema vacía con las tabs. | **hecha** |
 | 0.5. Ingesta | Extractor de enunciados (§4.8), rasterizador, inventario del material. | Borradores de las 12 guías con menos del 20 % de avisos de revisión. | **hecha** |
 | 1. Motor | Esquemas TS, carga de YAML/MD vía `import.meta.glob`, validador, tarjeta de ejercicio con los 4 tipos de respuesta, pistas, fórmulas, ver respuesta, tags ocultos y resaltado. | Los 4 tipos de respuesta funcionando de punta a punta sobre ejercicios reales. | **hecha** |
-| 2. Guía 1 | Pipeline §7 sobre el núcleo recomendado de la Guía 1, con teoría, secuencia y filtro de skills. | `revision/guia-1.md` revisado por Mateo. | **núcleo hecho**, falta cruzar contra las resueltas |
+| 2. Guía 1 | Pipeline §7 sobre el núcleo recomendado de la Guía 1, con teoría, secuencia y filtro de skills. | `revision/guia-1.md` revisado por Mateo. | **hecha**, falta cruzar contra las resueltas |
 | 3. Progreso | Log de intentos, estados de skill, panel de insignias, export/import. | El panel refleja correctamente una sesión real de estudio. | **hecha** |
-| 4. Guías 2–8 | Pipeline §7 guía por guía (una sesión de Claude Code por guía). | Cada guía con su `revision/` cerrado. | pendiente |
+| 4. Guías 2–8 | Pipeline §7 guía por guía (una sesión de Claude Code por guía). | Cada guía con su `revision/` cerrado. | **núcleo hecho** en las 8; falta el cruce contra las resueltas |
 | 5. Simulacro | Exámenes cargados y verificados, timer, entrega, nota y veredicto. | Un simulacro completo con nota coherente. | **motor hecho**, falta contenido (depende de la 4) |
 | 6. Futuro | Guías 9–12, integradoras de PyE B completas (ejercicios 4 y 5), ejercicios parametrizados. | — | pendiente |
 

@@ -102,21 +102,34 @@ try {
     'la respuesta aparece en el HTML sin haberla pedido',
   )
 
-  // Una guía sin contenido tiene que avisar, no explotar. Se busca cuál está
-  // vacía en vez de fijar un número: a medida que se cargan guías, el número
-  // cambia.
-  const sinContenido = [1, 2, 3, 4, 5, 6, 7, 8].find(
-    (n) => !contenido.guiaTieneContenido(n),
-  )
-  if (sinContenido === undefined) {
-    console.log('  (todas las guías tienen contenido: no se probó el caso vacío)')
-  } else {
-    const vacia = render(createElement(VistaGuia, { numero: sinContenido }))
-    afirmar(
-      vacia.includes('todavía no tiene contenido'),
-      `la guía ${sinContenido} está vacía y no avisa`,
-    )
+  // Todas las guías cargadas tienen que dibujarse enteras: el título, los
+  // chips, al menos un bloque de teoría y todos los ejercicios de su
+  // secuencia, con KaTeX corrido y sin LaTeX roto.
+  for (const g of contenido.guias) {
+    const vista = render(createElement(VistaGuia, { numero: g.numero }))
+    afirmar(vista.includes(g.titulo), `guía ${g.numero}: no se ve el título`)
+    afirmar(vista.includes('class="chip'), `guía ${g.numero}: no se ven los chips`)
+    afirmar(vista.includes('class="teoria"'), `guía ${g.numero}: no se ve teoría`)
+    afirmar(!vista.includes('mate-roto'), `guía ${g.numero}: hay LaTeX que KaTeX no parseó`)
+    for (const paso of g.secuencia) {
+      if (paso.tipo !== 'ejercicio') continue
+      afirmar(
+        vista.includes(`id="ej-${paso.id}"`),
+        `guía ${g.numero}: no se ve la tarjeta de ${paso.id}`,
+      )
+    }
   }
+
+  // Una guía sin contenido tiene que avisar, no explotar. Se busca cuál está
+  // vacía en vez de fijar un número, porque a medida que se cargan guías el
+  // número cambia. Con las ocho cargadas se usa una que no existe.
+  const sinContenido =
+    [1, 2, 3, 4, 5, 6, 7, 8].find((n) => !contenido.guiaTieneContenido(n)) ?? 99
+  const vacia = render(createElement(VistaGuia, { numero: sinContenido }))
+  afirmar(
+    vacia.includes('todavía no tiene contenido'),
+    `la guía ${sinContenido} está vacía y no avisa`,
+  )
 
   // --- panel de skills (fase 3) ---
   const { PanelSkills } = await servidor.ssrLoadModule('/src/vistas/PanelSkills.tsx')

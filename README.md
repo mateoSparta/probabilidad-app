@@ -24,19 +24,19 @@ no hace falta activar el venv a mano.
 
 | | |
 |---|---|
-| Guía 1 | 14 ejercicios, 40 ítems, 12 skills, 9 bloques de teoría |
-| Guías 2–8 | borradores extraídos, sin cargar |
+| Guías 1 a 8 | **53 ejercicios, 113 ítems, 44 skills, 31 bloques de teoría** |
 | Simulacro | motor completo; 2 parciales con 1 ejercicio verificado cada uno |
 | Progreso | log de intentos, estados de skill, insignias, export/import |
 | Persistencia | todo en `localStorage`, sin servidor: historial de intentos y dónde quedaste |
 
-Los 44 valores numéricos del contenido están verificados y el build los
-contrasta en cada corrida.
+Los **128 valores numéricos** del contenido están verificados por dos caminos
+independientes, y el build los contrasta en cada corrida.
 
-Lo que falta, con el detalle de cada cosa:
-[revision/guia-1.md](revision/guia-1.md),
-[revision/examenes.md](revision/examenes.md) y
-[revision/inventario.md](revision/inventario.md).
+Está cargado el núcleo recomendado por la cátedra (los ejercicios marcados `!`
+en la guía) de las ocho guías.
+
+**Lo que falta y por qué: [revision/00-estado.md](revision/00-estado.md).** Ahí
+está el índice; el detalle por guía está en `revision/guia-N.md`.
 
 ## Comandos
 
