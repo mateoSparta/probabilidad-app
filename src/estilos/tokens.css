@@ -6,6 +6,12 @@
   --fondo: #f4efe6;
   --superficie: #fbf8f2;
   --superficie-alta: #ffffff;
+
+  /* La teoria lleva un tono mas calido y apenas mas saturado que las
+     tarjetas de ejercicio: se distingue de un vistazo sin salirse de la
+     paleta. El borde es terracota muy diluido. */
+  --superficie-teoria: #f6eee1;
+  --borde-teoria: #b4552d33;
   --tinta: #2b2620;
   --tinta-2: #6b6257;
   --tinta-3: #9a9087;

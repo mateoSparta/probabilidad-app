@@ -62,6 +62,7 @@ code, kbd, input, textarea, button, select {
   font-size: var(--t-md);
   font-weight: 600;
   letter-spacing: -0.01em;
+  flex: none;
 }
 .cabecera__titulo span {
   display: block;
@@ -72,7 +73,7 @@ code, kbd, input, textarea, button, select {
   text-transform: uppercase;
 }
 
-.cabecera__acciones { display: flex; gap: var(--e-2); }
+.cabecera__acciones { display: flex; gap: var(--e-2); margin-left: auto; }
 
 /* --- tabs de guía --- */
 .tabs {

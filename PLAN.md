@@ -43,15 +43,31 @@ Hay cinco principios que guían las decisiones:
 |---|---|
 | Tabs | Una por guía (Guía 1 … Guía 8). |
 | Cuerpo de la tab | Descripción conceptual breve, seguida de una secuencia que alterna bloques de teoría y ejercicios. |
-| Filtro | Chips de skills de la guía, todos tildados por defecto. Destildar oculta los ejercicios cuyos ítems no tengan ningún skill tildado. La teoría se mantiene visible. |
+| Navegación | **Mapa de ejercicios**: una fila de círculos, uno por ejercicio, con su estado (sin intentar, en progreso, con un error sin resolver, resuelto). El hover dice cuál es y el clic baja hasta él. Más un **índice de temas** en la columna libre de la izquierda. |
 | Unidad validable | El **ítem**: (a), (b), (c)… Cada ítem declara sus skills. |
 | Tags en ejercicios | Ocultos hasta que el ítem se resuelve o se revela la respuesta. Recién ahí aparecen los tags, y el hover resalta el fragmento del enunciado que justifica cada uno. |
 | Ayudas por ítem | **Fórmulas** (por skill, reutilizables), **Pistas** graduadas (la última es un plan de resolución en 2–3 líneas, sin cuentas) y **Ver respuesta** (muestra el resultado final; el intento no cuenta como limpio). |
 | Tipos de respuesta | `numerica`, `expresion`, `opcion` y `checkpoints` (ver §4.4). |
 | Insignias | Por skill, globales (un skill puede aparecer en varias guías). Hay un panel general de skills. |
 | Simulacro | Botón (no tab). Elige al azar un examen de PyE B, con timer configurable (por defecto 4 h), toggle de tags y botón "Entregar" que calcula la nota. |
-| Persistencia | `localStorage` + exportar/importar JSON. |
+| Persistencia | `localStorage` + exportar/importar JSON. Se guardan dos cosas separadas: el **historial** de intentos (de donde salen las insignias) y la **sesión** (dónde quedaste: ítems resueltos, lo tipeado, el simulacro a medio rendir). |
+| Fecha del parcial | En `content/config.yaml`. El encabezado muestra los días que faltan y el panel de skills calcula cuántos ítems por día hacen falta para dominar los temas que quedan. |
 | Stack | Vite + TypeScript + Preact, KaTeX, math.js. Sin backend. |
+
+**Sobre el filtro por skills.** La primera versión de este plan proponía chips
+de skills que ocultaban los ejercicios no relacionados. Se reemplazó por el
+mapa de círculos, con un cambio de idea: en vez de esconder ejercicios para
+enfocarse en un tema, mostrar de un vistazo el estado de todos y poder saltar
+al que haga falta. El índice lateral cubre la necesidad de moverse por tema.
+
+**Sobre llegar al parcial.** La meta no es resolver todos los ejercicios sino
+dominar todos los skills, que es lo mínimo necesario para entender los temas.
+Como un mismo ítem aporta a varios skills, el conjunto más chico que cubre lo
+que falta es un problema de cobertura, y se resuelve con una heurística greedy
+(`src/dominio/ritmo.ts`). Los skills con menos de 3 ítems cargados quedan
+**fuera de la meta**: con menos de 3 no se pueden dominar nunca, así que
+incluirlos haría que la meta no se alcanzara jamás. El panel los lista aparte,
+porque son un hueco de contenido y no del alumno.
 
 ---
 

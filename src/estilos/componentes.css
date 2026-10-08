@@ -35,11 +35,18 @@
 /* ------------------------------------------------------------- teoría */
 
 .teoria {
-  background: var(--superficie);
-  border-left: 2px solid var(--borde-fuerte);
+  background: var(--superficie-teoria);
+  border: 1px solid var(--borde-teoria);
+  border-left: 3px solid color-mix(in srgb, var(--acento) 55%, transparent);
   padding: var(--e-4) var(--e-5);
   margin-block: var(--e-6);
   border-radius: 0 var(--radio-lg) var(--radio-lg) 0;
+}
+/* Los anclas tienen que quedar abajo del header sticky al saltar hacia ellas. */
+.teoria,
+.tarjeta,
+.guia__intro {
+  scroll-margin-top: 7.5rem;
 }
 .teoria h2, .teoria h3 { margin-top: 0; font-size: var(--t-md); }
 .teoria > :last-child { margin-bottom: 0; }
@@ -340,6 +347,12 @@
 .celda-skill__estado {
   font-size: var(--t-xs);
   color: var(--color-estado);
+}
+.celda-skill__nota {
+  font-size: 0.68rem;
+  font-style: italic;
+  color: var(--tinta-3);
+  line-height: 1.3;
 }
 
 .detalle-skill {

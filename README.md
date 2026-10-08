@@ -28,6 +28,8 @@ no hace falta activar el venv a mano.
 | Simulacro | motor completo; 2 parciales con 1 ejercicio verificado cada uno |
 | Progreso | log de intentos, estados de skill, insignias, export/import |
 | Persistencia | todo en `localStorage`, sin servidor: historial de intentos y dónde quedaste |
+| Navegación | mapa de círculos por ejercicio, índice de temas al costado |
+| Ritmo | días hasta el parcial y cuántos ítems por día hacen falta para llegar |
 
 Los **128 valores numéricos** del contenido están verificados por dos caminos
 independientes, y el build los contrasta en cada corrida.
@@ -37,6 +39,16 @@ en la guía) de las ocho guías.
 
 **Lo que falta y por qué: [revision/00-estado.md](revision/00-estado.md).** Ahí
 está el índice; el detalle por guía está en `revision/guia-N.md`.
+
+## La fecha del parcial
+
+Está en [content/config.yaml](content/config.yaml), junto con el curso y qué
+ritmo se considera cómodo. Cambiar la fecha ahí alcanza: el encabezado y el
+panel de skills se actualizan solos.
+
+El panel no mide cuántos ejercicios hiciste sino **cuánto falta para dominar
+todos los temas**, que es otra cosa: como un mismo ítem aporta a varios skills,
+no hace falta hacerlos todos. De los 113 ítems cargados, con 61 alcanza.
 
 ## Comandos
 

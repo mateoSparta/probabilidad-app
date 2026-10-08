@@ -1,0 +1,269 @@
+/* Mapa de ejercicios, índice lateral, aviso del parcial y pie. */
+
+/* ------------------------------------------- mapa de ejercicios */
+
+.mapa {
+  display: flex;
+  align-items: center;
+  gap: var(--e-4);
+  flex-wrap: wrap;
+  margin-top: var(--e-5);
+}
+
+.mapa__fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mapa__cuenta {
+  margin: 0;
+  font-size: var(--t-xs);
+  color: var(--tinta-3);
+}
+
+/* Cada punto es un círculo de borde grueso: el estado se lee por el color del
+   borde, no por el relleno, así la fila queda liviana. */
+.punto {
+  appearance: none;
+  cursor: pointer;
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid var(--borde-fuerte);
+  background: transparent;
+  position: relative;
+  transition: transform 120ms, box-shadow 120ms;
+}
+.punto:hover,
+.punto:focus-visible {
+  transform: scale(1.25);
+}
+
+.punto--sin_intentar {
+  border-color: var(--sin-explorar);
+  border-style: solid;
+  opacity: 0.55;
+}
+.punto--en_progreso {
+  border-color: var(--desarrollo);
+  background: var(--desarrollo-suave);
+}
+.punto--mal {
+  border-color: var(--flojo);
+  background: var(--flojo-suave);
+}
+.punto--resuelto {
+  border-color: var(--dominado);
+  background: var(--dominado-suave);
+}
+
+/* Globo de ayuda en hover. Se usa un atributo para no necesitar más markup. */
+.punto[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
+  translate: -50% 0;
+  white-space: nowrap;
+  font-family: var(--serif);
+  font-size: var(--t-xs);
+  line-height: 1.3;
+  color: var(--superficie-alta);
+  background: var(--tinta);
+  padding: 2px var(--e-2);
+  border-radius: var(--radio);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms;
+  z-index: 20;
+}
+.punto[data-tip]:hover::after,
+.punto[data-tip]:focus-visible::after {
+  opacity: 1;
+}
+
+/* ----------------------------------------------- índice lateral */
+
+/* Vive en el espacio vacío de la izquierda. La columna central mide 760 px,
+   así que hay lugar recién a partir de unos 1180 px de ancho. Por debajo de
+   eso el índice se esconde: la columna es lo que importa. */
+.indice {
+  display: none;
+}
+
+@media (min-width: 1180px) {
+  .indice {
+    display: block;
+    position: fixed;
+    top: 9rem;
+    left: calc(50% - (var(--col) / 2) - 13rem);
+    width: 11.5rem;
+    max-height: calc(100vh - 11rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+
+.indice__titulo {
+  margin: 0 0 var(--e-2);
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tinta-3);
+}
+
+.indice__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 1px solid var(--borde);
+}
+
+.indice__lista li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--e-2);
+}
+
+.indice__tema {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--serif);
+  font-size: var(--t-xs);
+  line-height: 1.35;
+  color: var(--tinta-2);
+  padding: var(--e-1) var(--e-3);
+  margin-left: -1px;
+  border-left: 2px solid transparent;
+  transition: color 120ms, border-color 120ms;
+}
+.indice__tema:hover {
+  color: var(--acento);
+  border-left-color: var(--acento);
+}
+
+.indice__avance {
+  flex: none;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--tinta-3);
+  padding-right: var(--e-1);
+}
+
+/* --------------------------------------- volver al inicio (pie) */
+
+.volver {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  width: 100%;
+  padding: var(--e-5) 0 var(--e-6);
+  color: var(--tinta-3);
+  font-family: var(--serif);
+  transition: color 120ms;
+}
+.volver:hover {
+  color: var(--acento);
+}
+
+.volver__linea {
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.volver__texto {
+  flex: none;
+  font-size: var(--t-sm);
+  letter-spacing: 0.02em;
+}
+
+/* -------------------------------------------- aviso del parcial */
+
+.aviso-parcial {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-2);
+  font-size: var(--t-xs);
+  color: var(--tinta-2);
+  border-left: 2px solid var(--color-ritmo, var(--borde-fuerte));
+  padding-left: var(--e-3);
+}
+.aviso-parcial__fecha {
+  font-weight: 500;
+  color: var(--color-ritmo, var(--tinta-2));
+}
+.aviso-parcial__sep {
+  color: var(--tinta-3);
+}
+
+/* Un color por estado del ritmo, compartido por el aviso compacto y el
+   detalle del panel. */
+.ritmo--listo    { --color-ritmo: var(--dominado); }
+.ritmo--holgado  { --color-ritmo: var(--dominado); }
+.ritmo--justo    { --color-ritmo: var(--desarrollo); }
+.ritmo--apretado { --color-ritmo: var(--flojo); }
+.ritmo--neutro   { --color-ritmo: var(--tinta-3); }
+
+/* ------------------------------------- detalle del ritmo (panel) */
+
+.ritmo {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--color-ritmo, var(--borde-fuerte));
+  border-radius: 0 var(--radio-lg) var(--radio-lg) 0;
+  padding: var(--e-4) var(--e-5);
+  margin-bottom: var(--e-6);
+}
+.ritmo h3 {
+  margin-bottom: var(--e-3);
+  color: var(--color-ritmo, var(--tinta));
+}
+.ritmo p {
+  margin-bottom: var(--e-3);
+}
+.ritmo > :last-child {
+  margin-bottom: 0;
+}
+
+.ritmo__numero {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-2);
+}
+.ritmo__numero strong {
+  font-size: var(--t-xl);
+  font-weight: 600;
+  color: var(--color-ritmo, var(--tinta));
+  font-variant-numeric: tabular-nums;
+}
+.ritmo__numero span {
+  color: var(--tinta-2);
+}
+
+.ritmo__datos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2) var(--e-5);
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}

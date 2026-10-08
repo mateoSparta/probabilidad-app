@@ -72,6 +72,46 @@ for (const s of skills) {
   if (typeof s.guia !== 'number') err(`skill ${s.id}: falta \`guia\``)
 }
 
+// ----------------------------------------------------------------- config
+
+type ConfigCruda = {
+  parcial?: string
+  curso?: string | null
+  ritmo_comodo_por_dia?: number
+}
+
+const rutaConfig = join(CONTENT, 'config.yaml')
+if (existsSync(rutaConfig)) {
+  const cfg = (leerYaml<ConfigCruda>(rutaConfig) ?? {}) as ConfigCruda
+
+  if (!cfg.parcial) {
+    err('config.yaml: falta `parcial`, la fecha del examen')
+  } else if (!/^\d{4}-\d{2}-\d{2}$/.test(cfg.parcial)) {
+    err(`config.yaml: \`parcial\` tiene que ser una fecha ISO (2026-10-30), no \`${cfg.parcial}\``)
+  } else if (Number.isNaN(new Date(`${cfg.parcial}T00:00:00`).getTime())) {
+    err(`config.yaml: \`parcial\` no es una fecha válida: \`${cfg.parcial}\``)
+  } else {
+    // Una fecha ya pasada no es un error (el repo puede quedar viejo), pero
+    // deja la cuenta de dias en negativo y conviene avisarlo.
+    const dias = Math.round(
+      (new Date(`${cfg.parcial}T00:00:00`).getTime() - Date.now()) / 86_400_000,
+    )
+    if (dias < 0) {
+      avisar(
+        `config.yaml: la fecha del parcial (${cfg.parcial}) ya pasó hace ${-dias} días. ` +
+          'El panel lo va a mostrar como vencido.',
+      )
+    }
+  }
+
+  const ritmo = cfg.ritmo_comodo_por_dia
+  if (ritmo !== undefined && (typeof ritmo !== 'number' || ritmo <= 0)) {
+    err('config.yaml: `ritmo_comodo_por_dia` tiene que ser un número positivo')
+  }
+} else {
+  avisar('no existe content/config.yaml: se usan los valores por defecto')
+}
+
 // -------------------------------------------------------------- ejercicios
 
 const dirsGuia = existsSync(join(CONTENT, 'guias'))

@@ -38,7 +38,7 @@ export function Teoria({ bloque }: { bloque: BloqueTeoria }) {
   return (
     <section
       class="teoria"
-      id={'t-' + bloque.id}
+      id={bloque.id}
       dangerouslySetInnerHTML={{ __html: aHtml(bloque.cuerpo) }}
     />
   )

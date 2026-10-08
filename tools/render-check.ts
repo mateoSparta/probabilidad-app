@@ -63,9 +63,17 @@ try {
   const html = render(createElement(VistaGuia, { numero: 1 }))
 
   afirmar(html.includes('Espacios de probabilidad'), 'no se ve el título de la guía')
-  afirmar(html.includes('class="chip'), 'no se ven los chips de skills')
   afirmar(html.includes('class="teoria"'), 'no se ve ningún bloque de teoría')
   afirmar(html.includes('class="tarjeta"'), 'no se ve ninguna tarjeta de ejercicio')
+
+  // Los chips que filtraban por skill se reemplazaron por el mapa de
+  // círculos; si volvieran, es que alguien revirtió el cambio.
+  afirmar(!html.includes('class="chip'), 'volvieron los chips de filtro')
+  afirmar(html.includes('class="mapa"'), 'no se ve el mapa de ejercicios')
+  afirmar(html.includes('class="indice"'), 'no se ve el índice lateral')
+  afirmar(html.includes('class="volver"'), 'no se ve el enlace de volver al inicio')
+  afirmar(html.includes('volver al inicio'), 'el pie no dice "volver al inicio"')
+  afirmar(html.includes('id="arriba"'), 'falta el ancla a la que vuelve el pie')
 
   // KaTeX tiene que haber corrido: si no, quedaría el `$...$` crudo.
   afirmar(html.includes('katex'), 'KaTeX no renderizó nada')
@@ -108,8 +116,26 @@ try {
   for (const g of contenido.guias) {
     const vista = render(createElement(VistaGuia, { numero: g.numero }))
     afirmar(vista.includes(g.titulo), `guía ${g.numero}: no se ve el título`)
-    afirmar(vista.includes('class="chip'), `guía ${g.numero}: no se ven los chips`)
+    afirmar(vista.includes('class="mapa"'), `guía ${g.numero}: no se ve el mapa`)
+    afirmar(vista.includes('class="indice"'), `guía ${g.numero}: no se ve el índice`)
     afirmar(vista.includes('class="teoria"'), `guía ${g.numero}: no se ve teoría`)
+    // Un círculo por ejercicio de la secuencia.
+    const ejerciciosDeLaGuia = g.secuencia.filter(
+      (p: { tipo: string }) => p.tipo === 'ejercicio',
+    ).length
+    const puntos = (vista.match(/class="punto punto--/g) ?? []).length
+    afirmar(
+      puntos === ejerciciosDeLaGuia,
+      `guía ${g.numero}: hay ${puntos} círculos para ${ejerciciosDeLaGuia} ejercicios`,
+    )
+    // Cada tema del índice tiene que apuntar a un ancla que exista.
+    for (const paso of g.secuencia) {
+      if (paso.tipo !== 'teoria') continue
+      afirmar(
+        vista.includes(`id="${paso.id}"`),
+        `guía ${g.numero}: falta el ancla del tema ${paso.id}`,
+      )
+    }
     afirmar(!vista.includes('mate-roto'), `guía ${g.numero}: hay LaTeX que KaTeX no parseó`)
     for (const paso of g.secuencia) {
       if (paso.tipo !== 'ejercicio') continue
@@ -271,6 +297,141 @@ try {
   afirmar(tarde.includes('entregado'), 'un simulacro vencido no vuelve entregado')
   afirmar(tarde.includes('class="nota"'), 'un simulacro vencido no muestra la nota')
   afirmar(tarde.includes('Ver respuesta'), 'tras entregar no vuelven las ayudas')
+
+  // --- aviso del parcial y ritmo ---
+  const ritmoMod = await servidor.ssrLoadModule('/src/dominio/ritmo.ts')
+  const { AvisoParcialCompacto, AvisoParcialDetalle } = await servidor.ssrLoadModule(
+    '/src/componentes/AvisoParcial.tsx',
+  )
+
+  const skillsReales = contenido.skillsConItems()
+  const hoy = new Date('2026-10-08T10:00:00')
+
+  const planVacio = ritmoMod.armarPlan(
+    progresoMod.PROGRESO_VACIO,
+    skillsReales,
+    contenido.skillsDeItem,
+    contenido.config,
+    hoy,
+  )
+
+  // El aviso compacto dice la fecha y los días, y nada más: es lo que se ve
+  // siempre, así que tiene que ser corto.
+  const avisoCompacto = render(createElement(AvisoParcialCompacto, { plan: planVacio }))
+  afirmar(avisoCompacto.includes('Parcial 30/10'), 'el aviso compacto no dice la fecha')
+  afirmar(avisoCompacto.includes('faltan 22 días'), `el aviso compacto dice: ${avisoCompacto}`)
+  afirmar(avisoCompacto.includes('ritmo--'), 'el aviso compacto no lleva el tono del ritmo')
+
+  // El detalle da la cuenta completa.
+  const detalleRitmo = render(createElement(AvisoParcialDetalle, { plan: planVacio }))
+  afirmar(detalleRitmo.includes('Todavía no arrancaste'), 'el detalle no saluda al que no arrancó')
+  afirmar(detalleRitmo.includes('skills dominados'), 'el detalle no muestra los skills dominados')
+  afirmar(
+    detalleRitmo.includes(String(planVacio.porDia)),
+    'el detalle no muestra el ritmo necesario por día',
+  )
+  afirmar(
+    planVacio.itemsFaltantes > 0 && planVacio.itemsFaltantes < 113,
+    `los ítems faltantes dieron ${planVacio.itemsFaltantes}: tendrían que ser menos que el total`,
+  )
+  afirmar(
+    planVacio.ejerciciosFaltantes <= 53,
+    'los ejercicios faltantes superan el total cargado',
+  )
+
+  // Con la fecha pasada avisa, no explota.
+  const planVencido = ritmoMod.armarPlan(
+    progresoMod.PROGRESO_VACIO,
+    skillsReales,
+    contenido.skillsDeItem,
+    contenido.config,
+    new Date('2026-12-01'),
+  )
+  const vistaVencida = render(createElement(AvisoParcialDetalle, { plan: planVencido }))
+  afirmar(vistaVencida.includes('ya pasó'), 'con la fecha pasada el detalle no avisa')
+
+  // El encabezado lleva el aviso.
+  const cabeceraConPlan = render(
+    createElement(Cabecera, {
+      vista: 'guia',
+      guiaActiva: 1,
+      plan: planVacio,
+      onVista: () => {},
+      onGuia: () => {},
+    }),
+  )
+  afirmar(
+    cabeceraConPlan.includes('class="aviso-parcial'),
+    'el encabezado no muestra el aviso del parcial',
+  )
+
+  // --- los círculos cambian de color según el estado ---
+  const primerEjercicio = contenido.ejercicioPorId.get('g1-04')
+  const clavesDe04 = primerEjercicio.items.map(
+    (i: { id: string }) => `g1-04:${i.id}`,
+  )
+
+  let sesionPintada = sesionMod.SESION_VACIA
+  for (const clave of clavesDe04) {
+    sesionPintada = sesionMod.guardarItem(sesionPintada, clave, {
+      estado: 'correcto',
+      envios: 1,
+      pistasAbiertas: 0,
+    })
+  }
+  const conResuelto = render(
+    createElement(VistaGuia, { numero: 1, sesion: apiSesion(sesionPintada) }),
+  )
+  afirmar(
+    conResuelto.includes('punto--resuelto'),
+    'con un ejercicio resuelto no aparece el círculo verde',
+  )
+  afirmar(
+    conResuelto.includes('punto--sin_intentar'),
+    'los ejercicios sin tocar no quedaron grises',
+  )
+  afirmar(conResuelto.includes('1.4 — resuelto'), 'el globo del círculo no dice el estado')
+
+  // Un error sin resolver pinta rojo.
+  const sesionConError = sesionMod.guardarItem(sesionMod.SESION_VACIA, clavesDe04[0], {
+    estado: 'incorrecto',
+    envios: 2,
+    pistasAbiertas: 0,
+  })
+  const vistaError = render(
+    createElement(VistaGuia, { numero: 1, sesion: apiSesion(sesionConError) }),
+  )
+  afirmar(vistaError.includes('punto--mal'), 'un error sin resolver no pinta el círculo rojo')
+
+  // Y empezar sin errores pinta ámbar.
+  const empezado = sesionMod.guardarItem(sesionMod.SESION_VACIA, clavesDe04[0], {
+    estado: 'correcto',
+    envios: 1,
+    pistasAbiertas: 0,
+  })
+  const vistaEmpezada = render(
+    createElement(VistaGuia, { numero: 1, sesion: apiSesion(empezado) }),
+  )
+  afirmar(
+    vistaEmpezada.includes('punto--en_progreso'),
+    'un ejercicio a medias no pinta el círculo ámbar',
+  )
+
+  // --- el índice lista los temas con su título, no con su id ---
+  const guia1 = contenido.guiaPorNumero.get(1)
+  const indiceEsperados = guia1.secuencia
+    .filter((p: { tipo: string }) => p.tipo === 'teoria')
+    .map((p: { id: string }) => contenido.teoriaPorId.get(p.id))
+  for (const bloque of indiceEsperados) {
+    afirmar(
+      html.includes(bloque.titulo),
+      `el índice no muestra el título del tema ${bloque.id} (${bloque.titulo})`,
+    )
+    afirmar(
+      bloque.titulo !== bloque.id,
+      `el tema ${bloque.id} no tiene título: se cayó al id`,
+    )
+  }
 
   console.log(`render-check: ${ok} afirmaciones OK.`)
   for (const f of fallas) console.error(`  ✗ ${f}`)

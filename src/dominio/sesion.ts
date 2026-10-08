@@ -181,3 +181,43 @@ export function desdeJson(texto: string): Sesion | null {
     return null
   }
 }
+
+// ------------------------------------------------- estado de un ejercicio
+
+/**
+ * El estado de un ejercicio entero, resumiendo el de sus items. Es lo que
+ * pinta cada circulo del mapa de ejercicios.
+ *
+ *   sin_intentar   no se toco
+ *   en_progreso    se empezo: hay items resueltos, revelados o con envios
+ *   mal            hay algun item intentado y errado, todavia sin resolver
+ *   resuelto       todos los items correctos
+ *
+ * El orden de las condiciones importa: `resuelto` gana sobre todo, y `mal`
+ * gana sobre `en_progreso`, porque lo que interesa ver de un vistazo es donde
+ * quedaste trabado.
+ */
+export type EstadoEjercicio = 'sin_intentar' | 'en_progreso' | 'mal' | 'resuelto'
+
+export function estadoEjercicio(
+  s: Sesion,
+  claves: readonly string[],
+): EstadoEjercicio {
+  if (claves.length === 0) return 'sin_intentar'
+
+  const estados = claves.map((c) => itemDeSesion(s, c))
+
+  if (estados.every((e) => e.estado === 'correcto')) return 'resuelto'
+  if (estados.some((e) => e.estado === 'incorrecto')) return 'mal'
+  if (estados.some((e) => e.estado !== 'pendiente' || e.envios > 0)) {
+    return 'en_progreso'
+  }
+  return 'sin_intentar'
+}
+
+export const ETIQUETA_ESTADO_EJERCICIO: Record<EstadoEjercicio, string> = {
+  sin_intentar: 'sin intentar',
+  en_progreso: 'en progreso',
+  mal: 'con un error sin resolver',
+  resuelto: 'resuelto',
+}

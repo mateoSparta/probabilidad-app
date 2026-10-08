@@ -44,6 +44,7 @@ import {
   desdeJson as desdeJsonSesion,
   guardarItem,
   guardarSimulacro,
+  estadoEjercicio,
   itemDeSesion,
   olvidarItem,
   podar,
@@ -53,6 +54,15 @@ import {
   seVencio,
   simulacroRetomable,
 } from '../src/dominio/sesion.ts'
+import {
+  armarPlan,
+  deficitPorSkill,
+  diasHasta,
+  itemsRecomendados,
+  ritmoReciente,
+  type Config,
+  type SkillConItems,
+} from '../src/dominio/ritmo.ts'
 import { claveItem, type Ejercicio, type Intento, type Item } from '../src/dominio/tipos.ts'
 
 /** Un intento mínimo, para los casos donde sólo importan el ítem y la fecha. */
@@ -531,6 +541,209 @@ for (const [valor, alternativa] of equivalentes) {
   afirmar(
     respuestasDeSimulacro(corregido).get(1)?.length === 3,
     'corregir una respuesta cambió la cantidad de ítems anotados',
+  )
+}
+
+// ------------------------------ mapa de ejercicios y ritmo (correcciones)
+
+{
+  // --- estado agregado de un ejercicio ---
+  const claves = ['x:a', 'x:b']
+
+  afirmar(
+    estadoEjercicio(SESION_VACIA, claves) === 'sin_intentar',
+    'un ejercicio sin tocar no da sin_intentar',
+  )
+  afirmar(estadoEjercicio(SESION_VACIA, []) === 'sin_intentar', 'un ejercicio sin ítems explota')
+
+  const unoBien = guardarItem(SESION_VACIA, 'x:a', {
+    estado: 'correcto',
+    envios: 1,
+    pistasAbiertas: 0,
+  })
+  afirmar(
+    estadoEjercicio(unoBien, claves) === 'en_progreso',
+    'con un ítem de dos resuelto tendría que estar en progreso',
+  )
+
+  const dosBien = guardarItem(unoBien, 'x:b', {
+    estado: 'correcto',
+    envios: 1,
+    pistasAbiertas: 0,
+  })
+  afirmar(estadoEjercicio(dosBien, claves) === 'resuelto', 'con los dos resueltos no da resuelto')
+
+  const conError = guardarItem(unoBien, 'x:b', {
+    estado: 'incorrecto',
+    envios: 2,
+    pistasAbiertas: 0,
+  })
+  // `mal` gana sobre `en_progreso`: interesa ver dónde quedaste trabado.
+  afirmar(
+    estadoEjercicio(conError, claves) === 'mal',
+    'un ítem incorrecto tendría que marcar el ejercicio como mal',
+  )
+
+  // Revelar la respuesta no es resolver.
+  const revelado = guardarItem(SESION_VACIA, 'x:a', {
+    estado: 'revelado',
+    envios: 0,
+    pistasAbiertas: 3,
+  })
+  afirmar(
+    estadoEjercicio(revelado, claves) === 'en_progreso',
+    'revelar la respuesta no tendría que contar como resuelto',
+  )
+
+  // --- cuenta de días ---
+  const hoy = new Date('2026-10-08T10:00:00')
+  afirmar(diasHasta('2026-10-30', hoy) === 22, `diasHasta dio ${diasHasta('2026-10-30', hoy)}`)
+  afirmar(diasHasta('2026-10-08', hoy) === 0, 'el mismo día no da 0')
+  afirmar(diasHasta('2026-10-01', hoy) < 0, 'una fecha pasada no da negativo')
+  // No depende de la hora del día: a la mañana y a la noche falta lo mismo.
+  afirmar(
+    diasHasta('2026-10-30', new Date('2026-10-08T23:30:00')) === 22,
+    'diasHasta cambia según la hora del día',
+  )
+
+  // --- déficit y cobertura ---
+  const skills: SkillConItems[] = [
+    { id: 's1', items: new Set(['e1:a', 'e1:b', 'e2:a']) },
+    { id: 's2', items: new Set(['e2:a', 'e2:b', 'e3:a']) },
+  ]
+  const skillsDeItem = new Map<string, string[]>([
+    ['e1:a', ['s1']],
+    ['e1:b', ['s1']],
+    ['e2:a', ['s1', 's2']],
+    ['e2:b', ['s2']],
+    ['e3:a', ['s2']],
+  ])
+
+  const sinNada = deficitPorSkill(PROGRESO_VACIO, skills)
+  afirmar(sinNada.get('s1') === 3 && sinNada.get('s2') === 3, 'sin intentos el déficit no es 3 y 3')
+
+  // El ítem compartido tiene que elegirse primero: cubre los dos skills.
+  const recomendados = itemsRecomendados(PROGRESO_VACIO, skills, skillsDeItem)
+  afirmar(
+    recomendados[0] === 'e2:a',
+    `el greedy no empezó por el ítem compartido: ${recomendados[0]}`,
+  )
+  // Con 3 de déficit en cada skill y 5 ítems disponibles, hacen falta los 5.
+  afirmar(recomendados.length === 5, `se recomendaron ${recomendados.length} ítems, se esperaban 5`)
+  // Es estable: dos corridas con el mismo progreso dan lo mismo.
+  afirmar(
+    itemsRecomendados(PROGRESO_VACIO, skills, skillsDeItem).join() === recomendados.join(),
+    'el greedy no es estable entre corridas',
+  )
+
+  // Lo ya resuelto limpio sale de la lista.
+  let conAvance = PROGRESO_VACIO
+  for (const [i, item] of ['e1:a', 'e1:b', 'e2:a'].entries()) {
+    conAvance = agregar(conAvance, mkIntento(item, `2026-10-0${i + 1}T12:00:00.000Z`), true)
+  }
+  const despues = itemsRecomendados(conAvance, skills, skillsDeItem)
+  afirmar(
+    !despues.includes('e1:a') && !despues.includes('e2:a'),
+    'el greedy recomienda ítems que ya se resolvieron limpio',
+  )
+  afirmar(
+    despues.length < recomendados.length,
+    'la cantidad de ítems faltantes no bajó al resolver',
+  )
+
+  // --- ritmo reciente ---
+  afirmar(ritmoReciente(PROGRESO_VACIO, 7, hoy) === 0, 'sin intentos el ritmo no es 0')
+  // Siete limpios en los siete días previos dan ritmo 1. Las fechas van del 2
+  // al 8 para que ninguna caiga justo en el borde de la ventana, que se
+  // correría según la zona horaria.
+  let siete = PROGRESO_VACIO
+  for (let i = 2; i <= 8; i++) {
+    siete = agregar(siete, mkIntento(`r${i}:a`, `2026-10-0${i}T12:00:00.000Z`), true)
+  }
+  afirmar(
+    Math.abs(ritmoReciente(siete, 7, new Date('2026-10-08T22:00:00')) - 1) < 1e-9,
+    `siete limpios en siete días dieron ritmo ${ritmoReciente(siete, 7, new Date('2026-10-08T22:00:00'))}`,
+  )
+
+  // --- el plan ---
+  const config: Config = { parcial: '2026-10-30', curso: null, ritmo_comodo_por_dia: 2 }
+
+  const planVacio = armarPlan(PROGRESO_VACIO, skills, skillsDeItem, config, hoy)
+  afirmar(
+    planVacio.veredicto === 'sin_arrancar',
+    `sin intentos el veredicto es ${planVacio.veredicto}`,
+  )
+  afirmar(planVacio.diasRestantes === 22, 'el plan no cuenta bien los días')
+  afirmar(planVacio.itemsFaltantes === 5, 'el plan no cuenta bien los ítems faltantes')
+  afirmar(planVacio.ejerciciosFaltantes === 3, 'el plan no agrupa los ítems por ejercicio')
+  afirmar(planVacio.skillsDominados === 0, 'sin intentos hay skills dominados')
+  afirmar(planVacio.porDia >= 1, 'el ritmo necesario con todo por hacer es menor que 1')
+
+  // Con todo dominado, el veredicto es listo y no falta nada.
+  let todo = PROGRESO_VACIO
+  for (const [i, item] of ['e1:a', 'e1:b', 'e2:a', 'e2:b', 'e3:a'].entries()) {
+    todo = agregar(todo, mkIntento(item, `2026-10-0${i + 1}T12:00:00.000Z`), true)
+  }
+  const planListo = armarPlan(todo, skills, skillsDeItem, config, hoy)
+  afirmar(planListo.veredicto === 'listo', `con todo hecho el veredicto es ${planListo.veredicto}`)
+  afirmar(planListo.itemsFaltantes === 0, 'con todo hecho todavía faltan ítems')
+  afirmar(planListo.skillsDominados === 2, 'con todo hecho no cuenta los dos skills')
+  afirmar(planListo.porDia === 0, 'con todo hecho el ritmo necesario no es 0')
+
+  // Con la fecha pasada, vencido.
+  const planVencido = armarPlan(conAvance, skills, skillsDeItem, config, new Date('2026-11-05'))
+  afirmar(planVencido.veredicto === 'vencido', 'con la fecha pasada el veredicto no es vencido')
+
+  // El ritmo necesario sube si quedan menos días.
+  const lejos = armarPlan(conAvance, skills, skillsDeItem, config, hoy)
+  const cerca = armarPlan(conAvance, skills, skillsDeItem, config, new Date('2026-10-29T10:00:00'))
+  afirmar(cerca.porDia >= lejos.porDia, 'con menos días el ritmo necesario no sube')
+
+  // Con todo por hacer y un día, el ritmo tiene que dar apretado. Hace falta
+  // al menos un intento registrado para salir de `sin_arrancar`, así que se
+  // usa uno NO limpio: cuenta como actividad pero no reduce el déficit.
+  const soloSucio = agregar(
+    PROGRESO_VACIO,
+    mkIntento('e1:a', '2026-10-28T12:00:00.000Z'),
+    false,
+  )
+  const ultimoDia = armarPlan(
+    soloSucio,
+    skills,
+    skillsDeItem,
+    config,
+    new Date('2026-10-29T10:00:00'),
+  )
+  afirmar(ultimoDia.itemsFaltantes === 5, 'un intento no limpio redujo el déficit')
+  afirmar(
+    ultimoDia.veredicto === 'apretado',
+    `con 5 ítems y un día el veredicto es ${ultimoDia.veredicto}`,
+  )
+
+  // --- skills que no se pueden dominar ---
+  // Un skill con 2 ítems no llega nunca a 3 limpios, así que queda afuera de
+  // la meta: si contara, el veredicto `listo` sería inalcanzable para siempre.
+  const conUnoCorto: SkillConItems[] = [
+    ...skills,
+    { id: 's3', items: new Set(['e4:a', 'e4:b']) },
+  ]
+  const deItemAmpliado = new Map(skillsDeItem)
+  deItemAmpliado.set('e4:a', ['s3'])
+  deItemAmpliado.set('e4:b', ['s3'])
+
+  const planCorto = armarPlan(todo, conUnoCorto, deItemAmpliado, config, hoy)
+  afirmar(planCorto.skillsSinCobertura === 1, 'no se contó el skill sin cobertura')
+  afirmar(planCorto.skillsTotal === 2, 'el skill corto entró en la meta')
+  afirmar(
+    planCorto.veredicto === 'listo',
+    `con la meta cumplida y un skill corto el veredicto es ${planCorto.veredicto}`,
+  )
+  afirmar(planCorto.itemsFaltantes === 0, 'el skill corto sumó ítems faltantes')
+  // Y sin el skill corto el resultado es el mismo: no cambia nada.
+  afirmar(
+    armarPlan(todo, skills, skillsDeItem, config, hoy).itemsFaltantes ===
+      planCorto.itemsFaltantes,
+    'agregar un skill sin cobertura cambió los ítems faltantes',
   )
 }
 

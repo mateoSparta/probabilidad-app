@@ -8,11 +8,13 @@
  */
 import { useState } from 'preact/hooks'
 
+import { AvisoParcialDetalle } from '../componentes/AvisoParcial'
 import { Formula } from '../componentes/Mate'
 import { descargar } from '../datos/almacenamiento'
 import { itemsPorSkill, skillPorId, skillsPorGuia, ubicacionDeItem } from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
+import type { Plan } from '../dominio/ritmo'
 import {
   avanceSkill,
   contarPorEstado,
@@ -20,6 +22,7 @@ import {
   desdeJson,
   ETIQUETA_ESTADO,
   estadoSkill,
+  LIMPIOS_PARA_DOMINAR,
   pendientes,
   VENTANA,
 } from '../dominio/progreso'
@@ -32,7 +35,15 @@ function inicial(nombre: string): string {
   return nombre.trim().charAt(0).toUpperCase()
 }
 
-export function PanelSkills({ api, sesion }: { api: ApiProgreso; sesion?: ApiSesion }) {
+export function PanelSkills({
+  api,
+  sesion,
+  plan,
+}: {
+  api: ApiProgreso
+  sesion?: ApiSesion
+  plan?: Plan
+}) {
   const { progreso, reemplazar, reiniciar } = api
   const [abierto, setAbierto] = useState<string | null>(null)
   const [aviso, setAviso] = useState<string | null>(null)
@@ -58,6 +69,8 @@ export function PanelSkills({ api, sesion }: { api: ApiProgreso; sesion?: ApiSes
 
   return (
     <>
+      {plan && <AvisoParcialDetalle plan={plan} />}
+
       <section class="guia__intro">
         <h2>Panel de skills</h2>
         <p class="guia__descripcion">
@@ -82,6 +95,9 @@ export function PanelSkills({ api, sesion }: { api: ApiProgreso; sesion?: ApiSes
               const items = itemsPorSkill.get(s.id) ?? VACIO
               const estado = estadoSkill(progreso, items)
               const { limpios, total } = avanceSkill(progreso, items)
+              // Con menos de 3 ítems el skill no puede llegar a dominado:
+              // conviene decirlo para no confundirlo con ir flojo.
+              const sinCobertura = items.size < LIMPIOS_PARA_DOMINAR
               return (
                 <li key={s.id}>
                   <button
@@ -98,6 +114,11 @@ export function PanelSkills({ api, sesion }: { api: ApiProgreso; sesion?: ApiSes
                         {ETIQUETA_ESTADO[estado]}
                         {total > 0 && ` · ${limpios}/${total} limpios`}
                       </span>
+                      {sinCobertura && (
+                        <span class="celda-skill__nota">
+                          faltan ejercicios para poder dominarlo
+                        </span>
+                      )}
                     </span>
                   </button>
                 </li>

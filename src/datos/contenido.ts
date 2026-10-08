@@ -9,6 +9,7 @@
  */
 import { load } from 'js-yaml'
 
+import type { Config } from '../dominio/ritmo'
 import type { Examen } from '../dominio/simulacro'
 import { claveItem } from '../dominio/tipos'
 import type { BloqueTeoria, Ejercicio, Guia, PasoSecuencia, Skill } from '../dominio/tipos'
@@ -48,6 +49,27 @@ const crudoExamenes = import.meta.glob('/content/examenes/*.yaml', {
   eager: true,
 }) as Crudo
 
+const crudoConfig = import.meta.glob('/content/config.yaml', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Crudo
+
+// ------------------------------------------------------------- config
+
+const CONFIG_POR_DEFECTO: Config = {
+  parcial: '2026-10-30',
+  curso: null,
+  ritmo_comodo_por_dia: 2,
+}
+
+export const config: Config = (() => {
+  const txt = Object.values(crudoConfig)[0]
+  if (!txt) return CONFIG_POR_DEFECTO
+  const leido = (load(txt) ?? {}) as Partial<Config>
+  return { ...CONFIG_POR_DEFECTO, ...leido }
+})()
+
 // ------------------------------------------------------------------ skills
 
 export const skills: Skill[] = Object.values(crudoSkills).flatMap(
@@ -74,7 +96,15 @@ function parsearTeoria(txt: string): BloqueTeoria | null {
   if (!m) return null
   const meta = (load(m[1]) ?? {}) as { id?: string; skills?: string[] }
   if (!meta.id) return null
-  return { id: meta.id, skills: meta.skills ?? [], cuerpo: txt.slice(m[0].length).trim() }
+  const cuerpo = txt.slice(m[0].length).trim()
+  // El titulo es el primer encabezado del Markdown; lo usa el indice lateral.
+  const encabezado = cuerpo.match(/^#{1,3}\s+(.+)$/m)
+  return {
+    id: meta.id,
+    skills: meta.skills ?? [],
+    titulo: encabezado ? encabezado[1].trim() : meta.id,
+    cuerpo,
+  }
 }
 
 export const teoria: BloqueTeoria[] = Object.values(crudoTeoria)
@@ -169,6 +199,27 @@ export const ubicacionDeItem: Map<string, { ejercicio: Ejercicio; item: string }
   }
   return m
 })()
+
+/** De la clave global de un ítem a los skills que declara. */
+export const skillsDeItem: Map<string, string[]> = (() => {
+  const m = new Map<string, string[]>()
+  for (const ej of ejercicios) {
+    for (const item of ej.items) m.set(claveItem(ej.id, item.id), item.skills)
+  }
+  for (const ex of examenes) {
+    for (const ej of ex.ejercicios) {
+      for (const item of ej.items ?? []) {
+        m.set(claveItemExamen(ex.id, ej.numero, item.id), item.skills)
+      }
+    }
+  }
+  return m
+})()
+
+/** Los skills con sus ítems, como los espera el plan de ritmo. */
+export function skillsConItems(): { id: string; items: ReadonlySet<string> }[] {
+  return skills.map((s) => ({ id: s.id, items: itemsPorSkill.get(s.id) ?? new Set() }))
+}
 
 /** Todas las claves de ítem vigentes: guías y exámenes. */
 export const clavesDeItems: ReadonlySet<string> = (() => {

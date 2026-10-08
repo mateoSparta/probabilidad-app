@@ -154,6 +154,8 @@ export type Ejercicio = {
 export type BloqueTeoria = {
   id: string
   skills: string[]
+  /** El primer encabezado del cuerpo. Lo usa el indice lateral. */
+  titulo: string
   /** Markdown con LaTeX. */
   cuerpo: string
 }

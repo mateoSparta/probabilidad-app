@@ -1,15 +1,19 @@
 import type { Vista } from '../app'
+import { AvisoParcialCompacto } from './AvisoParcial'
+import type { Plan } from '../dominio/ritmo'
 
 const GUIAS = [1, 2, 3, 4, 5, 6, 7, 8]
 
 type Props = {
   vista: Vista
   guiaActiva: number
+  /** Si esta, se muestra el aviso compacto del parcial. */
+  plan?: Plan
   onVista: (v: Vista) => void
   onGuia: (n: number) => void
 }
 
-export function Cabecera({ vista, guiaActiva, onVista, onGuia }: Props) {
+export function Cabecera({ vista, guiaActiva, plan, onVista, onGuia }: Props) {
   return (
     <header class="cabecera">
       <div class="columna">
@@ -18,6 +22,7 @@ export function Cabecera({ vista, guiaActiva, onVista, onGuia }: Props) {
             <span>61.09 · 81.04 · CB003</span>
             Probabilidad y Estadística B
           </h1>
+          {plan && <AvisoParcialCompacto plan={plan} />}
           <div class="cabecera__acciones">
             <button
               class={'boton' + (vista === 'skills' ? ' boton--acento' : '')}
