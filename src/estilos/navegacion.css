@@ -90,14 +90,15 @@
 
 /* ----------------------------------------------- índice lateral */
 
-/* Vive en el espacio vacío de la izquierda. La columna central mide 760 px,
-   así que hay lugar recién a partir de unos 1180 px de ancho. Por debajo de
-   eso el índice se esconde: la columna es lo que importa. */
+/* Vive en el espacio vacío de la izquierda. La columna central mide 760 px y
+   el índice 184, separado 24 de la columna: eso deja 22 px de margen contra el
+   borde a 1220 px de ancho, que es el breakpoint. Por debajo de eso se
+   esconde, porque apretaría la columna, que es lo que importa. */
 .indice {
   display: none;
 }
 
-@media (min-width: 1180px) {
+@media (min-width: 1220px) {
   .indice {
     display: block;
     position: fixed;
