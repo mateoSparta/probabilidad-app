@@ -289,3 +289,45 @@
     - 'f_{X+Y}(z) = \displaystyle\int f_X(x)\, f_Y(z - x)\, dx'
     - '\text{Poisson}(\lambda) + \text{Poisson}(\mu) = \text{Poisson}(\lambda + \mu)'
     - 'X \mid (X + Y = n) \sim \text{Bin}\!\left(n, \dfrac{\lambda}{\lambda + \mu}\right)'
+
+# --- guía 5 -----------------------------------------------------------
+
+- id: mezclas
+  nombre: Mezclas y Bayes con datos continuos
+  guia: 5
+  descripcion: >-
+    Invertir un condicional cuando lo observado es continuo: en lugar de
+    probabilidades aparecen densidades.
+  formulas:
+    - 'P(S = s \mid X = x) = \dfrac{f_{X \mid S = s}(x)\, P(S = s)}{\sum_j f_{X \mid S = s_j}(x)\, P(S = s_j)}'
+    - 'f_X(x) = \displaystyle\sum_j f_{X \mid S = s_j}(x)\, P(S = s_j)'
+
+- id: esperanza-condicional
+  nombre: Esperanza condicional como variable
+  guia: 5
+  descripcion: >-
+    $E[Y \mid X]$ no es un número sino una variable aleatoria, función de $X$.
+    La función de regresión es su expresión.
+  formulas:
+    - '\varphi(x) = E[Y \mid X = x]'
+    - 'E[Y \mid X] = \varphi(X)'
+    - 'E\big[E[Y \mid X]\big] = E[Y]'
+
+- id: esperanza-total
+  nombre: Esperanza total
+  guia: 5
+  descripcion: >-
+    Calcular una media promediando las medias condicionales, incluso cuando el
+    planteo se refiere a sí mismo.
+  formulas:
+    - 'E[Y] = E\big[E[Y \mid X]\big] = \displaystyle\sum_i E[Y \mid X = x_i]\, P(X = x_i)'
+    - 'E\!\left[\textstyle\sum_{i=1}^{N} L_i\right] = E[N]\, E[L] \quad \text{(Wald)}'
+
+- id: varianza-total
+  nombre: Varianza total
+  guia: 5
+  descripcion: >-
+    Partir la varianza en la parte que queda dentro de cada valor de $X$ y la
+    que viene de que $X$ varía.
+  formulas:
+    - '\operatorname{var}[Y] = E\big[\operatorname{var}[Y \mid X]\big] + \operatorname{var}\big[E[Y \mid X]\big]'

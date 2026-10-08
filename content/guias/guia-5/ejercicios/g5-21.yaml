@@ -1,0 +1,83 @@
+id: g5-21
+guia: 5
+numero: "5.21"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p33
+
+enunciado: |
+  La longitud de los rollos de tela producidos por cierta máquina obedece a una
+  distribución uniforme entre 20 y 30 metros. Un buen día un cliente requiere
+  [[esperanza-total|un rollo con por lo menos 28 metros]], de los que no hay
+  ninguno en stock.
+
+items:
+  - id: a
+    pregunta: >-
+      Calcular la cantidad media de rollos que será necesario producir para
+      satisfacer la demanda del cliente.
+    skills: [esperanza-total]
+    respuesta:
+      tipo: numerica
+      valor: "5"
+      tol_rel: 0.005
+    pistas:
+      - '¿Con qué probabilidad un rollo cualquiera sirve?'
+      - Se produce hasta el primer éxito, así que la cantidad es geométrica.
+      - 'Plan: $E[N] = 1/p$ con $p = P(L \ge 28)$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_21.py
+          valor: "5"
+
+  - id: b
+    pregunta: >-
+      Calcular la longitud total media de tela producida para satisfacer esa
+      demanda.
+    skills: [esperanza-total, truncamiento]
+    respuesta:
+      tipo: numerica
+      valor: "125"
+      tol_rel: 0.001
+    pistas:
+      - >-
+        Hay dos caminos y los dos funcionan. Uno: separar el último rollo de
+        los anteriores. Otro: la identidad de Wald.
+      - >-
+        Si lo hacés separando, el último rollo **no** es un rollo cualquiera:
+        está condicionado a medir al menos 28. Los otros, a medir menos de 28.
+      - >-
+        Plan: $E[N-1]\,E[L \mid L < 28] + E[L \mid L \ge 28]$, con las dos
+        medias condicionales calculadas sobre la uniforme. Si en cambio usás
+        Wald, $E[N]\,E[L]$, tiene que darte lo mismo: el último es más largo
+        que el promedio pero los anteriores son más cortos, y se compensan
+        exactamente.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_21.py
+          valor: "125"
+        - origen: "tools/verify/g5_21.py (por Wald: E[N] E[L] = 5 * 25, verificado tambien con cortes 22, 24, 26 y 29)"
+          valor: "125"
+
+  - id: c
+    pregunta: >-
+      Calcular la longitud total media de tela de los rollos que irán a stock,
+      es decir sin incluir el vendido al cliente.
+    skills: [esperanza-total, truncamiento]
+    respuesta:
+      tipo: numerica
+      valor: "96"
+      tol_rel: 0.002
+    pistas:
+      - Son los rollos que no sirvieron.
+      - 'Plan: restale al total del ítem anterior la longitud media del rollo vendido, o calculá directamente $E[N-1]\,E[L \mid L < 28]$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_21.py
+          valor: "96"

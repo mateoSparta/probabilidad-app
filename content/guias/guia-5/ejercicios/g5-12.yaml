@@ -1,0 +1,60 @@
+id: g5-12
+guia: 5
+numero: "5.12"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p31
+
+enunciado: |
+  Se arroja un dado 36 veces. Sean $X$ e $Y$
+  [[esperanza-condicional|las cantidades de resultados pares e impares,
+  respectivamente]].
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar la esperanza condicional $E[Y \mid X]$, como expresión en $X$
+      (escribí `X`).
+    skills: [esperanza-condicional]
+    respuesta:
+      tipo: expresion
+      valor: "36 - X"
+      vars:
+        X: [0, 36]
+    pistas:
+      - '¿Puede pasar que $X = 10$ y $Y = 20$?'
+      - 'Cada tirada es par o impar, nunca las dos ni ninguna. ¿Cuánto vale $X + Y$?'
+      - >-
+        Plan: $X + Y = 36$ siempre, así que $Y$ está determinada por $X$ y no
+        hay nada que promediar. La esperanza condicional de algo que ya se
+        conoce es ese algo.
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: tools/verify/g5_12.py
+          valor: "Y = 36 - X siempre, asi que E[Y|X] = 36 - X"
+
+  - id: b
+    pregunta: 'Calcular $\operatorname{cov}(X, Y)$.'
+    skills: [covarianza, esperanza-condicional]
+    respuesta:
+      tipo: numerica
+      valor: "-9"
+      tol_rel: 0.005
+    pistas:
+      - 'Usá que $Y = 36 - X$ y las propiedades de la covarianza.'
+      - '$\operatorname{cov}(X, c - X)$ se simplifica mucho. ¿A qué?'
+      - >-
+        Plan: $\operatorname{cov}(X, 36 - X) = -\operatorname{var}[X]$, y $X$
+        es binomial de 36 intentos con probabilidad $1/2$. El resultado tiene
+        que ser negativo, y de hecho la correlación es exactamente $-1$ porque
+        una variable determina a la otra.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_12.py
+          valor: "-9"
+        - origen: "tools/verify/g5_12.py (control: var[X] = 9, y cov calculada por definicion coincide con -var[X])"
+          valor: "9"

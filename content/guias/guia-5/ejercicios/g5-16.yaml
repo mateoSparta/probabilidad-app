@@ -1,0 +1,39 @@
+id: g5-16
+guia: 5
+numero: "5.16"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p32
+
+enunciado: |
+  Sea $(X, Y)$ un vector aleatorio tal que $X$ tiene distribución exponencial
+  de media 2, [[varianza-total|$E[Y \mid X] = X$ y
+  $\operatorname{var}[Y \mid X] = X$]].
+
+items:
+  - id: a
+    pregunta: >-
+      Usando el teorema de Pitágoras, calcular $\operatorname{var}[Y]$.
+    skills: [varianza-total, esperanza-condicional]
+    respuesta:
+      tipo: numerica
+      valor: "6"
+      tol_rel: 0.005
+    pistas:
+      - 'La varianza se parte en dos términos, no en uno. ¿Cuáles?'
+      - >-
+        Un término es el promedio de las varianzas condicionales; el otro, la
+        varianza de la media condicional. Los dos datos del enunciado te dan
+        uno cada uno.
+      - >-
+        Plan: $\operatorname{var}[Y] = E[\operatorname{var}[Y \mid X]] + \operatorname{var}[E[Y \mid X]] = E[X] + \operatorname{var}[X]$.
+        Para una exponencial de media $m$, la varianza es $m^2$. Si te da 4,
+        usaste sólo el segundo término.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_16.py
+          valor: "6"
+        - origen: "tools/verify/g5_16.py (control: simula Y|X ~ Poisson(X), que cumple las dos condiciones)"
+          valor: "6"

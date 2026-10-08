@@ -1,0 +1,45 @@
+id: g5-23
+guia: 5
+numero: "5.23"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p33
+
+enunciado: |
+  El peso de ciertas bolsas de naranjas es una variable aleatoria uniforme
+  entre 3 y 6 kilos. [[esperanza-total|Se van agregando bolsas en una balanza
+  hasta que el peso supere 5 kilos.]]
+
+items:
+  - id: a
+    pregunta: Hallar la media y la varianza del peso final así obtenido.
+    skills: [esperanza-total, varianza, truncamiento]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: 'la media del peso final'
+          valor: "15/2"
+        - pregunta: 'la varianza del peso final'
+          valor: "11/4"
+    pistas:
+      - >-
+        Antes de plantear nada: ¿cuántas bolsas pueden llegar a hacer falta?
+        Mirá el peso mínimo de una bolsa.
+      - >-
+        Si la primera bolsa ya pasa de 5, se termina ahí. Y si no pasa, la
+        segunda lleva el total a por lo menos 6, que ya supera 5. Nunca hacen
+        falta tres.
+      - >-
+        Plan: son sólo dos ramas. Con probabilidad $1/3$ el peso es
+        $L_1 \mid L_1 > 5$; con probabilidad $2/3$ es $L_1 + L_2$ con
+        $L_1 \mid L_1 \le 5$. Calculá $E[W]$ y $E[W^2]$ integrando las dos
+        ramas y usá $\operatorname{var} = E[W^2] - E[W]^2$. Tratar la cantidad
+        de bolsas como geométrica sin notar el tope es el error del ejercicio.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_23.py
+          valor: "15/2, 11/4"
+        - origen: "tools/verify/g5_23.py (control: E[W^2] = 59, y P(una sola bolsa) = 1/3)"
+          valor: "59"

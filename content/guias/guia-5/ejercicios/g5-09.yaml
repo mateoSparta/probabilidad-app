@@ -1,0 +1,43 @@
+id: g5-09
+guia: 5
+numero: "5.9"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p30
+
+enunciado: |
+  Un receptor recibe una señal de amplitud aleatoria $X = S + N$, donde $S$ es
+  una señal equiprobable sobre el alfabeto $\{0{,}1,\ 0{,}2,\ 0{,}3\}$ y $N$ es
+  [[mezclas|un ruido con distribución normal estándar independiente de $S$]].
+
+items:
+  - id: a
+    pregunta: >-
+      Si se recibe una señal de amplitud $0{,}87$, ¿cuál es la probabilidad de
+      que contenga la letra $0{,}2$?
+    skills: [mezclas, bayes]
+    respuesta:
+      tipo: numerica
+      valor: "exp(9/125)/(1 + exp(9/125) + exp(67/500))"
+    pistas:
+      - >-
+        Es Bayes, pero el dato que condiciona es continuo. ¿Qué reemplaza a
+        $P(X = 0{,}87)$?
+      - >-
+        Dado $S = s$, la amplitud recibida es normal de media $s$ y desvío 1,
+        así que su densidad en $0{,}87$ es $\varphi(0{,}87 - s)$.
+      - >-
+        Plan: el posterior es proporcional a $\varphi(0{,}87 - s)$ por el
+        prior, y como las tres letras son equiprobables el prior se cancela.
+        Queda el cociente entre la densidad de la letra buscada y la suma de
+        las tres. El resultado va a quedar cerca de $1/3$: las tres amplitudes
+        están muy juntas frente a un ruido de desvío 1, así que el dato casi no
+        informa.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_09.py
+          valor: "exp(9/125)/(1 + exp(9/125) + exp(67/500))"
+        - origen: "tools/verify/g5_09.py (control: el posterior de las tres letras suma 1)"
+          valor: "1"

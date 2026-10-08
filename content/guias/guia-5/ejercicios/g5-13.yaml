@@ -1,0 +1,42 @@
+id: g5-13
+guia: 5
+numero: "5.13"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p31
+
+enunciado: |
+  Una rata está atrapada en un laberinto. Inicialmente puede elegir una de tres
+  sendas. [[esperanza-total|Si elige la primera se perderá en el laberinto y
+  luego de 12 minutos volverá a su posición inicial; si elige la segunda
+  volverá a su posición inicial luego de 14 minutos; si elige la tercera saldrá
+  del laberinto luego de 9 minutos.]] En cada intento, la rata elige con igual
+  probabilidad cualquiera de las tres sendas.
+
+items:
+  - id: a
+    pregunta: Calcular la esperanza del tiempo que tarda la rata en salir del laberinto.
+    skills: [esperanza-total, esperanza-condicional]
+    respuesta:
+      tipo: numerica
+      valor: "35"
+      tol_rel: 0.005
+    pistas:
+      - 'Partí según cuál senda elige primero: son tres casos equiprobables.'
+      - >-
+        En dos de los tres casos la rata vuelve al punto de partida. ¿Cuánto le
+        falta, en media, desde ahí?
+      - >-
+        Plan: llamá $m$ al tiempo medio. Como al volver al inicio la situación
+        es idéntica a la original, la espera restante vuelve a tener media $m$.
+        Escribí $m$ como el promedio de los tres casos, con el $+m$ en los dos
+        que vuelven, y despejá. Si te da $35/3 \approx 11{,}7$, te olvidaste
+        ese término: ése es el promedio de los tres tiempos, no la respuesta.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_13.py
+          valor: "35"
+        - origen: "tools/verify/g5_13.py (error tipico: promediar sin el termino recursivo)"
+          valor: "35/3"
