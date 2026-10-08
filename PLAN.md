@@ -66,9 +66,11 @@ probabilidad-app/
 ├── fuentes/                      # material original, solo lectura
 │   ├── guias/parte1.pdf          # enunciados guías 1–8
 │   ├── guias/parte2.pdf          # enunciados guías 9–12 (futuro)
-│   ├── resueltas/guia-1/…        # GUIA_1_RES_1.pdf, GUIA_1_RES_2.pdf, …
-│   ├── examenes/…                # EP_*.pdf, EI_*.pdf
-│   └── teoria/                   # Grynberg_Notas.pdf, Maronna…pdf, Tablas.pdf
+│   ├── resueltas/guia-1/…        # "GUIA 1 RES 1.pdf", … (con espacios)
+│   ├── examenes/finales/…        # EP_*.pdf, EI_*.pdf (2025)
+│   ├── examenes/parciales/…      # 12 parciales RESUELTOS 2017–2023
+│   └── teoria/                   # Grynberg_Notas.pdf, Maronna…pdf, Tablas.pdf,
+│                                 # probabilidad_distribuciones.pdf
 ├── content/
 │   ├── skills.yaml               # catálogo único de skills + fórmulas
 │   ├── guias/
@@ -78,9 +80,12 @@ probabilidad-app/
 │   │       └── ejercicios/*.yaml # un archivo por ejercicio
 │   └── examenes/*.yaml
 ├── tools/
-│   ├── rasterize.sh              # PDF escaneado → PNG por página
-│   ├── verify/                   # scripts Python (sympy exacto + Monte Carlo)
-│   └── check.ts                  # validador de contenido (corre en build)
+│   ├── extract/                  # PDF de la guía → borrador YAML (ver §4.8)
+│   ├── rasterize.py              # PDF escaneado → PNG por página
+│   ├── verify/                   # modelos Python (exacto + Monte Carlo)
+│   ├── check.ts                  # validador de contenido (corre en build)
+│   ├── smoke.ts                  # el motor contra el contenido real
+│   └── render-check.ts           # renderiza la app y revisa el HTML
 ├── revision/
 │   └── guia-N.md                 # discrepancias para que Mateo revise
 └── src/                          # la app
@@ -153,6 +158,11 @@ items:
     verificacion:
       estado: verificado        # verificado | discrepancia | sin_fuente
       metodo: exacto+montecarlo
+      fuentes_valor:            # de dónde salió, una entrada por fuente
+        - origen: "GUIA 1 RES 1.pdf#p9"
+          valor: "47/120"
+        - origen: tools/verify/g1_22.py
+          valor: "47/120"
 ```
 
 **Tipos de respuesta:**
@@ -161,6 +171,19 @@ items:
 - **`expresion`.** Para respuestas en función de p, λ, n, etc. Se definen variables con rangos (`vars: {p: [0.05, 0.95]}`), y la app evalúa la respuesta y el valor esperado en 6 puntos al azar con tolerancia relativa de 1e-6.
 - **`opcion`.** Multiple choice para lo no numérico (álgebras generadas, "¿son independientes?", identificar distribuciones). Cada distractor lleva un campo `error_tipico` que se muestra al elegirlo, porque es lo que alimenta la detección de puntos ciegos.
 - **`checkpoints`.** Para "hallar y graficar F_W" o "hallar la densidad": el ítem se reemplaza por 2–4 preguntas numéricas concretas, como `F_W(0.5)`, `P(W = 1)` o `f_Y(2)`. Es correcto si acierta todas. Así se valida una función sin parsear funciones a trozos.
+
+**Por qué `fuentes_valor` es una lista.** El paso 5 de §7 reconcilia *varias*
+resueltas contra el cálculo independiente, así que hace falta poder registrar
+todas y dejar la traza. Con un solo campo `valor` no se puede documentar una
+discrepancia. Los ítems de un ejercicio comparten el enunciado, así que una
+marca `[[skill|…]]` se valida contra la unión de los skills de todos sus ítems.
+
+**Campo `prioridad`.** La guía trae un glosario de símbolos: `!` para los
+ejercicios que la cátedra recomienda fuertemente, `Ï` para los que requieren
+simulación (fuera de alcance), más "curva peligrosa", "muy difícil" y "sólo
+para audaces". Es una curaduría de dificultad ya hecha, y el extractor la lee
+del PDF sin ambigüedad, así que se guarda por ejercicio y sirve para ordenar
+la carga de contenido y la secuencia de estudio.
 
 ### 4.5 Secuencia de la guía (`guia.yaml`)
 
@@ -180,6 +203,37 @@ secuencia:
 
 Tiene el mismo esquema de ítems, más los campos `tipo: parcial|integradora`, `fecha`, `duracion_min: 240` y, por ejercicio, `guias: [1]` y `en_alcance: true|false`.
 
+### 4.8 Extractor de enunciados (`npm run extraer`)
+
+Los PDF de las guías tienen capa de texto, pero compilada con fuentes cuyo
+mapeo glifo→Unicode no es el estándar: `PpAq “ řωPA ppωq` es en realidad
+`P(A) = \sum_{ω \in A} p(ω)`. El mapeo es sistemático y **depende de la fuente
+del span**, no del carácter: en CMR10 una `p` es una `p`, pero en TeX-matha10
+es un paréntesis que abre.
+
+Eso hace que la transcripción sea automatizable, y cambia el costo de las
+fases 2 y 4 de *transcribir* a *revisar*. El extractor emite un borrador por
+guía en `content/.borrador/guia-N.yaml` y resuelve:
+
+- el split por ejercicio (el número va en negrita, pero las referencias
+  cruzadas también, así que se filtra exigiendo numeración monótona);
+- el split por ítem `(a) (b) (c)`;
+- las marcas del glosario, incluida `Ï`, que marca `en_alcance: false`;
+- la matemática a LaTeX, con una tabla de glifos por fuente;
+- fracciones por geometría (se ubican las barras y se agrupan numerador y
+  denominador por contención horizontal) y sub/superíndices por tamaño y
+  línea de base;
+- guiones de corte de línea, números de página y macros pegadas a la letra
+  que las sigue.
+
+Lo que **no** resuelve: los límites de los operadores grandes quedan mal
+ubicados, porque van arriba y abajo del símbolo y no a su derecha. Se marcan
+para repaso en vez de adivinarlos.
+
+La salida es derivada y no se edita a mano: si algo sale mal se arregla el
+extractor y se vuelve a correr. Promover un ejercicio es escribir su YAML en
+`content/guias/guia-N/ejercicios/` y su modelo en `tools/verify/`.
+
 ### 4.7 Validador (`npm run check`, corre antes de build)
 
 El build falla si se da alguno de estos casos:
@@ -190,7 +244,23 @@ El build falla si se da alguno de estos casos:
 - El `valor` no parsea, o una marca `[[skill|…]]` usa un skill que el ítem no declara.
 - Un ejercicio en la secuencia no existe.
 
+- Un valor del YAML no coincide con lo que calculó `tools/verify/`. Esto es lo
+  que hace cumplir la regla de no inventar resultados: tocar un número a mano
+  sin recalcularlo rompe el build.
+- Un ejercicio de examen dice `cargado: true` sin ítems, o tiene ítems sin
+  declararse cargado. Es el campo que decide si el simulacro lo presenta.
+
 Además, emite un warning por cada ítem con `estado ≠ verificado`.
+
+`npm run check` corre además dos chequeos que el typecheck y el bundle no
+cubren:
+
+- **`smoke`**: para cada ítem del contenido, que el motor acepte el valor
+  declarado y rechace uno equivocado; más la máquina de estados del progreso
+  y la calificación del simulacro.
+- **`render-check`**: renderiza la app con Vite en modo SSR y verifica que la
+  página se dibuje, que KaTeX corra, y que los tags y la respuesta **no**
+  estén en el HTML inicial.
 
 ---
 
@@ -230,6 +300,20 @@ Además, emite un warning por cada ítem con `estado ≠ verificado`.
 | `EI-20250717-PyE-B.pdf` | Integradora PyE B | 1–3 (4 y 5 son de estadística) | Opcional |
 | `EI-20250807-PyE-A-B.pdf` | Integradora PyE A y B | 1–3 (4 y 5 son de estadística) | Opcional |
 | `EI-20250717-ProbIND.pdf`, `EI-20250807-ProbIND.pdf` | Cursada de Industrial | — | **Excluidos** |
+
+**Cuidado con el filtro por encabezado.** Los parciales comunes traen las tres
+materias juntas en el encabezado (`81.16 CB004`, `PyE A`, `PyE B`), así que no
+alcanza con mirar el archivo: hay que filtrar por ejercicio y por variante. Por
+eso `en_alcance` y `guias` van en cada ejercicio y no en el examen.
+
+**Hay además 12 parciales resueltos de 2017–2023** en
+`fuentes/examenes/parciales/`, que no estaban en la primera versión de este
+plan. Traen enunciado *y* resolución, y 11 de los 12 tienen capa de texto
+(sólo el `01` está escaneado). Son la ampliación más barata del pool y, sobre
+todo, el corpus de verificación cruzada que hoy falta: los valores verificados
+sólo con cálculo independiente se pueden contrastar contra ellos. Antes de
+cargarlos hay que confirmar que los temas de 2017–2018 sigan dentro del
+programa actual.
 
 Algunos parciales traen variantes por curso (por ejemplo, el ej. 2 del 24/05 tiene una versión "Curso 4" y otra "Otros cursos"). Se carga la variante que corresponde al curso de Mateo, definido en un campo `curso` de la configuración.
 
@@ -351,15 +435,20 @@ App local para estudiar Probabilidad (FIUBA) con guías gamificadas. Ver PLAN.md
 
 Cada fase termina con algo usable. La idea es estudiar desde la fase 2.
 
-| Fase | Entregable | Criterio de terminado |
-|---|---|---|
-| 0. Setup | Repo, Vite + TS + Preact, KaTeX, math.js, fuentes, tokens CSS, `CLAUDE.md`, `fuentes/` cargadas. | `npm run dev` muestra la página crema vacía con las tabs. |
-| 1. Motor | Esquemas TS, carga de YAML/MD vía `import.meta.glob`, validador, tarjeta de ejercicio con los 4 tipos de respuesta, pistas, fórmulas, ver respuesta, tags ocultos y resaltado. | 3 ejercicios de prueba (uno por tipo) funcionando de punta a punta. |
-| 2. Guía 1 completa | Pipeline §7 sobre la Guía 1, con teoría, secuencia y filtro de skills. | `revision/guia-1.md` revisado por Mateo; toda la guía validable. |
-| 3. Progreso | Log de intentos, estados de skill, panel de insignias, export/import. | El panel refleja correctamente una sesión real de estudio. |
-| 4. Guías 2–8 | Pipeline §7 guía por guía (una sesión de Claude Code por guía). | Cada guía con su `revision/` cerrado. |
-| 5. Simulacro | Exámenes cargados y verificados, timer, entrega, nota y veredicto. | Un simulacro completo con nota coherente. |
-| 6. Futuro | Guías 9–12, integradoras de PyE B completas (ejercicios 4 y 5), ejercicios parametrizados. | — |
+| Fase | Entregable | Criterio de terminado | Estado |
+|---|---|---|---|
+| 0. Setup | Repo, Vite + TS + Preact, KaTeX, math.js, fuentes, tokens CSS, `CLAUDE.md`, `fuentes/` cargadas. | `npm run dev` muestra la página crema vacía con las tabs. | **hecha** |
+| 0.5. Ingesta | Extractor de enunciados (§4.8), rasterizador, inventario del material. | Borradores de las 12 guías con menos del 20 % de avisos de revisión. | **hecha** |
+| 1. Motor | Esquemas TS, carga de YAML/MD vía `import.meta.glob`, validador, tarjeta de ejercicio con los 4 tipos de respuesta, pistas, fórmulas, ver respuesta, tags ocultos y resaltado. | Los 4 tipos de respuesta funcionando de punta a punta sobre ejercicios reales. | **hecha** |
+| 2. Guía 1 | Pipeline §7 sobre el núcleo recomendado de la Guía 1, con teoría, secuencia y filtro de skills. | `revision/guia-1.md` revisado por Mateo. | **núcleo hecho**, falta cruzar contra las resueltas |
+| 3. Progreso | Log de intentos, estados de skill, panel de insignias, export/import. | El panel refleja correctamente una sesión real de estudio. | **hecha** |
+| 4. Guías 2–8 | Pipeline §7 guía por guía (una sesión de Claude Code por guía). | Cada guía con su `revision/` cerrado. | pendiente |
+| 5. Simulacro | Exámenes cargados y verificados, timer, entrega, nota y veredicto. | Un simulacro completo con nota coherente. | **motor hecho**, falta contenido (depende de la 4) |
+| 6. Futuro | Guías 9–12, integradoras de PyE B completas (ejercicios 4 y 5), ejercicios parametrizados. | — | pendiente |
+
+**Por qué la fase 0.5.** El extractor va antes de la fase 2 porque cambia el
+costo de todo el contenido que viene después: con él, cargar una guía es
+revisar y verificar en vez de transcribir. Son 219 ejercicios en alcance.
 
 **Prompts de arranque para Claude Code:**
 
@@ -371,6 +460,10 @@ Cada fase termina con algo usable. La idea es estudiar desde la fase 2.
 
 ## 11. Pendientes y riesgos
 
+- **Las resueltas son todas escaneos sin capa de texto**: 339 páginas que hay
+  que mirar a ojo. Es el costo dominante del proyecto y no se puede
+  automatizar. Conviene hacerlo por ejercicio y no por guía, para que el
+  trabajo quede incremental.
 - **Guía 8:** tiene una sola resuelta, así que va a depender más del cálculo independiente.
 - **Ítems con gráfico:** su traducción a `checkpoints` requiere criterio. Claude Code propone los checkpoints y Mateo los aprueba en la revisión.
 - **Respuestas que dependen de la tabla normal:** tolerancia del 1% para absorber el redondeo de `Tablas.pdf`.
