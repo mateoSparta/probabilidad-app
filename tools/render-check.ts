@@ -22,7 +22,9 @@ function afirmar(cond: boolean, mensaje: string) {
 }
 
 const servidor = await createServer({
-  server: { middlewareMode: true },
+  // `hmr: false` porque esto es SSR y no necesita el WebSocket de recarga:
+  // si queda prendido, choca de puerto con un `npm run dev` abierto.
+  server: { middlewareMode: true, hmr: false },
   appType: 'custom',
   logLevel: 'warn',
 })

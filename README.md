@@ -5,8 +5,8 @@ la cátedra. La teoría se presenta como skills que se desbloquean resolviendo
 ejercicios, y el panel muestra el estado de cada uno para encontrar los puntos
 flojos.
 
-El diseño está en [PLAN.md](PLAN.md) y las convenciones en
-[CLAUDE.md](CLAUDE.md).
+El diseño está en [PLAN.md](PLAN.md), las convenciones en
+[CLAUDE.md](CLAUDE.md) y cómo publicarla en [DEPLOY.md](DEPLOY.md).
 
 ## Arrancar
 
