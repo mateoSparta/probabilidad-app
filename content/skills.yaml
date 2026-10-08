@@ -188,3 +188,68 @@
   formulas:
     - 'f_{(X,Y)}(x, y) = f_X(x)\,f_Y(y)'
     - 'F_{(X,Y)}(x, y) = F_X(x)\,F_Y(y)'
+
+# --- guía 3 -----------------------------------------------------------
+
+- id: esperanza
+  nombre: Esperanza
+  guia: 3
+  descripcion: >-
+    Calcular la media de una variable: integral contra la densidad en la parte
+    continua, más la suma de los átomos si hay saltos.
+  formulas:
+    - 'E[X] = \displaystyle\int_{-\infty}^{\infty} x\, f_X(x)\, dx'
+    - 'E[X] = \displaystyle\sum_k x_k\, P(X = x_k)'
+    - 'E[aX + b] = a\,E[X] + b'
+
+- id: momentos
+  nombre: Momentos y esperanza de una función
+  guia: 3
+  descripcion: >-
+    Calcular $E[g(X)]$ integrando $g$ contra la densidad, sin pasar la media
+    por dentro de la función.
+  formulas:
+    - 'E[g(X)] = \displaystyle\int g(x)\, f_X(x)\, dx'
+    - 'E[g(X,Y)] = \displaystyle\iint g(x,y)\, f_{(X,Y)}(x,y)\, dx\, dy'
+    - 'E[X^2] = \sigma^2 + \mu^2'
+
+- id: esperanza-condicional-evento
+  nombre: Esperanza condicional a un evento
+  guia: 3
+  descripcion: >-
+    La media de una variable restringida a un evento, usando la densidad
+    condicional.
+  formulas:
+    - 'E[X \mid A] = \dfrac{E[X\, \mathbf{1}_A]}{P(A)}'
+    - 'E[X \mid A] = \displaystyle\int x\, f_{X \mid A}(x)\, dx'
+
+- id: varianza
+  nombre: Varianza
+  guia: 3
+  descripcion: >-
+    Medir la dispersión, y usar la identidad que la liga con el momento de
+    segundo orden.
+  formulas:
+    - '\operatorname{var}[X] = E\!\left[(X - \mu)^2\right] = E[X^2] - (E[X])^2'
+    - '\operatorname{var}[aX + b] = a^2 \operatorname{var}[X]'
+
+- id: covarianza
+  nombre: Covarianza
+  guia: 3
+  descripcion: >-
+    La covarianza y sus propiedades, que es lo que permite calcular la
+    varianza de una suma sin volver a integrar.
+  formulas:
+    - '\operatorname{cov}(X, Y) = E[XY] - E[X]\,E[Y]'
+    - '\operatorname{var}[X + Y] = \operatorname{var}[X] + \operatorname{var}[Y] + 2\operatorname{cov}(X, Y)'
+    - '\operatorname{cov}(aX + bY + c,\ Z) = a\operatorname{cov}(X,Z) + b\operatorname{cov}(Y,Z)'
+
+- id: desigualdades
+  nombre: Desigualdades de Markov y Chebyshev
+  guia: 3
+  descripcion: >-
+    Acotar una probabilidad conociendo sólo la media, o la media y la
+    varianza, sin conocer la distribución.
+  formulas:
+    - 'P(X \ge a) \le \dfrac{E[X]}{a} \quad (X \ge 0,\ a > 0)'
+    - 'P(\lvert X - \mu \rvert \ge \varepsilon) \le \dfrac{\operatorname{var}[X]}{\varepsilon^2}'

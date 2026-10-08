@@ -1,0 +1,46 @@
+id: g3-26
+guia: 3
+numero: "3.26"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p21
+
+enunciado: |
+  Se quiere saber la proporción de fumadores en una población. Para ello se
+  eligen $n$ individuos al azar y se halla la proporción de los que fuman.
+  [[desigualdades|¿Qué valor debe tener $n$ para que esta proporción no difiera
+  de la real en más de $0{,}01$, con probabilidad mayor o igual que
+  $0{,}95$?]]
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar el menor $n$ que garantiza eso **usando la desigualdad de
+      Chebyshev**.
+    skills: [desigualdades, varianza]
+    respuesta:
+      tipo: numerica
+      valor: "50000"
+      # Es el minimo n exacto: la tolerancia no puede admitir otro entero.
+      tol_rel: 0.000001
+    pistas:
+      - >-
+        La proporción muestral es un promedio. ¿Cuánto valen su media y su
+        varianza en función de $p$ y $n$?
+      - >-
+        No se conoce $p$, así que hay que usar el peor caso. ¿Cuál es el máximo
+        de $p(1-p)$?
+      - >-
+        Plan: aplicá Chebyshev con $\varepsilon = 0{,}01$, acotá
+        $p(1-p) \le 1/4$, pedí que la cota sea $\le 0{,}05$ y despejá $n$.
+        Redondeá para arriba.
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: tools/verify/g3_26.py
+          valor: "50000"
+        - origen: "tools/verify/g3_26.py (minimalidad: con 50000 la cota da 1/20 y con 49999 no alcanza)"
+          valor: "1/20"
+        - origen: "tools/verify/g3_26.py (comparacion: por el TCL serian 9604)"
+          valor: "9604"

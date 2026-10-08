@@ -22,6 +22,9 @@ const RAIZ = resolve(import.meta.dirname, '..')
 const CONTENT = join(RAIZ, 'content')
 const VERIFICACION = join(CONTENT, '.verificacion', 'resultados.json')
 
+/** Igual que en src/dominio/respuesta.ts. */
+const TOL_REL_POR_DEFECTO = 0.01
+
 const errores: string[] = []
 const avisos: string[] = []
 
@@ -285,6 +288,34 @@ function parsea(expr: string, vars?: Record<string, number>): boolean {
   }
 }
 
+/**
+ * Avisa cuando la tolerancia es demasiado floja para la respuesta.
+ *
+ * El 1 % por defecto existe para absorber el redondeo de la tabla normal
+ * (PLAN.md §11), pero sobre una respuesta grande se vuelve enorme: con el
+ * valor 50000 admite todo el rango 49500-50500. Si la respuesta es un entero
+ * exacto, la tolerancia no tendria que dejar pasar el entero de al lado.
+ */
+function avisarSiToleranciaFloja(quien: string, valor: string, tolRel?: number): void {
+  let v: number
+  try {
+    const bruto = evaluate(valor)
+    v = typeof bruto === 'number' ? bruto : Number(bruto)
+  } catch {
+    return
+  }
+  if (!Number.isFinite(v) || v === 0) return
+
+  const tol = tolRel ?? TOL_REL_POR_DEFECTO
+  const margen = tol * Math.abs(v)
+  if (Number.isInteger(v) && margen >= 1) {
+    avisar(
+      `${quien}: la respuesta es el entero ${v} pero la tolerancia admite ` +
+        `±${margen.toFixed(2)}, o sea que acepta ${v + 1}. Convendría bajar \`tol_rel\`.`,
+    )
+  }
+}
+
 function validarRespuesta(quien: string, r?: Respuesta): void {
   if (!r?.tipo) {
     err(`${quien}: no tiene respuesta`)
@@ -295,6 +326,7 @@ function validarRespuesta(quien: string, r?: Respuesta): void {
       const valor = r.valor as string
       if (valor === undefined) err(`${quien}: respuesta numérica sin \`valor\``)
       else if (!parsea(String(valor))) err(`${quien}: el valor \`${valor}\` no parsea`)
+      else avisarSiToleranciaFloja(quien, String(valor), r.tol_rel as number | undefined)
       break
     }
     case 'expresion': {
@@ -338,7 +370,14 @@ function validarRespuesta(quien: string, r?: Respuesta): void {
       for (const [i, c] of cps.entries()) {
         if (!c.pregunta) err(`${quien}: el checkpoint ${i} no tiene pregunta`)
         if (c.valor === undefined) err(`${quien}: el checkpoint ${i} no tiene valor`)
-        else if (!parsea(String(c.valor))) err(`${quien}: el checkpoint ${i} tiene un valor que no parsea: \`${c.valor}\``)
+        else if (!parsea(String(c.valor)))
+          err(`${quien}: el checkpoint ${i} tiene un valor que no parsea: \`${c.valor}\``)
+        else
+          avisarSiToleranciaFloja(
+            `${quien} checkpoint ${i + 1}`,
+            String(c.valor),
+            (c as { tol_rel?: number }).tol_rel,
+          )
       }
       break
     }

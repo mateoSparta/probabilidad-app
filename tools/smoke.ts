@@ -17,6 +17,8 @@ import {
   evaluarExpresion,
   evaluarNumerica,
   evaluarOpcion,
+  evaluarEscalar,
+  TOL_REL_POR_DEFECTO,
 } from '../src/dominio/respuesta.ts'
 import { partirEnSegmentos, skillsMarcados } from '../src/dominio/marcas.ts'
 import {
@@ -56,6 +58,21 @@ import { claveItem, type Ejercicio, type Intento, type Item } from '../src/domin
 /** Un intento mínimo, para los casos donde sólo importan el ítem y la fecha. */
 function mkIntento(item: string, ts: string): Intento {
   return { item, ts, envios: 1, correcto: true, pistas: 0, revelo: false }
+}
+
+/**
+ * Un valor que tiene que dar incorrecto, construido a partir del correcto.
+ *
+ * No alcanza con sumar 1: con una respuesta grande como 50000, el 1 % de
+ * tolerancia por defecto se lo come y el valor equivocado pasaría como bueno.
+ * Hay que apartarse en proporción a la tolerancia declarada, y con un piso
+ * absoluto para que también funcione cuando el valor esperado es 0.
+ */
+function valorEquivocado(r: { valor: string; tol_rel?: number }): string {
+  const tol = r.tol_rel ?? TOL_REL_POR_DEFECTO
+  const v = evaluarEscalar(r.valor) ?? 0
+  const salto = Math.max(1, 10 * tol * Math.abs(v))
+  return `(${r.valor}) + ${salto}`
 }
 
 /** Un ítem mínimo pero válido, para armar exámenes de prueba. */
@@ -98,10 +115,7 @@ for (const ej of ejercicios) {
 
     if (r.tipo === 'numerica') {
       afirmar(evaluarNumerica(r.valor, r).ok, `${quien}: el motor rechaza su propio valor ${r.valor}`)
-      // Un valor claramente distinto tiene que fallar. Se usa +1 y no un
-      // múltiplo para que también funcione cuando el valor esperado es 0.
-      const mal = `(${r.valor}) + 1`
-      afirmar(!evaluarNumerica(mal, r).ok, `${quien}: el motor acepta un valor equivocado`)
+      afirmar(!evaluarNumerica(valorEquivocado(r), r).ok, `${quien}: el motor acepta un valor equivocado`)
       afirmar(
         !evaluarNumerica('', r).ok && !evaluarNumerica('qwe', r).ok,
         `${quien}: el motor acepta basura`,
@@ -137,7 +151,7 @@ for (const ej of ejercicios) {
       )
       // Con uno mal, el ítem entero tiene que dar incorrecto.
       const casiTodos = [...valores]
-      casiTodos[0] = `(${casiTodos[0]}) + 1`
+      casiTodos[0] = valorEquivocado(r.checkpoints[0])
       afirmar(
         !evaluarCheckpoints(casiTodos, r).ok,
         `${quien}: el motor acepta los checkpoints con uno mal`,
