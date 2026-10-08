@@ -331,3 +331,45 @@
     que viene de que $X$ varía.
   formulas:
     - '\operatorname{var}[Y] = E\big[\operatorname{var}[Y \mid X]\big] + \operatorname{var}\big[E[Y \mid X]\big]'
+
+# --- guía 6 -----------------------------------------------------------
+
+- id: bernoulli-binomial
+  nombre: Bernoulli y binomial
+  guia: 6
+  descripcion: >-
+    Contar éxitos en una cantidad fija de intentos independientes, y reconocer
+    cuándo el modelo aplica.
+  formulas:
+    - 'P(X = k) = \dbinom{n}{k} p^k (1-p)^{n-k}'
+    - 'E[X] = np, \quad \operatorname{var}[X] = np(1-p)'
+
+- id: geometrica-pascal
+  nombre: Geométrica y Pascal
+  guia: 6
+  descripcion: >-
+    Contar intentos hasta el primer éxito, o hasta el $k$-ésimo. Lo que se fija
+    no es la cantidad de intentos sino la de éxitos.
+  formulas:
+    - 'P(N = n) = (1-p)^{n-1} p, \quad E[N] = \dfrac{1}{p}'
+    - 'P(N > n) = (1-p)^n'
+    - '\text{Pascal: } P(N = n) = \dbinom{n-1}{k-1} p^k (1-p)^{n-k}'
+
+- id: perdida-memoria
+  nombre: Pérdida de memoria
+  guia: 6
+  descripcion: >-
+    La geométrica y la exponencial olvidan lo que pasó: condicionar a que
+    todavía no ocurrió el éxito no cambia nada.
+  formulas:
+    - 'P(N > n + m \mid N > n) = P(N > m)'
+    - 'P(T > s + t \mid T > s) = P(T > t)'
+
+- id: hipergeometrica
+  nombre: Hipergeométrica
+  guia: 6
+  descripcion: >-
+    Extracciones sin reposición de una población finita, donde los intentos no
+    son independientes.
+  formulas:
+    - 'P(X = k) = \dfrac{\dbinom{B}{k}\dbinom{N - B}{n - k}}{\dbinom{N}{n}}'

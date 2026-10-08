@@ -1037,5 +1037,155 @@
         "coincide": true
       }
     }
+  },
+  "g6-01": {
+    "numero": "6.1",
+    "items": {
+      "a": {
+        "valor": "426620024283142009/100000000000000000000",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.00429,
+        "coincide": true
+      },
+      "b": {
+        "valor": "12689630881901012447071400626947571459754368112331694520187/1000000000000000000000000000000000000000000000000000000000000",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.012728,
+        "coincide": true
+      },
+      "b_error_de_la_resuelta": {
+        "valor": "29403/1000000",
+        "metodo": "exacto"
+      }
+    }
+  },
+  "g6-06": {
+    "numero": "6.6",
+    "items": {
+      "a": {
+        "valor": "125/216",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.578738,
+        "coincide": true
+      },
+      "b": {
+        "valor": "125/216",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.577662,
+        "coincide": true
+      }
+    }
+  },
+  "g6-11": {
+    "numero": "6.11",
+    "items": {
+      "a": {
+        "valor": "73/10",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 7.30682,
+        "coincide": true
+      }
+    }
+  },
+  "g6-12": {
+    "numero": "6.12",
+    "items": {
+      "a": {
+        "valor": "2304/9765625",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.000234,
+        "coincide": true
+      },
+      "a_error_tipico": {
+        "valor": "1536/1953125",
+        "metodo": "exacto"
+      }
+    }
+  },
+  "g6-19": {
+    "numero": "6.19",
+    "items": {
+      "a1": {
+        "valor": "9/19",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.472788,
+        "coincide": true
+      },
+      "a2": {
+        "valor": "90/361",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.24981,
+        "coincide": true
+      },
+      "a3": {
+        "valor": "9000/130321",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.06916,
+        "coincide": true
+      },
+      "b": {
+        "valor": "1000/6859",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.145965,
+        "coincide": true
+      },
+      "b_error_tipico": {
+        "valor": "1/8",
+        "metodo": "exacto"
+      }
+    }
+  },
+  "g6-24": {
+    "numero": "6.24",
+    "items": {
+      "k0": {
+        "valor": "0",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.0,
+        "coincide": true
+      },
+      "k1": {
+        "valor": "1/3",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.333273,
+        "coincide": true
+      },
+      "k2": {
+        "valor": "10/21",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.476635,
+        "coincide": true
+      },
+      "k3": {
+        "valor": "15/28",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.536042,
+        "coincide": true
+      },
+      "k4": {
+        "valor": "5/9",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.554385,
+        "coincide": true
+      },
+      "k5": {
+        "valor": "5/9",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.55444,
+        "coincide": true
+      },
+      "k6": {
+        "valor": "6/11",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.54527,
+        "coincide": true
+      },
+      "maximo": {
+        "valor": "5/9",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.55444,
+        "coincide": true
+      }
+    }
   }
 }

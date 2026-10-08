@@ -1,0 +1,53 @@
+id: g6-06
+guia: 6
+numero: "6.6"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p37
+
+enunciado: |
+  [[perdida-memoria|Se lanza un dado equilibrado sucesivas veces.]]
+
+items:
+  - id: a
+    pregunta: >-
+      Calcular la probabilidad de que el primer 2 ocurra después del tercer
+      lanzamiento.
+    skills: [geometrica-pascal]
+    respuesta:
+      tipo: numerica
+      valor: "125/216"
+    pistas:
+      - '"Después del tercero" significa que en los tres primeros no salió.'
+      - No hace falta sumar una serie: el evento se describe con una sola condición.
+      - 'Plan: $P(N > 3) = (5/6)^3$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g6_06.py
+          valor: "125/216"
+
+  - id: b
+    pregunta: >-
+      Calcular la probabilidad de que el primer 2 ocurra después del sexto
+      lanzamiento, dado que no ocurrió en los primeros 3 lanzamientos.
+    skills: [perdida-memoria, geometrica-pascal]
+    respuesta:
+      tipo: numerica
+      valor: "125/216"
+    pistas:
+      - 'Escribilo como condicional: $P(N > 6 \mid N > 3)$.'
+      - Las dos colas son potencias de $5/6$, así que el cociente se simplifica.
+      - >-
+        Plan: $P(N>6)/P(N>3) = (5/6)^6/(5/6)^3 = (5/6)^3$. Da lo mismo que el
+        ítem (a), y no es casualidad: es la pérdida de memoria. Al dado no le
+        importa que ya hayan pasado tres tiros.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g6_06.py
+          valor: "125/216"
+        - origen: "tools/verify/g6_06.py (el modelo calcula (b) por definicion de condicional y chequea que coincida con (a))"
+          valor: "125/216"

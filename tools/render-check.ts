@@ -102,9 +102,21 @@ try {
     'la respuesta aparece en el HTML sin haberla pedido',
   )
 
-  // Una guía sin contenido tiene que avisar, no explotar.
-  const vacia = render(createElement(VistaGuia, { numero: 6 }))
-  afirmar(vacia.includes('todavía no tiene contenido'), 'la guía vacía no avisa')
+  // Una guía sin contenido tiene que avisar, no explotar. Se busca cuál está
+  // vacía en vez de fijar un número: a medida que se cargan guías, el número
+  // cambia.
+  const sinContenido = [1, 2, 3, 4, 5, 6, 7, 8].find(
+    (n) => !contenido.guiaTieneContenido(n),
+  )
+  if (sinContenido === undefined) {
+    console.log('  (todas las guías tienen contenido: no se probó el caso vacío)')
+  } else {
+    const vacia = render(createElement(VistaGuia, { numero: sinContenido }))
+    afirmar(
+      vacia.includes('todavía no tiene contenido'),
+      `la guía ${sinContenido} está vacía y no avisa`,
+    )
+  }
 
   // --- panel de skills (fase 3) ---
   const { PanelSkills } = await servidor.ssrLoadModule('/src/vistas/PanelSkills.tsx')
