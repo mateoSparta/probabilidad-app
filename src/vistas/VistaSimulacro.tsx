@@ -330,5 +330,3 @@ function Devolucion({
   )
 }
 
-/** Se exporta para el render-check. */
-export { Configuracion as ConfiguracionSimulacro }
