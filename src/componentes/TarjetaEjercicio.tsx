@@ -6,6 +6,7 @@
  */
 import { useState } from 'preact/hooks'
 
+import { claveItem } from '../dominio/tipos'
 import type { Ejercicio, Intento } from '../dominio/tipos'
 import { ItemEjercicio } from './ItemEjercicio'
 import { Enunciado } from './Mate'
@@ -42,6 +43,7 @@ export function TarjetaEjercicio({ ejercicio, onIntento }: Props) {
           <ItemEjercicio
             key={item.id}
             item={item}
+            clave={claveItem(ejercicio.id, item.id)}
             onResaltar={setResaltado}
             onIntento={(intento, limpio) => {
               if (intento.correcto || intento.revelo) setAlgunoResuelto(true)

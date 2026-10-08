@@ -105,6 +105,7 @@ export type Verificacion = {
 // ------------------------------------------------------------- ejercicio
 
 export type Item = {
+  /** Local al ejercicio: `a`, `b`, `c`… */
   id: string
   pregunta: string
   skills: string[]
@@ -112,6 +113,16 @@ export type Item = {
   /** Graduadas. La última es un plan sin cuentas, nunca la resolución. */
   pistas: string[]
   verificacion?: Verificacion
+}
+
+/**
+ * Identificador global de un ítem: `g1-04:b`.
+ *
+ * El `id` del ítem es local al ejercicio, así que el ítem (b) de 1.4 y el (b)
+ * de 1.5 comparten id. El log de intentos necesita distinguirlos.
+ */
+export function claveItem(idEjercicio: string, idItem: string): string {
+  return `${idEjercicio}:${idItem}`
 }
 
 /** Las marcas del glosario de la guía, que la cátedra ya curó. */

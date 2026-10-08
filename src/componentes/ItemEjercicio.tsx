@@ -28,12 +28,13 @@ type Estado = 'pendiente' | 'correcto' | 'incorrecto' | 'revelado'
 
 type Props = {
   item: Item
-  /** Número del ejercicio, para mostrarlo en el encabezado del ítem. */
+  /** Clave global del ítem (`g1-04:b`): es con la que se registra el intento. */
+  clave: string
   onResaltar: (skill: string | null) => void
   onIntento?: (intento: Intento, limpio: boolean) => void
 }
 
-export function ItemEjercicio({ item, onResaltar, onIntento }: Props) {
+export function ItemEjercicio({ item, clave, onResaltar, onIntento }: Props) {
   const [estado, setEstado] = useState<Estado>('pendiente')
   const [envios, setEnvios] = useState(0)
   const [entrada, setEntrada] = useState('')
@@ -52,7 +53,7 @@ export function ItemEjercicio({ item, onResaltar, onIntento }: Props) {
 
   function registrar(correcto: boolean, revelo: boolean, nEnvios: number, elegidos: string[]) {
     const intento: Intento = {
-      item: item.id,
+      item: clave,
       ts: new Date().toISOString(),
       envios: nEnvios,
       correcto,

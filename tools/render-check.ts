@@ -104,6 +104,53 @@ try {
   const vacia = render(createElement(VistaGuia, { numero: 6 }))
   afirmar(vacia.includes('todavía no tiene contenido'), 'la guía vacía no avisa')
 
+  // --- panel de skills (fase 3) ---
+  const { PanelSkills } = await servidor.ssrLoadModule('/src/vistas/PanelSkills.tsx')
+  const progresoMod = await servidor.ssrLoadModule('/src/dominio/progreso.ts')
+
+  const api = (p: unknown) => ({
+    progreso: p,
+    registrar: () => {},
+    reemplazar: () => {},
+    reiniciar: () => {},
+  })
+
+  // Sin progreso: todo sin explorar.
+  const limpio = render(createElement(PanelSkills, { api: api(progresoMod.PROGRESO_VACIO) }))
+  afirmar(limpio.includes('Panel de skills'), 'el panel no se dibuja')
+  afirmar(limpio.includes('class="grilla-skills"'), 'no se ve la grilla de skills')
+  afirmar(limpio.includes('estado--sin_explorar'), 'sin intentos no se ve ningún sin_explorar')
+  afirmar(limpio.includes('Exportar JSON') && limpio.includes('Importar JSON'),
+    'faltan los botones de exportar o importar')
+
+  // Con tres intentos limpios de un skill, tiene que aparecer la insignia.
+  let sembrado = progresoMod.PROGRESO_VACIO
+  const itemsLaplace = [...(contenido.itemsPorSkill.get('laplace') ?? [])].slice(0, 3)
+  afirmar(itemsLaplace.length === 3, 'el skill laplace no tiene al menos 3 ítems para sembrar')
+  itemsLaplace.forEach((item: string, i: number) => {
+    sembrado = progresoMod.agregar(
+      sembrado,
+      {
+        item,
+        ts: `2026-03-0${i + 1}T12:00:00.000Z`,
+        envios: 1,
+        correcto: true,
+        pistas: 0,
+        revelo: false,
+      },
+      true,
+    )
+  })
+  const conInsignia = render(createElement(PanelSkills, { api: api(sembrado) }))
+  afirmar(conInsignia.includes('estado--dominado'), 'tres limpios no pintan el skill como dominado')
+  afirmar(conInsignia.includes('3/3 limpios'), 'no se ve el avance de limpios')
+
+  // Y el detalle de un skill tiene que abrir sin explotar.
+  afirmar(
+    progresoMod.estadoSkill(sembrado, contenido.itemsPorSkill.get('laplace')) === 'dominado',
+    'el estado sembrado no quedó dominado',
+  )
+
   console.log(`render-check: ${ok} afirmaciones OK.`)
   for (const f of fallas) console.error(`  ✗ ${f}`)
   if (fallas.length > 0) {

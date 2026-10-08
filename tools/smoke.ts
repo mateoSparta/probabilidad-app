@@ -19,7 +19,20 @@ import {
   evaluarOpcion,
 } from '../src/dominio/respuesta.ts'
 import { partirEnSegmentos, skillsMarcados } from '../src/dominio/marcas.ts'
-import type { Ejercicio } from '../src/dominio/tipos.ts'
+import {
+  agregar,
+  aJson,
+  desdeJson,
+  estadoSkill,
+  PROGRESO_VACIO,
+  type Progreso,
+} from '../src/dominio/progreso.ts'
+import { claveItem, type Ejercicio, type Intento } from '../src/dominio/tipos.ts'
+
+/** Un intento mínimo, para los casos donde sólo importan el ítem y la fecha. */
+function mkIntento(item: string, ts: string): Intento {
+  return { item, ts, envios: 1, correcto: true, pistas: 0, revelo: false }
+}
 
 const RAIZ = resolve(import.meta.dirname, '..')
 const GUIAS = join(RAIZ, 'content', 'guias')
@@ -122,6 +135,113 @@ for (const [valor, alternativa] of equivalentes) {
   afirmar(
     evaluarNumerica(alternativa, { tipo: 'numerica', valor }).ok,
     `el motor no acepta \`${alternativa}\` como ${valor}`,
+  )
+}
+
+// ------------------------------------------------- estados de skill (§5)
+
+{
+  const items = new Set(['g1-04:a', 'g1-04:b', 'g1-04:c', 'g1-04:d', 'g1-05:a'])
+
+  /** Construye un progreso con una lista de (ítem, día, limpio). */
+  function conIntentos(filas: [string, number, boolean][]): Progreso {
+    let p = PROGRESO_VACIO
+    for (const [item, diaDelMes, limpio] of filas) {
+      const ts = `2026-03-${String(diaDelMes).padStart(2, '0')}T12:00:00.000Z`
+      p = agregar(p, { item, ts, envios: 1, correcto: limpio, pistas: 0, revelo: !limpio }, limpio)
+    }
+    return p
+  }
+
+  afirmar(estadoSkill(PROGRESO_VACIO, items) === 'sin_explorar', 'sin intentos no da sin_explorar')
+
+  afirmar(
+    estadoSkill(conIntentos([['g1-04:a', 1, true]]), items) === 'en_desarrollo',
+    'un solo intento limpio tendría que ser en_desarrollo, no dominado',
+  )
+
+  afirmar(
+    estadoSkill(
+      conIntentos([
+        ['g1-04:a', 1, true],
+        ['g1-04:b', 2, true],
+        ['g1-04:c', 3, true],
+      ]),
+      items,
+    ) === 'dominado',
+    '3 limpios en la ventana no dan dominado',
+  )
+
+  afirmar(
+    estadoSkill(
+      conIntentos([
+        ['g1-04:a', 1, false],
+        ['g1-04:b', 2, false],
+        ['g1-04:c', 3, false],
+      ]),
+      items,
+    ) === 'flojo',
+    '3 intentos con 0 limpios no dan flojo',
+  )
+
+  afirmar(
+    estadoSkill(
+      conIntentos([
+        ['g1-04:a', 1, true],
+        ['g1-04:b', 2, false],
+        ['g1-04:c', 3, false],
+      ]),
+      items,
+    ) === 'flojo',
+    '3 intentos con 1 limpio no dan flojo',
+  )
+
+  // El dominio se mide sobre los últimos 5: tres limpios viejos tapados por
+  // cinco fallados recientes tienen que dejar de alcanzar.
+  const viejoDominado = conIntentos([
+    ['g1-04:a', 1, true],
+    ['g1-04:b', 2, true],
+    ['g1-04:c', 3, true],
+    ['g1-04:d', 10, false],
+    ['g1-05:a', 11, false],
+    ['g1-04:a', 12, false],
+    ['g1-04:b', 13, false],
+    ['g1-04:c', 14, false],
+  ])
+  afirmar(
+    estadoSkill(viejoDominado, items) === 'flojo',
+    'el dominio no caduca: cinco fallados recientes tendrían que tapar tres limpios viejos',
+  )
+
+  // Un intento por ítem por día.
+  const mismoDia = agregar(
+    agregar(PROGRESO_VACIO, mkIntento('g1-04:a', '2026-03-01T09:00:00.000Z'), true),
+    mkIntento('g1-04:a', '2026-03-01T22:00:00.000Z'),
+    false,
+  )
+  afirmar(mismoDia.intentos.length === 1, 'se registró más de un intento del mismo ítem en el día')
+
+  const otroDia = agregar(
+    agregar(PROGRESO_VACIO, mkIntento('g1-04:a', '2026-03-01T09:00:00.000Z'), true),
+    mkIntento('g1-04:a', '2026-03-02T09:00:00.000Z'),
+    false,
+  )
+  afirmar(otroDia.intentos.length === 2, 'no se registró el intento del día siguiente')
+
+  // Exportar e importar tiene que ser ida y vuelta.
+  const ida = aJson(otroDia)
+  const vuelta = desdeJson(ida)
+  afirmar(
+    vuelta !== null && vuelta.intentos.length === otroDia.intentos.length,
+    'exportar e importar el progreso no es ida y vuelta',
+  )
+  afirmar(desdeJson('no soy json') === null, 'importar basura no devolvió null')
+  afirmar(desdeJson('{"version":9}') === null, 'importar otra versión no devolvió null')
+
+  // Los ítems se identifican globalmente: (b) de 1.4 no es (b) de 1.5.
+  afirmar(
+    claveItem('g1-04', 'b') !== claveItem('g1-05', 'b'),
+    'dos ítems de ejercicios distintos comparten clave',
   )
 }
 

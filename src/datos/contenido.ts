@@ -9,6 +9,7 @@
  */
 import { load } from 'js-yaml'
 
+import { claveItem } from '../dominio/tipos'
 import type { BloqueTeoria, Ejercicio, Guia, PasoSecuencia, Skill } from '../dominio/tipos'
 
 type Crudo = Record<string, string>
@@ -99,6 +100,48 @@ export const guias: Guia[] = Object.values(crudoGuias)
   .sort((a, b) => a.numero - b.numero)
 
 export const guiaPorNumero = new Map(guias.map((g) => [g.numero, g]))
+
+// ------------------------------------------------------- skills -> ítems
+
+/**
+ * Qué ítems evalúan cada skill. Es lo que necesita el panel de progreso:
+ * el estado de un skill se mide sobre los intentos de estos ítems.
+ */
+export const itemsPorSkill: Map<string, Set<string>> = (() => {
+  const m = new Map<string, Set<string>>()
+  for (const ej of ejercicios) {
+    for (const item of ej.items) {
+      for (const id of item.skills) {
+        if (!m.has(id)) m.set(id, new Set())
+        m.get(id)!.add(claveItem(ej.id, item.id))
+      }
+    }
+  }
+  return m
+})()
+
+/** De la clave global de un ítem al ejercicio que lo contiene. */
+export const ubicacionDeItem: Map<string, { ejercicio: Ejercicio; item: string }> = (() => {
+  const m = new Map<string, { ejercicio: Ejercicio; item: string }>()
+  for (const ej of ejercicios) {
+    for (const item of ej.items) {
+      m.set(claveItem(ej.id, item.id), { ejercicio: ej, item: item.id })
+    }
+  }
+  return m
+})()
+
+/** Los skills agrupados por la guía donde se introducen. */
+export function skillsPorGuia(): { guia: number; skills: Skill[] }[] {
+  const m = new Map<number, Skill[]>()
+  for (const s of skills) {
+    if (!m.has(s.guia)) m.set(s.guia, [])
+    m.get(s.guia)!.push(s)
+  }
+  return [...m.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([guia, ss]) => ({ guia, skills: ss }))
+}
 
 // ----------------------------------------------------------------- ayudas
 

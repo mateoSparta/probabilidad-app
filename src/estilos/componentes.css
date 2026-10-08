@@ -255,3 +255,124 @@
   padding: 0 2px;
   border-radius: 2px;
 }
+
+/* ------------------------------------------------- panel de skills (§5) */
+
+.resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-4);
+  list-style: none;
+  margin: var(--e-4) 0 0;
+  padding: 0;
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+.resumen__item strong {
+  font-size: var(--t-md);
+  font-weight: 600;
+  margin-right: 2px;
+}
+
+/* Un color por estado; se usa en el resumen y en el sello de la insignia. */
+.estado--dominado      { --color-estado: var(--dominado); }
+.estado--en_desarrollo { --color-estado: var(--desarrollo); }
+.estado--flojo         { --color-estado: var(--flojo); }
+.estado--sin_explorar  { --color-estado: var(--sin-explorar); }
+.resumen__item strong { color: var(--color-estado); }
+
+.grupo-skills { margin-bottom: var(--e-5); }
+.grupo-skills__titulo {
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tinta-3);
+  font-weight: 500;
+  margin-bottom: var(--e-2);
+}
+
+.grilla-skills {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--e-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.celda-skill {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  width: 100%;
+  text-align: left;
+  appearance: none;
+  cursor: pointer;
+  font-family: var(--serif);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  padding: var(--e-3);
+  color: var(--tinta);
+  transition: border-color 120ms, background 120ms;
+}
+.celda-skill:hover { border-color: var(--color-estado); }
+.celda-skill--abierta { border-color: var(--color-estado); background: var(--superficie-alta); }
+
+/* Sello circular con la inicial del skill: sobrio, sin animaciones. */
+.sello {
+  flex: none;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--color-estado);
+  border: 1.5px solid var(--color-estado);
+  background: color-mix(in srgb, var(--color-estado) 10%, transparent);
+}
+.estado--sin_explorar .sello { border-style: dashed; }
+
+.celda-skill__texto { display: flex; flex-direction: column; min-width: 0; }
+.celda-skill__nombre { font-size: var(--t-sm); line-height: 1.3; }
+.celda-skill__estado {
+  font-size: var(--t-xs);
+  color: var(--color-estado);
+}
+
+.detalle-skill {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-left: 2px solid var(--acento);
+  border-radius: var(--radio-lg);
+  padding: var(--e-4) var(--e-5);
+  margin-block: var(--e-5);
+}
+.detalle-skill h3 { margin-bottom: var(--e-2); }
+.detalle-skill h4 {
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tinta-2);
+  font-weight: 500;
+  margin: var(--e-4) 0 var(--e-2);
+}
+
+.lista-items {
+  margin: 0;
+  padding-left: var(--e-5);
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+.lista-items li { margin-bottom: var(--e-1); }
+
+.datos {
+  border-top: 1px solid var(--borde);
+  margin-top: var(--e-7);
+  padding-top: var(--e-5);
+}
+.datos label.boton { cursor: pointer; }
+
+.dato-chico { font-size: var(--t-xs); color: var(--tinta-3); margin-top: var(--e-2); }
