@@ -377,7 +377,7 @@ Algunos parciales traen variantes por curso (por ejemplo, el ej. 2 del 24/05 tie
 
 **Cobertura de resueltas disponible:**
 
-| Guía | Archivos |
+| Guía | Archivos | 
 |---|---|
 | 1 | RES_1, RES_2, RES_3 |
 | 2 | SAN, RES_1, RES_2 |
