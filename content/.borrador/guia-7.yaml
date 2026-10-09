@@ -1,0 +1,359 @@
+_generado_por: tools/extract/guia.py -- NO EDITAR A MANO
+guia: 7
+fuente: fuentes/guias/parte1.pdf
+ejercicios:
+- numero: '7.1'
+  paginas:
+  - 43
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea \{N (t), t \ge 0\} el proceso de conteo asociado a un proceso de Poisson de intensidad
+    2 y sea N (a, b) = N (b) - N (a) el incremento del proceso en el intervalo (a, b]. Calcular
+  items:
+  - id: a
+    texto: P(N (1) = 0).
+  - id: b
+    texto: P(N (1, 2) = 1).
+  - id: c
+    texto: P(N (1) = 0, N (1, 2) = 1, N (2, 4) = 2).
+  - id: d
+    texto: cov (N (1, 3), N (2, 4)). Sea S_{3} el tiempo de espera hasta que ocurre el tercer evento del
+      proceso de Poisson. Calcular
+  - id: e
+    texto: P(S_{3} > 1/2)
+  - id: f
+    texto: P(N (1/4) = 1\mid S_{3} = 1/2)
+  - id: g
+    texto: P(S_{3} > 1/2\mid N (1/4) = 1).
+- numero: '7.2'
+  paginas:
+  - 43
+  marcas: []
+  en_alcance: true
+  enunciado: En la Ciudad de Buenos Aires ocurren accidentes de tránsito de acuerdo con un proceso de
+    Poisson con intensidad 2 por hora.
+  items:
+  - id: a
+    texto: Calcular la probabilidad de que el tercer accidente después de las 0:00 ocurra después de las
+      0:30.
+  - id: b
+    texto: Calcular la probabilidad de que entre la una y las dos de la mañana ocurra exactamente un accidente.
+- numero: '7.3'
+  paginas:
+  - 43
+  marcas: []
+  en_alcance: true
+  enunciado: Un radioisótopo emite partículas de acuerdo con un proceso de Poisson de intensidad 10 por
+    hora. Las partículas emitidas se registran con un contador. Cuando el contador registra una partícula
+    tarda dos minutos en reacondicionarse y no registra ninguna partícula emitida durante ese intervalo
+    de tiempo. Calcular la probabilidad de que las primeras 5 partículas emitidas sean registradas por
+    el contador.
+- numero: '7.4'
+  paginas:
+  - 43
+  marcas: []
+  en_alcance: true
+  enunciado: 'Un detector de partículas emite señales de acuerdo con un proceso de Poisson de intensidad
+    2 por segundo: tic,tac,tic,tac,tic,tac,\ldots el contador registra solamente los tac ’s. Sabiendo
+    que el contador registró exactamente una señal en el primer segundo, calcular la probabilidad de que
+    no registre ninguna señal en el siguiente.'
+- numero: '7.5'
+  paginas:
+  - 43
+  - 44
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Los colectivos de la línea 61.09 llegan a la parada de Paseo Colón 850 según un proceso Poisson
+    de intensidad 12 por hora.
+  items:
+  - id: a
+    texto: Andrés llega a la parada del 61.09 a las 19:30. Calcular la probabilidad de que Andrés tenga
+      que esperar más de 5 minutos hasta que llegue el próximo colectivo.
+  - id: b
+    texto: Jemina llega a la parada del 61.09 a las 19:31. Calcular la probabilidad de que Jemina tenga
+      que esperar más de 5 minutos hasta que llegue el próximo colectivo.
+  - id: c
+    texto: Matías llega a la parada del 61.09 a las 19:3X, donde X es equiprobable sobre el conjunto \{2,
+      3, 4, 5\} e independiente del proceso de arribos de colectivos. Calcular la probabilidad de que
+      Matías tenga que esperar más de 5 minutos hasta que llegue el próximo colectivo.
+  - id: d
+    texto: Magdalena llega a la parada del 61.09 a las 19:00+U, donde U es uniforme sobre el intervalo
+      (0,60) e independiente del proceso de arribos de colectivos. Calcular la probabilidad de que Magdalena
+      tenga que esperar más de 5 minutos hasta que llegue el próximo colectivo.
+- numero: '7.6'
+  paginas:
+  - 44
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: El peso de ciertas bolsas de naranjas es una variable aleatoria exponencial de media 3 kilos.
+    Se van agregando bolsas en una balanza hasta que el peso supera 5 kilos. Calcular la probabilidad
+    de que el peso final en la balanza supere los 7 kilos.
+- numero: '7.7'
+  paginas:
+  - 44
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Llamadas arriban a una central telefónica de acuerdo con un proceso de Poisson de intensidad
+    4 por hora. Sabiendo que entre las 9:00 y las 10:00 arribaron exactamente 3 llamadas, calcular la
+    probabilidad de que
+  items:
+  - id: a
+    texto: la primera llamada después de las 9:00 haya arribado antes de las 9:15.
+  - id: b
+    texto: la segunda llamada después de las 9:00 haya arribado antes de las 9:30.
+- numero: '7.8'
+  paginas:
+  - 44
+  marcas: []
+  en_alcance: true
+  enunciado: 'A una estación de trenes llegan personas de acuerdo con un proceso de Poisson de intensidad
+    50 por minuto. El tren parte a los 15 minutos. Sea T la cantidad total de tiempo que esperaron los
+    pasajeros. Hallar E[T] y var(T). (sugerencia: condicionar al valor de N (15) y usar la fórmula de
+    probabilidad total.)'
+- numero: '7.9'
+  paginas:
+  - 44
+  marcas: []
+  en_alcance: true
+  enunciado: Un radioisótopo emite partículas de acuerdo con un proceso de Poisson de intensidad 6 por
+    hora. Sabiendo que entre las 0:00 y las 0:30 el radioisótopo emitió exactamente 3 partículas calcular
+    la probabilidad de que la primera partícula emitida después de las 0:00 se haya emitido después de
+    las 0:10 y la cuarta se haya emitido después de las 0:40.
+- numero: '7.10'
+  paginas:
+  - 44
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Una máquina produce rollos de alambre. El alambre tiene fallas distribuidas como un proceso
+    de Poisson de intensidad 1 cada 20 metros. La máquina detecta cada falla con probabilidad 0.75 y corta
+    el alambre en la primer falla detectada.
+  items:
+  - id: a
+    texto: Hallar la media y la varianza de la longitud de los rollos de alambre.
+  - id: b
+    texto: Hallar la cantidad media de fallas en los rollos.
+- numero: '7.11'
+  paginas:
+  - 44
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Una máquina produce rollos de alambre. El alambre tiene fallas distribuidas como un proceso
+    de Poisson de intensidad 1 cada 20 metros. La máquina detecta cada falla con probabilidad 0.75 y corta
+    el alambre en la primer falla detectada antes de los 20 metros o a los 20 metros si no se detectan
+    fallas antes.
+  items:
+  - id: a
+    texto: Hallar la media de la longitud de los rollos de alambre.
+  - id: b
+    texto: Hallar la cantidad media de fallas en los rollos.
+- numero: '7.12'
+  paginas:
+  - 45
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Lucas emite señales de acuerdo con un proceso de Poisson de intensidad 3 por minuto, mientras
+    que Monk las emite de acuerdo con un proceso de Poisson de intensidad 5 por minuto. Los dos procesos
+    de Poisson son independientes.
+  items:
+  - id: a
+    texto: Hallar la probabilidad de que la primera señal emitida después de las 0:00 haya sido emitida
+      después de las 0:10.
+  - id: b
+    texto: Hallar la probabilidad de que la primera señal emitida haya sido emitida por Lucas.
+  - id: c
+    texto: Hallar la probabilidad de que la primera señal emitida después de las 0:00 haya sido emitida
+      después de las 0:10 y que haya sido emitida por Lucas.
+- numero: '7.13'
+  paginas:
+  - 45
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: ''
+  items:
+  - id: a
+    texto: Sean Π_{1} y Π_{2} dos procesos de Poisson independientes de intensidad 2. ¿Cuál es la probabilidad
+      de que los dos primeros eventos provengan del proceso Π_{1}?
+  - id: b
+    texto: 'Sean T_{1}, T_{2}, T_{3} variables aleatorias independientes exponenciales de media 1/2. Calcular
+      la probabilidad de que T_{1} supere a T_{2} + T_{3} (sugerencia: no es necesario hacer ninguna cuenta).'
+- numero: '7.14'
+  paginas:
+  - 45
+  marcas: []
+  en_alcance: true
+  enunciado: 'Estando maduras las brevas fuerzas patriotas arribarán a la Plaza de la Victoria organizadas
+    en dos fracciones: los Chisperos conducidos por French y Beruti y los Patricios dirigidos por Saavedra.
+    Los Patricios arribarán de acuerdo con un proceso de Poisson de intensidad 60 por hora y los Chisperos
+    de acuerdo con un proceso de Poisson de intensidad 40 por hora. Los dos procesos de Poisson son independientes.
+    Sabiendo que el 25 de mayo entre las 12:00 y las 12:03 arribaron exactamente 2 Chisperos a la Plaza
+    de la Victoria calcular la probabilidad de que entre las 12:01 y las 12:02 hayan arribado por lo menos
+    2 integrantes de las fuerzas patriotas.'
+- numero: '7.15'
+  paginas:
+  - 45
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Clientes arriban a un servidor de acuerdo con un proceso de Poisson de intensidad 4 por hora.
+    El tiempo de trabajo consumido en cada servicio tiene distribución normal de media 5 minutos y desvío
+    estándar 1/2. Calcular la media y la varianza del tiempo de trabajo consumido por el servidor entre
+    las 11:00 y las 12:00.
+- numero: '7.16'
+  paginas:
+  - 45
+  marcas: []
+  en_alcance: true
+  enunciado: Familias de africanos migran a la Unión Europea de acuerdo con un proceso de Poisson de tasa
+    3.000 por semana. Si el número de integrantes de cada familia es independiente y puede ser 5, 4, 3
+    con probabilidades respectivas 0.1, 0.4, 0.5, calcular la media y la varianza de la cantidad de africanos
+    que migran a la Unión Europea durante un período de 4 semanas.
+- numero: '7.17'
+  paginas:
+  - 45
+  - 46
+  marcas: []
+  en_alcance: true
+  enunciado: 'Vehículos arriban a un puesto de peaje de acuerdo con un proceso de Poisson de intensidad
+    10 por minuto de acuerdo con los siguientes porcentajes: 70 % de autos, 10 % de motos, y 20 % de camiones.
+    Los autos transportan en promedio una carga de 400 kg., las motos de 120 kg., y los camiones de 1300
+    kg.'
+  items:
+  - id: a
+    texto: Hallar la probabilidad de que en media hora crucen por el peaje a lo sumo 2 autos.
+  - id: b
+    texto: Hallar la probabilidad de que en 1 minuto pasen 7 autos, 1 moto y 2 camiones.
+  - id: c
+    texto: Hallar la carga media que transporta un vehículo que pasa por el peaje.
+  - id: d
+    texto: Hallar la carga media total que atraviesa el peaje durante 1 hora.
+- numero: '7.18'
+  paginas:
+  - 46
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: A una línea de embalaje arriban en forma independiente piezas producidas por las máquinas
+    A y B. Las piezas de la máquina A lo hacen según un proceso Poisson de tasa 2 por minuto, mientras
+    que las de la máquina B también lo hacen en forma Poisson pero con tasa 1 por minuto. Las piezas de
+    ambas máquinas llegan a la línea de embalaje y por orden de arribo son embaladas de a pares. Hallar
+    la media y la varianza del tiempo transcurrido hasta la aparición de un par embalado formado por una
+    pieza proveniente de cada máquina. Ejercicios Complementarios
+- numero: '7.19'
+  paginas:
+  - 46
+  marcas: []
+  en_alcance: true
+  enunciado: Una fábrica textil produce rollos de tela para una camisería. La tela se teje en una máquina
+    que produce fallas de tejido de acuerdo con un proceso de Poisson de intensidad 2 cada 300 metros.
+    La tela se corta en piezas de 100 metros de largo y cada pieza pasa a la máquina de teñido. Cuando
+    una pieza de tela no tiene fallas de tejido la cantidad de fallas de teñido es una variable aleatoria
+    con distribución Poisson de media 1. En cambio, si la pieza tiene fallas de tejido la cantidad de
+    fallas de teñido una variable aleatoria con distribución Poisson de media 2. Hallar la distribución
+    de la cantidad de fallas en una pieza enrollada.
+- numero: '7.20'
+  paginas:
+  - 46
+  marcas: []
+  en_alcance: true
+  enunciado: La llegada de aviones a un aeropuerto de una determinada ciudad responde a un proceso Poisson
+    con una media de 12 aviones por hora. Un oficial de control llega cada día de la semana y permanece
+    en el aeropuerto el tiempo necesario hasta que llega el décimo avión. Si al cabo de una semana (5
+    días hábiles) el tiempo que permaneció el oficial en el aeropuerto superó las 4 horas, ¿cuál es la
+    probabilidad de que dicho tiempo haya excedido las 5 horas? Suponer que los tiempos de permanencia
+    de dos días diferentes son independientes.
+- numero: '7.21'
+  paginas:
+  - 46
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Clientes ingresan a un banco según un proceso de Poisson de tasa 10 por hora. El 30 por ciento
+    de los clientes son mujeres. ¿Cuál es la probabilidad de que en el lapso hasta la llegada del sexto
+    hombre hayan ingresado exactamente 2 mujeres?
+- numero: '7.22'
+  paginas:
+  - 46
+  marcas: []
+  en_alcance: true
+  enunciado: A un hospital llegan personas de acuerdo con un proceso de Poisson de intensidad 1 cada hora.
+    Cuando una persona ingresa al hospital, la probabilidad de que esté gravemente enferma es 0.4. (cada
+    una en forma independiente de las otras). La jornada de atención del hospital es de 24 horas.
+  items:
+  - id: a
+    texto: El costo de atender a una persona que está gravemente enferma es de $10 y el de atender a una
+      persona que no esté gravemente enferma es de $2. Hallar el costo medio de una jornada de atención.
+  - id: b
+    texto: Sabiendo que el costo de una jornada de atención fue de $10, hallar la distribución de la cantidad
+      de personas que llegaron al hospital en esa misma jornada.
+- numero: '7.23'
+  paginas:
+  - 47
+  marcas:
+  - muy_dificil
+  en_alcance: true
+  enunciado: Una máquina produce rollos de alambre. El alambre tiene fallas distribuidas como un proceso
+    de Poisson de intensidad 1 cada 25 metros. La máquina corta el alambre en la primer falla detectada
+    después de los 50 metros, pero detecta las fallas con probabilidad 0.9. Si entre los 50 y los 150
+    metros no detecta ninguna falla, la máquina corta el alambre a los 150 metros. Hallar la cantidad
+    media de fallas en los rollos.
+- numero: '7.24'
+  paginas:
+  - 47
+  marcas: []
+  en_alcance: true
+  enunciado: '[ver Ejercicio 7.13] Lucas entra en un banco que tiene dos cajas independientes. Pablo está
+    siendo atendido por el cajero 1 y Pedro por el cajero 2. Lucas será atendido tan pronto como Pedro
+    o Pablo salgan de la caja. El tiempo, en minutos, que demora el cajero i en completar un servicio
+    es una variable aleatoria exponencial de media 2^{3-i}, i = 1, 2. Hallar'
+  items:
+  - id: a
+    texto: la probabilidad de que Pablo sea el primero en salir;
+  - id: b
+    texto: la probabilidad de que Pablo sea el último en salir.
+- numero: '7.25'
+  paginas:
+  - 47
+  marcas: []
+  en_alcance: true
+  enunciado: En hora pico, una autopista recibe tráfico de 3 entradas, A, B y C, en forma independiente,
+    que tienen tasas de 30, 35 y 25 vehículos por minuto, respectivamente. De los vehículos que llegan
+    por A o B, el 30 % se desvía por colectora (o sea, no van por la autopista). En la autopista hay un
+    puesto de peaje (luego de las 3 entradas).
+  items:
+  - id: a
+    texto: ¿Cuál es la probabilidad de que al peaje lleguen 3 autos en menos de 5 segundos?
+  - id: b
+    texto: ¿Cuál es la probabilidad de que pasen más de 5 autos hasta que pasa uno proveniente de la entrada
+      A?
+  - id: c
+    texto: Se sabe que en un lapso de 15 segundos pasaron por el peaje 20 vehículos. ¿Cuál es la probabilidad
+      de que la mitad de ellos haya pasado en los últimos 5 segundos?
+  - id: d
+    texto: En el peaje se instala un contador de vehículos, pero el mismo funciona intermitentemente.
+      Cada vez que funciona, el tiempo durante el cual lo hace no es fijo sino que es una variable T_{i}
+      \sim U (10, 15) segundos. Sea X_{i} la cantidad de vehículos registrados la i-ésima vez que funciona
+      el dispositivo. La cantidad de veces que el dispositivo funciona durante un minuto es una variable
+      N_{j} distribuida uniformemente a valores \{1, 2, 3, 4\}. Si cada una de las secuencias \{T_{i}
+      \}, \{X_{i} \} y \{N_{j} \} son i.i.d., hallar la cantidad media de vehículos registrados por el
+      dispositivo durante 1 hora.
+- numero: '7.26'
+  paginas:
+  - 47
+  - 48
+  marcas:
+  - solo_audaces
+  en_alcance: true
+  enunciado: En la fila de un cajero automático hay personas esperando realizar una operación; cada vez
+    que una persona termina su operación, la siguiente comienza la suya. Las personas son impacientes,
+    e independientemente de lo que hagan las demás, cada una espera solamente un tiempo exponencial de
+    tasa 1; luego del cual si no ha comenzado su operación se retira de la fila. Por otra parte, los tiempos
+    consumidos en cada operación son independientes y exponenciales de tasa 10. Si una persona está utilizando
+    el cajero, hallar la probabilidad de que la octava persona en la fila realice su operación. Guía 8

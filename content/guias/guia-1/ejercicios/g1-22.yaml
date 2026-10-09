@@ -1,0 +1,134 @@
+id: g1-22
+guia: 1
+numero: "1.22"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p7
+
+enunciado: |
+  Se tienen 3 urnas $a$, $b$, $c$. En $a$ hay dos bolas rojas y una blanca, en
+  $b$ tres rojas y dos blancas, en $c$ cinco rojas y tres blancas.
+  [[prob-total|Se extrae una bola de $a$: si es roja, se extrae una bola de
+  $b$; en caso contrario, se extrae una bola de $c$.]]
+  Indiquemos $R_i$, $i = 1, 2$, el evento de que la bola en la extracción $i$
+  fue roja, y $B_i$ el evento de que fue blanca.
+
+items:
+  - id: a
+    pregunta: 'Calcular $P(B_1)$.'
+    skills: [laplace]
+    respuesta:
+      tipo: numerica
+      valor: "1/3"
+    pistas:
+      - La primera extracción es siempre de la misma urna.
+      - 'Plan: contá sobre la urna $a$ nomás.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_22.py
+          valor: "1/3"
+
+  - id: b
+    pregunta: 'Calcular $P(B_2)$.'
+    skills: [prob-total, condicional]
+    respuesta:
+      tipo: numerica
+      valor: "47/120"
+    pistas:
+      - ¿De qué depende de cuál urna sale la segunda bola?
+      - Particioná según el color de la primera bola: son dos caminos posibles.
+      - >-
+        Plan: $P(B_2) = P(B_2 \mid R_1)P(R_1) + P(B_2 \mid B_1)P(B_1)$,
+        leyendo cada factor del árbol.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_22.py
+          valor: "47/120"
+
+  - id: c
+    pregunta: >-
+      Calcular la probabilidad de que la primera bola extraída haya sido
+      blanca sabiendo que la segunda fue roja, es decir $P(B_1 \mid R_2)$.
+    skills: [bayes, condicional]
+    respuesta:
+      tipo: numerica
+      valor: "25/73"
+    pistas:
+      - El dato va en el sentido contrario al que te piden: te dan la segunda y preguntan por la primera.
+      - El denominador es $P(R_2)$, que sale por probabilidad total (o del complemento del ítem anterior).
+      - >-
+        Plan: $P(B_1 \mid R_2) = \dfrac{P(R_2 \mid B_1)P(B_1)}{P(R_2)}$, con
+        $P(R_2) = 1 - P(B_2)$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_22.py
+          valor: "25/73"
+
+  - id: d
+    pregunta: Calcular la probabilidad de que alguna de las bolas extraídas sea roja.
+    skills: [condicional, inclusion-exclusion]
+    respuesta:
+      tipo: numerica
+      valor: "7/8"
+    pistas:
+      - '"Alguna roja" tiene varios casos; su complemento tiene uno solo.'
+      - El complemento es que las dos sean blancas, y eso fija la urna de la segunda extracción.
+      - 'Plan: $1 - P(B_1)P(B_2 \mid B_1)$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_22.py
+          valor: "7/8"
+
+  - id: e
+    pregunta: >-
+      Si ahora en $a$ hay 200 bolas rojas y 100 blancas, en $b$ 150 rojas y
+      100 blancas, y en $c$ 125 rojas y 75 blancas, los resultados de los
+      incisos anteriores no cambian. ¿Por qué?
+    skills: [condicional, prob-total]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: e1
+          texto: >-
+            Porque cada urna mantiene la misma proporción de rojas que antes, y
+            las probabilidades sólo dependen de la proporción.
+          correcta: true
+        - id: e2
+          texto: Porque hay muchas más bolas y la ley de los grandes números hace que las diferencias se compensen.
+          error_tipico: >-
+            No hay ninguna ley de grandes números acá: se extrae una sola bola
+            de cada urna. Lo que importa es la proporción, no la cantidad.
+        - id: e3
+          texto: Porque el total de bolas en las tres urnas es el mismo que antes.
+          error_tipico: >-
+            El total no es el mismo, y además no sería relevante: cada
+            extracción mira una sola urna.
+        - id: e4
+          texto: >-
+            Porque al aumentar todas las cantidades en la misma escala, las
+            diferencias entre urnas desaparecen.
+          error_tipico: >-
+            Las cantidades no crecieron todas en la misma escala, y las urnas
+            siguen siendo distintas entre sí. Lo que se conservó es la
+            proporción dentro de cada una.
+    pistas:
+      - Calculá la probabilidad de sacar roja de cada urna con los números nuevos.
+      - Compará esas tres fracciones con las del enunciado original.
+      - >-
+        Plan: si $P(\text{roja})$ de cada urna no cambió, ninguna de las
+        cuentas anteriores cambia, porque todas se armaron con esos tres
+        números.
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: tools/verify/g1_22.py
+          valor: "los cuatro incisos dan lo mismo con URNAS y con URNAS_E"

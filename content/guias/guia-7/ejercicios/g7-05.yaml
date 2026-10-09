@@ -1,0 +1,93 @@
+id: g7-05
+guia: 7
+numero: "7.5"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p43
+
+enunciado: |
+  Los colectivos de la línea 61.09 llegan a la parada de Paseo Colón 850
+  [[poisson-incrementos|según un proceso de Poisson de intensidad 12 por
+  hora]]. Cuatro personas llegan a la parada de formas distintas, y a todas se
+  les pregunta lo mismo: la probabilidad de esperar **más de 5 minutos** hasta
+  que llegue el primer colectivo.
+
+items:
+  - id: a
+    pregunta: Andrés llega a la parada a las 19:30.
+    skills: [poisson-incrementos, tiempos-espera]
+    respuesta:
+      tipo: numerica
+      valor: "exp(-1)"
+    pistas:
+      - 'Pasá la intensidad a por minuto: 12 por hora son 1 cada 5 minutos.'
+      - 'Esperar más de 5 minutos es que no llegue ninguno en esos 5 minutos.'
+      - 'Plan: $P(N(5\text{ min}) = 0) = e^{-\lambda \cdot 5}$ con $\lambda = 1/5$ por minuto.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_05.py
+          valor: "exp(-1)"
+
+  - id: b
+    pregunta: Jemina llega a la parada a las 19:31.
+    skills: [poisson-incrementos, perdida-memoria]
+    respuesta:
+      tipo: numerica
+      valor: "exp(-1)"
+    pistas:
+      - '¿Cambia algo que llegue un minuto más tarde?'
+      - 'Plan: por estacionariedad, el resultado depende sólo del largo del intervalo, no de dónde empieza. Da lo mismo que el ítem (a).'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_05.py
+          valor: "exp(-1)"
+
+  - id: c
+    pregunta: >-
+      Matías llega a las 19:3X, donde $X$ es equiprobable sobre el conjunto
+      $\{2, 3, 4, 5\}$ e independiente del proceso de arribos.
+    skills: [poisson-incrementos, esperanza-total]
+    respuesta:
+      tipo: numerica
+      valor: "exp(-1)"
+    pistas:
+      - Condicioná a cada valor posible de $X$ y usá esperanza total.
+      - '¿Cuánto da la probabilidad para cada valor de $X$ por separado?'
+      - >-
+        Plan: para cada $X$ el resultado es el mismo que en (a), porque la hora
+        de llegada es independiente del proceso. Promediar cuatro números
+        iguales devuelve ese número.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_05.py
+          valor: "exp(-1)"
+
+  - id: d
+    pregunta: >-
+      Magdalena llega a las 19:00 + $U$, donde $U$ es uniforme sobre el
+      intervalo $(0, 60)$ e independiente del proceso de arribos.
+    skills: [poisson-incrementos, esperanza-total]
+    respuesta:
+      tipo: numerica
+      valor: "exp(-1)"
+    pistas:
+      - Es el mismo argumento del ítem anterior, pero con una hora de llegada continua.
+      - >-
+        Plan: condicionando a $U = u$ el resultado no depende de $u$, así que
+        integrar sobre $u$ devuelve lo mismo. Los cuatro ítems dan igual, y eso
+        es el punto del ejercicio: el proceso no se acuerda de nada, así que no
+        importa cuándo llegues a la parada.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_05.py
+          valor: "exp(-1)"
+        - origen: "tools/verify/g7_05.py (el modelo simula los cuatro escenarios por separado)"
+          valor: "exp(-1)"

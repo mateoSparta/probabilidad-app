@@ -1,0 +1,37 @@
+id: g6-12
+guia: 6
+numero: "6.12"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p38
+
+enunciado: |
+  Un estacionamiento, al abrir, tiene capacidad para tres coches. Cada minuto
+  pasa un coche por allí y [[geometrica-pascal|la probabilidad de que quiera
+  estacionarse es $0{,}8$]].
+
+items:
+  - id: a
+    pregunta: Calcular la probabilidad de que se llene en exactamente 10 minutos.
+    skills: [geometrica-pascal]
+    respuesta:
+      tipo: numerica
+      valor: "36*0.8^3*0.2^7"
+      tol_rel: 0.005
+    pistas:
+      - '"Se llena en exactamente 10 minutos" ¿qué dice sobre el minuto 10 en particular?'
+      - >-
+        El tercer coche tiene que estacionar justo en el minuto 10, y los otros
+        dos en los nueve minutos anteriores.
+      - >-
+        Plan: es Pascal, no binomial. $\binom{9}{2}\,0{,}8^3\,0{,}2^7$. Si usás
+        $\binom{10}{3}$ estás contando también los casos en que se llenó antes
+        del minuto 10, y el resultado sale más del triple.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g6_12.py
+          valor: "2304/9765625"
+        - origen: "tools/verify/g6_12.py (error tipico: usar la binomial da 1536/1953125)"
+          valor: "1536/1953125"

@@ -1,0 +1,66 @@
+id: g3-01
+guia: 3
+numero: "3.1"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p17
+
+enunciado: |
+  Sea $X$ una variable aleatoria con función de distribución
+  [[esperanza|$F_X(x) = \dfrac{x^3}{3}\,\mathbf{1}\{0 \le x < 1\} + \dfrac{2x+1}{6}\,\mathbf{1}\{1 \le x < 2\} + \mathbf{1}\{x \ge 2\}$]].
+
+items:
+  - id: a
+    pregunta: 'Calcular $E[X]$.'
+    skills: [esperanza, funcion-distribucion]
+    respuesta:
+      tipo: numerica
+      valor: "5/4"
+    pistas:
+      - >-
+        Antes de integrar, fijate si $F_X$ es continua. Evaluá el primer tramo
+        y el segundo en $x = 1$ y compará.
+      - >-
+        Hay dos saltos, en $x = 1$ y en $x = 2$. Cada salto es masa puntual, y
+        su tamaño es la diferencia de los dos tramos en ese punto.
+      - >-
+        Plan: derivá $F_X$ en cada tramo para obtener la densidad, integrá
+        $x\,f_X(x)$ ahí, y sumá aparte cada átomo multiplicado por su valor.
+        Control: la masa total (integrales más átomos) tiene que dar 1.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g3_01.py
+          valor: "5/4"
+        - origen: "tools/verify/g3_01.py (control: los dos atomos valen 1/6)"
+          valor: "1/6"
+
+  - id: b
+    pregunta: 'Calcular $E[X \mid X < 1]$ y $E[X \mid X \le 1]$.'
+    skills: [esperanza-condicional-evento, esperanza]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$E[X \mid X < 1]$'
+          valor: "3/4"
+        - pregunta: '$E[X \mid X \le 1]$'
+          valor: "5/6"
+    pistas:
+      - >-
+        Los dos eventos no son el mismo: uno incluye el punto $x = 1$ y el otro
+        no. Con esta variable eso importa.
+      - '¿Cuánto valen $P(X < 1)$ y $P(X \le 1)$? Se leen de $F_X$.'
+      - >-
+        Plan: para cada evento, calculá $E[X\,\mathbf{1}_A]$ y dividí por
+        $P(A)$. En el segundo caso hay que sumar el átomo de $x = 1$ tanto
+        arriba como abajo. Control: los dos resultados tienen que quedar entre
+        0 y 1.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g3_01.py
+          valor: "3/4, 5/6"
+        - origen: "tools/verify/g3_01.py (control: P(X<1)=1/3, P(X<=1)=1/2)"
+          valor: "1/3, 1/2"

@@ -1,0 +1,88 @@
+id: g8-09
+guia: 8
+numero: "8.9"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p49
+
+enunciado: |
+  **[Experimento de Galton]** Una bola roja realiza una caminata aleatoria de
+  la siguiente manera: cada 10 segundos se desplaza 3 cm hacia la derecha o
+  hacia la izquierda, con igual probabilidad, y
+  [[aproximacion-normal|las sucesivas direcciones de la caminata son
+  independientes]]. Si al cabo de dos minutos se ha desplazado $\ell$ veces
+  hacia la izquierda va a parar a la urna $\ell$, con
+  $\ell = 0, 1, 2, \ldots, 12$.
+
+items:
+  - id: a
+    pregunta: >-
+      Usar la aproximación por la densidad normal para estimar la probabilidad
+      de que la bola roja vaya a parar a la urna 4.
+    skills: [aproximacion-normal, bernoulli-binomial]
+    respuesta:
+      tipo: numerica
+      valor: "-erf(sqrt(6)/4)/2 + erf(5*sqrt(6)/12)/2"
+      # Con y sin corrección por continuidad da 0.1188 y 0.1183; el valor
+      # exacto de la binomial es 0.1208. La tolerancia acepta las tres.
+      tol_rel: 0.03
+    pistas:
+      - '¿Cuántos pasos da la bola en dos minutos? ¿Qué distribución tiene $\ell$?'
+      - >-
+        $\ell \sim \text{Bin}(12;\ 1/2)$, con media 6 y varianza 3. Para
+        aproximar una probabilidad **puntual** con una densidad continua hace
+        falta la corrección por continuidad.
+      - >-
+        Plan: integrá la densidad normal de media 6 y desvío $\sqrt{3}$ entre
+        $3{,}5$ y $4{,}5$, o sea
+        $\Phi\!\left(\tfrac{4.5-6}{\sqrt{3}}\right) - \Phi\!\left(\tfrac{3.5-6}{\sqrt{3}}\right)$.
+        Si querés, comparalo con el valor exacto $\binom{12}{4}/2^{12}$: la
+        aproximación se queda un poco corta.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g8_09.py
+          valor: "con correccion: 0.118781"
+        - origen: "tools/verify/g8_09.py (sin correccion: 0.118255)"
+          valor: "0.118255"
+        - origen: "tools/verify/g8_09.py (binomial exacta, verificada por Monte Carlo: 495/4096 = 0.120850)"
+          valor: "495/4096"
+
+  - id: b
+    pregunta: ¿A qué caja es más probable que vaya a parar la bola roja?
+    skills: [aproximacion-normal, bernoulli-binomial]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: b1
+          texto: 'La urna 6, que es la media de $\ell$.'
+          correcta: true
+        - id: b2
+          texto: 'La urna 0, porque es la primera.'
+          error_tipico: >-
+            La urna 0 requiere que los 12 pasos hayan sido a la derecha, cuya
+            probabilidad es $(1/2)^{12}$: la más chica de todas.
+        - id: b3
+          texto: 'La urna 12, porque acumula todos los desplazamientos.'
+          error_tipico: >-
+            Es el caso simétrico del anterior y tiene la misma probabilidad,
+            $(1/2)^{12}$. También es la más chica.
+        - id: b4
+          texto: 'Todas tienen la misma probabilidad, porque cada paso es equiprobable.'
+          error_tipico: >-
+            Cada **paso** es equiprobable, pero las urnas no: hay muchas más
+            formas de dar 6 pasos a la izquierda que de dar 12. Eso es el
+            coeficiente binomial.
+    pistas:
+      - 'La urna es $\ell$, la cantidad de pasos a la izquierda. ¿Cuál es su valor más probable?'
+      - 'Para una binomial con $p = 1/2$ la distribución es simétrica. ¿Alrededor de qué?'
+      - >-
+        Plan: la moda de una $\text{Bin}(n, 1/2)$ está en $n/2$. También se ve
+        en la aproximación normal: la densidad es máxima en la media.
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: tools/verify/g8_09.py
+          valor: "urna 6"

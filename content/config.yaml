@@ -1,0 +1,18 @@
+# Configuración de la cursada.
+#
+# Es contenido, no código: cambiar la fecha acá alcanza, no hay que tocar src/.
+
+# Fecha del parcial, en ISO. De acá sale la cuenta de días que falta y el
+# ritmo sugerido de ejercicios por día.
+parcial: "2026-10-30"
+
+# Curso de la comisión. PLAN.md §6 lo usa para elegir la variante de los
+# exámenes que traen más de una (por ejemplo el ej. 2 del parcial del 24-05,
+# que tiene una versión "Curso 4" y otra "Otros cursos").
+# Dejalo en null si no aplica.
+curso: null
+
+# Cuántos intentos limpios por día se consideran un ritmo cómodo. Se usa sólo
+# para el semáforo del panel: por debajo de esto el ritmo necesario es
+# holgado, por encima del doble es apretado.
+ritmo_comodo_por_dia: 2

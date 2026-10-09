@@ -1,0 +1,55 @@
+id: g8-12
+guia: 8
+numero: "8.12"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p50
+
+enunciado: |
+  Una excursión dispone de 100 plazas. La experiencia indica que cada reserva
+  tiene una probabilidad $0{,}1$ de ser cancelada a último momento. No hay
+  lista de espera. [[aproximacion-normal|Se supone que los pasajeros hacen sus
+  reservas individualmente, en forma independiente.]] Se desea que la
+  probabilidad de que queden clientes indignados por haber hecho su reserva y
+  no poder viajar sea $\le 0{,}01$.
+
+items:
+  - id: a
+    pregunta: >-
+      Calcular, **usando la aproximación normal**, el número máximo de reservas
+      que se pueden aceptar.
+    skills: [aproximacion-normal, tcl]
+    respuesta:
+      tipo: numerica
+      valor: "103"
+      # Es un entero exacto: la tolerancia no puede admitir otro.
+      tol_rel: 0.000001
+    pistas:
+      - >-
+        Si se aceptan $n$ reservas, ¿cuántos pasajeros se presentan? ¿Qué
+        distribución tiene esa cantidad?
+      - >-
+        Quedan indignados cuando se presentan **más** de 100. Aproximá la
+        binomial por una normal y acordate de la corrección por continuidad:
+        $P(X > 100) = P(X \ge 101)$.
+      - >-
+        Plan: pedí
+        $1 - \Phi\!\left(\tfrac{100{,}5 - 0{,}9n}{\sqrt{0{,}09n}}\right) \le 0{,}01$
+        y buscá el mayor $n$ que lo cumpla. Verificá la maximalidad: con ese $n$
+        tiene que cumplirse y con $n+1$ no.
+      - >-
+        Un aviso: si en vez de aproximar sumás la binomial exacta te va a dar
+        **104**, no 103. No está mal ninguno de los dos. La aproximación normal
+        sobreestima la cola en este rango, así que es conservadora y se queda un
+        lugar antes. Con $n = 104$ la probabilidad exacta es $0{,}0057$ (entra
+        en el $0{,}01$) pero la normal la estima en $0{,}0121$ (no entra).
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: tools/verify/g8_12.py
+          valor: "103 por la aproximacion normal"
+        - origen: "tools/verify/g8_12.py (por la binomial exacta: 104 — ver revision/guia-8.md)"
+          valor: "104"
+        - origen: "tools/verify/g8_12.py (maximalidad: P aprox con 103 = 0.0052 y con 104 = 0.0121)"
+          valor: "0.012056"

@@ -1,0 +1,74 @@
+id: g1-15
+guia: 1
+numero: "1.15"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p6
+
+enunciado: |
+  Una fragata parte de Jamaica con 13 piratas para atacar 3 puertos:
+  Portobelo, Maracaibo y Gibraltar.
+  [[ocupacion|Cada pirata elige al azar el puerto en que desembarcará.]]
+
+items:
+  - id: a
+    pregunta: >-
+      Calcular la probabilidad de que cuatro piratas desembarquen en
+      Portobelo, cuatro en Maracaibo y cinco en Gibraltar.
+    skills: [ocupacion, laplace]
+    respuesta:
+      tipo: numerica
+      valor: "10010/177147"
+    pistas:
+      - Los piratas son distinguibles: cada uno elige su puerto, así que hay $3^{13}$ resultados equiprobables.
+      - ¿De cuántas formas se pueden repartir 13 piratas en grupos de 4, 4 y 5 con los puertos ya asignados?
+      - 'Plan: $\dfrac{13!}{4!\,4!\,5!}$ repartos favorables sobre $3^{13}$ posibles.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_15.py
+          valor: "10010/177147"
+
+  - id: b
+    pregunta: >-
+      Calcular la probabilidad de que exactamente 6 piratas desembarquen en
+      Portobelo y seis o más desembarquen en Maracaibo.
+    skills: [ocupacion]
+    respuesta:
+      tipo: numerica
+      valor: "4576/531441"
+    pistas:
+      - Si en Portobelo hay exactamente 6, quedan 7 piratas para los otros dos puertos.
+      - '"Seis o más en Maracaibo" con 7 piratas disponibles deja muy pocos casos posibles. ¿Cuáles?'
+      - >-
+        Plan: enumerá los repartos con $n_P = 6$ y $n_M \ge 6$, calculá el
+        coeficiente multinomial de cada uno y sumalos, todo sobre $3^{13}$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_15.py
+          valor: "4576/531441"
+
+  - id: c
+    pregunta: >-
+      Calcular la probabilidad de que en algún puerto desembarquen exactamente
+      cinco piratas y en algún otro exactamente cuatro.
+    skills: [ocupacion]
+    respuesta:
+      tipo: numerica
+      valor: "10010/59049"
+    pistas:
+      - No se dice en qué puerto: hay que considerar todas las asignaciones posibles.
+      - Si un puerto tiene 5 y otro 4, ¿cuántos quedan para el tercero? ¿Hay más de un reparto posible?
+      - >-
+        Plan: el reparto es siempre $\{5,4,4\}$ en algún orden. Contá en
+        cuántos órdenes distintos puede quedar y multiplicá por el
+        multinomial de uno de ellos.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_15.py
+          valor: "10010/59049"

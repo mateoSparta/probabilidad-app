@@ -1,0 +1,19 @@
+numero: 6
+titulo: Distribuciones discretas
+descripcion: >-
+  Los modelos discretos que aparecen una y otra vez. La binomial cuando se fija
+  la cantidad de intentos, la geométrica y Pascal cuando lo que se fija es la
+  cantidad de éxitos, la hipergeométrica cuando no hay reposición, y la pérdida
+  de memoria, que es lo que hace que la geométrica y la exponencial sean
+  distintas de todas las demás.
+
+secuencia:
+  - teoria: t-binomial
+  - ejercicio: g6-01
+  - ejercicio: g6-24
+
+  - teoria: t-geometrica
+  - ejercicio: g6-06
+  - ejercicio: g6-12
+  - ejercicio: g6-19
+  - ejercicio: g6-11

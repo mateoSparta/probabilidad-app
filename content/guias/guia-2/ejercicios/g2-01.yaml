@@ -1,0 +1,129 @@
+id: g2-01
+guia: 2
+numero: "2.1"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p10
+
+enunciado: |
+  Sea $(\Omega, \mathcal{A}, P)$ un espacio de probabilidad en el que
+  $\Omega = \{1, 2, 3, 4, 5, 6\}$ y
+  [[variable-aleatoria|$\mathcal{A} = \{\emptyset,\ \{1, 3, 5\},\ \{2, 4, 6\},\ \Omega\}$]].
+  Determinar cuáles de las siguientes funciones $X : \Omega \to \mathbb{R}$ son
+  variables aleatorias.
+
+items:
+  - id: a
+    pregunta: '$X(\omega) = \omega$'
+    skills: [variable-aleatoria]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: a1
+          texto: 'No, porque $\{X \le 1\} = \{1\}$ no pertenece a $\mathcal{A}$.'
+          correcta: true
+        - id: a2
+          texto: 'Sí, porque está definida en todo $\Omega$ y toma valores reales.'
+          error_tipico: >-
+            Para ser variable aleatoria no alcanza con ser una función de
+            $\Omega$ en $\mathbb{R}$: sus preimágenes tienen que pertenecer al
+            álgebra.
+        - id: a3
+          texto: 'Sí, porque es inyectiva y por lo tanto medible.'
+          error_tipico: >-
+            La inyectividad no tiene nada que ver, y de hecho acá juega en
+            contra: al separar todos los puntos, parte los bloques del álgebra.
+        - id: a4
+          texto: 'No, porque toma seis valores distintos y $\mathcal{A}$ tiene cuatro elementos.'
+          error_tipico: >-
+            La cantidad de valores no es el criterio. Lo que importa es si las
+            preimágenes caen dentro de $\mathcal{A}$.
+    pistas:
+      - '¿Qué tiene que cumplir el conjunto $\{\omega : X(\omega) \le t\}$ para cada $t$?'
+      - 'Los elementos de $\mathcal{A}$ son sólo cuatro: el vacío, los impares, los pares y todo $\Omega$.'
+      - >-
+        Plan: tomá algún $t$ y calculá la preimagen $\{X \le t\}$. Si no es uno
+        de esos cuatro conjuntos, no es variable aleatoria.
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: tools/verify/g2_01.py
+          valor: "no; contraejemplo {X <= 1} = [1]"
+
+  - id: b
+    pregunta: '$X(\omega) = \mathbf{1}\{\omega \text{ es par}\}$'
+    skills: [variable-aleatoria]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: b1
+          texto: 'Sí: es constante en los impares y constante en los pares, que son los bloques de $\mathcal{A}$.'
+          correcta: true
+        - id: b2
+          texto: 'No, porque sólo toma los valores 0 y 1.'
+          error_tipico: >-
+            Tomar pocos valores no es un problema. Una indicadora puede ser
+            perfectamente una variable aleatoria.
+        - id: b3
+          texto: 'No, porque $\{X \le 0\} = \{1, 3, 5\}$ y ese conjunto no está en $\mathcal{A}$.'
+          error_tipico: >-
+            $\{1,3,5\}$ **sí** pertenece a $\mathcal{A}$: es uno de los cuatro
+            elementos que lista el enunciado.
+        - id: b4
+          texto: 'Depende de cómo se defina $P$ sobre $\mathcal{A}$.'
+          error_tipico: >-
+            La medibilidad es una condición sobre $X$ y $\mathcal{A}$ nada más.
+            No interviene $P$.
+    pistas:
+      - Calculá qué vale esta función en cada punto de $\Omega$.
+      - 'Fijate si toma el mismo valor en todo $\{1,3,5\}$ y el mismo en todo $\{2,4,6\}$.'
+      - >-
+        Plan: si la función es constante en cada bloque del álgebra, toda
+        preimagen es una unión de bloques, y esas uniones están en
+        $\mathcal{A}$.
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: tools/verify/g2_01.py
+          valor: "si"
+
+  - id: c
+    pregunta: '$X(\omega) = \mathbf{1}\{\omega \in \{1, 4\}\}$'
+    skills: [variable-aleatoria]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: c1
+          texto: 'No, porque $\{X \le 0\} = \{2, 3, 5, 6\}$ no pertenece a $\mathcal{A}$.'
+          correcta: true
+        - id: c2
+          texto: 'Sí, porque es una indicadora y el ítem anterior también lo era.'
+          error_tipico: >-
+            Que sea indicadora no alcanza: lo que importa es **de qué**
+            conjunto. $\{1,4\}$ cruza los dos bloques del álgebra.
+        - id: c3
+          texto: 'Sí, porque $\{1, 4\}$ tiene un elemento par y uno impar.'
+          error_tipico: >-
+            Eso es justamente lo que lo arruina: al mezclar un impar con un par,
+            la función deja de ser constante en cada bloque.
+        - id: c4
+          texto: 'No, porque $\{1,4\}$ no pertenece a $\mathcal{A}$.'
+          error_tipico: >-
+            El razonamiento llega a la conclusión correcta por el camino
+            equivocado: lo que tiene que estar en $\mathcal{A}$ son las
+            preimágenes $\{X \le t\}$, no el conjunto que define la indicadora.
+            Acá coinciden en el veredicto, pero el criterio es el otro.
+    pistas:
+      - Comparalo con el ítem anterior: ¿en qué cambia el conjunto de la indicadora?
+      - '¿Toma el mismo valor en 1 que en 3?'
+      - >-
+        Plan: calculá $\{X \le 0\}$ y comparalo con los cuatro elementos de
+        $\mathcal{A}$.
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: tools/verify/g2_01.py
+          valor: "no; contraejemplo {X <= 0} = [2, 3, 5, 6]"

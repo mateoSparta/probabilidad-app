@@ -1,0 +1,78 @@
+id: g1-05
+guia: 1
+numero: "1.5"
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p3
+
+enunciado: |
+  Se tienen dos urnas $a$ y $b$. En $a$ hay 5 bolas rojas y 3 blancas, y en $b$
+  hay 2 rojas y 3 blancas.
+  [[independencia|Si se extraen al azar una bola de cada urna]], hallar la
+  probabilidad de que
+
+items:
+  - id: a
+    pregunta: ambas sean rojas.
+    skills: [laplace, independencia]
+    respuesta:
+      tipo: numerica
+      valor: "1/4"
+    pistas:
+      - Las dos extracciones son de urnas distintas, así que una no afecta a la otra.
+      - ¿Cuál es la probabilidad de sacar roja de cada urna por separado?
+      - 'Plan: multiplicá las dos probabilidades.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_05.py
+          valor: "1/4"
+
+  - id: b
+    pregunta: ambas sean del mismo color.
+    skills: [laplace, independencia]
+    respuesta:
+      tipo: numerica
+      valor: "19/40"
+    pistas:
+      - "\"Del mismo color\" se parte en dos casos que no pueden pasar juntos."
+      - Calculá cada caso por separado con el producto y sumalos.
+      - 'Plan: $P(\text{ambas rojas}) + P(\text{ambas blancas})$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_05.py
+          valor: "19/40"
+
+  - id: c
+    pregunta: sean de distinto color.
+    skills: [independencia]
+    respuesta:
+      tipo: numerica
+      valor: "21/40"
+    pistas:
+      - Es el complemento del ítem anterior.
+      - 'Plan: $1 - P(\text{mismo color})$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_05.py
+          valor: "21/40"
+
+  - id: d
+    pregunta: la bola extraída de la urna $b$ sea blanca.
+    skills: [laplace]
+    respuesta:
+      tipo: numerica
+      valor: "3/5"
+    pistas:
+      - Lo que pasa en la urna $a$ no tiene ninguna influencia acá.
+      - 'Plan: contá sobre la urna $b$ nomás.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_05.py
+          valor: "3/5"

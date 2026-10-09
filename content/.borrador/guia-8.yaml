@@ -1,0 +1,315 @@
+_generado_por: tools/extract/guia.py -- NO EDITAR A MANO
+guia: 8
+fuente: fuentes/guias/parte1.pdf
+ejercicios:
+- numero: '8.1'
+  paginas:
+  - 48
+  marcas: []
+  en_alcance: true
+  enunciado: 'Para modelar el precio del kilo de asado se propone una variable aleatoria con distribución
+    normal de media 3 dólares y varianza 4. A la luz de que los precios suelen ser positivos: ¿qué puede
+    decirse de semejante modelo?; ¿y si la media fuese 8 dólares?; ¿y si la media fuese 14 dólares?'
+- numero: '8.2'
+  paginas:
+  - 48
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Un receptor recibe una señal de amplitud aleatoria X = S + N, donde S es una variable Bernoulli
+    de parámetro 3/4 y N es un ruido con distribución normal de media 0 y desvío estándar 1/2 independiente
+    de S. Cuando S vale 1 la señal contiene información útil y cuando vale 0 no. El detector deja pasar
+    la señal si X > c y no la deja pasar si X \le c. Se incurre en error cuando no se deja pasar una señal
+    con información útil o cuando se deja pasar una señal sin información. Determinar el valor de c que
+    garantice la probabilidad mínima de error.
+- numero: '8.3'
+  paginas:
+  - 48
+  marcas: []
+  en_alcance: true
+  enunciado: La duración de cierto tipo de lámparas tiene distribución normal de media 100 horas. Si un
+    comprador exige que por lo menos el 90 % de ellas tenga una duración superior a las 80 horas, ¿cuál
+    es el valor máximo que puede tomar la varianza manteniendo siempre satisfecho al cliente?
+- numero: '8.4'
+  paginas:
+  - 48
+  marcas: []
+  en_alcance: true
+  enunciado: En un establecimiento agropecuario, el 10 % de los novillos que salen a venta pesan más de
+    500 kg. y el 7 % pesa menos de 410 kg. Si la distribución es normal, hallar
+  items:
+  - id: a
+    texto: a y b tales que P(a < X < b) = 0.95.
+  - id: b
+    texto: la probabilidad de que en un potrero de 25 novillos haya alguno con un peso inferior a 400
+      kg.
+- numero: '8.5'
+  paginas:
+  - 48
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sean X_{1}, X_{2 y} X_{3 variables aleatorias independientes con distribución normal} de
+    medias 1,2 y 3, respectivamente, y varianzas 1/9, 1/3 y 1/2, respectivamente. Calcular P ⟨?TeX-mathx:`⟩
+    X_{1} - \frac{1}{2} X_{2} > 2 - \frac{1}{3} X_{3} ⟨?TeX-mathx:˘⟩.
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:`'
+  - 'glifo sin traducir: TeX-mathx:˘'
+- numero: '8.6'
+  paginas:
+  - 48
+  marcas: []
+  en_alcance: true
+  enunciado: Se construye una varilla conectando tres secciones A, B y C cada una de las cuales se fabrica
+    en una máquina diferente. La longitud de la sección A, en cm., tiene distribución normal de media
+    50 y varianza 0.25. La longitud de la sección B tiene distribución normal de media 30 y varianza 0.0625.
+    La longitud de la sección C tiene distribución normal de media 65 y varianza 0.25. Las tres secciones
+    se conectan de modo tal que hay una superposición de 5 cm. en cada conexión. Calcular la probabilidad
+    de que la longitud de la varilla se encuentre entre 139 y 141 cm.
+- numero: '8.7'
+  paginas:
+  - 48
+  marcas: []
+  en_alcance: true
+  enunciado: Los pesos de ciertos paquetes de café son variables aleatorias independientes con distribución
+    normal de media 500 gr. y desvío estándar σ. ¿Cómo deben ser los valores de σ para tener una seguridad
+    del 99 % de que el peso promedio de 12 paquetes no se desviará en más de 10 gr. de 500 gr.?
+- numero: '8.8'
+  paginas:
+  - 48
+  - 49
+  marcas:
+  - simulacion
+  en_alcance: false
+  enunciado: 'Sea S_{n} una variable aleatoria con distribución Binomial(n, p). Calcular P(S_{n} = k),
+    k = 1, 2,\ldots, 25 con la fórmula exacta y con las siguientes aproximaciones: 1. Aproximación por
+    la densidad normal: P(S_{n} = k) \sim \frac{1}{np(1-p)} \frac{?}{⟨?TeX-mathx:a⟩} ϕ ⟨?TeX-mathx:˜⟩
+    \frac{k-np}{np(1-p)} \frac{?}{⟨?TeX-mathx:a⟩} ⟨?TeX-mathx:¸⟩ 2. Corrección por continuidad: P(S_{n}
+    = k) = P ⟨?TeX-mathx:ˆ⟩ k - \frac{1}{2} < S^{n} < k + 1 \frac{?}{2} ⟨?TeX-mathx:˙⟩ \approx Φ ⟨?TeX-mathx:˜⟩
+    \frac{k-2}{⟨?TeX-mathx:a⟩}\frac{np+1/}{np(1-p)} ⟨?TeX-mathx:¸⟩ - Φ ⟨?TeX-mathx:˜⟩ \frac{k-2}{⟨?TeX-mathx:a⟩}\frac{np-1/}{np(1-p)}
+    ⟨?TeX-mathx:¸⟩ en los siguientes casos n = 5, 8, 10, 15, 20, 25, 50, 100, 200 y p = (0.05)m, m = 1,
+    2,\ldots, 10. Comparar (por gráficos) cuán buenas son las aproximaciones y cuán necesaria es la corrección
+    por continuidad de acuerdo con los valores de n y p.'
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:a'
+  - 'glifo sin traducir: TeX-mathx:¸'
+  - 'glifo sin traducir: TeX-mathx:ˆ'
+  - 'glifo sin traducir: TeX-mathx:˙'
+  - 'glifo sin traducir: TeX-mathx:˜'
+  - fraccion incompleta
+- numero: '8.9'
+  paginas:
+  - 49
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: '[Experimento de Galton] Una bola roja realiza una caminata aleatoria de la siguiente manera:
+    cada 10 segundos se desplaza 3 cm. hacia la derecha o hacia la izquierda, con igual probabilidad,
+    las sucesivas direcciones de la caminata son independientes. Si al cabo de dos minutos se ha desplazado
+    ℓ veces hacia la izquierda va a parar a la urna ℓ, ℓ = 0, 1, 2,\ldots, 12. Usar la aproximación por
+    la densidad normal para estimar la probabilidad de que la bola roja vaya a parar a la urna 4. ¿A qué
+    caja es más probable que vaya a parar la bola roja?'
+- numero: '8.10'
+  paginas:
+  - 49
+  marcas: []
+  en_alcance: true
+  enunciado: '[ver Ejercicio 2.38] Usar la corrección por continuidad para calcular aproximadamente la
+    probabilidad de que entre los primeros 10.000 dígitos decimales de un número escogido al azar del
+    intervalo (0, 1) el 7 aparezca no más que 968 veces.'
+- numero: '8.11'
+  paginas:
+  - 49
+  marcas: []
+  en_alcance: true
+  enunciado: Ciertas partículas llegan a un contador según un proceso de Poisson de intensidad 3000 por
+    hora. Sabiendo que entre las 9:00 y las 9:30 llegaron 1500 partículas, estimar la probabilidad de
+    que más de 450 hayan llegado entre las 9:00 y las 9:10.
+- numero: '8.12'
+  paginas:
+  - 49
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Una excursión dispone de 100 plazas. La experiencia indica que cada reserva tiene una probabilidad
+    0.1 de ser cancelada a último momento. No hay lista de espera. Se supone que los pasajeros hacen sus
+    reservas individualmente, en forma independiente. Se desea que la probabilidad de que queden clientes
+    indignados por haber hecho su reserva y no poder viajar sea \le 0.01. Calcular el número máximo de
+    reservas que se pueden aceptar.
+- numero: '8.13'
+  paginas:
+  - 49
+  marcas: []
+  en_alcance: true
+  enunciado: '[ver Ejercicio 3.26] Se quiere saber la proporción de fumadores en una población. Para ello
+    se eligen n individuos al azar y se halla la proporción de los que fuman. ¿Qué valor debe tener n
+    para que esta proporción no difiera de la real en más de 0.01, con probabilidad mayor o igual que
+    0.95?'
+- numero: '8.14'
+  paginas:
+  - 49
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: 'Usando el Teorema Central del Límite demostrar que lím n\to\infty e^{-n} n \sum k=0 \frac{nk}{k!}
+    = \frac{1}{2}. (sugerencia: considere una sucesión de variables aleatorias independientes con distribución
+    Poisson de media 1.)'
+  revisar:
+  - revisar los limites del operador grande
+- numero: '8.15'
+  paginas:
+  - 50
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: La longitud de ciertas varillas es una variable aleatoria de media 30 cm. y desvío estándar
+    2. El precio de venta en $ de cada varilla es igual a su longitud medida en cm. El costo de producción
+    de cada varilla es constante e igual a $20. Calcular aproximadamente la probabilidad de que la ganancia
+    total por vender 50 varillas sea mayor que $460.
+- numero: '8.16'
+  paginas:
+  - 50
+  marcas: []
+  en_alcance: true
+  enunciado: La duración (en minutos) de cada llamada telefónica efectuada por Alucard es una variable
+    aleatoria de media µ y desvío estándar 0.2. Le facturan $2 por minuto. ¿Cómo debe ser µ para que el
+    costo de 100 llamadas de Alucard sea inferior a los $190 con probabilidad mayor o igual que 0.99?
+- numero: '8.17'
+  paginas:
+  - 50
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: En un taller de manufactura, la fracción de unidades defectuosas varía diariamente en forma
+    aleatoria con media 0.1 y desvío estándar 0.03. La producción diaria es variable con media 500 unidades
+    y desvío 120 unidades. Todas las variables son independientes. El costo total diario tiene una parte
+    fija de $50 por unidad producida (buena o defectuosa) más $100 por unidad defectuosa. Estimar el costo
+    total para 90 días superado con 0.95 % de probabilidad.
+- numero: '8.18'
+  paginas:
+  - 50
+  marcas: []
+  en_alcance: true
+  enunciado: El peso W (en toneladas) que puede resistir un puente sin sufrir daños estructurales es una
+    variable aleatoria con distribución normal de media 1.400 y desvío 100. El peso (en toneladas) de
+    cada camión de arena es una variable aleatoria de media 20 y desvío 0.25. ¿Cuántos camiones de arena
+    debe haber, como mínimo, sobre el tablero del puente para que la probabilidad de que ocurran daños
+    estructurales supere 0.1?
+- numero: '8.19'
+  paginas:
+  - 50
+  marcas: []
+  en_alcance: true
+  enunciado: En un sistema electrónico se producen fallas de acuerdo con un proceso de Poisson de tasa
+    2.5 por mes. Por motivos de seguridad se ha decidido cambiarlo cuando ocurran 196 fallas. Calcular
+    (aproximadamente) la probabilidad de que el sistema sea cambiado antes de los 67.2 meses.
+- numero: '8.20'
+  paginas:
+  - 50
+  marcas: []
+  en_alcance: true
+  enunciado: Una máquina selecciona ciruelas y las separa de acuerdo con el diámetro x (medido en cm.)
+    de cada una. Las de diámetro superior a 4 cm. se consideran de clase A y las otras de clase B. El
+    diámetro de cada ciruela es una variable aleatoria uniforme entre 3 y 5 cm. El peso (medido en gramos)
+    de cada ciruela depende de su diámetro y es x^{3}. Si las cajas vacías pesan 100 gramos, hallar en
+    forma aproximada la probabilidad de que una caja con 100 ciruelas de tipo A pese más de 9.6 kilos.
+- numero: '8.21'
+  paginas:
+  - 50
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: '[ver Ejercicio 7.8] A una estación de tren arriban pasajeros de acuerdo con un proceso de
+    Poisson de intensidad 50 por minuto. Los trenes parten de la estación cada 15 minutos a partir de
+    las 4:00. Calcular aproximadamente la probabilidad de que la cantidad total de tiempo que esperaron
+    todos los que viajaron desde la estación y arribaron a la misma entre las 4:00 y las 22:00 haya superado
+    6.400 horas.'
+- numero: '8.22'
+  paginas:
+  - 50
+  - 51
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Lucas y Monk palean arena cargando un volquete. La probabilidad de que una palada sea de
+    Monk es 0.7 y la probabilidad de que sea de Lucas es 0.3. El volumen en decímetros cúbicos de la palada
+    de Lucas es una variable aleatoria uniforme entre 2 y 4, y el de la palada de Monk es una variable
+    aleatoria uniforme entre 1 y 3. ¿Cuántas paladas son necesarias para que la probabilidad de que el
+    volquete tenga más de 4 metros cúbicos de arena supere 0.95? Ejercicios Complementarios
+- numero: '8.23'
+  paginas:
+  - 51
+  marcas: []
+  en_alcance: true
+  enunciado: 'Una conserva se venderá envasada en latas. Las distribuciones de los pesos (en gr.) y sus
+    costos (en $ por gr.) son los siguientes: Peso neto X es normal de media 49.8 y desvío 1.2. Peso del
+    envase Y es normal de media 8.2 y desvío 0.6. Costo de la conserva C_{C} = 0.06. Costo del envase
+    C_{E} = 0.008.'
+  items:
+  - id: a
+    texto: Calcular la probabilidad de que una unidad terminada tenga un costo inferior a $3.
+  - id: b
+    texto: Hallar la probabilidad de que el costo del producto terminado supere en más del 2 % al costo
+      del peso neto.
+- numero: '8.24'
+  paginas:
+  - 51
+  marcas:
+  - simulacion
+  en_alcance: false
+  enunciado: '[Capacidad de procesos] La calidad de un proceso industrial suele caracterizarse por alguna
+    variable aleatoria X, medible sobre dicho proceso o sobre el producto fabricado por él (por ejemplo,
+    X puede ser el diámetro de piezas torneadas, la corriente eléctrica en un proceso de soldadura, el
+    volumen de llenado de botellas, la dureza de comprimidos farmacéuticos o su concentración de principio
+    activo, etc). Se suelen definir límites superior e inferior de especificación (LSE y LIE) como aquellos
+    valores a partir de los cuales el producto resulta no conforme o defectuoso. Cuando X pertenece al
+    intervalo [LIE, LSE], el producto se considera aceptable. Los sucesivos productos son obtenidos con
+    variaciones aleatorias en X, que se suponen normales. Cuando el proceso es centrado (el intervalo
+    se encuentra centrado en µ_{X}), la capacidad del proceso de elaboración se define como la aptitud
+    para generar productos dentro de los límites, y se cuantifica a través del índice de capacidad C_{p}
+    = \frac{LSE-LIE}{6σX}.'
+  items:
+  - id: a
+    texto: Interpretar el significado de C_{p}.
+  - id: b
+    texto: 'De un proceso centrado con límites LIE = 10.90 mm. y LSE = 11.10 mm. se midieron n = 15 piezas,
+      obteniendo (en mm.): 10.98, 10.92, 11.01, 11.08, 11.07, 11.10, 10.87, 10.99, 11.07, 10.93, 10.96,
+      10.90, 10.89, 10.94, 10.95. Estimar con esta muestra σ_{X} como \sqrt \frac{?}{S2} (ver Ejercicio
+      3.32). Luego, estimar C_{p} y el porcentaje de productos defectuosos.'
+  - id: c
+    texto: Calcular el porcentaje de piezas no conformes para procesos centrados con C_{p} iguales a 2/3,
+      1 y 4/3.
+  - id: d
+    texto: Un proceso centrado trabaja con un 0.5 % de piezas no conformes. ¿Cuánto vale su C_{p}?
+  revisar:
+  - fraccion incompleta
+- numero: '8.25'
+  paginas:
+  - 51
+  - 52
+  marcas: []
+  en_alcance: true
+  enunciado: Lucas usa su radio portátil un tiempo variable, día a día, de media 2.4 hrs. y desvío estándar
+    0.8 hrs. La radio usa una pila especial cuya duración también es variable de media 8 hrs. y desvío
+    estándar 1.2 hrs. Lucas efectuará un viaje de 30 días y si se le agotan las pilas no está seguro de
+    conseguirlas. Calcular cuántas pilas debe llevar para que la probabilidad de dicho evento valga 0.05.
+- numero: '8.26'
+  paginas:
+  - 52
+  - 53
+  marcas: []
+  en_alcance: true
+  enunciado: Un buen día Monk decide resolver toda la Guía 1 de Probabilidad y Estadística (incluídos
+    los Ejercicios Complementarios). El tiempo, en horas, que demora en resolver el ejercicio 1.i (i =
+    1, 2,\ldots, 43) es una variable aleatoria T_{i}. La variables T_{i} son independientes y exponenciales
+    de intensidad 4. Cuando termina de resolver el ejercicio 1.i Monk descansa 2e^{Ti} minutos. Calcular
+    aproximadamente la probabilidad de que Monk haya descansado más de dos horas mientras resolvía todos
+    los problemas de la Guía 1. Referencias (por orden alfabético) Abramson, N. (1986), Teoría de la Información
+    y Codificación, Paraninfo, 6^{a} edición. DeGroot M.H. (1986), Probability and Statistics, Addison
+    Wesley Publishing Company, 2^{a} edición. Feller, W. (1970), An Introduction to Probability Theory
+    and its Applications, Wiley Series in Probability and Mathematical Statistics, New York, Volumen 1,
+    3^{a} edición. Grimmett G.R. y Stirzaker D.R. (2001), Probability and Random Processes, Oxford University
+    Press, New York, 3^{a} edición. Maronna, R. (1995), Probabilidad y Estadística Elementales para Estudiantes
+    de Ciencias, Editorial Exacta, La Plata. Ross, S.M. (2007), Introduction to Probability Models, Academic
+    Press, San Diego, 9^{a} edición. Soong, T.T. (2004), Fundamentals of Probability and Statistics for
+    Engineers, John Wiley & Sons.

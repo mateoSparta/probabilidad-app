@@ -1,0 +1,46 @@
+id: g4-06
+guia: 4
+numero: "4.6"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p23
+
+enunciado: |
+  Un voltaje aleatorio $V_1$ —medido en voltios— con distribución uniforme
+  sobre el intervalo $[180, 220]$ pasa por un
+  [[transformacion-F|limitador no lineal de la forma
+  $g(v) = \dfrac{v - 190}{20}\,\mathbf{1}\{190 \le v \le 210\} + \mathbf{1}\{210 < v\}$]].
+  Sea $V_2 = g(V_1)$.
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar la función de distribución de $V_2$, y evaluar lo que se pide.
+    skills: [transformacion-F, funcion-distribucion]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$P(V_2 = 0)$'
+          valor: "1/4"
+        - pregunta: '$F_{V_2}(1/2)$'
+          valor: "1/2"
+        - pregunta: '$F_{V_2}(0{,}9)$'
+          valor: "7/10"
+        - pregunta: '$P(V_2 = 1)$'
+          valor: "1/4"
+    pistas:
+      - '¿Qué le pasa a $V_2$ cuando $V_1 < 190$? ¿Y cuando $V_1 > 210$?'
+      - >-
+        El limitador aplasta dos tramos enteros del dominio en un solo valor
+        cada uno. Eso le mete masa puntual a $V_2$.
+      - >-
+        Plan: para cada $t$ entre 0 y 1, traducí $\{g(V_1) \le t\}$ a un evento
+        sobre $V_1$ y medilo con la uniforme. Los dos átomos salen de la
+        probabilidad de los tramos aplastados. Control: los dos átomos más la
+        masa del tramo central tienen que sumar 1.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_06.py
+          valor: "1/4, 1/2, 7/10, 1/4"

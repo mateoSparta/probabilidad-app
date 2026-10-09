@@ -1,0 +1,416 @@
+_generado_por: tools/extract/guia.py -- NO EDITAR A MANO
+guia: 4
+fuente: fuentes/guias/parte1.pdf
+ejercicios:
+- numero: '4.1'
+  paginas:
+  - 27
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: 'Sea X una variable aleatoria discreta a valores ⟨?TeX-mathx:␣⟩\frac{k}{8}: k = 0, 1,\ldots,
+    8 \left(con función de probabilidad p_{X} (x) = \frac{2}{9} x. Hallar y graficar:'
+  items:
+  - id: a
+    texto: la función de probabilidad de Y = 2X - 1,
+  - id: b
+    texto: la función de probabilidad de Y = 128X^{2},
+  - id: c
+    texto: la función de probabilidad de Y = -64X^{2} + 64X + 2,
+  - id: d
+    texto: la función de probabilidad de Y = 64X^{2} - 96X + 128.
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:␣'
+- numero: '4.2'
+  paginas:
+  - 27
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: '[ver Ejercicio 2.5] Sea X una variable aleatoria con distribución Poisson de media 2. Hallar
+    la función de probabilidad de Y = ⟨?TeX-mathx:ˇ⟩⟨?TeX-mathx:ˇ⟩sen ⟨?TeX-mathx:`⟩\frac{1}{2} πX ⟨?TeX-mathx:˘⟩⟨?TeX-mathx:ˇ⟩⟨?TeX-mathx:ˇ⟩.'
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:`'
+  - 'glifo sin traducir: TeX-mathx:ˇ'
+  - 'glifo sin traducir: TeX-mathx:˘'
+- numero: '4.3'
+  paginas:
+  - 27
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: 'Sea X una variable aleatoria\frac{continua12x}{π2(ex+1)}con función densidad f_{X} (x) =
+    1\{x > 0\}. Hallar y graficar:'
+  items:
+  - id: a
+    texto: la densidad de Y = aX + b (a \ne 0, b \in \mathbb{R}),
+  - id: b
+    texto: la densidad de Y = -X^{3},
+  - id: c
+    texto: la densidad de Y = X + X^{-1},
+  - id: d
+    texto: la densidad de Y = X^{2} - 3X.
+- numero: '4.4'
+  paginas:
+  - 27
+  marcas: []
+  en_alcance: true
+  enunciado: La fase φ de un generador eléctrico es una variable aleatoria con distribución uniforme sobre
+    el intervalo (-π, π).
+  items:
+  - id: a
+    texto: Hallar la función de densidad\frac{del}{1-x2}factor de potencia del generador C = cos φ (recordar
+      que arc cos(x)^{'} = -1/ \sqrt).
+  - id: b
+    texto: Calcular P(\mid C \mid < 0.5).
+- numero: '4.5'
+  paginas:
+  - 27
+  marcas: []
+  en_alcance: true
+  enunciado: Todas las mañanas Lucas llega a la estación del subte entre las 7:05 y las 7:50, con distribución
+    uniforme en dicho intervalo. El subte llega a la estación cada quince minutos comenzando a las 6:00.
+    Hallar la función densidad del tiempo que tiene que esperar Lucas hasta subirse al subte.
+- numero: '4.6'
+  paginas:
+  - 27
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Un voltaje aleatorio V_{1} –medido en voltios– con distribución uniforme sobre el intervalo
+    [180, 220] pasa por un limitador no lineal de la forma g(v_{1}) = \frac{v1-190}{20} 1\{190 \le v_{1}
+    \le 210\} + 1\{210 < v_{1}\}. Hallar la función de distribución del voltaje de salida V_{2} = g(V_{1}).
+- numero: '4.7'
+  paginas:
+  - 27
+  marcas: []
+  en_alcance: true
+  enunciado: La duración de una llamada telefónica es una variable aleatoria con distribución exponencial
+    de media 8 minutos. Si se factura un pulso cada dos minutos o fracción, hallar la función de probabilidad
+    de la cantidad de pulsos facturados por la llamada.
+- numero: '4.8'
+  paginas:
+  - 28
+  marcas: []
+  en_alcance: true
+  enunciado: Sean X e Y dos variables aleatorias con función de probabilidad conjunta dada por la siguiente
+    tabla -2 -1 1 2 -2 1/16 1/16 1/8 1/8 -1 1/16 1/16 1/8 1/8 1 0 0 1/16 1/16 2 0 0 1/16 1/16 (Por ejemplo,
+    P(X = -2, Y = 2) = 1/8 y P(X = 1, Y = -2) = 0.) Hallar la función de probabilidad conjunta de U y
+    V cuando
+  items:
+  - id: a
+    texto: U = X y V = X + Y.
+  - id: b
+    texto: U = mín(X, Y) y V = máx(X, Y).
+  - id: c
+    texto: U = X^{2} + Y ^{2} y V = Y /X.
+- numero: '4.9'
+  paginas:
+  - 28
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Sean X e Y dos variables aleatorias con función densidad conjunta f_{X,Y} (x, y). Hallar
+    la expresión de la densidad conjunta de U y V cuando
+  items:
+  - id: a
+    texto: (U, V) = A(X, Y)^{t} + B, donde A \in \mathbb{R}^{2\times2} es una matriz inversible y B \in
+      \mathbb{R}^{2}.
+  - id: b
+    texto: (U, V) = (mín(X, Y), máx(X, Y)).
+  - id: c
+    texto: (U, V) = ⟨?TeX-mathx:`⟩ X^{2} + Y ^{2}, Y /X ⟨?TeX-mathx:˘⟩.
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:`'
+  - 'glifo sin traducir: TeX-mathx:˘'
+- numero: '4.10'
+  paginas:
+  - 28
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sean Z_{1} y Z_{2} dos variables aleatorias normales estandar independientes.
+  items:
+  - id: a
+    texto: Hallar la densidad conjunta y las densidades marginales de U y V, cuando 1. U = Z_{1} + Z_{2}
+      y V = Z_{1} - Z_{2}. 2. (U, V) = ⟨?TeX-mathx:ˆ⟩ cos θ - sen θ sen θ cos θ ⟨?TeX-mathx:˙⟩ ⟨?TeX-mathx:ˆ⟩
+      Z_{1} Z_{2} ⟨?TeX-mathx:˙⟩, θ \in (0, 2π). 3. U = Z^{2} 1 + Z^{2} 2 y V = Z^{2}/Z^{1}.
+  - id: b
+    texto: En cada uno de los casos del inciso anterior ¿U y V son independientes?
+  - id: c
+    texto: Calcular P(Z^{2} 1 + Z^{2} 2 > 4) y P(Z^{2} > \sqrt \frac{?}{3}Z_{1}).
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:ˆ'
+  - 'glifo sin traducir: TeX-mathx:˙'
+  - fraccion incompleta
+- numero: '4.11'
+  paginas:
+  - 28
+  marcas: []
+  en_alcance: true
+  enunciado: Sean X_{1} y X_{2} dos variables aleatorias independientes con distribución uniforme sobre
+    el intervalo [0, 2]. Sean U = mín(X_{1}, X_{2}) y V = máx(X_{1}, X_{2}).
+  items:
+  - id: a
+    texto: Hallar la densidad conjunta de U y V.
+  - id: b
+    texto: Hallar la densidad de W = V - U.
+  - id: c
+    texto: Calcular P(U > 1/2, V < 3/2) y P(V > 1 + U).
+- numero: '4.12'
+  paginas:
+  - 28
+  marcas: []
+  en_alcance: true
+  enunciado: 'Sea (X, Y) un vector aleatorio con distribución uniforme sobre la región Λ = \{(x, y): 1
+    \le x + y \le 3, -1 \le x - y \le 1\}. Sea J = 1\{X < Y \}. ¿Es J independiente de X + Y ?'
+- numero: '4.13'
+  paginas:
+  - 29
+  marcas: []
+  en_alcance: true
+  enunciado: Un objeto se produce en una línea de montaje mediante dos procesos consecutivos que se realizan
+    en tiempos independientes distribuidos uniformemente entre 5 y 10 minutos.
+  items:
+  - id: a
+    texto: Hallar la función densidad del tiempo en que se produce el objeto.
+  - id: b
+    texto: Calcular la probabilidad de que el objeto se produzca en menos de 16 minutos.
+- numero: '4.14'
+  paginas:
+  - 29
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sean X_{1} y X_{2} dos variables aleatorias independientes con distribuciones exponenciales
+    de intensidades λ_{1} y λ_{2}, respectivamente. Sean U = mín(X_{1}, X_{2}), V = máx(X_{1}, X_{2}),
+    W = V - U y J = 1\{U = X_{1}\} + 2 1\{U = X_{2}\},
+  items:
+  - id: a
+    texto: Hallar la densidad de U.
+  - id: b
+    texto: Hallar la función de probabilidad de J.
+  - id: c
+    texto: Hallar la densidad de W.
+  - id: d
+    texto: Mostrar que U y J son independientes.
+  - id: e
+    texto: Mostrar que U y W son independientes.
+- numero: '4.15'
+  paginas:
+  - 29
+  marcas: []
+  en_alcance: true
+  enunciado: Juan y Pedro han conseguido trabajo en una central telefónica. Juan atiende una línea en
+    que los tiempos entre llamadas consecutivas son exponenciales independientes de intensidad 5 por hora,
+    y Pedro una línea en que los tiempos entre llamadas consecutivas son exponenciales independientes
+    de intensidad 10 por hora. Ambos son fanáticos del ajedrez, y deciden arriesgar su empleo jugando
+    entre llamada y llamada. Se ponen de acuerdo en dejar sin atender las llamadas que suceden antes de
+    los 5 minutos desde que iniciaron el juego o desde la última vez que lo interrumpieron para atender.
+    Inician la partida a las 10.
+  items:
+  - id: a
+    texto: ¿Cuál es la probabilidad de que la primer llamada después de las 10 quede sin atender?
+  - id: b
+    texto: ¿Cuál es la probabilidad de que la primer llamada después de las 10 sea en la línea de Juan?
+  - id: c
+    texto: ¿Cuál es la probabilidad de que la primer llamada después de las 10 quede sin atender sabiendo
+      que fue en la línea de Juan?
+  - id: d
+    texto: ¿Cuál es la probabilidad de que la primer llamada después de las 10 fuera en la línea de Juan
+      sabiendo que fue atendida?
+- numero: '4.16'
+  paginas:
+  - 29
+  marcas: []
+  en_alcance: true
+  enunciado: Sean X e Y variables aleatorias independientes con\frac{X}{X+Y}distribución común exponencial
+    de intensidad λ > 0. Sean U = X + Y y V =.
+  items:
+  - id: a
+    texto: Hallar la densidad conjunta y las densidades marginales de U y V.
+  - id: b
+    texto: ¿U y V son independientes?
+- numero: '4.17'
+  paginas:
+  - 29
+  - 30
+  marcas:
+  - simulacion
+  en_alcance: false
+  enunciado: 'Sean U_{1} y U_{2} variables aleatorias independientes con distribución U (0\frac{,1). Con-}{-2
+    log(U1)} siderar el cambio de variables: (Z_{1}, Z_{2}) = (R cos Θ, R sen Θ), donde R = ⟨?TeX-mathx:a⟩
+    y Θ = 2πU_{2}.'
+  items:
+  - id: a
+    texto: Hallar las densidades de R y Θ.
+  - id: b
+    texto: Hallar la densidad conjunta de Z_{1} y Z_{2}.
+  - id: c
+    texto: ¿Z_{1} y Z_{2} son independientes? ¿Cómo se distribuyen?
+  - id: d
+    texto: Utilizar el cambio de variables para simular 10000 valores de la distribución N (0, 1).
+  - id: e
+    texto: Usando los valores obtenidos en el inciso anterior estimar el valor de la integral \int _{1}
+      0 \frac{1}{2π} \frac{?}{\sqrt} e^{-\frac{2}{x2}} dx.
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:a'
+  - fraccion incompleta
+  - revisar los limites del operador grande
+- numero: '4.18'
+  paginas:
+  - 30
+  marcas: []
+  en_alcance: true
+  enunciado: Sean X, Y dos variables aleatorias independientes uniformes sobre los conjuntos \{1, 2,\ldots,
+    35, 36\}, \{1, 2, 3, 4\}, respectivamente. Hallar la función de probabilidad de X + Y.
+- numero: '4.19'
+  paginas:
+  - 30
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: La cantidad L de langostas que arriban a la mesa de un asado tiene una distribución Poisson
+    de media 2 y la cantidad M de moscas tiene una distribución Poisson de media 8. L y M son independientes.
+  items:
+  - id: a
+    texto: Hallar la función de probabilidad de L + M.
+  - id: b
+    texto: Hallar la función de probabilidad de M \mid(L + M = 10).
+  - id: c
+    texto: Calcular P(M > 2\mid L + M = 10).
+- numero: '4.20'
+  paginas:
+  - 30
+  marcas: []
+  en_alcance: true
+  enunciado: Los lados de un rectángulo son variables aleatorias independientes con distribución uniforme
+    sobre el intervalo (0, 1).
+  items:
+  - id: a
+    texto: Hallar la función densidad del área del rectángulo.
+  - id: b
+    texto: Calcular la probabilidad de que el área del rectángulo sea mayor que 1/4.
+- numero: '4.21'
+  paginas:
+  - 30
+  marcas: []
+  en_alcance: true
+  enunciado: Sean X e Y dos variables aleatorias independientes con distribución uniforme sobre el intervalo
+    (5, 10).
+  items:
+  - id: a
+    texto: Sea U = \frac{X}{2} 1\{X \le Y \} + 2Y 1\{X > Y \}. Hallar la función densidad de U.
+  - id: b
+    texto: Sea V = 1\{X + Y \le 10\}. Hallar la función de probabilidad de V.
+  - id: c
+    texto: Hallar la función de densidad de X_{1} + Y_{1} para (X_{1}, Y_{1}) = (X, Y)\mid X - Y < 0.
+  - id: d
+    texto: Hallar la función densidad de W = (X - 6)^{2} + (Y - 7)^{2} dado que W < 9/16. Ejercicios Complementarios
+- numero: '4.22'
+  paginas:
+  - 30
+  marcas: []
+  en_alcance: true
+  enunciado: La duración de ciertos componentes eléctricos tiene distribución exponencial de media 100
+    horas. Si los componentes se conectan en serie, la duración del circuito es la del componente de menor
+    duración; mientras que si se conectan en paralelo, es la del de mayor duración. Dado el circuito de
+    5 componentes conectados según el esquema de la figura, calcular la probabilidad de que el circuito
+    dure más de 80 horas.
+- numero: '4.23'
+  paginas:
+  - 30
+  - 31
+  marcas: []
+  en_alcance: true
+  enunciado: Los tiempos T_{1}, T_{2} que demoran los cajeros 1 y 2 para atender a un cliente son variables
+    aleatorias independientes exponenciales de media 5 minutos.
+  items:
+  - id: a
+    texto: Hallar la función densidad de T_{1}/T_{2}.
+  - id: b
+    texto: Lucas y Monk llegan al banco y son atendidos por los cajeros 1 y 2, respectivamente. Calcular
+      la probabilidad de que Lucas demore más del triple del tiempo que demora Monk.
+- numero: '4.24'
+  paginas:
+  - 31
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sean X e Y dos variables aleatorias independientes con distribución uniforme sobre sobre
+    el intervalo (0, 1]. Sea R = \sqrt \frac{?}{X2+Y2}
+  items:
+  - id: a
+    texto: Hallar la función de distribución de R.
+  - id: b
+    texto: Calcular P(R > 1/2).
+  revisar:
+  - fraccion incompleta
+- numero: '4.25'
+  paginas:
+  - 31
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: ''
+  items:
+  - id: a
+    texto: Sean X e Y dos variables aleatorias independientes con funciones densidad f_{X} (x) = 2x 1\{0
+      \le x \le 1\} y f_{Y} (y) = (2 - 2y) 1\{0 \le y \le 1\}. Hallar la función de distribución de la
+      suma X + Y.
+  - id: b
+    texto: Sea U una variable aleatoria con distribución uniforme sobre el intervalo (0, 1). Se definen
+      X = \sqrt \frac{?}{U} e Y = 1 \sqrt \frac{?}{U}. 1. Hallar las densidades de X e Y y la función
+      de distribución de la suma X + Y. 2. ¿Existe la densidad conjunta de X e Y ?
+  revisar:
+  - fraccion incompleta
+- numero: '4.26'
+  paginas:
+  - 31
+  marcas: []
+  en_alcance: true
+  enunciado: Curly, Larry y Moe habían quedado en encontrarse a ensayar un cierto día a las 10 AM. Moe,
+    llega al azar entre las 9:55 y 10:10. Larry es un poco más descuidado y arriba al azar entre las 10
+    y 10:15. Curly por su parte, aparece una cantidad de minutos T_{C} luego de las 10, con f_{TC} (t)
+    = 2(t - 5)/225 1\{5 < t < 20\}. Si cada uno arriba en forma independiente y el ensayo no puede comenzar
+    hasta que lleguen todos, hallar la función de densidad del tiempo de retraso del comienzo del ensayo.
+  revisar:
+  - parece tener items pero no se detectaron
+- numero: '4.27'
+  paginas:
+  - 31
+  marcas: []
+  en_alcance: true
+  enunciado: Sea (T_{k})_{k\in\mathbb{N}} una sucesión de variables aleatorias exponenciales de intensidad
+    λ > 0. Sea (S_{n})_{n\in\mathbb{N}} la sucesión de variables aleatorias definida por S_{n} = \sum^{n}
+    k=1 T^{k}.
+  items:
+  - id: a
+    texto: Hallar la densidad conjunta de S_{1}, S_{2},\ldots, S_{n}.
+  - id: b
+    texto: '[ver Ejercicio 2.8] Hallar la densidad marginal de S_{n}.'
+  revisar:
+  - revisar los limites del operador grande
+- numero: '4.28'
+  paginas:
+  - 31
+  - 32
+  - 33
+  marcas:
+  - solo_audaces
+  en_alcance: true
+  enunciado: '[Fragmentación aleatoria.] Sea U_{1}, U_{2}, U_{3},\ldots una sucesión de variables aleatorias
+    independientes con distribuciones uniformes sobre el intervalo (0, 1).'
+  items:
+  - id: a
+    texto: '[ver Ejercicio 4.20 y Ejercicio 2.8] Hallar la función de distribución de ϕ_{n} = ⟨?TeX-mathx:ś⟩^{n}
+      i=1 U^{i}.'
+  - id: b
+    texto: Calcular P(ϕ_{4} \le e^{-2}).
+  - id: c
+    texto: Hallar la expresión general de la sucesión a_{n} = P ⟨?TeX-mathx:`⟩ (ϕ_{n})^{1/n} \le e^{-1}⟨?TeX-mathx:˘⟩
+      y calcular lím_{n\to\infty} a_{n}. Guía 5
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:`'
+  - 'glifo sin traducir: TeX-mathx:ś'
+  - 'glifo sin traducir: TeX-mathx:˘'

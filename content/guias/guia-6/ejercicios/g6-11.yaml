@@ -1,0 +1,41 @@
+id: g6-11
+guia: 6
+numero: "6.11"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p38
+
+enunciado: |
+  Un dado equilibrado tiene pintadas sus seis caras de la siguiente forma:
+  [[geometrica-pascal|rojo, amarillo, amarillo, verde, verde, verde]].
+
+items:
+  - id: a
+    pregunta: >-
+      Calcular la esperanza de la cantidad de lanzamientos del dado que deberán
+      realizarse para observar sus tres colores.
+    skills: [geometrica-pascal, esperanza, inclusion-exclusion]
+    respuesta:
+      tipo: numerica
+      valor: "73/10"
+      tol_rel: 0.002
+    pistas:
+      - >-
+        Los tres colores **no** son equiprobables: salen con probabilidad
+        $1/6$, $2/6$ y $3/6$. La fórmula del coleccionista equiprobable no
+        sirve.
+      - >-
+        Para una variable que toma valores enteros positivos vale
+        $E[T] = \sum_{t \ge 0} P(T > t)$. ¿Qué significa $T > t$?
+      - >-
+        Plan: $T > t$ es que después de $t$ tiros falte algún color. Calculá esa
+        probabilidad por inclusión-exclusión sobre los tres colores: cada
+        término queda una serie geométrica. **No te olvides el término de los
+        tres colores a la vez**: aporta 1, y olvidarlo da $6{,}3$ en vez de
+        $7{,}3$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g6_11.py
+          valor: "73/10"

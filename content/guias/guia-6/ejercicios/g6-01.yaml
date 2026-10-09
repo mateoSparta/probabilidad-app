@@ -1,0 +1,58 @@
+id: g6-01
+guia: 6
+numero: "6.1"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p36
+
+enunciado: |
+  Una empresa produce discos que son defectuosos con probabilidad $0{,}01$ y
+  los vende en paquetes de 10. [[bernoulli-binomial|Ofrece una garantía de que
+  como máximo 1 de los 10 discos del paquete es defectuoso]], en caso contrario
+  devolverá el dinero de la compra.
+
+items:
+  - id: a
+    pregunta: ¿Qué proporción de los paquetes no satisface la garantía?
+    skills: [bernoulli-binomial]
+    respuesta:
+      tipo: numerica
+      valor: "1 - 0.99^10 - 10*0.01*0.99^9"
+    pistas:
+      - '¿Cuántos discos defectuosos admite la garantía? ¿Cuándo se incumple?'
+      - Conviene ir por el complemento: los paquetes con 0 o con 1 defectuoso.
+      - >-
+        Plan: $X \sim \text{Bin}(10;\ 0{,}01)$ y se pide $P(X \ge 2)$. Calculá
+        $1 - P(X=0) - P(X=1)$. Va a quedar como $0{,}0043$: mucho más chico que
+        el $0{,}01$ de un disco.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g6_01.py
+          valor: "0.004266"
+
+  - id: b
+    pregunta: >-
+      Si Lucas compra tres paquetes, ¿cuál es la probabilidad de que le
+      devuelvan el dinero de la compra de exactamente uno de ellos?
+    skills: [bernoulli-binomial]
+    respuesta:
+      tipo: numerica
+      valor: "3*(1 - 0.99^10 - 10*0.01*0.99^9)*(0.99^10 + 10*0.01*0.99^9)^2"
+      tol_rel: 0.005
+    pistas:
+      - Ahora los intentos son los paquetes, no los discos.
+      - '¿Con qué probabilidad "falla" un paquete? Ya la calculaste.'
+      - >-
+        Plan: otra binomial, de 3 intentos, con la probabilidad del ítem (a).
+        Ojo con usar $0{,}01$ acá: ésa es la probabilidad de que falle un
+        **disco**, no un paquete, y da un resultado más del doble del correcto.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g6_01.py
+          valor: "0.012690"
+        - origen: "tools/verify/g6_01.py (error de la resuelta, ver PLAN.md §7: usar p=0.01 da 0.029403)"
+          valor: "0.029403"

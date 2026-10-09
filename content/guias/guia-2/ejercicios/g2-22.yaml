@@ -1,0 +1,110 @@
+id: g2-22
+guia: 2
+numero: "2.22"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p15
+
+enunciado: |
+  Sea $(X, Y)$ un punto con
+  [[conjunta-marginales|distribución uniforme sobre el semicírculo
+  $\Lambda = \{(x, y) \in \mathbb{R}^2 : x^2 + y^2 \le 4,\ x \ge 0\}$]].
+
+items:
+  - id: a
+    pregunta: 'Calcular $P(\lvert Y \rvert < X)$.'
+    skills: [conjunta-marginales, prob-geometrica]
+    respuesta:
+      tipo: numerica
+      valor: "1/2"
+    pistas:
+      - Si la conjunta es uniforme, toda probabilidad es un cociente de áreas.
+      - 'Dibujá la región $\lvert y \rvert < x$ dentro del semicírculo: queda un sector.'
+      - >-
+        Plan: en coordenadas polares, $\lvert y \rvert < x$ con $x \ge 0$ es el
+        sector $-\pi/4 < \theta < \pi/4$. Compará su ángulo con el del
+        semicírculo entero.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g2_22.py
+          valor: "1/2"
+
+  - id: b
+    pregunta: >-
+      Hallar las densidades marginales de $X$ y de $Y$, y evaluarlas donde se
+      pide.
+    skills: [conjunta-marginales, densidad]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$f_X(0)$'
+          valor: "2/pi"
+        - pregunta: '$f_X(1)$'
+          valor: "sqrt(3)/pi"
+        - pregunta: '$f_Y(0)$'
+          valor: "1/pi"
+        - pregunta: '$f_Y(1)$'
+          valor: "sqrt(3)/(2*pi)"
+    pistas:
+      - '¿Cuánto vale la densidad conjunta? Es constante: uno sobre el área de $\Lambda$.'
+      - >-
+        Para la marginal de $X$ hay que integrar en $y$ entre los dos bordes
+        del semicírculo, que dependen de $x$. Para la de $Y$, integrar en $x$
+        desde 0 hasta el borde.
+      - >-
+        Plan: la marginal en un punto es la densidad conjunta por el largo del
+        corte de $\Lambda$ a esa altura. Ojo que los cortes no son simétricos:
+        en $x$ el corte va de $-\sqrt{4-x^2}$ a $\sqrt{4-x^2}$, pero en $y$ va
+        de $0$ a $\sqrt{4-y^2}$, porque el semicírculo es sólo la mitad
+        derecha. Como control, cada marginal tiene que integrar 1.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g2_22.py
+          valor: "2/pi, sqrt(3)/pi, 1/pi, sqrt(3)/(2*pi)"
+        - origen: "tools/verify/g2_22.py (control: las dos marginales integran 1)"
+          valor: "1"
+
+  - id: c
+    pregunta: '¿$X$ e $Y$ son variables aleatorias independientes?'
+    skills: [independencia-va, conjunta-marginales]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: c1
+          texto: >-
+            No: el soporte no es un rectángulo, así que el rango posible de $Y$
+            depende del valor de $X$.
+          correcta: true
+        - id: c2
+          texto: 'Sí, porque la densidad conjunta es constante.'
+          error_tipico: >-
+            Que la conjunta sea constante no alcanza. Para independencia tiene
+            que factorizar como $f_X(x) f_Y(y)$ **en todo el plano**, y acá el
+            producto de las marginales no se anula donde la conjunta sí.
+        - id: c3
+          texto: 'Sí, porque $P(\lvert Y \rvert < X) = 1/2$ es un número redondo.'
+          error_tipico: >-
+            Una probabilidad concreta no dice nada sobre independencia. Hay que
+            comparar la conjunta con el producto de las marginales.
+        - id: c4
+          texto: 'No se puede saber sin calcular la covarianza.'
+          error_tipico: >-
+            La covarianza no decide independencia: puede ser cero sin que las
+            variables sean independientes. Y acá alcanza con mirar el soporte.
+    pistas:
+      - Dibujá el soporte de la conjunta y preguntate si es un producto de dos intervalos.
+      - '¿Qué valores puede tomar $Y$ si sabés que $X$ está cerca de 2?'
+      - >-
+        Plan: multiplicá las marginales que hallaste y comparalo con la
+        conjunta. Alcanza con encontrar un punto donde no coincidan. El atajo:
+        si el soporte no es rectangular, no hay independencia.
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: tools/verify/g2_22.py
+          valor: "f_X(1) f_Y(1) = 3/(2 pi^2) != 1/(2 pi) = f conjunta"

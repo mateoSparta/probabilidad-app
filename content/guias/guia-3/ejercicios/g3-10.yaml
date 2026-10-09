@@ -1,0 +1,63 @@
+id: g3-10
+guia: 3
+numero: "3.10"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p18
+
+enunciado: |
+  [[momentos|Se construye un círculo uniendo los extremos de un alambre.]]
+
+items:
+  - id: a
+    pregunta: >-
+      Si la longitud del alambre $L$ es una variable aleatoria con distribución
+      exponencial de media 60 cm, calcular la media del área del círculo.
+    skills: [momentos, esperanza]
+    respuesta:
+      tipo: numerica
+      valor: "1800/pi"
+      # Respuesta exacta: el 1 % por defecto dejaria pasar un error de 5 unidades.
+      tol_rel: 0.001
+    pistas:
+      - 'El alambre cerrado es el perímetro. Escribí el área en función de $L$.'
+      - 'Te va a quedar $A = L^2/(4\pi)$, así que hace falta $E[L^2]$, no $E[L]^2$.'
+      - >-
+        Plan: para una exponencial de media $m$ vale $E[L^2] = 2m^2$ (se
+        obtiene integrando, o de $\sigma^2 + \mu^2$ con $\sigma = \mu = m$).
+        Dividí por $4\pi$. Si te da el área del círculo de 60 cm de perímetro,
+        pasaste la media por dentro de la función y eso no vale.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g3_10.py
+          valor: "1800/pi"
+        - origen: "tools/verify/g3_10.py (error tipico: usar g(E[L]))"
+          valor: "900/pi"
+
+  - id: b
+    pregunta: >-
+      Si el área del círculo $A$ es una variable aleatoria con distribución
+      exponencial de media 15 cm², calcular la media del perímetro del círculo.
+    skills: [momentos, esperanza]
+    respuesta:
+      tipo: numerica
+      valor: "pi*sqrt(15)"
+      tol_rel: 0.001
+    pistas:
+      - 'Ahora el dato es el área. Despejá el radio y escribí el perímetro en función de $A$.'
+      - 'Te va a quedar $P = 2\sqrt{\pi A}$, así que hace falta $E[\sqrt{A}]$.'
+      - >-
+        Plan: integrá $\sqrt{a}$ contra la densidad exponencial. La integral
+        $\int_0^\infty \sqrt{a}\, e^{-a/m}/m\, da$ sale con la función Gamma y
+        da $\sqrt{m}\,\sqrt{\pi}/2$. Ojo: $E[\sqrt{A}]$ es **menor** que
+        $\sqrt{E[A]}$, no mayor.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g3_10.py
+          valor: "pi*sqrt(15)"
+        - origen: "tools/verify/g3_10.py (error tipico: usar g(E[A]))"
+          valor: "2*sqrt(15*pi)"

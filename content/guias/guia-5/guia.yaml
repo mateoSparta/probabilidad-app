@@ -1,0 +1,21 @@
+numero: 5
+titulo: Condicionamiento y mezclas
+descripcion: >-
+  Condicionar a una variable en lugar de a un evento. La esperanza condicional
+  deja de ser un número y pasa a ser una variable aleatoria, y de ahí salen las
+  dos herramientas que resuelven casi todo lo que sigue: la esperanza total
+  —incluso cuando el planteo se refiere a sí mismo— y la varianza total. Más
+  Bayes cuando lo observado es continuo.
+
+secuencia:
+  - teoria: t-mezclas
+  - ejercicio: g5-09
+
+  - teoria: t-esperanza-condicional-va
+  - ejercicio: g5-12
+  - ejercicio: g5-13
+  - ejercicio: g5-21
+  - ejercicio: g5-23
+
+  - teoria: t-varianza-total
+  - ejercicio: g5-16

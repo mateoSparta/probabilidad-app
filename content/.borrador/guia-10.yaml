@@ -1,0 +1,275 @@
+_generado_por: tools/extract/guia.py -- NO EDITAR A MANO
+guia: 10
+fuente: fuentes/guias/parte2.pdf
+ejercicios:
+- numero: '10.1'
+  paginas:
+  - 6
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Las políticas de fomento del empleo están determinadas por la tasa de desocupación y tienen
+    por objetivo mantenerla por debajo de un nivel que se considera aceptable, por ejemplo un 4 %. Si
+    se quiere diseñar un test acorde con esa situación,
+  items:
+  - id: a
+    texto: ¿cuál debe ser la hipótesis nula y cuál la alternativa?;
+  - id: b
+    texto: ¿qué significan los errores de tipo I y los errores de tipo II?;
+  - id: c
+    texto: ¿qué valores considera apropiados para el nivel de significación del test?
+- numero: '10.2'
+  paginas:
+  - 6
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: 'Una urna contiene cuatro bolas: θ rojas y 4 - θ verdes. Para testear H_{0}: θ = 2 contra
+    H_{1}: θ \ne 2 se realizarán dos extracciones de una bola con reposición y se rechazará H_{0} si las
+    dos bolas son del mismo color, de lo contrario no se la rechazará,'
+  items:
+  - id: a
+    texto: Calcular el nivel de significación del test.
+  - id: b
+    texto: Calcular la probabilidad de cometer errores de tipo II para todas las situaciones posibles.
+      ¿Cuál es la máxima probabilidad de cometer un error de tipo II?
+  - id: c
+    texto: Tabular y graficar la función de potencia del test.
+  - id: d
+    texto: Repetir los incisos anteriores en el caso de que las dos bolas se hubiesen extraído sin reposición.
+- numero: '10.3'
+  paginas:
+  - 6
+  marcas: []
+  en_alcance: true
+  enunciado: 'Se observará un único valor de una variable aleatoria X cuya función de probabilidad p(x)
+    puede ser p_{0}(x) o p_{1}(x), donde p_{0}(x) y p_{1}(x) están definidas en la siguiente tabla: x
+    0 1 2 3 4 5 p_{0}(x) 0.02 0.03 0.05 0.05 0.35 0.50 p_{1}(x) 0.04 0.05 0.08 0.12 0.41 0.30'
+  items:
+  - id: a
+    texto: 'Hallar todos los test de nivel α = 0.05 de la hipótesis H_{0}: p(x) = p_{0}(x) contra H_{1}:
+      p(x) = p_{1}(x).'
+  - id: b
+    texto: Calcular β para cada uno de los test hallados en
+  - id: a
+    texto: . ¿Cuál es el mejor test de todos?
+- numero: '10.4'
+  paginas:
+  - 6
+  - 7
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: La porota vende dos variedades de soja. El rinde (en toneladas) por hectárea de la variedad
+    1 es una variable aleatoria con distribución normal de media 6.2 y desvío 0.45, y el de la variedad
+    2 es una variable aleatoria con distribución normal de media 7 y desvío 0.45. Vivaldo compró semillas
+    de la variedad 2 y antes de seguir comprando, quiere asegurarse de que las semillas que le enviaron
+    son de la variedad 2.
+  items:
+  - id: a
+    texto: Diseñar un test de hipótesis que le garantice a Vivaldo que la probabilidad de seguir comprando
+      semillas a La porota cuando le hayan enviado de la variedad 1 sea 0.05.
+  - id: b
+    texto: Calcular β.
+  - id: c
+    texto: ¿Cuántas hectáreas deben cultivarse para que β \le 0.1?
+  - id: d
+    texto: 'Vivaldo cultivó 10 hectáreas con la semillas que le enviaron y obtuvo los siguientes rindes:
+      7.36, 7.62, 7.02, 6.99, 6.66, 6.74, 6.25, 6.41, 6.91, 7.11. Basándose en esa información: calcular
+      el p-valor del test, y determinar qué debe hacerse.'
+- numero: '10.5'
+  paginas:
+  - 7
+  marcas: []
+  en_alcance: true
+  enunciado: Un productor afirma que la media del voltaje de ruptura de ciertos capacitores es mayor que
+    200. El voltaje de ruptura de dichos capacitores obedece a una distribución normal de varianza 25.
+    Usando una muestra aleatoria de tamaño 10 diseñar un test de hipótesis de nivel de significación α
+    = 0.05 para decidir si la afirmación del productor es verdadera y calcular la probabilidad de decidir
+    erróneamente cuando el verdadero valor de la media del voltaje de ruptura es 210.
+- numero: '10.6'
+  paginas:
+  - 7
+  marcas: []
+  en_alcance: true
+  enunciado: Una máquina produce varillas cuya longitud (en cm) es una variable aleatoria con distribución
+    normal de varianza 25. Se examina una muestra aleatoria de 36 varillas producidas por esa máquina
+    y se registra una longitud promedio de 51.74 cm. Con un nivel de significación de 0.05, ¿se puede
+    garantizar que la longitud media de las varillas producidas por esa máquina supera los 50 cm? Hallar
+    el p-valor.
+- numero: '10.7'
+  paginas:
+  - 7
+  marcas: []
+  en_alcance: true
+  enunciado: En 1761 James Short midió 53 veces la paralaje solar. El promedio de las mediciones resultó
+    ser 8.616 segundos de grado. Suponiendo que la distribución de las mediciones es una normal de media
+    µ y desvío σ = 0.75, decidir a un nivel de significación α = 0.05 si hay suficiente evidencia para
+    rechazar la hipótesis µ = 8.789. Hallar el p-valor.
+- numero: '10.8'
+  paginas:
+  - 7
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: 'Para ir de su casa al trabajo, Aparicio va por un camino por el que tarda, en media, 40
+    minutos en llegar. Juan le sugiere otro camino para reducir ese tiempo. Aparicio lo probó 10 veces
+    y tardó en llegar los siguientes tiempos: 41.1, 42.2, 40.5, 39.9, 40.3, 36.6, 39.3, 42.5, 37.8, 40.5.
+    Suponiendo que los tiempos de viaje obedecen a una distribución normal, ¿se puede asegurar, con un
+    nivel de significación de 0.1, que el camino sugerido por Juan es más rápido?'
+- numero: '10.9'
+  paginas:
+  - 8
+  marcas: []
+  en_alcance: true
+  enunciado: 'En la Burbuja feliz se acaba de instalar una máquina para llenar sifones de soda. La máquina
+    es eficaz cuando el desvío estándar de la cantidad de soda en los sifones no supera 25 mililitros.
+    En una muestra de 10 sifones se observaron las siguientes cantidades (en litros) de soda: 1.029, 0.943,
+    1.071, 0.986, 0.962, 0.995, 0.991, 1.002, 1.003, 0.978. Suponiendo que la cantidad de soda en los
+    sifones obedece a una distribución normal. ¿se puede asegurar, con un nivel de significación de 0.05,
+    que la máquina no es eficaz?'
+- numero: '10.10'
+  paginas:
+  - 8
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: 'Las cajas de leche en polvo de la marca Spiky Milk anuncian un peso neto de un kilo. El
+    peso neto de las cajas (en kilos) W es una variable aleatoria con distribución normal. En una muestra
+    aleatoria de 75 cajas se observó que \sum_{75} i=1 w^{i} = 74.4 y \sum^{75} i=1 w^{2} i = 73.81. Testear:'
+  items:
+  - id: a
+    texto: 'H_{0}: µ = 1 contra H_{1}: µ < 1.'
+  - id: b
+    texto: 'H_{0}: σ = 0.14 contra H_{1}: σ < 0.14.'
+  revisar:
+  - revisar los limites del operador grande
+- numero: '10.11'
+  paginas:
+  - 8
+  marcas:
+  - siga_siga
+  en_alcance: true
+  enunciado: Se observará una muestra aleatoria X_{1},\ldots, X_{n} de una población cuya densidad f (x)
+    puede ser f_{0}(x) = \frac{1}{50} 1\{0 < x < 50\} o f_{1}(x) = \frac{x}{1250} 1\{0 < x < 50\}.
+  items:
+  - id: a
+    texto: 'Hallar un test para H_{0}: f (x) = f_{0}(x) contra H_{1}: f (x) = f_{1}(x).:considerar la
+      distribución de Y = - log(X /50).'
+  - id: b
+    texto: Hallar la expresión de α y β en función de n.
+- numero: '10.12'
+  paginas:
+  - 8
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: 'Los siguientes datos son las duraciones (en horas) de una muestra de 6 lámparas: 61, 1905,
+    1076, 623, 33, 167. Suponiendo que los datos obedecen a una distribución exponencial de intensidad
+    λ determinar si ellos permiten con un nivel de significación α = 0.05 refutar la hipótesis de que
+    λ \le 0.0005. Hallar el p-valor.'
+- numero: '10.13'
+  paginas:
+  - 8
+  marcas: []
+  en_alcance: true
+  enunciado: La duración (en horas) de cada lámpara en un lote es una variable aleatoria con distribución
+    exponencial. Se pusieron a prueba 10 lámparas y todas superaron las 50 horas de duración. Al 5 % de
+    significación, ¿se puede afirmar que la duración media de cada lámpara del lote es mayor que 55 horas?
+    Tomar la decisión basándose en el p-valor.
+- numero: '10.14'
+  paginas:
+  - 8
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: 'Basándose en una muestra aleatoria de una población con distribución uniforme sobre el intervalo
+    [0, θ], θ > 0, diseñar un test de hipótesis para H_{0}: θ \le 1 cuyo nivel de significación sea α
+    = 0.05 y tal que el valor de la función de potencia en θ = 1.1 sea 0.9.'
+- numero: '10.15'
+  paginas:
+  - 8
+  marcas: []
+  en_alcance: true
+  enunciado: La longitud en metros de cada rollo de alambre en un lote es una variable aleatoria con distribución
+    uniforme sobre el intervalo [15, 15 + θ]. Se examinaron 4 rollos y la máxima longitud observada resulto
+    ser 25 metros. En base a la información muestral, y con nivel de significación de 0.01 ¿se puede afirmar,
+    que la longitud media de los rollos del lote es menor que 20 metros?
+- numero: '10.16'
+  paginas:
+  - 9
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Sea X una variable aleatoria cuya función de densidad es f_{θ} (x) = \frac{3x2}{θ3} 1\{0
+    \le x \le θ\}, θ > 0. Diseñar un test de hipótesis de nivel 0.1 para testear la hipótesis de que la
+    media de X es mayor que 1.2 basado en una muestra de X de tamaño 1. Graficar la función de potencia
+    del test.
+  revisar:
+  - parece tener items pero no se detectaron
+- numero: '10.17'
+  paginas:
+  - 9
+  marcas: []
+  en_alcance: true
+  enunciado: 'En una elección se presentarán dos candidatos: el amarillo y el azul. Basándose en los resultados
+    de una encuesta que se realizará sobre un conjunto de 100 ciudadanos a los que se les preguntará a
+    cuál de los dos votará, diseñar un test de hipótesis para verificar si la intención de votos por el
+    candidato azul supera el 35 %, con un nivel de significación asintótico del 5 %.'
+- numero: '10.18'
+  paginas:
+  - 9
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: '[Maronna pp. 143-144] Una de las más celebres “Leyes de Murphy” establece que “si se deja
+    caer al suelo una tostada untada con dulce, la probabilidad de que caiga del lado del dulce es mayor
+    que la de que caiga del lado del pan”.'
+  items:
+  - id: a
+    texto: Para verificarla, se realizó un experimento en la University of Southwestern Louisana, en el
+      que se dejaron caer 1000 tostadas untadas con mermelada de grosellas, de las cuales cayeron 540
+      del lado del dulce. ¿Qué conclusión puede sacar?
+  - id: b
+    texto: El comité de investigaciones de la University of Southwestern Louisana decreta que, para que
+      el experimento sea considerado concluyente, deberá cumplir con (i) si la Ley de Murphy es falsa,
+      la probabilidad de que el test la confirme debe ser \le 0.01; (ii) si la Ley es cierta, y la probabilidad
+      de caer del lado del dulce es > 0.6, entonces la probabilidad de confirmarla debe ser \ge 0.95.
+      ¿Cuántas tostadas hay que arrojar para que se cumplan estas condiciones?
+- numero: '10.19'
+  paginas:
+  - 9
+  marcas: []
+  en_alcance: true
+  enunciado: Un fabricante asegura que produce con una calidad del 5 % de artículos defectuosos. Un comprador
+    de grandes cantidades de esos artículos observa una muestra de 100 artículos y descubre 10 defectuosos.
+    Realizar un test de hipótesis para determinar con un nivel de significación asintótico de 0.05 si
+    existen motivos para dudar de la afirmación del fabricante.
+- numero: '10.20'
+  paginas:
+  - 9
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: En una urna hay n bolas negras. Eusebio afirma que n \ge 24. Se agregan 10 bolas rojas. Luego
+    se realizan 100 extracciones de una bola con reposición y se observan 28 rojas. Se puede rechazar
+    la afirmación de Eusebio con nivel de significación asintótico α = 0.1?
+- numero: '10.21'
+  paginas:
+  - 10
+  marcas: []
+  en_alcance: true
+  enunciado: Una fuente radiactiva emite partículas alfa de acuerdo con un proceso de Poisson de intensidad
+    λ por segundo. Se la observó durante 3 horas y se registraron 5029 emisiones. ¿Al 0.01 de significación
+    asintótica, se puede rechazar la hipótesis λ = 0.5? Hallar el p-valor aproximado.
+- numero: '10.22'
+  paginas:
+  - 10
+  - 11
+  marcas: []
+  en_alcance: true
+  enunciado: 'La cantidad de accidentes de tránsito por semana en la intersección de Paseo Colón y Estados
+    Unidos obedece a una distribución de Poisson. En una muestra de 80 semanas se observaron las frecuencias:
+    Cantidad de accidentes 0 1 2 3 4 Frecuencia 28 25 20 5 2 Al 5 % de significación asintótica, ¿se puede
+    afirmar que la media de la cantidad de accidentes por semana en la intersección de Paseo Colón y Estados
+    Unidos es menor que 2? Hallar el p-valor aproximado. Guía 11'

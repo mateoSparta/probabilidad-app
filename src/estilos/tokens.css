@@ -1,0 +1,65 @@
+/* Tokens de diseño — PLAN.md §8.
+   Paleta crema/terracota, sobria y académica. */
+
+:root {
+  /* --- color --- */
+  --fondo: #f4efe6;
+  --superficie: #fbf8f2;
+  --superficie-alta: #ffffff;
+
+  /* La teoria lleva un tono mas calido y apenas mas saturado que las
+     tarjetas de ejercicio: se distingue de un vistazo sin salirse de la
+     paleta. El borde es terracota muy diluido. */
+  --superficie-teoria: #f6eee1;
+  --borde-teoria: #b4552d33;
+  --tinta: #2b2620;
+  --tinta-2: #6b6257;
+  --tinta-3: #9a9087;
+  --acento: #b4552d;
+  --acento-suave: #b4552d1f;
+  --borde: #2b26201f;
+  --borde-fuerte: #2b262040;
+
+  /* estados de skill */
+  --dominado: #4f7a4a;
+  --desarrollo: #b8892e;
+  --flojo: #a3473a;
+  --sin-explorar: #9a9087;
+
+  --dominado-suave: #4f7a4a1f;
+  --desarrollo-suave: #b8892e1f;
+  --flojo-suave: #a3473a1f;
+
+  /* feedback */
+  --ok: var(--dominado);
+  --error: var(--flojo);
+
+  /* --- tipografía --- */
+  --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Menlo, monospace;
+
+  --t-xs: 0.78rem;
+  --t-sm: 0.875rem;
+  --t-base: 1.0625rem;
+  --t-md: 1.1875rem;
+  --t-lg: 1.4rem;
+  --t-xl: 1.8rem;
+
+  --interlinea: 1.62;
+
+  /* --- espacio y forma --- */
+  --col: 760px;
+  --e-1: 0.25rem;
+  --e-2: 0.5rem;
+  --e-3: 0.75rem;
+  --e-4: 1rem;
+  --e-5: 1.5rem;
+  --e-6: 2rem;
+  --e-7: 3rem;
+
+  --radio: 3px;
+  --radio-lg: 6px;
+  --radio-pill: 999px;
+
+  --sombra: 0 1px 2px #2b262010, 0 2px 8px #2b26200a;
+}

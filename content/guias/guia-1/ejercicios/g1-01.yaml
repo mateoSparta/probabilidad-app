@@ -1,0 +1,88 @@
+id: g1-01
+guia: 1
+numero: "1.1"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p3
+
+enunciado: |
+  Sea $\Omega = \{1, 2, 3, 4, 5, 6\}$.
+
+items:
+  - id: a
+    pregunta: >-
+      ¿Cuál es la menor álgebra de subconjuntos de $\Omega$ tal que
+      $\{1, 2, 3\}$ pertenezca a ella?
+    skills: [algebras]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: a1
+          texto: '$\{\emptyset,\ \{1,2,3\},\ \{4,5,6\},\ \Omega\}$'
+          correcta: true
+        - id: a2
+          texto: '$\{\{1,2,3\},\ \{4,5,6\}\}$'
+          error_tipico: >-
+            Un álgebra siempre contiene $\emptyset$ y $\Omega$. Acá faltan los dos.
+        - id: a3
+          texto: '$\{\emptyset,\ \{1,2,3\},\ \Omega\}$'
+          error_tipico: >-
+            Si $\{1,2,3\}$ pertenece, su complemento $\{4,5,6\}$ también tiene
+            que pertenecer.
+        - id: a4
+          texto: 'Los $64$ subconjuntos de $\Omega$'
+          error_tipico: >-
+            Ésa es la mayor álgebra, no la menor. Se pide la más chica que
+            contenga a $\{1,2,3\}$.
+    pistas:
+      - ¿Qué tres condiciones tiene que cumplir una familia de subconjuntos para ser un álgebra?
+      - Si $\{1,2,3\}$ pertenece, la condición del complemento obliga a que haya otro conjunto. ¿Cuál?
+      - >-
+        Plan: arrancá con $\{1,2,3\}$, agregá su complemento, agregá
+        $\emptyset$ y $\Omega$, y verificá que las uniones de lo que tenés ya
+        estén en la familia. Si no entra nada nuevo, ésa es la menor.
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: tools/verify/g1_01.py
+          valor: "{∅, {1,2,3}, {4,5,6}, {1,2,3,4,5,6}}"
+
+  - id: b
+    pregunta: >-
+      ¿Cuántos conjuntos tiene la menor álgebra de subconjuntos de $\Omega$ tal
+      que $\{1, 2\}$, $\{3, 4\}$ y $\{5, 6\}$ pertenezcan a ella?
+    skills: [algebras]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: b1
+          texto: '$8$'
+          correcta: true
+        - id: b2
+          texto: '$5$'
+          error_tipico: >-
+            Contaste los tres conjuntos dados más $\emptyset$ y $\Omega$, pero
+            falta cerrar por unión: $\{1,2\} \cup \{3,4\}$ también tiene que estar.
+        - id: b3
+          texto: '$6$'
+          error_tipico: >-
+            Quedaron uniones afuera. Fijate que hay tres uniones de a pares
+            distintas, no una sola.
+        - id: b4
+          texto: '$64$'
+          error_tipico: >-
+            Ésa es la cantidad de subconjuntos de $\Omega$, o sea la mayor
+            álgebra. Con estos tres generadores alcanza con mucho menos.
+    pistas:
+      - Los tres conjuntos dados son disjuntos y cubren todo $\Omega$: forman una partición.
+      - ¿Qué conjuntos se obtienen uniendo algunos de esos tres bloques?
+      - >-
+        Plan: cada elemento del álgebra queda determinado por cuáles de los
+        tres bloques incluye. Contá cuántas elecciones hay.
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: tools/verify/g1_01.py
+          valor: "8"

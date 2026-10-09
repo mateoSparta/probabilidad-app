@@ -1,0 +1,46 @@
+numero: 1
+titulo: Espacios de probabilidad
+descripcion: >-
+  Qué es un experimento aleatorio, cómo se arma el espacio muestral y qué
+  familias de eventos admiten una probabilidad coherente. De ahí salen las
+  herramientas que se usan en todo lo que sigue: contar casos equiprobables,
+  manejar uniones y complementos, multiplicar cuando hay independencia,
+  condicionar, invertir un condicional con Bayes y pasar al límite cuando hay
+  infinitos eventos.
+
+# La secuencia alterna teoría y ejercicios (PLAN.md §4.5). El orden importa:
+# cada bloque de teoría habilita los ejercicios que vienen después, y los
+# ejercicios están ordenados de más mecánico a más conceptual dentro de
+# cada tema.
+secuencia:
+  - teoria: t-algebras
+  - ejercicio: g1-01
+
+  - teoria: t-prob-discreta
+  - ejercicio: g1-03
+  - ejercicio: g1-02
+
+  - teoria: t-laplace
+  - ejercicio: g1-04
+  - ejercicio: g1-05
+
+  - teoria: t-conteo-muestras
+  - ejercicio: g1-13
+  - ejercicio: g1-15
+  - ejercicio: g1-16
+
+  - teoria: t-geometrica
+  - ejercicio: g1-10
+
+  - teoria: t-independencia
+  - ejercicio: g1-06
+  - ejercicio: g1-28
+
+  - teoria: t-condicional
+  - ejercicio: g1-22
+
+  - teoria: t-bayes
+  - ejercicio: g1-25
+
+  - teoria: t-continuidad
+  - ejercicio: g1-07

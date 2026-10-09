@@ -1,0 +1,40 @@
+id: g7-06
+guia: 7
+numero: "7.6"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p43
+
+enunciado: |
+  El peso de ciertas bolsas de naranjas es una variable aleatoria
+  [[tiempos-espera|exponencial de media 3 kilos]]. Se van agregando bolsas en
+  una balanza hasta que el peso supera 5 kilos.
+
+items:
+  - id: a
+    pregunta: Calcular la probabilidad de que el peso final en la balanza supere los 7 kilos.
+    skills: [tiempos-espera, perdida-memoria]
+    respuesta:
+      tipo: numerica
+      valor: "exp(-2/3)"
+    pistas:
+      - >-
+        Compará este enunciado con el 5.23: ahí las bolsas eran uniformes, acá
+        son exponenciales. Eso cambia todo.
+      - >-
+        Si los pesos acumulados son exponenciales, forman un proceso de Poisson
+        sobre el eje de los kilos. ¿Qué dice la falta de memoria sobre lo que
+        sobra por encima de los 5 kilos?
+      - >-
+        Plan: el exceso por encima de 5 vuelve a ser exponencial de media 3,
+        sin importar cuántas bolsas hicieron falta ni cuánto pesaba la última.
+        Entonces $P(\text{final} > 7) = P(\text{exceso} > 2)$. No hace falta
+        sumar sobre la cantidad de bolsas.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g7_06.py
+          valor: "exp(-2/3)"
+        - origen: "tools/verify/g7_06.py (control: la media del exceso simulado es 3, la de una bolsa)"
+          valor: "3"

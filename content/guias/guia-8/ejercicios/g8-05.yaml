@@ -1,0 +1,39 @@
+id: g8-05
+guia: 8
+numero: "8.5"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p48
+
+enunciado: |
+  Sean $X_1$, $X_2$ y $X_3$
+  [[combinacion-normales|variables aleatorias independientes con distribución
+  normal]] de medias 1, 2 y 3 respectivamente, y varianzas $1/9$, $1/3$ y
+  $1/2$ respectivamente.
+
+items:
+  - id: a
+    pregunta: 'Calcular $P\!\left(X_1 - \tfrac{1}{2} X_2 > 2 - \tfrac{1}{3} X_3\right)$.'
+    skills: [combinacion-normales, normal]
+    respuesta:
+      tipo: numerica
+      valor: "1/2 - erf(sqrt(2))/2"
+    pistas:
+      - 'Pasá todo a un lado para que el evento quede de la forma $Y > 0$.'
+      - >-
+        $Y$ es una combinación lineal de normales independientes, así que
+        vuelve a ser normal. Calculá su media y su varianza.
+      - >-
+        Plan: $Y = X_1 - \tfrac{1}{2}X_2 + \tfrac{1}{3}X_3 - 2$. En la media
+        los coeficientes van tal cual; en la varianza van **al cuadrado**, así
+        que el signo menos desaparece. Te va a quedar media $-1$ y varianza
+        $1/4$, o sea desvío $1/2$. Estandarizá y buscá en la tabla. Si la
+        varianza te da $4/9$, no elevaste los coeficientes al cuadrado.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g8_05.py
+          valor: "1 - Phi(2) = 0.022750"
+        - origen: "tools/verify/g8_05.py (controles: media -1, varianza 1/4; el error tipico de no elevar al cuadrado da 4/9)"
+          valor: "1/4"

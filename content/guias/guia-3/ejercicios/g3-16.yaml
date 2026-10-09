@@ -1,0 +1,38 @@
+id: g3-16
+guia: 3
+numero: "3.16"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p19
+
+enunciado: |
+  La potencia $W$ disipada por una resistencia es proporcional al cuadrado del
+  voltaje $V$, es decir [[momentos|$W = rV^2$]], donde $r$ es una constante.
+
+items:
+  - id: a
+    pregunta: >-
+      Calcular $E[W]$ cuando $r = 3$ y el voltaje tiene distribución normal de
+      media 6 y varianza 1.
+    skills: [momentos, varianza]
+    respuesta:
+      tipo: numerica
+      valor: "111"
+      # Es un entero exacto: con el 1 % por defecto pasaria 112.
+      tol_rel: 0.0005
+    pistas:
+      - 'La constante sale afuera: $E[W] = r\,E[V^2]$. Lo que falta es $E[V^2]$.'
+      - '¿Qué relación hay entre $E[V^2]$, la varianza y la media?'
+      - >-
+        Plan: de $\operatorname{var}[V] = E[V^2] - (E[V])^2$ sale
+        $E[V^2] = \sigma^2 + \mu^2$. No hace falta integrar la densidad normal.
+        Si te da $3 \cdot 36 = 108$, usaste $E[V]^2$ en lugar de $E[V^2]$ y te
+        falta justo la varianza.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g3_16.py
+          valor: "111"
+        - origen: "tools/verify/g3_16.py (control: la integral de v^2 contra la normal da 37)"
+          valor: "37"

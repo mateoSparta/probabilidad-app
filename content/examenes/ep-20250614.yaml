@@ -1,0 +1,116 @@
+id: ep-20250614
+tipo: parcial
+titulo: Parcial, segunda fecha
+fecha: "2025-06-14"
+duracion_min: 240
+fuente: fuentes/examenes/finales/EP_20250614.pdf
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [1]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      El control de recepción de una pieza que se recibe en cajas de 10
+      unidades consiste en elegir dos piezas —sin reposición— de cada caja y
+      rechazar la misma si alguna es defectuosa.
+      [[prob-total|El honesto proveedor coloca en cada caja un número de
+      defectuosas que depende del resultado de arrojar un dado de la siguiente
+      manera: si sale un 1, no pone ninguna; si el resultado es 2, 3, 4 ó 5,
+      pone 1; pero si sale 6 pone 4.]]
+      Luego completa la caja con piezas no defectuosas hasta llegar a las 10
+      piezas.
+    items:
+      - id: a
+        pregunta: >-
+          Sabiendo que una caja fue rechazada, ¿cuál es la probabilidad de que
+          el proveedor haya colocado a lo sumo una defectuosa en esa caja?
+        skills: [bayes, prob-total, conteo-muestras]
+        respuesta:
+          tipo: numerica
+          valor: "6/11"
+        pistas:
+          - >-
+            El dado define tres escenarios posibles para el contenido de la
+            caja, cada uno con su probabilidad.
+          - >-
+            Para cada escenario hay que calcular la probabilidad de que la
+            caja sea rechazada. Conviene ir por el complemento: que las dos
+            piezas elegidas sean buenas.
+          - >-
+            Plan: calcular $P(\text{rechazo} \mid d)$ para $d = 0, 1, 4$
+            contando sobre $\binom{10}{2}$, armar $P(\text{rechazo})$ por
+            probabilidad total, y aplicar Bayes para los escenarios con
+            $d \le 1$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: tools/verify/ep20250614_1.py
+              valor: "6/11"
+            - origen: "tools/verify/ep20250614_1.py (control: P(rechazo))"
+              valor: "11/45"
+
+  - numero: 2
+    guias: [3, 6]
+    en_alcance: true
+    cargado: false
+    nota: >-
+      Requiere la guía 3 (esperanza) y la guía 6 (hipergeométrica y binomial).
+      Mezcla dos mecanismos de extracción según el resultado de la moneda.
+    enunciado: |
+      Se tiene una moneda cargada con probabilidad de cara $0{,}3$, y una caja
+      con 6 bolas rojas y 4 azules. Se arroja la moneda: si sale cara se
+      extraen 3 bolas de la caja sin reposición; si sale ceca se extraen
+      también 3 bolas de la caja pero con reposición. Calcular la esperanza de
+      la cantidad de bolas rojas extraídas.
+    items: []
+
+  - numero: 3
+    guias: [2, 4]
+    en_alcance: true
+    cargado: false
+    nota: >-
+      Requiere la guía 2 (distribución conjunta) y la guía 4
+      (transformaciones). Al cargarlo va como `checkpoints`.
+    enunciado: |
+      Se usan dos métodos para medir la humedad de la atmósfera. La
+      distribución de probabilidad conjunta de las dos mediciones $(X, Y)$ es
+      una distribución uniforme en la región
+      $$R = \{(x, y) : 0 < x < 4,\ x - 1 < y < x + 2\}$$
+      Hallar y graficar la función de distribución de $W = (Y - X + 1)/3$.
+    items: []
+
+  - numero: 4
+    guias: [7]
+    en_alcance: true
+    cargado: false
+    nota: >-
+      Requiere la guía 7 (proceso de Poisson: adelgazamiento).
+    enunciado: |
+      A una dirección de correo electrónico llegan mensajes de SPAM y NO SPAM.
+      Los tiempos de arribo de los correos siguen un proceso de Poisson de tasa
+      10 por hora. Cada correo, de manera independiente de los otros correos y
+      de la hora de arribo, puede ser SPAM con probabilidad $0{,}7$. Sabiendo
+      que entre las 10:00 y 11:00 se recibieron exactamente 4 mensajes NO SPAM,
+      calcular la probabilidad de que en esa hora se hayan recibido 7 o más
+      correos en total.
+    items: []
+
+  - numero: 5
+    guias: [8]
+    en_alcance: true
+    cargado: false
+    nota: Requiere la guía 8 (teorema central del límite).
+    enunciado: |
+      Un reconocido influencer inicia una campaña solidaria para ayudar con su
+      propia carrera futbolística. Sus seguidores pueden elegir ser socio
+      creyente, aportando \$2000, o socio convencido, aportando \$4000. De
+      forma independiente, cada uno elige ser creyente con probabilidad
+      $0{,}3$, convencido con probabilidad $0{,}2$, o guardar su plata para
+      algo mejor con probabilidad $0{,}5$ (las opciones son excluyentes).
+      Hallar, aproximadamente, la cantidad mínima de seguidores necesarios para
+      que la recaudación total sea mayor que \$1.500.000 con probabilidad mayor
+      o igual a $0{,}95$.
+    items: []

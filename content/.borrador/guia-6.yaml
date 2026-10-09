@@ -1,0 +1,292 @@
+_generado_por: tools/extract/guia.py -- NO EDITAR A MANO
+guia: 6
+fuente: fuentes/guias/parte1.pdf
+ejercicios:
+- numero: '6.1'
+  paginas:
+  - 39
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Una empresa produce discos que son defectuosos con probabilidad 0.01 y los vende en paquetes
+    de 10. Ofrece una garantía de que como máximo 1 de los 10 discos del paquete es defectuoso, en caso
+    contrario devolverá el dinero de la compra. ¿Qué proporción de los paquetes no satisface la garantía?
+    Si Lucas compra tres paquetes, ¿cuál es la probabilidad de que le devuelvan el dinero de la compra
+    de exactamente uno de ellos?
+- numero: '6.2'
+  paginas:
+  - 39
+  marcas: []
+  en_alcance: true
+  enunciado: 'Un tirador tiene probabilidad p de dar en el blanco. Se le ofrecen dos alternativas para
+    ganar un premio: a) hacer 3 disparos con la condición de dar por lo menos 2 veces en el blanco; b)
+    hacer 5 disparos con la condición de dar por lo menos 3 veces en el blanco. ¿Para qué valores de p
+    es más favorable la primera alternativa?'
+- numero: '6.3'
+  paginas:
+  - 39
+  marcas: []
+  en_alcance: true
+  enunciado: Se arroja una moneda equilibrada 18 veces.
+  items:
+  - id: a
+    texto: Calcular la probabilidad de obtener exactamente 13 caras.
+  - id: b
+    texto: Hallar el número más probable de caras y calcular la probabilidad de que se obtenga ese número.
+- numero: '6.4'
+  paginas:
+  - 39
+  marcas: []
+  en_alcance: true
+  enunciado: La probabilidad de que un pasajero que reserva un asiento no se presente al vuelo es 0.04,
+    de manera independiente unos de otros. En consecuencia, la política de una empresa es vender 100 reservas
+    en un avión que tiene solo 98 asientos. Estimar la probabilidad de que todas las personas que se presentan
+    para un vuelo en particular encuentren asientos disponibles.
+- numero: '6.5'
+  paginas:
+  - 39
+  marcas: []
+  en_alcance: true
+  enunciado: ¿Cuántas veces hay que lanzar un dado equilibrado para que, con probabilidad mayor o igual
+    que 0.95, la frecuencia relativa con que salga el 5 difiera de 1/6 en no más de 0.01?
+- numero: '6.6'
+  paginas:
+  - 39
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Se lanza un dado equilibrado sucesivas veces.
+  items:
+  - id: a
+    texto: Calcular la probabilidad de que el primer 2 ocurra después del tercer lanzamiento.
+  - id: b
+    texto: Calcular la probabilidad de que el primer 2 ocurra después del sexto lanzamiento, dado que
+      no ocurrió en los primeros 3 lanzamientos.
+- numero: '6.7'
+  paginas:
+  - 39
+  marcas: []
+  en_alcance: true
+  enunciado: ¿Cuán larga debe ser una sucesión de dígitos decimales equiprobables para que la probabilidad
+    de que aparezca el dígito 6 sea por lo menos 0.99?
+- numero: '6.8'
+  paginas:
+  - 39
+  marcas: []
+  en_alcance: true
+  enunciado: '[ver Ejercicio 4.7] Una lámpara se mantendrá encendida durante un tiempo exponencial de
+    media 3 horas. Lucas enciende la lámpara y, mientras la lámpara está encendida, lanza un dado equilibrado
+    de veinte en veinte segundos (el primero cuando enciende la lámpara). Hallar el número esperado de
+    3’s observados hasta que se apague la lámpara.'
+- numero: '6.9'
+  paginas:
+  - 39
+  - 40
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Lucas y Monk lanzan monedas simultáneamente hasta obtener en un lanzamiento dos resultados
+    iguales. Si los dos obtienen cara gana Lucas; si ambos obtienen ceca gana Monk. La moneda de Lucas
+    es equilibrada, pero la moneda de Monk tiene probabilidad 1/3 de cara. Calcular la probabilidad de
+    que Monk gane el juego.
+- numero: '6.10'
+  paginas:
+  - 40
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: 'Chocolatines Jack lanza una colección de muñequitos con las figuras de los personajes de
+    Kung Fu Panda: Panda, Tigre, Mono, Grulla y Mantis. Cada vez que Lucas compra un chocolatín es igualmente
+    probable que obtenga alguno de los personajes. Sea N la cantidad de chocolatines que Lucas debe comprar
+    hasta completar la colección, hallar E[N] y var(N). Interpretar los resultados.'
+- numero: '6.11'
+  paginas:
+  - 40
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: 'Un dado equilibrado tiene pintadas sus seis caras de la siguiente forma: rojo, amarillo,
+    amarillo, verde, verde, verde. Calcular la esperanza de la cantidad de lanzamientos del dado que deberán
+    realizarse para observar sus tres colores.'
+- numero: '6.12'
+  paginas:
+  - 40
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Un estacionamiento, al abrir, tiene capacidad para tres coches. Cada minuto pasa un coche
+    por allí y la probabilidad de que quiera estacionarse es 0.8. Calcular la probabilidad de que se llene
+    en exactamente 10 minutos.
+- numero: '6.13'
+  paginas:
+  - 40
+  marcas: []
+  en_alcance: true
+  enunciado: '[ver Ejercicio 5.6] Se consideran dos variables N_{1} y N_{2} geométricas e independientes
+    tales que P(N_{i} = 1) = p. Sean S_{1} = N_{1} y S_{2} = N_{1} + N_{2}. Hallar'
+  items:
+  - id: a
+    texto: la función de probabilidad conjunta de S_{1} y S_{2}.
+  - id: b
+    texto: la distribución de S_{1}\mid S_{2} = m y calcular P(3 \le S_{1} \le 5\mid S_{2} = 8).
+- numero: '6.14'
+  paginas:
+  - 40
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: En una fábrica hay cuatro máquinas A, B, C y D que producen el 40 %, 30 %, 20 % y 10 % de
+    la producción total, respectivamente.
+  items:
+  - id: a
+    texto: Se eligen al azar 14 artículos de la producción. Calcular la probabilidad de que exactamente
+      5 provengan de la máquina A, 4 de la máquina B, 3 de la máquina C y 2 de la máquina D.
+  - id: b
+    texto: Si se sabe que en 14 artículos tomados al azar de la producción, exactamente 5 provienen de
+      la máquina A, ¿cuál es la probabilidad de que haya exactamente tres provenientes de la máquina C
+      ?
+- numero: '6.15'
+  paginas:
+  - 40
+  marcas: []
+  en_alcance: true
+  enunciado: 'Un proceso de producción produce piezas con dos tipos de defectos independientes: por rotura
+    con probabilidad 0.1 y por abolladura con probabilidad 0.2. Calcular la probabilidad de que al elegir
+    8 piezas,'
+  items:
+  - id: a
+    texto: 1 tenga ambos defectos, 2 estén abolladas solamente, 3 estén rotas solamente, y el resto sean
+      buenas.
+  - id: b
+    texto: a lo sumo 1 tenga ambos defectos.
+  - id: c
+    texto: menos de 5 tengan algún defecto.
+  - id: d
+    texto: por lo menos 3 no tengan defectos.
+- numero: '6.16'
+  paginas:
+  - 41
+  marcas: []
+  en_alcance: true
+  enunciado: 'Una máquina produce piezas con dos tipos de defectos independientes: de tipo I con probabilidad
+    1/3 y de tipo II con probabilidad 1/4. La máquina produce piezas hasta obtener una con los dos defectos.
+    Sabiendo que se produjeron exactamente 12 piezas, calcular la esperanza de la cantidad de piezas producidas
+    sin defectos.'
+- numero: '6.17'
+  paginas:
+  - 41
+  marcas: []
+  en_alcance: true
+  enunciado: Se arroja un dado piramidal 144 veces. El dado tiene las caras numeradas 1, 2, 3, 4 y están
+    cargadas con probabilidades 0.4, 0.3, 0.2, 0.1, respectivamente. Sean X_{1}, X_{2}, X_{3}, X_{4} la
+    cantidad de lanzamientos en los que el dado cae en la cara 1, 2, 3, 4, respectivamente. Hallar la
+    matriz de covarianzas (cov(X_{i}, X_{j}))_{1\le i\le4,1\le j\le4}.
+- numero: '6.18'
+  paginas:
+  - 41
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Se tirará un dado equilibrado hasta que salga el dos. Sea N la cantidad de tiradas necesarias
+    y sea M la cantidad de cuatros obtenidos.
+  items:
+  - id: a
+    texto: Hallar la ecuación de la recta de regresión de M dada N.
+  - id: b
+    texto: Calcular E[M], cov(M, N) y var(M).
+- numero: '6.19'
+  paginas:
+  - 41
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Un motoquero transita por una avenida. Las probabilidades de que al momento de llegar a un
+    semáforo este se encuentre en rojo, amarillo o verde son 0.45, 0.05 y 0.5 respectivamente. Los estados
+    de los semáforos son independientes y el motoquero sólo se detiene al encontrar un semáforo en rojo.
+    Sea N la cantidad de luces verdes que atravesó hasta detenerse.
+  items:
+  - id: a
+    texto: Hallar la función de probabilidad de N.
+  - id: b
+    texto: Calcular P(N > 2). Ejercicios Complementarios
+- numero: '6.20'
+  paginas:
+  - 41
+  marcas: []
+  en_alcance: true
+  enunciado: Se trata de que un proceso de fabricación no produzca más del 5 % de artículos defectuosos.
+    A tal efecto se lo controla periódicamente examinando n artículos y si alguno de ellos es defectuoso,
+    se detiene el proceso para revisarlo.
+  items:
+  - id: a
+    texto: Si el proceso de fabricación realmente está trabajando al 5 % de artículos defectuosos y se
+      examinan n = 20 artículos, ¿cuál es la probabilidad de detener el proceso innecesariamente?
+  - id: b
+    texto: Hallar la cantidad mínima de artículos que deberán examinarse si se desea que la probabilidad
+      de detener el proceso cuando realmente está trabajando al 6 % de defectuosos sea por lo menos 0.99.
+      Con ese tamaño de muestra, ¿cuál es la probabilidad de detener el proceso innecesariamente?
+- numero: '6.21'
+  paginas:
+  - 41
+  marcas: []
+  en_alcance: true
+  enunciado: 'En un proceso de producción en serie las piezas tienen dos tipos de defectos: de forma o
+    de color. La probabilidad de que una pieza tenga un defecto de forma es 0.1; la probabilidad de que
+    tenga un defecto de color es de 0.72 si tiene defecto de forma, y de 0.08 cuando no tiene defecto
+    de forma. Cuando se detecta una pieza con ambos defectos se suspende la producción formando un lote
+    con las piezas producidas hasta ese momento, incluyendo la pieza con ambos defectos. ¿Cuál es la cantidad
+    media de piezas defectuosas por lote?'
+- numero: '6.22'
+  paginas:
+  - 42
+  marcas:
+  - muy_dificil
+  en_alcance: true
+  enunciado: Sea X_{1}, X_{2},\ldots una secuencia de variables aleatorias, todas de media 2, y N una
+    variable geométrica(p = 2/3), independiente de las X_{i}. Calcular E[X_{1} + \cdot \cdot \cdot + X_{N}
+    \mid N \ge 2].
+- numero: '6.23'
+  paginas:
+  - 42
+  marcas: []
+  en_alcance: true
+  enunciado: De los 25 jugadores de fútbol de un club se elige al azar un equipo de 11. Si 8 de los jugadores
+    del club son federados, hallar la probabilidad de encontrar
+  items:
+  - id: a
+    texto: ningún jugador federado en el equipo.
+  - id: b
+    texto: exactamente 2 jugadores federados en el equipo.
+  - id: c
+    texto: al menos 4 jugadores federados en el equipo.
+- numero: '6.24'
+  paginas:
+  - 42
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: En una urna hay k bolas blancas y 5 bolas negras, donde 0 \le k \le 6. El resultado de la
+    extracción de 2 bolas al azar sin reposición fue de 1 blanca y 1 negra. Para cada k hallar la probabilidad
+    de haber observado el mencionado resultado de las 2 extracciones. ¿Qué valor de k da lugar a la mayor
+    probabilidad?
+- numero: '6.25'
+  paginas:
+  - 42
+  - 43
+  marcas: []
+  en_alcance: true
+  enunciado: 'Una cadena de supermercados compra un lote de 50000 bombitas eléctricas. Un lote se considera
+    bueno cuando a lo sumo 500 bombitas están quemadas, y se considera malo cuando al menos 1500 bombitas
+    lo están. Se elige una muestra de n bombitas para ensayar. Si c o menos de ellas están quemadas, se
+    acepta el lote. En caso contrario, se lo devuelve al proveedor. Se proponen tres planes de muestreo:
+    1. n = 200; c = 4. 2. n = 100; c = 2. 3. n = 100; c = 1.'
+  items:
+  - id: a
+    texto: Expresar en palabras los riesgos del proveedor y del comprador.
+  - id: b
+    texto: Graficar las curvas características (ver Ejercicio 1.37) de los tres planes de muestreo (utilizar
+      la aproximación binomial de la hipergeométrica).
+  - id: c
+    texto: ¿El plan 2 protege similarmente al proveedor que el plan 1? ¿Y al comprador? Justificar.
+  - id: d
+    texto: ¿El plan 3 protege más al comprador que el plan 1? ¿Y al proveedor? Justificar. Guía 7

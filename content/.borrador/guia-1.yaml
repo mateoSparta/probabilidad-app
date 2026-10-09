@@ -1,0 +1,691 @@
+_generado_por: tools/extract/guia.py -- NO EDITAR A MANO
+guia: 1
+fuente: fuentes/guias/parte1.pdf
+ejercicios:
+- numero: '1.1'
+  paginas:
+  - 3
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea Ω = \{1, 2, 3, 4, 5, 6\}.
+  items:
+  - id: a
+    texto: Hallar la menor álgebra de subconjuntos de Ω tal que el subconjunto \{1, 2, 3\} pertenezca
+      a ella.
+  - id: b
+    texto: Hallar la menor álgebra de subconjuntos de Ω tal que los subconjuntos \{1, 2\}, \{3, 4\}, \{5,
+      6\} pertenezcan a ella.
+- numero: '1.2'
+  paginas:
+  - 3
+  marcas: []
+  en_alcance: true
+  enunciado: '[DeGroot, pp. 38-42] En un grupo de 200 estudiantes de Ingeniería Industrial, 137 cursan
+    Álgebra II, 60 Probabilidad y 124 Materiales Industriales. Además, 33 cursan Álgebra II y Probabilidad;
+    29 Probabilidad y Materiales Industriales; y 92 Álgebra II y Materiales industriales. Finalmente,
+    18 cursan las tres materias. Se elige un estudiante al azar en ese grupo. Calcular la probabilidad
+    de que'
+  items:
+  - id: a
+    texto: curse Álgebra II o Probabilidad.
+  - id: b
+    texto: no curse ni Álgebra II ni Probabilidad.
+  - id: c
+    texto: curse alguna de las tres materias.
+  - id: d
+    texto: curse solo una de las tres materias.
+  - id: e
+    texto: no curse ninguna de las tres materias. Para cada caso representar los eventos en un diagrama
+      de Venn.
+- numero: '1.3'
+  paginas:
+  - 3
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Sea Ω = \{a, b, c\}. Definimos en los subconjuntos A \subset Ω una probabilidad P mediante
+    P(A) = \sum ω\in A p(ω), donde p(a) = \frac{1}{2}, p(b) = \frac{1}{3}, p(c) = \frac{1}{6}. Calcular
+    las probabilidades de los 8 subconjuntos de Ω.
+  revisar:
+  - parece tener items pero no se detectaron
+  - revisar los limites del operador grande
+- numero: '1.4'
+  paginas:
+  - 3
+  marcas: []
+  en_alcance: true
+  enunciado: Un dado equilibrado se arroja dos veces. Hallar la probabilidad de que
+  items:
+  - id: a
+    texto: la suma de los resultados sea 7.
+  - id: b
+    texto: el primer resultado sea mayor que el segundo.
+  - id: c
+    texto: los dos resultados sean distintos y su suma no supere 7.
+  - id: d
+    texto: el módulo de la diferencia de los resultados sea mayor que 1.
+- numero: '1.5'
+  paginas:
+  - 3
+  marcas: []
+  en_alcance: true
+  enunciado: Se tienen dos urnas a y b. En a hay 5 bolas rojas y 3 blancas, y en b hay 2 rojas y 3 blancas.
+    Si se extraen al azar una bola de cada urna, hallar la probabilidad de que
+  items:
+  - id: a
+    texto: ambas sean rojas.
+  - id: b
+    texto: ambas sean del mismo color.
+  - id: c
+    texto: sean de distinto color.
+  - id: d
+    texto: la bola extraída de la urna b sea blanca.
+- numero: '1.6'
+  paginas:
+  - 4
+  marcas:
+  - curva_peligrosa
+  - recomendado
+  en_alcance: true
+  enunciado: Cada noche, después de cenar, el matrimonio Galíndez tira 4 dados. Si no sale ningún 1, le
+    toca al Sr. Galíndez lavar los platos. En caso contrario, a su esposo. En promedio, ¿quién lava los
+    platos más seguido?
+- numero: '1.7'
+  paginas:
+  - 4
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Se realiza el experimento de tirar un dado hasta que sale el primer 6, anotando el número
+    N de tiradas necesarias.
+  items:
+  - id: a
+    texto: Describir un posible espacio muestral para este experimento.
+  - id: b
+    texto: Sea A_{n} el evento descrito por N = n. Hallar P(A_{1}), P(A_{8}), P(A_{2016}).
+  - id: c
+    texto: Sea B_{n} el evento descrito por N > n. Hallar P(B_{1}), P(B_{8}). ¿Cómo se describiría en
+      términos de lo que pasa con el dado el evento B_{2016}?
+  - id: d
+    texto: Mostrar que para cualquier n, B_{n+1} \subset B_{n}.
+  - id: e
+    texto: Sea B = \bigcap^{\infty} n=1 B^{n}. ¿Cómo se describiría en términos de lo que pasa con el
+      dado el evento B? Hallar P(B).
+  revisar:
+  - revisar los limites del operador grande
+- numero: '1.8'
+  paginas:
+  - 4
+  marcas: []
+  en_alcance: true
+  enunciado: Sea Ω = \{0, 1, 2, 3,\ldots \}. Definimos en los subconjuntos A \subset Ω una probabilidad
+    P mediante P(A) = \sum n\in A p(n), donde p(n) = c/n!. Hallar el valor de c y calcular P(\{0, 2, 4,
+    6,\ldots \}).
+  revisar:
+  - parece tener items pero no se detectaron
+  - revisar los limites del operador grande
+- numero: '1.9'
+  paginas:
+  - 4
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: '[Feller, pág. 18 y 24] Juan, Pedro y María juegan al ping-pong. El que gana un partido sigue
+    jugando, mientras que el que lo pierde es reemplazado por el que no jugaba. Se gana una cerveza el
+    primero que gana dos partidos seguidos, completando así un juego. El primer partido es entre Juan
+    y Pedro. La probabilidad de que Juan gane el primer partido es 5/9. Para cada k, asignamos a cada
+    juego posible que dura exactamente k partidos, la probabilidad \frac{1}{3\cdot2k-1de}. Si describimos
+    un juego indicando la secuencia de ganadores mediante la sus iniciales, el juego JMPP tendrá probabilidad
+    1/24, el juego (PMJ)^{6}PMM (dejamos a cargo del lector la interpretación de la notación) probabilidad
+    \frac{1}{3\cdot220}.'
+  items:
+  - id: a
+    texto: 'Describir un espacio muestral para los resultados del juego. (sugerencia: analizar las secuencias
+      posibles usando la notación ya introducida.)'
+  - id: b
+    texto: Hallar las probabilidades de que cada uno de los jugadores Juan, Pedro o María se tome la cerveza.
+  - id: c
+    texto: Hallar la probabilidad de que Juan gane el primer partido y el juego dure para siempre sin
+      que nadie se gane la cerveza.
+  - id: d
+    texto: Hallar la probabilidad de que el juego dure para siempre sin que nadie se gane la cerveza.
+- numero: '1.10'
+  paginas:
+  - 4
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Se sortea un número al azar dentro del intervalo [0, 1].
+  items:
+  - id: a
+    texto: Hallar la probabilidad de que los primeros tres dígitos sean 3, 1, 4 (es decir, 0.314\ldots).
+  - id: b
+    texto: Hallar la probabilidad de que el 0 no esté entre los primeros 4 dígitos.
+  - id: c
+    texto: Hallar la probabilidad de que el 0 no sea uno de sus dígitos.
+- numero: '1.11'
+  paginas:
+  - 5
+  marcas:
+  - simulacion
+  en_alcance: false
+  enunciado: Simulación de experimentos aleatorios. Sea Ω = \{ω_{1}, ω_{2},\ldots, ω_{n}\} el espacio
+    muestral correspondiente a un experimento aleatorio. Cada punto ω_{k} \in Ω tiene asignada la probabilidad
+    p_{k}. Definimos el siguiente mecanismo para simular el experimento. Sean a_{0} = 0, a_{i} = \sum^{i}
+    k=1 p^{k}. Subdividimos el intervalo (0, 1] en los n intervalos I_{i} = (a_{i-1}, a_{i}], i = 1,\ldots,
+    n. Notar que \bigcup^{n} i=1 I^{i} = (0, 1], y que la longitud de I_{i} es p_{i}. Dado un número aleatorio
+    U \in (0, 1], determinamos a cuál de los intervalos I_{i} pertenece, y consideramos que el resultado
+    simulado de la realización del experimento ha sido ω_{i}. Si queremos simular m realizaciones del
+    experimento, usaremos m veces el mecanismo anterior, cada vez con un nuevo número aleatorio U.
+  items:
+  - id: a
+    texto: Dados los números aleatorios 0.2, 0.7, 0.9, 0.1, simular el resultado de 4 tiradas sucesivas
+      de un dado equilibrado.
+  - id: b
+    texto: Mediante diez mil simulaciones estimar la probabilidad de que al arrojar 2 dados equilibrados
+      la suma de los resultados sea menor que 11. Comparar la estimación obtenida con el valor verdadero
+      de la probabilidad.
+  revisar:
+  - revisar los limites del operador grande
+- numero: '1.12'
+  paginas:
+  - 5
+  marcas:
+  - simulacion
+  en_alcance: false
+  enunciado: Mediante 20 simulaciones estimar las siguientes probabilidades
+  items:
+  - id: a
+    texto: Obtener al menos un as en seis tiros de un dado.
+  - id: b
+    texto: Obtener al menos dos ases en doce tiros de un dado.
+  - id: c
+    texto: De acuerdo con los resultados, si se quiere apostar a uno de los resultados, ¿cuál de las dos
+      apuestas es más conveniente?
+  - id: d
+    texto: Repetir los incisos anteriores mediante 10000 simulaciones.
+- numero: '1.13'
+  paginas:
+  - 5
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Una urna contiene 10 bolas numeradas del 0 al 9.
+  items:
+  - id: a
+    texto: Se extraen al azar con reposición cinco bolas. Calcular la probabilidad de que 1. las cinco
+      sean iguales. 2. según el orden de extracción se observen los números 1,3,5,7,9. 3. se observen
+      los cinco números impares. 4. las cinco sean distintas.
+  - id: b
+    texto: Calcular las probabilidades del inciso anterior, suponiendo que las extracciones se hacen sin
+      reposición.
+- numero: '1.14'
+  paginas:
+  - 5
+  marcas: []
+  en_alcance: true
+  enunciado: '[Feller, pág. 56] La encargada del edificio donde viven otras 29 personas echa a rodar un
+    rumor. A la mañana temprano se lo dice a una vecina, quien a su vez lo repite a una tercera, etcétera.
+    En cada paso el emisor del rumor elige al azar al receptor entre los restantes 29 habitantes del edificio.'
+  items:
+  - id: a
+    texto: Hallar la probabilidad de que el rumor se transmita 12 veces sin retornar a la encargada que
+      lo originó.
+  - id: b
+    texto: Hallar la probabilidad de que el rumor se transmita 12 veces sin que ninguna persona lo reciba
+      más de una vez.
+- numero: '1.15'
+  paginas:
+  - 6
+  marcas:
+  - recomendado
+  - solo_audaces
+  en_alcance: true
+  enunciado: Una fragata parte de Jamaica con 13 piratas para atacar 3 puertos. Cada pirata elige al azar
+    el puerto en que desembarcará.
+  items:
+  - id: a
+    texto: Calcular la probabilidad de que cuatro piratas desembarquen en Portobelo, cuatro en Maracaibo
+      y cinco en Gibraltar.
+  - id: b
+    texto: Calcular la probabilidad de que exactamente 6 piratas desembarquen en Portobelo y seis o más
+      desembarquen en Maracaibo.
+  - id: c
+    texto: Calcular la probabilidad de que en algún puerto desembarquen exactamente cinco piratas y en
+      algún otro exactamente cuatro.
+  - id: d
+    texto: Calcular la probabilidad de que Morgan se encuentre entre los 13 piratas.
+- numero: '1.16'
+  paginas:
+  - 6
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Se colocarán 7 gatos en 5 cajas. Suponiendo que los gatos son indistinguibles y que todas
+    las configuraciones distintas son equiprobables.
+  items:
+  - id: a
+    texto: Calcular la probabilidad de que la primera caja contenga exactamente dos gatos y la última
+      caja quede vacía.
+  - id: b
+    texto: Calcular la probabilidad de que la cuarta caja contenga más de 3 gatos.
+- numero: '1.17'
+  paginas:
+  - 6
+  marcas: []
+  en_alcance: true
+  enunciado: Una planta de ensamblaje recibe una partida de 25 piezas de precisión que incluye exactamente
+    k defectuosas. La división de control de calidad elige 5 piezas al azar para controlarlas y rechaza
+    la partida si encuentra al menos 1 defectuosa.
+  items:
+  - id: a
+    texto: Si k = 3, ¿cuál es la probabilidad de que la partida pase la inspección?
+  - id: b
+    texto: ¿Cómo se comporta la probabilidad p(k) de que la partida pase la inspección?
+  - id: c
+    texto: ¿Cuál es la máxima probabilidad de aceptar una partida que contenga más de 5 piezas defectuosas?
+- numero: '1.18'
+  paginas:
+  - 6
+  marcas: []
+  en_alcance: true
+  enunciado: Se elige al azar una permutación de las letras A, T, C, G. Mostrar que
+  items:
+  - id: a
+    texto: Los eventos “A precede a T ” y “C precede a G” son independientes.
+  - id: b
+    texto: Los eventos “A precede inmediatamente a T ” y “C precede inmediatamente a G” no son independientes.
+- numero: '1.19'
+  paginas:
+  - 6
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Se elige un número al azar en el intervalo (0, 1)
+  items:
+  - id: a
+    texto: Probar que los eventos “el primer dígito es 0” y “el segundo dígito es 1” son independientes.
+  - id: b
+    texto: Probar que los eventos “el primer dígito es 0” y “el segundo dígito no es 1” son independientes.
+- numero: '1.20'
+  paginas:
+  - 6
+  - 7
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: Un dado equilibrado se arroja dos veces.
+  items:
+  - id: a
+    texto: Sea A el evento “el primer resultado es par”, B el evento “el segundo resultado es par” y C
+      el evento “la suma de los resultados es par”. Mostrar que los eventos A, B, C son dos a dos independientes,
+      pero los eventos A, B, C no son independientes.
+  - id: b
+    texto: Sea A el evento “el primer resultado es 1,2 o 3”, B el evento “el primer resultado es 3,4 o
+      5” y C el evento “la suma de los resultados es 9”. Mostrar que aunque P(A \cap B \cap C) = P(A)P(B)P(C),
+      los eventos A, B, C no son independientes.
+- numero: '1.21'
+  paginas:
+  - 7
+  marcas: []
+  en_alcance: true
+  enunciado: El motor de un automóvil consta de 300 componentes individuales. Cada uno de estos es entregado
+    independientemente por un proveedor diferente. Los 300 proveedores garantizan que la probabilidad
+    de entregar un componente defectuoso es 0.01 o menor. Se considera aceptable el motor sólo cuando
+    ninguno de sus componentes es defectuoso.
+  items:
+  - id: a
+    texto: Calcular la probabilidad de que el motor sea aceptable.
+  - id: b
+    texto: ¿Qué nivel de calidad debe exigirse a cada proveedor (es decir, qué probabilidad de componente
+      defectuoso) si se desea que al menos el 98 % de los motores armados sea aceptable?
+- numero: '1.22'
+  paginas:
+  - 7
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: 'Se tienen 3 urnas a, b, c. En a hay dos bolas rojas y una blanca, en b tres rojas y dos
+    blancas, en c cinco rojas y tres blancas. Se extrae una bola de a: si es roja, se extrae una bola
+    de b, en caso contrario se extrae una bola de c. Indiquemos R_{i}, i = 1, 2 el evento de que la bola
+    en la extracción i fue roja, y B_{i}, i = 1, 2 el evento de que la bola en la extracción i fue blanca.'
+  items:
+  - id: a
+    texto: Calcular P(B_{1}).
+  - id: b
+    texto: Calcular P(B_{2}).
+  - id: c
+    texto: Describir mediante la notación detallada antes y calcular la probabilidad de que la primer
+      bola extraída haya sido blanca sabiendo que la segunda fue roja.
+  - id: d
+    texto: Calcular la probabilidad de que alguna de las bolas extraídas sea roja.
+  - id: e
+    texto: Suponiendo ahora que en a hay 200 bolas rojas y 100 blancas, en b 150 rojas y 100 blancas,
+      y en c 125 rojas y 75 blancas, resolver en estas nuevas condiciones los incisos anteriores. Si se
+      obtienen los mismos resultados, explicar por qué.
+- numero: '1.23'
+  paginas:
+  - 7
+  marcas: []
+  en_alcance: true
+  enunciado: Existen dos caminos de A hasta B y dos caminos de B hasta C. Cada uno de estos caminos está
+    bloqueado con probabilidad 0.25 independientemente de los demás. Hallar la probabilidad de que exista
+    un camino abierto desde B hasta C sabiendo que no hay ninguna trayectoria abierta desde A hasta C.
+- numero: '1.24'
+  paginas:
+  - 7
+  - 8
+  marcas: []
+  en_alcance: true
+  enunciado: 'Un canal de comunicación binario simple transporta mensajes usando sólo dos señales (bits):
+    0 y 1. Supongamos que en un canal de comunicación binario dado el 55 % de las señales emitidas son
+    1, que si se emitió un 0 la probabilidad de que se reciba un 0 es 0.95, y que si se emitió un 1 la
+    probabilidad de que se reciba un 1 es 0.99. Calcular'
+  items:
+  - id: a
+    texto: la probabilidad de que una señal recibida sea 1.
+  - id: b
+    texto: dado que se recibió un 1, la probabilidad de que la señal correspondiente emitida haya sido
+      un 1.
+- numero: '1.25'
+  paginas:
+  - 8
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: El 5 % de los bits transmitidos por un canal de comunicación binario es 0. El programa receptor
+    indica que hay un 0 en el mensaje cuando efectivamente el 0 ha sido emitido, con probabilidad 0.9.
+    ¿Cuál debe ser la probabilidad de que el receptor indique que hay un 1 cuando efectivamente el 1 ha
+    sido emitido, para que la probabilidad de que haya sido emitido un 0 cuando el receptor indica que
+    hay un 0 sea 0.99?
+- numero: '1.26'
+  paginas:
+  - 8
+  marcas: []
+  en_alcance: true
+  enunciado: Harvey “dos caras ” tiene una moneda de dos caras y dos monedas con cara y ceca equilibradas.
+  items:
+  - id: a
+    texto: Elige una moneda al azar y la arroja al aire dos veces consecutivas. Si el primer resultado
+      fue cara, ¿cuál es la probabilidad de que el segundo también sea cara?
+  - id: b
+    texto: Elige una moneda al azar, la arroja al aire y sale cara. ¿Cuál es la probabilidad de que sea
+      una de las monedas que tiene ceca?
+  - id: c
+    texto: Harvey arroja la misma moneda por segunda vez y de nuevo sale cara. ¿Cuál es la probabilidad
+      de que sea una de las monedas que tiene ceca?
+  - id: d
+    texto: Harvey arroja la misma moneda por tercera vez y de nuevo sale cara. ¿Cuál es la probabilidad
+      de que sea una de las monedas que tiene ceca?
+- numero: '1.27'
+  paginas:
+  - 8
+  marcas: []
+  en_alcance: true
+  enunciado: La urna a contiene 3 bolas blancas y 7 rojas. La urna b contiene 12 blancas y 8 rojas. Se
+    elige una urna al azar y se extrae una bola; esta bola se reintegra a la misma urna y se vuelve a
+    extraer una bola de ella.
+  items:
+  - id: a
+    texto: Si la primer bola extraída fue blanca, ¿cuál es la probabilidad de que la segunda también lo
+      sea?
+  - id: b
+    texto: ¿Son independientes los sucesos “primera bola es blanca” y “segunda bola es blanca”?
+- numero: '1.28'
+  paginas:
+  - 8
+  marcas:
+  - recomendado
+  en_alcance: true
+  enunciado: ''
+  items:
+  - id: a
+    texto: Se tienen dos monedas, a y b, de probabilidades 1/2 y 1/3 de cara, respectivamente. Se elige
+      una moneda al azar y se la tira dos veces. Considere los eventos A_{i} =”salió cara en el i-ésimo
+      tiro”, i = 1, 2, y B = “se eligió la moneda a”. ¿Dado B, A_{1} y A_{2} son independientes? ¿A_{1}
+      y A_{2} son independientes?
+  - id: b
+    texto: Se tira una moneda equilibrada dos veces. Considere los eventos A_{i} = ”salió cara en el i-ésimo
+      tiro”, i = 1, 2, y B = “salió al menos una ceca”. ¿A_{1} y A_{2} son independientes? ¿Dado B, A_{1}
+      y A_{2} son independientes? Ejercicios Complementarios
+- numero: '1.29'
+  paginas:
+  - 8
+  - 9
+  marcas: []
+  en_alcance: true
+  enunciado: Sea Ω = \{1, 2, 3, 4, 5\}. Definimos en los subconjuntos A \subset Ω una probabilidad P mediante
+    P(A) = \sum i\in A p^{i}, donde p^{1} = 0.2, p^{2} = 0.1, p^{3} = 0.35, p^{4} = 0.05, p^{5} = 0.3.
+    Sea A = \{2, 3\}.
+  items:
+  - id: a
+    texto: Calcular P(A).
+  - id: b
+    texto: Hallar, si existe, un evento B \subset Ω tal que A \subset B y P(B) = 0.65.
+  - id: c
+    texto: Hallar todos los eventos C tales que P(A \cap C) = 0 y P(C) = 0.3.
+  - id: d
+    texto: Hallar todos los eventos D tales que A \cap D = \emptyset y P(A \cup D) \ge 0.6.
+  - id: e
+    texto: Repetir los incisos anteriores si Ω = \{1, 2, 3, 4, 5, 6\}, con p_{6} = 0, y A = \{2, 3, 6\}.
+  revisar:
+  - revisar los limites del operador grande
+- numero: '1.30'
+  paginas:
+  - 9
+  marcas: []
+  en_alcance: true
+  enunciado: Sea (Ω, \mathcal{A}, P) un espacio de probabilidad tal que Ω = \{1, 2, 3, 4\frac{,1}{6} 5,
+    6\}, \mathcal{A} \subset 2^{Ω} es la menor álgebra tal que \{1\}, \{2\}, \{3\} pertenecen a ella,
+    y P(\{1\}) =, P(\{2\}) = \frac{1}{6}, P (\{3\}) = \frac{1}{12}. Calcular las probabilidades de todos
+    los eventos aleatorios.
+- numero: '1.31'
+  paginas:
+  - 9
+  marcas: []
+  en_alcance: true
+  enunciado: '[Abramson] Dado un experimento aleatorio \mathcal{E} con r_{1}, r_{2},\ldots, r_{n} resultados
+    posibles, que tienen probabilidades respectivas p_{1}, p_{2},\ldots, p_{n}, se llama entropía del
+    experimento \mathcal{E} al valor H (\mathcal{E}) = n \sum i=1 p_{i} log(p_{i}). Demostrar que la entropía
+    es máxima cuando los resultados son equiprobables.'
+  revisar:
+  - revisar los limites del operador grande
+- numero: '1.32'
+  paginas:
+  - 9
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: 'Sea Ω = [0, 10] \times [0, 10]. Supongamos que P es una probabilidad definida en una familia
+    de subconjuntos de Ω que incluye todos los rectángulos R, y satisface que si R es un rectángulo: P(R)
+    = ⟨?TeX-mathx:$⟩ ⟨?TeX-mathx:’⟩ ⟨?TeX-mathx:’⟩ ⟨?TeX-mathx:&⟩ ⟨?TeX-mathx:’⟩ ⟨?TeX-mathx:’⟩ ⟨?TeX-mathx:%⟩
+    \mid R\mid \cdot \frac{6}{?} \frac{3001}{?} si R \subset [0, 5] \times [0, 5] \mid R\mid \cdot \frac{3005}{300}
+    si R \subset [0, 5] \times [5, 10] \mid R\mid \cdot si R \subset [5, 10] \times [0, 5] 0 si R \subset
+    [5, 10] \times [5, 10]'
+  items:
+  - id: a
+    texto: Calcular P ([3, 6] \times ([1, 4] \cup [6, 7])).
+  - id: b
+    texto: 'Calcular P(\{(x, y) \in Ω: x + y \le 2\}).'
+  - id: c
+    texto: 'Calcular P(\{(x, y) \in Ω: 2 \le x + y \le 13\}).'
+  - id: d
+    texto: 'Calcular P(\{(x, y) \in Ω: (x - 5)^{2} + (y - 5)^{2} < 10\}).'
+  revisar:
+  - 'glifo sin traducir: TeX-mathx:$'
+  - 'glifo sin traducir: TeX-mathx:%'
+  - 'glifo sin traducir: TeX-mathx:&'
+  - 'glifo sin traducir: TeX-mathx:’'
+  - fraccion incompleta
+- numero: '1.33'
+  paginas:
+  - 9
+  marcas: []
+  en_alcance: true
+  enunciado: Sea Ω = [0, 1] \times [0, 1] el cuadrado unitario. Consideraremos eventos a los subconjuntos
+    Λ \subset Ω que admiten área \midΛ\mid, y definimos P(Λ) = \midΛ\mid.
+  items:
+  - id: a
+    texto: 'Sea A = \{(x, y) \in Ω: x^{2} + y^{2} \le 1\}. Hallar P(A).'
+  - id: b
+    texto: 'Sean, para k = 1, 2,\ldots, B_{k} = \{(x, y) \in Ω: x + y \le 1/2 + 1/k\}. Hallar P(B_{k})
+      y P(\bigcap^{\infty} k=1 B^{k}).'
+  - id: c
+    texto: 'Sean, para k = 1, 2,\ldots, C_{k} = \{(x, y) \in Ω: (x - 1/2)^{2} + (y - 1/2)^{2} \le 1/k^{2}\}
+      y C = \bigcap^{\infty} k=1 C^{k}. Hallar P(C^{k}) y P(C).'
+  - id: d
+    texto: Suponer que Ω modela un blanco cuadrado al que se dispara un dardo, y P(Λ) es la probabilidad
+      de que el dardo se clave en la zona del blanco descrita por Λ. ¿Cómo se describirían en términos
+      de lo que pasa con el dardo los eventos C_{k} y C del inciso anterior?
+  revisar:
+  - revisar los limites del operador grande
+- numero: '1.34'
+  paginas:
+  - 10
+  marcas:
+  - simulacion
+  en_alcance: false
+  enunciado: 'Método de Monte Carlo. Sea f: \mathbb{R} \to [0, \infty) una función continua y sea M =
+    máx\{f (x): x \in [a, b]\}.'
+  items:
+  - id: a
+    texto: Se elige un punto de coordenadas (X, Y) al azar en el rectángulo [a, b]\times[0, M]. Relacionar
+      la probabilidad del evento A = \{Y \le f (X)\} con el valor de la integral \int_{b} a f (x)dx.
+  - id: b
+    texto: Obtener un método para estimar el valor de la integral \int_{b} a f (x)dx basado en los resultados
+      de n simulaciones del experimento descrito en el inciso anterior.
+  - id: c
+    texto: Utilizar el método obtenido en el inciso anterior para estimar el valor de la integral \int_{2}
+      0 e^{-x2} dx basándose en los resultados de 10.000 simulaciones.
+  revisar:
+  - revisar los limites del operador grande
+- numero: '1.35'
+  paginas:
+  - 10
+  marcas: []
+  en_alcance: true
+  enunciado: Se elige un número al azar en el intervalo (0, 1).
+  items:
+  - id: a
+    texto: Probar que los eventos “el primer dígito es 2”, “el segundo dígito es 3”, el “tercer dígito
+      es 5” y el “cuarto dígito es 8 y el 1 aparece alguna vez después del décimo dígito” son independientes.
+  - id: b
+    texto: 'Analizar la independencia de los eventos: “el primer dígito no es 2”, “el segundo dígito es
+      3 y el tercero es 5”.'
+  - id: c
+    texto: 'Analizar la independencia de los eventos: “el primer dígito es 1 o el tercero no es 5”, “el
+      segundo dígito es 3 y el cuarto es 8 y el 1 aparece alguna vez después del décimo dígito”.'
+- numero: '1.36'
+  paginas:
+  - 10
+  marcas: []
+  en_alcance: true
+  enunciado: Una materia se aprueba con un examen multiple choice de 5 preguntas, con 3 opciones de respuesta
+    en cada pregunta. Se asume que los eventos A_{i} =“el alumno contesta correctamente la pregunta i”
+    son independientes y tienen todos la misma probabilidad p.
+  items:
+  - id: a
+    texto: ¿Cómo debería establecerse un criterio de aprobación (cantidad de respuestas correctas) para
+      asegurar que sean reprobados al menos el 95 % los alumnos que no saben nada de la materia y responden
+      totalmente al azar?
+  - id: b
+    texto: Fijado el criterio anterior, si un alumno estudió lo suficiente como para que la probabilidad
+      de responder bien cada una de las preguntas sea p = 0.8, ¿con qué probabilidad aprobará el examen?
+  - id: c
+    texto: Graficar la probabilidad de aprobar en función de p. ¿Para qué valor de p se aprueba el examen
+      con probabilidad mayor a 0.95?
+- numero: '1.37'
+  paginas:
+  - 10
+  - 11
+  marcas: []
+  en_alcance: true
+  enunciado: 'Una empresa compra una gran de cantidad de bulones a un mismo proveedor. Cada vez que se
+    recibe un envío, se realiza un control de calidad por muestreo: se prueban 80 bulones seleccionados
+    al azar del total; si se encuentra más de un bulón defectuoso se rechaza el envío. En caso contrario,
+    se lo acepta. Sea p la probabilidad de producir un bulón defectuoso en el proceso de fabricación.
+    De acuerdo a los estándares de calidad, se desea satisfacer la condición p < 0.005. Los defectos de
+    los bulones son independientes entre sí.'
+  items:
+  - id: a
+    texto: Hallar la probabilidad de rechazar un lote fabricado bajo la condición p = 0.004.
+  - id: b
+    texto: Hallar la probabilidad de aceptar un lote fabricado bajo la condición p = 0.05.
+  - id: c
+    texto: Graficar la probabilidad de aceptar un envío en función de p (Curva característica del plan
+      de muestreo).
+  - id: d
+    texto: Si se sabe que el lote cumple los estándares de calidad, ¿cuál es la máxima probabilidad de
+      tomar una decisión errónea sobre el mismo?
+- numero: '1.38'
+  paginas:
+  - 11
+  marcas:
+  - curva_peligrosa
+  en_alcance: true
+  enunciado: Se tienen dos bolas. Cada una se pinta de rojo o de verde, independientemente y con probabilidad
+    1/2 para cada color. Luego ambas son colocadas en una urna.
+  items:
+  - id: a
+    texto: Si se extrae una bola de la urna y es roja, ¿cuál es la probabilidad de que la otra bola sea
+      roja?
+  - id: b
+    texto: Si se sabe que en la urna hay una bola roja, ¿cuál es la probabilidad de que la otra sea roja?
+- numero: '1.39'
+  paginas:
+  - 11
+  marcas: []
+  en_alcance: true
+  enunciado: 'En el contexto del Ejercicio 1.9:'
+  items:
+  - id: a
+    texto: Hallar la probabilidad de que Juan gane la primera partida.
+  - id: b
+    texto: Hallar la probabilidad de que María gane la segunda partida.
+  - id: c
+    texto: Hallar la probabilidad de que María gane la duodécima partida.
+  - id: d
+    texto: Hallar la probabilidad de que Pedro haya ganado la primera partida sabiendo que ganó la cerveza.
+  - id: e
+    texto: Hallar la probabilidad de que Juan haya ganado la cerveza sabiendo que el juego duró 25 partidos.
+- numero: '1.40'
+  paginas:
+  - 11
+  marcas: []
+  en_alcance: true
+  enunciado: 'Sea Ω = [0, 1] \times [0, 1] el cuadrado unitario. Consideraremos eventos a los subconjuntos
+    Λ \subset Ω que admiten área \midΛ\mid, y definimos P(Λ) = \midΛ\mid. A = \{(x, y) \in Ω: \mid x -
+    1/2\mid + \mid y - 1/2\mid \le 1/3\}, B = \{(x, y) \in Ω: máx\{\mid x - 1/2\mid, \mid y - 1/2\mid\}
+    \le 1/3\}, C = \{(x, y) \in Ω: x \le 2/3\}, D = \{(x, y) \in Ω: y \ge 2/3\}.'
+  items:
+  - id: a
+    texto: Dado A, ¿son C y D independientes?
+  - id: b
+    texto: Dado B, ¿son C y D independientes?
+- numero: '1.41'
+  paginas:
+  - 11
+  marcas:
+  - solo_audaces
+  en_alcance: true
+  enunciado: 'Juan y María juegan a cara o ceca con una moneda equilibrada. Inicialmente Juan tiene cinco
+    monedas y María tres. Cuando sale cara Juan le da una moneda a María, cuando sale ceca María le da
+    una moneda a Juan. Arrojan sucesivamente la moneda hasta que alguno se queda sin monedas. Hallar la
+    probabilidad de que Juan sea el primero en quedarse sin monedas. (sugerencia: si entre los dos tienen
+    8 monedas, sea p_{n} la probabilidad de que Juan sea el primero en quedarse sin monedas si inicialmente
+    tiene n, con n = 0,\ldots, 8. Hallar p_{0} y p_{8}. Mostrar que p_{n+1} - p_{n} = p_{n} - p_{n-1}
+    y resolver ecuaciones. Aplicar al caso n = 5).'
+- numero: '1.42'
+  paginas:
+  - 11
+  - 12
+  - 13
+  marcas: []
+  en_alcance: true
+  enunciado: 'Pedro vive en Corrientes al 3400. Una noche de sábado, después de tomar una copa de más
+    con Juan en “La Giralda” (Corrientes 1453), trata de volver caminando por Corrientes a su casa, pero
+    elige la dirección al azar, y como sabe que está borracho, en cada esquina vacila y vuelve a elegir
+    la dirección al azar. En un rapto de lucidez, decide que si llega antes a Alem que al Abasto, se echará
+    a dormir en La Recova. Hallar la probabilidad de que Pedro duerma en su cama. (sugerencia: comparar
+    con Ejercicio 1.41) Guía 2'

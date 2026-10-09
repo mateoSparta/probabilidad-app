@@ -1,0 +1,90 @@
+id: g4-14
+guia: 4
+numero: "4.14"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p25
+
+enunciado: |
+  Sean $X_1$ y $X_2$ dos variables aleatorias independientes con
+  [[min-max|distribuciones exponenciales de intensidades $\lambda_1$ y
+  $\lambda_2$]], respectivamente. Sean $U = \min(X_1, X_2)$,
+  $V = \max(X_1, X_2)$, $W = V - U$ y
+  $J = \mathbf{1}\{U = X_1\} + 2\,\mathbf{1}\{U = X_2\}$.
+
+  En los ítems que piden una expresión, escribila usando `l1` y `l2` para
+  $\lambda_1$ y $\lambda_2$, y `t` para la variable.
+
+items:
+  - id: a
+    pregunta: 'Hallar la densidad de $U$, es decir $f_U(t)$ para $t > 0$.'
+    skills: [min-max, transformacion-F]
+    respuesta:
+      tipo: expresion
+      valor: "(l1 + l2) * exp(-t * (l1 + l2))"
+      vars:
+        t: [0.1, 3]
+        l1: [0.2, 4]
+        l2: [0.2, 4]
+    pistas:
+      - 'Atacá por la cola: ¿cuándo es $U > t$?'
+      - 'El mínimo es mayor que $t$ si las dos lo son, y son independientes.'
+      - >-
+        Plan: $P(U > t) = P(X_1 > t)\,P(X_2 > t)$. Multiplicá las dos colas
+        exponenciales, mirá qué distribución queda y derivá para la densidad.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_14.py
+          valor: "(l1 + l2)*exp(-t*(l1 + l2))"
+
+  - id: b
+    pregunta: 'Hallar $P(J = 1)$, es decir la probabilidad de que gane $X_1$.'
+    skills: [min-max]
+    respuesta:
+      tipo: expresion
+      valor: "l1 / (l1 + l2)"
+      vars:
+        l1: [0.2, 4]
+        l2: [0.2, 4]
+    pistas:
+      - '$J = 1$ es el evento $X_1 < X_2$.'
+      - Integrá la densidad conjunta sobre la región donde la primera es menor.
+      - >-
+        Plan: $P(X_1 < X_2) = \int_0^\infty \left(\int_{x_1}^\infty f_2\right) f_1\, dx_1$.
+        El resultado tiene que ser una proporción entre las tasas, y dar $1/2$
+        cuando las dos son iguales.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_14.py
+          valor: "l1/(l1 + l2)"
+
+  - id: c
+    pregunta: 'Hallar la densidad de $W = V - U$, es decir $f_W(t)$ para $t > 0$.'
+    skills: [min-max, truncamiento]
+    respuesta:
+      tipo: expresion
+      valor: "l1 * l2 * (exp(-l2 * t) + exp(-l1 * t)) / (l1 + l2)"
+      vars:
+        t: [0.1, 3]
+        l1: [0.2, 4]
+        l2: [0.2, 4]
+    pistas:
+      - 'Separá en dos casos según quién ganó, y usá el ítem (b) para los pesos.'
+      - >-
+        Si ganó $X_1$, lo que falta para que llegue $X_2$ vuelve a ser
+        exponencial desde cero. ¿Por qué?
+      - >-
+        Plan: por pérdida de memoria, $W \mid J = 1$ es
+        $\text{Exp}(\lambda_2)$, y $W \mid J = 2$ es $\text{Exp}(\lambda_1)$.
+        Armá la mezcla pesando cada caso por su probabilidad. Control: la
+        densidad resultante tiene que integrar 1.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_14.py
+          valor: "l1*l2*(exp(-l2*t) + exp(-l1*t))/(l1 + l2)"

@@ -1,0 +1,64 @@
+id: g6-19
+guia: 6
+numero: "6.19"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p40
+
+enunciado: |
+  Un motoquero transita por una avenida. Las probabilidades de que al momento
+  de llegar a un semáforo este se encuentre en rojo, amarillo o verde son
+  $0{,}45$, $0{,}05$ y $0{,}5$ respectivamente. Los estados de los semáforos
+  son independientes y [[geometrica-pascal|el motoquero sólo se detiene al
+  encontrar un semáforo en rojo]]. Sea $N$ la cantidad de luces verdes que
+  atravesó hasta detenerse.
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar la función de probabilidad de $N$, y evaluarla donde se pide.
+    skills: [geometrica-pascal, condicional]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$P(N = 0)$'
+          valor: "9/19"
+        - pregunta: '$P(N = 1)$'
+          valor: "90/361"
+        - pregunta: '$P(N = 3)$'
+          valor: "9000/130321"
+    pistas:
+      - '¿Qué le pasa a $N$ cuando el motoquero encuentra un amarillo?'
+      - >-
+        El amarillo no lo detiene y tampoco suma a $N$: para esta cuenta, ese
+        semáforo es como si no hubiera existido.
+      - >-
+        Plan: mirá sólo los semáforos que son rojo o verde. Entre esos, la
+        probabilidad de que sea verde es $0{,}5/0{,}95 = 10/19$. Con eso $N$ es
+        geométrica. Usar $0{,}5$ directo es el error del ejercicio.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g6_19.py
+          valor: "9/19, 90/361, 9000/130321"
+        - origen: "tools/verify/g6_19.py (control: la funcion de probabilidad suma 1)"
+          valor: "1"
+
+  - id: b
+    pregunta: 'Calcular $P(N > 2)$.'
+    skills: [geometrica-pascal]
+    respuesta:
+      tipo: numerica
+      valor: "1000/6859"
+    pistas:
+      - '$N > 2$ es que los tres primeros semáforos que importan fueron verdes.'
+      - 'Plan: $(10/19)^3$. Con $0{,}5^3 = 1/8$ te estarías olvidando del amarillo.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g6_19.py
+          valor: "1000/6859"
+        - origen: "tools/verify/g6_19.py (error tipico: 0.5^3 = 1/8)"
+          valor: "1/8"

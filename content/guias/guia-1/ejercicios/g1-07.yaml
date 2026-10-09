@@ -1,0 +1,87 @@
+id: g1-07
+guia: 1
+numero: "1.7"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p4
+
+enunciado: |
+  [[independencia|Se realiza el experimento de tirar un dado hasta que sale el
+  primer 6]], anotando el número $N$ de tiradas necesarias. Sea $A_n$ el evento
+  descrito por $N = n$ y sea $B_n$ el evento descrito por $N > n$.
+
+items:
+  - id: b
+    pregunta: 'Hallar $P(A_n)$ en función de $n$.'
+    skills: [independencia]
+    respuesta:
+      tipo: expresion
+      valor: "(5/6)^(n-1) * (1/6)"
+      vars:
+        n: [1, 15]
+    pistas:
+      - Para que $N = n$ tienen que pasar dos cosas en las primeras $n$ tiradas.
+      - Las primeras $n-1$ tiradas no son 6 y la $n$-ésima sí. Las tiradas son independientes.
+      - >-
+        Plan: multiplicá la probabilidad de $n-1$ fracasos seguidos por la de un
+        éxito en la última.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_07.py
+          valor: "(5/6)^(n-1)*(1/6)"
+
+  - id: b8
+    pregunta: 'Calcular $P(A_8)$.'
+    skills: [independencia]
+    respuesta:
+      tipo: numerica
+      valor: "78125/1679616"
+    pistas:
+      - Es la fórmula del ítem anterior evaluada en un valor concreto.
+      - 'Plan: reemplazá $n = 8$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_07.py
+          valor: "78125/1679616"
+
+  - id: c
+    pregunta: 'Calcular $P(B_8)$.'
+    skills: [independencia]
+    respuesta:
+      tipo: numerica
+      valor: "390625/1679616"
+    pistas:
+      - '$N > 8$ no dice cuándo sale el 6: dice que en las primeras 8 tiradas no salió.'
+      - No hace falta sumar una serie. El evento se describe con una sola condición.
+      - 'Plan: probabilidad de 8 fracasos seguidos.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_07.py
+          valor: "390625/1679616"
+
+  - id: e
+    pregunta: >-
+      Sea $B = \bigcap_{n \ge 1} B_n$. Calcular $P(B)$.
+    skills: [continuidad-P]
+    respuesta:
+      tipo: numerica
+      valor: "0"
+      tol_rel: 0.001
+    pistas:
+      - En palabras, $B$ es el evento de que el dado nunca salga 6.
+      - 'La sucesión $B_n$ es decreciente: $B_{n+1} \subset B_n$. Eso habilita pasar al límite.'
+      - >-
+        Plan: calculá $P(B_n)$ para $n$ genérico y tomá el límite cuando
+        $n \to \infty$. Un evento puede ser no vacío y tener probabilidad cero.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g1_07.py
+          valor: "0"

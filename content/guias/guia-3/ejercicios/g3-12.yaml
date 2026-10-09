@@ -1,0 +1,35 @@
+id: g3-12
+guia: 3
+numero: "3.12"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p18
+
+enunciado: |
+  Sean $X$ e $Y$ dos variables aleatorias
+  [[independencia-va|independientes uniformes sobre el intervalo $(0, \pi)$]].
+
+items:
+  - id: a
+    pregunta: 'Calcular $E[X \operatorname{sen}(XY)]$.'
+    skills: [momentos, conjunta-marginales, independencia-va]
+    respuesta:
+      tipo: numerica
+      valor: "(pi^2 - sin(pi^2))/pi^3"
+      tol_rel: 0.005
+    pistas:
+      - '¿Cuánto vale la densidad conjunta? Usá que son independientes.'
+      - >-
+        Integrá primero en $y$: $\int_0^\pi \operatorname{sen}(xy)\, dy$ sale
+        directo y el $x$ de adelante se cancela con el que aparece al integrar.
+      - >-
+        Plan: $E[g(X,Y)] = \iint g\, f_{(X,Y)}$, con $f_{(X,Y)} = 1/\pi^2$ en
+        el cuadrado. Integrá en $y$ y después en $x$. El resultado queda en
+        términos de $\operatorname{sen}(\pi^2)$, que no es un número redondo:
+        no es un error.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g3_12.py
+          valor: "(pi^2 - sin(pi^2))/pi^3"

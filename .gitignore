@@ -1,8 +1,15 @@
 node_modules/
 dist/
-.vite/
-*.log
-.DS_Store
-Thumbs.db
+.venv/
 __pycache__/
 *.pyc
+.DS_Store
+.vite/
+
+# El borrador de los enunciados SI se commitea, aunque sea derivado: es el
+# artefacto que se revisa al promover cada ejercicio, y asi el repaso queda
+# en el diff. Se regenera con `npm run extraer`.
+tools/verify/.cache/
+
+# rasterizados de las resueltas (pesan mucho, se regeneran)
+fuentes/.raster/

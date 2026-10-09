@@ -1,0 +1,23 @@
+numero: 7
+titulo: Proceso de Poisson
+descripcion: >-
+  Eventos que ocurren al azar en el tiempo. Dos miradas del mismo objeto —el
+  conteo en intervalos y los tiempos de espera— y el puente entre las dos. Lo
+  que pasa al condicionar al total de eventos (los tiempos se vuelven
+  uniformes y la intensidad desaparece de la cuenta), lo que pasa al juntar o
+  filtrar procesos, y cómo se suma una cantidad aleatoria de términos.
+
+secuencia:
+  - teoria: t-poisson
+  - ejercicio: g7-01
+  - ejercicio: g7-05
+  - ejercicio: g7-06
+
+  - teoria: t-condicionar-Nt
+  - ejercicio: g7-07
+
+  - teoria: t-adelgazamiento
+  - ejercicio: g7-10
+
+  - teoria: t-poisson-compuesto
+  - ejercicio: g7-15

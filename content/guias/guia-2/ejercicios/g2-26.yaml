@@ -1,0 +1,41 @@
+id: g2-26
+guia: 2
+numero: "2.26"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p15
+
+enunciado: |
+  Lucas y Monk quedaron en encontrarse en el bar del CEI a las 18:00. El
+  horario de llegada de Lucas, $L$, es uniforme entre las 18:00 y las 18:15.
+  Lucas espera 15 minutos a Monk y si no llega se va. El horario de llegada de
+  Monk, $M$, [[independencia-va|es independiente del de Lucas]] y se distribuye
+  uniformemente entre las 18:05 y las 18:20. Monk es más impaciente que Lucas y
+  espera como máximo 5 minutos antes de irse.
+
+items:
+  - id: a
+    pregunta: Calcular la probabilidad de que Lucas y Monk se encuentren.
+    skills: [independencia-va, conjunta-marginales, prob-geometrica]
+    respuesta:
+      tipo: numerica
+      valor: "8/9"
+    pistas:
+      - >-
+        Cada uno está en el bar durante un intervalo. Escribí los dos
+        intervalos en minutos desde las 18:00.
+      - >-
+        Se encuentran exactamente cuando los dos intervalos se solapan.
+        Traducí eso a dos desigualdades entre $L$ y $M$.
+      - >-
+        Plan: como $L$ y $M$ son uniformes e independientes, la conjunta es
+        uniforme sobre un rectángulo y la probabilidad es un cociente de áreas.
+        Dibujá la región favorable en el plano $(L, M)$. Ojo: los tiempos de
+        espera son distintos, así que la región **no** es simétrica y no sale
+        con un $|L - M| < c$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g2_26.py
+          valor: "8/9"
