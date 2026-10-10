@@ -66,6 +66,11 @@
   from { opacity: 1; transform: none; }
   to { opacity: 0; transform: translateY(10px) scale(0.97); }
 }
+@keyframes destacar {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--acento) 45%, transparent); }
+  35% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--acento) 20%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
 @keyframes crecer {
   from { transform: scaleX(0); }
   to { transform: none; }
@@ -239,6 +244,15 @@
   display: inline-block;
   animation: surgir 520ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
   animation-delay: 120ms;
+}
+
+/* ------------------------------------------------- destino de un salto */
+
+/* Al llegar a una teoría o un ejercicio desde otra sección (un skill, un
+   círculo de Seguimiento), el bloque late una vez para marcar adónde se
+   llegó. */
+.destacado {
+  animation: destacar 1.4s ease-out both;
 }
 
 /* ------------------------------------------------------------ subir */

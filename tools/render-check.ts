@@ -288,6 +288,14 @@ try {
     menu.includes(`0 de ${contenido.ejercicios.length} ejercicios resueltos`),
     'el menú no resume los ejercicios resueltos',
   )
+  afirmar(
+    menu.includes('Tus datos') && menu.includes('Exportar JSON') && menu.includes('Importar JSON'),
+    'el menú no tiene "Tus datos" al pie',
+  )
+  afirmar(
+    menu.indexOf('Tus datos') > menu.indexOf('class="menu__grilla"'),
+    '"Tus datos" no quedó debajo de las opciones',
+  )
 
   // --- seguimiento ---
   const seguimiento = render(
@@ -326,8 +334,26 @@ try {
   afirmar(limpio.includes('Panel de skills'), 'el panel no se dibuja')
   afirmar(limpio.includes('class="grilla-skills"'), 'no se ve la grilla de skills')
   afirmar(limpio.includes('estado--sin_explorar'), 'sin intentos no se ve ningún sin_explorar')
-  afirmar(limpio.includes('Exportar JSON') && limpio.includes('Importar JSON'),
-    'faltan los botones de exportar o importar')
+  // "Tus datos" se mudó al pie del menú principal.
+  afirmar(!limpio.includes('Exportar JSON'), 'el panel de skills sigue mostrando "Tus datos"')
+  // Cada skill lleva a su teoría y tiene un botón aparte para el detalle.
+  const celdas = (limpio.match(/<li class="celda estado--/g) ?? []).length
+  const detalles = (limpio.match(/class="celda__detalle"/g) ?? []).length
+  afirmar(celdas === contenido.skills.length && detalles === celdas,
+    `hay ${celdas} recuadros y ${detalles} botones de detalle para ${contenido.skills.length} skills`)
+  for (const sk of contenido.skills) {
+    const d = contenido.destinoDeSkill.get(sk.id)
+    afirmar(!!d, `el skill ${sk.id} no tiene adónde llevar`)
+    if (!d) continue
+    const guia = contenido.guiaPorNumero.get(d.guia)
+    const enLaGuia = guia.secuencia.some((p: { tipo: string; id: string }) =>
+      d.ancla === p.id || d.ancla === 'ej-' + p.id)
+    afirmar(enLaGuia, `el skill ${sk.id} lleva a ${d.ancla}, que no está en la guía ${d.guia}`)
+    if (d.ancla.startsWith('t-')) {
+      afirmar(contenido.teoriaPorId.get(d.ancla).skills.includes(sk.id),
+        `el skill ${sk.id} lleva a una teoría que no lo explica`)
+    }
+  }
   // El recuadro del ritmo se mudó a Seguimiento.
   afirmar(!limpio.includes('class="ritmo'), 'el panel de skills sigue mostrando el ritmo')
 
@@ -551,6 +577,10 @@ try {
   afirmar(
     detalleRitmo.includes(String(planVacio.porDia)),
     'el detalle no muestra el ritmo necesario por día',
+  )
+  afirmar(
+    /Necesitás resolver<\/span> <strong>\d+<\/strong> <span>ítems? por día/.test(detalleRitmo),
+    'el ritmo no dice "Necesitás resolver N ítems por día"',
   )
   afirmar(
     planVacio.itemsFaltantes > 0 && planVacio.itemsFaltantes < 113,

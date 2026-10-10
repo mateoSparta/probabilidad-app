@@ -4,7 +4,8 @@
  *
  * Cada opción muestra un dato vivo además de su descripción, para que el menú
  * sirva también de resumen: cuánto se resolvió, cuántos temas están dominados
- * y si hay un simulacro a medio rendir.
+ * y si hay un simulacro a medio rendir. Al pie van "Tus datos" (exportar,
+ * importar y borrar), que afectan a toda la app.
  */
 import type { ComponentType } from 'preact'
 
@@ -14,6 +15,7 @@ import {
   IconoSimulacro,
   IconoSkills,
 } from '../componentes/Iconos'
+import { TusDatos } from '../componentes/TusDatos'
 import { ejercicios, examenes, itemsPorSkill, skills } from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
@@ -89,26 +91,30 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
   ]
 
   return (
-    <section class="menu" aria-labelledby="titulo-menu">
-      <h2 id="titulo-menu" class="sr-solo">
-        Menú principal
-      </h2>
-      <ul class="menu__grilla">
-        {opciones.map(({ seccion, Icono, descripcion, dato }, i) => (
-          <li key={seccion} style={{ '--i': i }}>
-            <a class="menu__opcion" href={escribirRuta({ seccion, guia })}>
-              <span class="menu__icono">
-                <Icono />
-              </span>
-              <span class="menu__nombre">{NOMBRE_SECCION[seccion]}</span>
-              <span class="menu__descripcion">{descripcion}</span>
-              <span class={'menu__dato' + (seccion === 'simulacro' && enCurso ? ' menu__dato--alerta' : '')}>
-                {dato}
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
+    <>
+      <section class="menu" aria-labelledby="titulo-menu">
+        <h2 id="titulo-menu" class="sr-solo">
+          Menú principal
+        </h2>
+        <ul class="menu__grilla">
+          {opciones.map(({ seccion, Icono, descripcion, dato }, i) => (
+            <li key={seccion} style={{ '--i': i }}>
+              <a class="menu__opcion" href={escribirRuta({ seccion, guia })}>
+                <span class="menu__icono">
+                  <Icono />
+                </span>
+                <span class="menu__nombre">{NOMBRE_SECCION[seccion]}</span>
+                <span class="menu__descripcion">{descripcion}</span>
+                <span class={'menu__dato' + (seccion === 'simulacro' && enCurso ? ' menu__dato--alerta' : '')}>
+                  {dato}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <TusDatos api={api} sesion={sesion} />
+    </>
   )
 }

@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState } from 'preact/hooks'
 
 import { Cabecera } from './componentes/Cabecera'
-import { config, ejercicioPorId, skillsConItems, skillsDeItem } from './datos/contenido'
+import {
+  config,
+  destinoDeSkill,
+  ejercicioPorId,
+  skillsConItems,
+  skillsDeItem,
+} from './datos/contenido'
 import { usarProgreso } from './datos/usarProgreso'
 import { usarRuta } from './datos/usarRuta'
 import { usarSesion } from './datos/usarSesion'
@@ -17,7 +23,7 @@ export function App() {
   // El progreso es el historial (insignias); la sesión es dónde quedaste.
   const api = usarProgreso()
   const sesion = usarSesion()
-  /** Ejercicio al que hay que bajar cuando se dibuje su guía. */
+  /** El ancla (ejercicio o teoría) a la que hay que bajar cuando se dibuje su guía. */
   const [destino, setDestino] = useState<string | null>(null)
 
   // El plan depende del progreso, así que se recalcula cuando cambia.
@@ -32,12 +38,22 @@ export function App() {
     if (!destino) scrollTo(0, 0)
   }, [ruta.seccion, ruta.guia])
 
-  /** Lleva a un ejercicio desde cualquier sección: abre su guía y baja. */
+  /** Abre una guía y baja hasta un ancla de su página. */
+  function irAAncla(guia: number, ancla: string): void {
+    setDestino(ancla)
+    ir({ seccion: 'ejercicios', guia })
+  }
+
+  /** Lleva a un ejercicio desde cualquier sección. */
   function irAEjercicio(id: string): void {
     const ej = ejercicioPorId.get(id)
-    if (!ej) return
-    setDestino(id)
-    ir({ seccion: 'ejercicios', guia: ej.guia })
+    if (ej) irAAncla(ej.guia, 'ej-' + id)
+  }
+
+  /** Lleva a la teoría de un skill (o a su primer ejercicio, si no tiene teoría). */
+  function irASkill(id: string): void {
+    const d = destinoDeSkill.get(id)
+    if (d) irAAncla(d.guia, d.ancla)
   }
 
   return (
@@ -66,7 +82,7 @@ export function App() {
             />
           )}
           {ruta.seccion === 'skills' && (
-            <PanelSkills api={api} sesion={sesion} onIrAEjercicio={irAEjercicio} />
+            <PanelSkills api={api} onIrAEjercicio={irAEjercicio} onIrASkill={irASkill} />
           )}
           {ruta.seccion === 'simulacro' && <VistaSimulacro api={api} sesion={sesion} />}
           {ruta.seccion === 'seguimiento' && (

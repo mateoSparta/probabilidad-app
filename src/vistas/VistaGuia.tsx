@@ -24,7 +24,7 @@ type Props = {
   numero: number
   sesion?: ApiSesion
   onIntento?: (intento: Intento, limpio: boolean) => void
-  /** Ejercicio al que hay que bajar apenas se dibuje la guía. */
+  /** Ancla (ejercicio o teoría) a la que hay que bajar apenas se dibuje la guía. */
   destino?: string | null
   onDestinoAlcanzado?: () => void
 }
@@ -37,11 +37,20 @@ export function VistaGuia({ numero, sesion, onIntento, destino, onDestinoAlcanza
 
   // Se mira la fila de círculos y no el título: es lo que dice "estás arriba
   // de la guía". El margen superior descuenta la barra fija de las pestañas.
+  //
+  // Cuando deja de verse, hay que distinguir si quedó arriba o abajo de la
+  // zona visible, y la comparación tiene que ser contra el borde de esa zona
+  // (`rootBounds`) y no contra el borde de la ventana: al bajar con la rueda
+  // del mouse, el observador avisa cuando la fila ya pasó debajo de la barra
+  // pero todavía no salió de la ventana, y no vuelve a avisar después.
   useEffect(() => {
     const mapa = intro.current?.querySelector('.mapa')
     if (!mapa || typeof IntersectionObserver === 'undefined') return
     const observador = new IntersectionObserver(
-      ([e]) => setMapaArriba(!e.isIntersecting && e.boundingClientRect.top < 0),
+      ([e]) => {
+        const borde = e.rootBounds?.top ?? 0
+        setMapaArriba(!e.isIntersecting && e.boundingClientRect.bottom <= borde + 1)
+      },
       { rootMargin: '-56px 0px 0px 0px' },
     )
     observador.observe(mapa)
@@ -49,11 +58,16 @@ export function VistaGuia({ numero, sesion, onIntento, destino, onDestinoAlcanza
   }, [numero])
 
   // Se baja sin animación: viniendo de otra sección, una animación larga
-  // desde el principio de la guía no aporta nada.
+  // desde el principio de la guía no aporta nada. Al llegar, el bloque se
+  // resalta un instante para que se vea adónde se llegó.
   useEffect(() => {
     if (!destino) return
-    irA('ej-' + destino, false)
+    irA(destino, false)
+    const el = document.getElementById(destino)
+    el?.classList.add('destacado')
+    const t = setTimeout(() => el?.classList.remove('destacado'), 1600)
     onDestinoAlcanzado?.()
+    return () => clearTimeout(t)
   }, [destino])
 
   if (!guia || guia.secuencia.length === 0) {

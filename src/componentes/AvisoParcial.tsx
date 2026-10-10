@@ -80,8 +80,11 @@ export function AvisoParcialDetalle({ plan }: { plan: Plan }) {
       ) : (
         <>
           <p class="ritmo__numero">
-            <strong>{plan.porDia}</strong>
-            <span> {plan.porDia === 1 ? 'ítem' : 'ítems'} por día</span>
+            {/* Los espacios explícitos son para el texto (lectores de pantalla,
+                copiar y pegar); en pantalla los separa el `gap` del flex. */}
+            <span>Necesitás resolver</span>{' '}
+            <strong>{plan.porDia}</strong>{' '}
+            <span>{plan.porDia === 1 ? 'ítem' : 'ítems'} por día</span>
           </p>
           <p>
             Faltan <strong>{plan.itemsFaltantes} ítems</strong>, distribuidos en{' '}

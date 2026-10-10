@@ -1,7 +1,8 @@
 /**
  * Panel de skills (PLAN.md §5): una grilla agrupada por guía con el estado de
- * cada skill. Al hacer clic en un skill se ven sus ítems pendientes y los
- * distractores en los que más se cayó.
+ * cada skill. Al hacer clic en un skill se va a su teoría en Ejercicios; el
+ * botón chico de la esquina abre el detalle (ítems pendientes y distractores
+ * en los que más se cayó).
  *
  * Es la vista que contesta "¿dónde estoy flojo?" de un vistazo, que es el
  * punto de medir el dominio sobre intentos recientes y no acumulados.
@@ -9,15 +10,18 @@
 import { useState } from 'preact/hooks'
 
 import { Formula, Mate } from '../componentes/Mate'
-import { descargar } from '../datos/almacenamiento'
-import { itemsPorSkill, skillPorId, skillsPorGuia, ubicacionDeItem } from '../datos/contenido'
+import {
+  destinoDeSkill,
+  itemsPorSkill,
+  skillPorId,
+  skillsPorGuia,
+  ubicacionDeItem,
+} from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
-import type { ApiSesion } from '../datos/usarSesion'
 import {
   avanceSkill,
   contarPorEstado,
   distractoresFrecuentes,
-  desdeJson,
   ETIQUETA_ESTADO,
   estadoSkill,
   LIMPIOS_PARA_DOMINAR,
@@ -28,6 +32,15 @@ import type { EstadoSkill } from '../dominio/tipos'
 
 const VACIO: ReadonlySet<string> = new Set()
 
+/** Un "+" que gira a "×" cuando el detalle está abierto (ver navegacion.css). */
+const IconoMas = () => (
+  <svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor"
+    stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+    <path d="M12 5v14" />
+    <path d="M5 12h14" />
+  </svg>
+)
+
 /** La inicial del skill, para el sello de la insignia. */
 function inicial(nombre: string): string {
   return nombre.trim().charAt(0).toUpperCase()
@@ -35,36 +48,22 @@ function inicial(nombre: string): string {
 
 export function PanelSkills({
   api,
-  sesion,
   onIrAEjercicio,
+  onIrASkill,
 }: {
   api: ApiProgreso
-  sesion?: ApiSesion
   /** Lleva a un ejercicio, que está en otra sección. */
   onIrAEjercicio?: (idEjercicio: string) => void
+  /** Lleva a la teoría del skill (o a su primer ejercicio, si no tiene). */
+  onIrASkill?: (idSkill: string) => void
 }) {
-  const { progreso, reemplazar, reiniciar } = api
+  const { progreso } = api
   const [abierto, setAbierto] = useState<string | null>(null)
-  const [aviso, setAviso] = useState<string | null>(null)
 
   const grupos = skillsPorGuia()
   const todos = grupos.flatMap((g) => g.skills)
   const estados = todos.map((s) => estadoSkill(progreso, itemsPorSkill.get(s.id) ?? VACIO))
   const resumen = contarPorEstado(estados)
-
-  async function importar(e: Event) {
-    const input = e.target as HTMLInputElement
-    const archivo = input.files?.[0]
-    if (!archivo) return
-    const p = desdeJson(await archivo.text())
-    if (!p) {
-      setAviso('Ese archivo no tiene el formato del progreso.')
-      return
-    }
-    reemplazar(p)
-    setAviso(`Importados ${p.intentos.length} intentos.`)
-    input.value = ''
-  }
 
   return (
     <>
@@ -96,11 +95,19 @@ export function PanelSkills({
               // conviene decirlo para no confundirlo con ir flojo.
               const sinCobertura = items.size < LIMPIOS_PARA_DOMINAR
               return (
-                <li key={s.id}>
+                <li
+                  key={s.id}
+                  class={'celda estado--' + estado + (abierto === s.id ? ' celda--abierta' : '')}
+                >
                   <button
-                    class={'celda-skill estado--' + estado + (abierto === s.id ? ' celda-skill--abierta' : '')}
-                    onClick={() => setAbierto(abierto === s.id ? null : s.id)}
-                    aria-expanded={abierto === s.id}
+                    class="celda-skill"
+                    title={
+                      destinoDeSkill.get(s.id)?.ancla.startsWith('ej-')
+                        ? 'Ir al primer ejercicio del tema'
+                        : 'Ir a la teoría'
+                    }
+                    disabled={!destinoDeSkill.has(s.id)}
+                    onClick={() => onIrASkill?.(s.id)}
                   >
                     <span class="sello" aria-hidden="true">
                       {inicial(s.nombre)}
@@ -118,6 +125,15 @@ export function PanelSkills({
                       )}
                     </span>
                   </button>
+                  <button
+                    class="celda__detalle"
+                    aria-expanded={abierto === s.id}
+                    aria-label={`Ver el detalle de ${s.nombre}`}
+                    title="Ver detalle"
+                    onClick={() => setAbierto(abierto === s.id ? null : s.id)}
+                  >
+                    <IconoMas />
+                  </button>
                 </li>
               )
             })}
@@ -127,60 +143,6 @@ export function PanelSkills({
 
       {abierto && <Detalle id={abierto} api={api} onIrAEjercicio={onIrAEjercicio} />}
 
-      <section class="datos">
-        <h3>Tus datos</h3>
-        <p class="guia__descripcion">
-          Todo se guarda en este navegador, sin servidor ni base de datos. Se registran dos
-          cosas por separado: el <strong>historial</strong> de intentos, del que surgen las
-          insignias, y <strong>dónde quedaste</strong> (ítems resueltos, respuestas escritas y
-          el simulacro en curso). Para usar el historial en otra computadora, exportalo e
-          importalo allí.
-        </p>
-        <div class="item__acciones">
-          <button class="boton" onClick={() => descargar(progreso)}>
-            Exportar JSON
-          </button>
-          <label class="boton">
-            Importar JSON
-            <input type="file" accept="application/json" class="sr-solo" onChange={importar} />
-          </label>
-          <button
-            class="boton boton--fantasma"
-            onClick={() => {
-              if (confirm('¿Borrar el historial de intentos? Se pierden las insignias.')) {
-                reiniciar()
-                setAviso('Historial borrado.')
-              }
-            }}
-          >
-            Borrar historial
-          </button>
-          {sesion && (
-            <button
-              class="boton boton--fantasma"
-              onClick={() => {
-                if (
-                  confirm(
-                    'Todos los ejercicios volverán a quedar sin resolver. El historial y las ' +
-                      'insignias no se modifican. ¿Continuar?',
-                  )
-                ) {
-                  sesion.reiniciar()
-                  setAviso('Todos los ejercicios quedaron disponibles para rehacer.')
-                }
-              }}
-            >
-              Empezar las guías de cero
-            </button>
-          )}
-        </div>
-        {aviso && <p class="feedback feedback--aviso">{aviso}</p>}
-        <p class="dato-chico">
-          {progreso.intentos.length} intentos registrados
-          {sesion && <> · {Object.keys(sesion.sesion.items).length} ítems con estado guardado</>}
-          {sesion?.sesion.simulacro && <> · hay un simulacro en curso</>}
-        </p>
-      </section>
     </>
   )
 }

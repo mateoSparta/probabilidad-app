@@ -442,8 +442,9 @@
 
 .ritmo__numero {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: var(--e-2);
+  gap: 0 var(--e-2);
 }
 .ritmo__numero strong {
   font-size: var(--t-xl);
@@ -522,9 +523,14 @@
   pointer-events: none;
 }
 
-/* Tres líneas de 2 px en posiciones enteras: con medio píxel, el navegador
-   las suaviza y alguna se ve más fina que las otras. El recuadro interior
-   mide 38 px, así que las líneas quedan en 12, 18 y 24. */
+/* Tres líneas de 2 px separadas 8 px. La separación importa: con las
+   escalas de pantalla de Windows (125 %, 150 %, 175 %), cada píxel CSS mide
+   una fracción de píxel físico, y si la separación no da un número entero de
+   píxeles físicos, una línea cae "entre" dos filas y se dibuja distinta de
+   las otras. Con 6 px, a 125 % quedaban 7,5 píxeles y la del medio se veía
+   más fina; 8 px da 10, 12, 14 o 16 píxeles según la escala, siempre entero.
+   El recuadro interior mide 38 px, así que las líneas quedan en 10, 18 y 26
+   y la del medio queda centrada. */
 .hamburguesa__linea {
   position: absolute;
   left: calc(50% - 9px);
@@ -534,9 +540,9 @@
   background: var(--tinta);
   transition: transform 240ms ease, opacity 150ms ease, top 240ms ease;
 }
-.hamburguesa__linea:nth-child(1) { top: 12px; }
+.hamburguesa__linea:nth-child(1) { top: 10px; }
 .hamburguesa__linea:nth-child(2) { top: 18px; }
-.hamburguesa__linea:nth-child(3) { top: 24px; }
+.hamburguesa__linea:nth-child(3) { top: 26px; }
 .hamburguesa[aria-expanded='true'] .hamburguesa__linea:nth-child(1) {
   top: 18px;
   transform: rotate(45deg);

@@ -284,3 +284,33 @@ export function guiaTieneContenido(numero: number): boolean {
   const g = guiaPorNumero.get(numero)
   return !!g && g.secuencia.length > 0
 }
+
+/**
+ * Adónde llevar desde un skill: al primer bloque de teoría que lo explica,
+ * recorriendo las guías y sus secuencias en orden. Si ninguna teoría lo
+ * declara, al primer ejercicio que lo evalúa. `ancla` es el id del elemento
+ * en la página de la guía.
+ */
+export const destinoDeSkill: Map<string, { guia: number; ancla: string }> = (() => {
+  const m = new Map<string, { guia: number; ancla: string }>()
+  const ordenadas = [...guias].sort((a, b) => a.numero - b.numero)
+  for (const g of ordenadas) {
+    for (const paso of g.secuencia) {
+      if (paso.tipo !== 'teoria') continue
+      for (const s of teoriaPorId.get(paso.id)?.skills ?? []) {
+        if (!m.has(s)) m.set(s, { guia: g.numero, ancla: paso.id })
+      }
+    }
+  }
+  for (const g of ordenadas) {
+    for (const paso of g.secuencia) {
+      if (paso.tipo !== 'ejercicio') continue
+      for (const item of ejercicioPorId.get(paso.id)?.items ?? []) {
+        for (const s of item.skills) {
+          if (!m.has(s)) m.set(s, { guia: g.numero, ancla: 'ej-' + paso.id })
+        }
+      }
+    }
+  }
+  return m
+})()

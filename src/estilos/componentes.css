@@ -459,20 +459,33 @@
   margin-bottom: var(--e-2);
 }
 
+/* Todos los recuadros miden lo mismo, sin importar cuánto texto tengan. Dentro
+   de cada guía lo resuelve `grid-auto-rows: 1fr` (todas las filas miden lo
+   que la más alta); entre guías, que son grillas separadas, lo resuelve el
+   alto mínimo, que alcanza para el caso más largo: nombre en dos renglones,
+   estado y la nota de "faltan ejercicios". */
 .grilla-skills {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  grid-auto-rows: 1fr;
   gap: var(--e-2);
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
+/* El recuadro es el botón que lleva a la teoría; el de detalle va encima,
+   en la esquina superior derecha. */
+.celda { position: relative; }
+
 .celda-skill {
   display: flex;
   align-items: center;
   gap: var(--e-3);
   width: 100%;
+  height: 100%;
+  min-height: 5.75rem;
+  padding-right: 2.5rem;
   text-align: left;
   appearance: none;
   cursor: pointer;
@@ -485,7 +498,36 @@
   transition: border-color 120ms, background 120ms;
 }
 .celda-skill:hover { border-color: var(--color-estado); }
-.celda-skill--abierta { border-color: var(--color-estado); background: var(--superficie-alta); }
+.celda-skill:disabled { cursor: default; }
+.celda--abierta .celda-skill { border-color: var(--color-estado); background: var(--superficie-alta); }
+
+.celda__detalle {
+  position: absolute;
+  top: var(--e-2);
+  right: var(--e-2);
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--tinta-3);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 150ms, color 150ms, border-color 150ms;
+}
+.celda__detalle svg { transition: transform 220ms ease; }
+.celda__detalle:hover,
+.celda__detalle:focus-visible {
+  color: var(--color-estado);
+  border-color: color-mix(in srgb, var(--color-estado) 45%, transparent);
+  background: var(--superficie-alta);
+}
+.celda--abierta .celda__detalle { color: var(--color-estado); }
+.celda--abierta .celda__detalle svg { transform: rotate(45deg); }
 
 /* Sello circular con la inicial del skill: sobrio, sin animaciones. */
 .sello {
