@@ -57,20 +57,22 @@ export function esCompleto(examen: Examen): boolean {
   return ejerciciosJugables(examen).length === examen.ejercicios.length
 }
 
+/** Los exámenes de un tipo que tienen al menos un ejercicio para rendir. */
+export function poolDe(examenes: Examen[], tipo: TipoExamen): Examen[] {
+  return examenes.filter((e) => e.tipo === tipo && ejerciciosJugables(e).length > 0)
+}
+
 /**
- * Elige un examen al azar del pool. Por defecto sólo parciales, que son los
- * que están completos en alcance; el toggle suma las integradoras.
+ * Elige al azar un examen del tipo pedido: parcial (por defecto) o
+ * integradora. Los dos tipos no se mezclan, porque evalúan cosas distintas
+ * y tienen criterios de aprobación distintos.
  */
 export function elegirExamen(
   examenes: Examen[],
-  opciones: { incluirIntegradoras?: boolean; azar?: () => number } = {},
+  opciones: { tipo?: TipoExamen; azar?: () => number } = {},
 ): Examen | null {
   const azar = opciones.azar ?? Math.random
-  const pool = examenes.filter(
-    (e) =>
-      ejerciciosJugables(e).length > 0 &&
-      (e.tipo === 'parcial' || opciones.incluirIntegradoras === true),
-  )
+  const pool = poolDe(examenes, opciones.tipo ?? 'parcial')
   if (pool.length === 0) return null
   return pool[Math.floor(azar() * pool.length)]
 }

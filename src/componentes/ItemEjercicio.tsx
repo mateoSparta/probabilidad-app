@@ -53,6 +53,12 @@ type Props = {
   modoExamen?: boolean
   /** En el simulacro, el panel de fórmulas depende de un toggle. */
   permitirFormulas?: boolean
+  /**
+   * Disposición de las entradas. En la guía van centradas; en el simulacro,
+   * a todo el ancho y precedidas por "Respuesta:", como en una hoja de
+   * examen.
+   */
+  enSimulacro?: boolean
   /** Skill resaltado desde los tags, por si la pregunta tiene fragmentos. */
   resaltado?: string | null
   mostrarMarcas?: boolean
@@ -67,6 +73,7 @@ export function ItemEjercicio({
   onReiniciar,
   modoExamen,
   permitirFormulas = true,
+  enSimulacro = false,
   resaltado,
   mostrarMarcas,
   onIntento,
@@ -195,14 +202,22 @@ export function ItemEjercicio({
           ))}
         </ul>
       ) : r.tipo === 'checkpoints' ? (
-        <ul class="checkpoints">
+        // Una grilla de tres columnas (rótulo con flecha, campo, marca) en la
+        // que cada fila es una subgrilla: así los rótulos quedan alineados a
+        // la izquierda entre sí, los campos también, y la flecha de cada fila
+        // se estira hasta el campo. En la guía, el conjunto va centrado.
+        <ul class={'checkpoints' + (enSimulacro ? ' checkpoints--examen' : '')}>
           {r.checkpoints.map((c, i) => (
             <li key={i} class="checkpoint">
-              <span class="checkpoint__pregunta">
-                <Mate>{c.pregunta}</Mate>
-              </span>
+              <label class="checkpoint__rotulo" for={`${clave}-${i}`}>
+                <span class="checkpoint__pregunta">
+                  <Mate>{c.pregunta}</Mate>
+                </span>
+                <span class="flecha" aria-hidden="true" />
+              </label>
               <input
-                class="entrada entrada--corta"
+                id={`${clave}-${i}`}
+                class="entrada entrada--celda"
                 type="text"
                 value={est.celdas?.[i] ?? ''}
                 disabled={resuelto}
@@ -214,17 +229,25 @@ export function ItemEjercicio({
                 }}
                 onKeyDown={(e) => e.key === 'Enter' && enviar()}
               />
-              {detalleCp && (
-                <span class={'marca ' + (detalleCp[i] ? 'marca--ok' : 'marca--mal')}>
-                  {detalleCp[i] ? '✓' : '✗'}
-                </span>
-              )}
+              <span class="checkpoint__marca">
+                {detalleCp && (
+                  <span class={'marca ' + (detalleCp[i] ? 'marca--ok' : 'marca--mal')}>
+                    {detalleCp[i] ? '✓' : '✗'}
+                  </span>
+                )}
+              </span>
             </li>
           ))}
         </ul>
       ) : (
-        <div class="fila-entrada">
+        <div class={'fila-entrada' + (enSimulacro ? ' fila-entrada--examen' : '')}>
+          {enSimulacro && (
+            <label class="fila-entrada__etiqueta" for={`${clave}-respuesta`}>
+              Respuesta:
+            </label>
+          )}
           <input
+            id={`${clave}-respuesta`}
             class="entrada"
             type="text"
             value={est.entrada ?? ''}

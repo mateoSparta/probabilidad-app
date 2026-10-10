@@ -165,7 +165,22 @@
 
 /* ------------------------------------------------------------ entrada */
 
-.fila-entrada { display: flex; align-items: center; gap: var(--e-2); margin-top: var(--e-3); }
+/* En la guía la entrada va centrada; en el simulacro, a todo el ancho con
+   "Respuesta:" a la izquierda (ver ItemEjercicio, `enSimulacro`). */
+.fila-entrada {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-2);
+  margin-top: var(--e-3);
+}
+.fila-entrada--examen { justify-content: flex-start; }
+.fila-entrada--examen .entrada { flex: 1; max-width: none; }
+.fila-entrada__etiqueta {
+  flex: none;
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
 
 .entrada {
   font-family: var(--mono);
@@ -183,7 +198,7 @@
 
 .sufijo { font-size: var(--t-sm); color: var(--tinta-2); }
 
-.opciones, .checkpoints { list-style: none; margin: var(--e-3) 0 0; padding: 0; }
+.opciones { list-style: none; margin: var(--e-3) 0 0; padding: 0; }
 
 .opcion {
   display: flex;
@@ -196,14 +211,77 @@
 .opcion:hover { background: var(--borde); }
 .opcion--elegida { background: var(--acento-suave); }
 
+/* Varios campos en un ítem: una grilla de tres columnas (rótulo con flecha,
+   campo y marca de correcto) en la que cada fila es una subgrilla. Los
+   rótulos quedan alineados a la izquierda entre sí, los campos también, y la
+   flecha de cada fila se estira desde el final de su rótulo hasta el campo.
+   La columna de rótulos mide lo que el más largo (más una flecha mínima). En
+   la guía el conjunto va centrado; en el simulacro ocupa todo el ancho. */
+.checkpoints {
+  list-style: none;
+  margin: var(--e-3) auto 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(min-content, max-content) 9rem 1.1rem;
+  column-gap: var(--e-2);
+  row-gap: var(--e-2);
+  width: fit-content;
+  max-width: 100%;
+}
+.checkpoints--examen {
+  grid-template-columns: minmax(min-content, max-content) 1fr 1.1rem;
+  width: 100%;
+}
+
 .checkpoint {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.checkpoint__rotulo {
   display: flex;
   align-items: center;
-  gap: var(--e-3);
-  padding-block: var(--e-1);
-  flex-wrap: wrap;
+  gap: var(--e-2);
+  cursor: pointer;
 }
-.checkpoint__pregunta { min-width: 8rem; }
+.checkpoint__pregunta { flex: none; }
+
+.entrada--celda { max-width: none; }
+
+.checkpoint__marca { text-align: center; }
+
+/* Flecha que une el rótulo con su campo. Es una línea con punta que ocupa
+   todo el espacio libre de la fila, así que su largo depende del rótulo. */
+.flecha {
+  flex: 1;
+  min-width: 1.25rem;
+  height: 1px;
+  position: relative;
+  background: var(--tinta-3);
+  opacity: 0.7;
+}
+.flecha::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: -3.5px;
+  border-left: 6px solid var(--tinta-3);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+/* En pantallas angostas el rótulo va arriba del campo y la flecha sobra. */
+@media (max-width: 480px) {
+  .checkpoints,
+  .checkpoints--examen {
+    grid-template-columns: 1fr 1.1rem;
+    width: 100%;
+  }
+  .checkpoint__rotulo { grid-column: 1 / -1; }
+  .checkpoint .flecha { display: none; }
+}
 
 .marca { font-family: var(--mono); }
 .marca--ok { color: var(--ok); }
@@ -869,3 +947,85 @@
   font-size: var(--t-sm);
 }
 .desglose__dato { color: var(--tinta-2); font-size: var(--t-xs); }
+
+/* ----------------------------------------- simulacro: tipo de examen */
+
+.tipo-examen {
+  border: 0;
+  margin: var(--e-5) 0 0;
+  padding: 0;
+  min-width: 0;
+}
+.tipo-examen legend { padding: 0; margin-bottom: var(--e-2); }
+
+/* Control segmentado: dos opciones excluyentes, del ancho de la tarjeta. */
+.segmentado {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--e-1);
+  padding: var(--e-1);
+  border-radius: var(--radio-lg);
+  background: var(--borde);
+}
+
+.segmentado__opcion {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--e-2) var(--e-4);
+  border-radius: var(--radio);
+  cursor: pointer;
+  color: var(--tinta-2);
+  transition: background 200ms, color 200ms, box-shadow 200ms;
+}
+.segmentado__opcion:hover { color: var(--tinta); }
+.segmentado__opcion--activa {
+  background: var(--superficie-alta);
+  color: var(--tinta);
+  box-shadow: 0 1px 3px #2b26201c;
+}
+.segmentado__opcion--vacia { cursor: not-allowed; opacity: 0.55; }
+.segmentado__opcion--vacia:hover { color: var(--tinta-2); }
+.segmentado__opcion:focus-within { outline: 2px solid var(--acento); outline-offset: 1px; }
+
+.segmentado__nombre { font-weight: 600; font-size: var(--t-base); }
+.segmentado__opcion--activa .segmentado__nombre { color: var(--acento); }
+.segmentado__dato { font-size: var(--t-xs); color: var(--tinta-3); }
+
+/* --------------------------------------------------------------- modal */
+
+.modal {
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  background: var(--superficie-alta);
+  color: var(--tinta);
+  box-shadow: 0 4px 12px #2b26201a, 0 24px 60px #2b262033;
+  width: min(30rem, calc(100vw - 2rem));
+}
+.modal::backdrop {
+  background: #2b262059;
+  backdrop-filter: blur(2px);
+}
+
+.modal__contenido { padding: var(--e-5); }
+.modal__titulo { margin-bottom: var(--e-3); }
+.modal__cuerpo { color: var(--tinta-2); }
+.modal__cuerpo > :last-child { margin-bottom: 0; }
+
+.modal__acciones {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+  margin-top: var(--e-5);
+}
+.modal__acciones .boton { padding: var(--e-2) var(--e-4); }
+
+/* Para acciones que no se pueden deshacer. */
+.boton--peligro {
+  background: var(--flojo);
+  border-color: var(--flojo);
+  color: #fff;
+}
+.boton--peligro:hover { background: var(--flojo); filter: brightness(1.08); }

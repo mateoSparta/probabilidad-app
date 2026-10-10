@@ -419,15 +419,20 @@ for (const [valor, alternativa] of equivalentes) {
   afirmar(!mitad.veredictoParcial, 'marcó parcial un examen completo')
   afirmar(mitad.aprobaria, 'con 1 ejercicio entero y aprueba_con 1 tendría que aprobar')
 
-  // elegirExamen: por defecto no trae integradoras.
+  // elegirExamen: por defecto parciales; integradoras sólo si se eligen, y
+  // los dos tipos no se mezclan.
   const integradora: Examen = { ...falso, id: 'int', tipo: 'integradora' }
   afirmar(
     elegirExamen([integradora], { azar: () => 0 }) === null,
     'eligió una integradora sin que se pidiera',
   )
   afirmar(
-    elegirExamen([integradora], { incluirIntegradoras: true, azar: () => 0 })?.id === 'int',
-    'no eligió la integradora con el toggle prendido',
+    elegirExamen([integradora, falso], { tipo: 'integradora', azar: () => 0 })?.id === 'int',
+    'no eligió la integradora al pedir integradoras',
+  )
+  afirmar(
+    elegirExamen([integradora, falso], { tipo: 'integradora', azar: () => 0.99 })?.id === 'int',
+    'al pedir integradoras eligió un parcial',
   )
   afirmar(elegirExamen([], { azar: () => 0 }) === null, 'eligió algo de un pool vacío')
 

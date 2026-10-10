@@ -52,6 +52,21 @@ try {
     afirmar(cabecera.includes(`Guía ${n}`), `falta la pestaña de la guía ${n}`)
     afirmar(cabecera.includes(`href="#/ejercicios/${n}"`), `la pestaña ${n} no enlaza a su guía`)
   }
+  // Las guías sin contenido aparecen, pero bloqueadas y sin enlace.
+  for (let n = 9; n <= 12; n++) {
+    if (contenido.guiaTieneContenido(n)) continue
+    const bloqueadas = cabecera
+      .split('<span class="tab tab--bloqueada"')
+      .slice(1)
+      .map((t: string) => t.slice(0, t.indexOf('</span>')))
+    afirmar(
+      bloqueadas.some(
+        (t: string) => t.endsWith(`Guía ${n}`) && t.includes('title="Se desbloquean después del parcial"'),
+      ),
+      `la guía ${n} no aparece bloqueada`,
+    )
+    afirmar(!cabecera.includes(`href="#/ejercicios/${n}"`), `la guía ${n} bloqueada tiene enlace`)
+  }
   afirmar(
     /<a href="#\/"[^>]*>Probabilidad y Estadística B<\/a>/.test(cabecera),
     'el título del encabezado no lleva al menú',
@@ -74,7 +89,21 @@ try {
 
   // El menú de hamburguesa aparece fuera del inicio y lista las demás
   // secciones, nunca la actual.
-  afirmar(!enMenu.includes('class="hamburguesa"'), 'en el inicio se ve el menú de hamburguesa')
+  // En el inicio el botón es el logo de cafecito: la hamburguesa queda
+  // oculta (está en el DOM para poder animar el cambio) y no hay desplegable.
+  afirmar(
+    /<button[^>]*class="hamburguesa"[^>]*aria-hidden="true"/.test(enMenu),
+    'en el inicio la hamburguesa no quedó oculta',
+  )
+  afirmar(
+    enMenu.includes('href="https://cafecito.app/carpincho_fiubense"'),
+    'en el inicio falta el enlace a cafecito',
+  )
+  afirmar(
+    !/<a[^>]*class="cafecito"[^>]*aria-hidden="true"/.test(enMenu),
+    'en el inicio el logo de cafecito quedó oculto',
+  )
+  afirmar(!enMenu.includes('id="menu-navegacion"'), 'en el inicio hay desplegable')
   for (const [seccion, nombre] of [
     ['ejercicios', 'Ejercicios'],
     ['skills', 'Skills'],
@@ -102,9 +131,18 @@ try {
   afirmar(!html.includes('class="chip'), 'volvieron los chips de filtro')
   afirmar(html.includes('class="mapa"'), 'no se ve el mapa de ejercicios')
   afirmar(html.includes('class="indice"'), 'no se ve el índice lateral')
-  afirmar(html.includes('class="volver"'), 'no se ve el enlace de volver al principio')
-  afirmar(html.includes('volver al principio'), 'el pie no dice "volver al principio"')
-  afirmar(html.includes('id="principio"'), 'falta el ancla a la que vuelve el pie')
+  // El pie es un cierre ("fin"), no un enlace: para subir están la pestaña
+  // activa y el "↑ Subir" lateral, que arranca oculto.
+  afirmar(html.includes('class="fin"') && html.includes('>fin<'), 'el pie no dice "fin"')
+  afirmar(!html.includes('class="volver"'), 'volvió el botón de volver al principio')
+  afirmar(html.includes('class="subir-lateral"'), 'falta el "↑ Subir" lateral')
+  afirmar(
+    !html.includes('subir-lateral--visible'),
+    'el "↑ Subir" se ve sin haber bajado',
+  )
+  // Las entradas con varios campos llevan rótulo, flecha y campo.
+  afirmar(html.includes('class="flecha"'), 'los campos múltiples no llevan flecha')
+  afirmar(!html.includes('Respuesta:'), 'en la guía aparece el rótulo "Respuesta:" del simulacro')
 
   // KaTeX tiene que haber corrido: si no, quedaría el `$...$` crudo.
   afirmar(html.includes('katex'), 'KaTeX no renderizó nada')
@@ -424,9 +462,13 @@ try {
   afirmar(simulacro.includes('Simulacro'), 'la pantalla de simulacro no se dibuja')
   afirmar(simulacro.includes('Empezar simulacro'), 'no se ve el botón de empezar')
   afirmar(simulacro.includes('240'), 'la duración por defecto no es 240 minutos')
-  afirmar(simulacro.includes('Incluir integradoras'), 'falta el toggle de integradoras')
+  afirmar(
+    (simulacro.match(/name="tipo-examen"/g) ?? []).length === 2,
+    'no se puede elegir entre parciales e integradoras',
+  )
+  afirmar(!simulacro.includes('Incluir integradoras'), 'volvió el toggle de integradoras')
   afirmar(simulacro.includes('Exámenes en el pool'), 'no se lista el pool')
-  afirmar((simulacro.match(/role="switch"/g) ?? []).length === 3, 'faltan los interruptores')
+  afirmar((simulacro.match(/role="switch"/g) ?? []).length === 2, 'faltan los interruptores')
   afirmar(simulacro.includes('class="examen"'), 'el pool no se dibuja como tarjetas')
   // Arranca en la pantalla de configuración: no puede haber un enunciado
   // de examen visible antes de empezar.
@@ -453,6 +495,8 @@ try {
   )
   afirmar(retomado.includes('class="reloj'), 'el simulacro guardado no se retoma')
   afirmar(retomado.includes('Entregar'), 'al retomar no se ve el botón de entregar')
+  afirmar(retomado.includes('Respuesta:'), 'en el simulacro falta el rótulo "Respuesta:"')
+  afirmar(retomado.includes('class="modal'), 'falta la confirmación para abandonar')
   afirmar(retomado.includes('1:30:00'), `el reloj retomado no marca 1:30:00`)
   // Mientras se rinde no hay pistas ni ver respuesta.
   afirmar(!retomado.includes('Ver respuesta'), 'en el simulacro se ve "Ver respuesta"')

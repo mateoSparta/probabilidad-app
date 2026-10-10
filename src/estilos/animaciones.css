@@ -41,6 +41,31 @@
   from { opacity: 0; transform: translateY(-6px) scale(0.97); }
   to { opacity: 1; transform: none; }
 }
+@keyframes entrar-miga {
+  from { opacity: 0; transform: translateX(-6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes salir-miga {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateX(-6px); }
+}
+@keyframes cerrar-menu {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(-6px) scale(0.97); }
+}
+@keyframes saltar {
+  0%, 50%, 100% { transform: translateY(0); }
+  20% { transform: translateY(-5px); }
+  70% { transform: translateY(-3px); }
+}
+@keyframes entrar-modal {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes salir-modal {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(10px) scale(0.97); }
+}
 @keyframes crecer {
   from { transform: scaleX(0); }
   to { transform: none; }
@@ -51,8 +76,13 @@
 .vista {
   animation: entrar 320ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
 }
+/* La miga de la sección entra desde la izquierda y sale hacia el mismo lado:
+   la salida es la entrada al revés. */
 .migas__actual {
-  animation: aparecer 300ms ease-out both;
+  animation: entrar-miga 240ms ease-out both;
+}
+.migas__actual--saliendo {
+  animation: salir-miga 180ms ease-in both;
 }
 
 /* ------------------------------------------------------ menú principal */
@@ -79,6 +109,9 @@
 
 .navegacion__lista:not([hidden]) {
   animation: abrir-menu 180ms ease-out both;
+}
+.navegacion__lista--cerrando:not([hidden]) {
+  animation: cerrar-menu 150ms ease-in both;
 }
 .navegacion__lista li {
   animation: desplegar 220ms ease-out both;
@@ -208,23 +241,27 @@
   animation-delay: 120ms;
 }
 
-/* ------------------------------------------------- volver al principio */
+/* ------------------------------------------------------------ subir */
 
-.volver__linea {
-  transform: scaleX(0.85);
-  transition: transform 320ms ease, opacity 320ms ease;
+/* Al pasar el mouse, la flecha salta dos veces (los dos picos del keyframe). */
+.subir:hover .subir__flecha,
+.subir:focus-visible .subir__flecha {
+  animation: saltar 700ms ease-out both;
 }
-.volver__linea:first-child { transform-origin: right; }
-.volver__linea:last-child { transform-origin: left; }
-.volver:hover .volver__linea {
-  transform: none;
-  opacity: 0.8;
+
+/* ------------------------------------------------------------- modal */
+
+.modal[open] {
+  animation: entrar-modal 200ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
 }
-.volver__texto {
-  transition: letter-spacing 320ms ease;
+.modal[open]::backdrop {
+  animation: aparecer 200ms ease-out both;
 }
-.volver:hover .volver__texto {
-  letter-spacing: 0.06em;
+.modal--saliendo[open] {
+  animation: salir-modal 160ms ease-in both;
+}
+.modal--saliendo[open]::backdrop {
+  animation: aparecer 160ms ease-in reverse both;
 }
 
 /* ------------------------------------------------ movimiento reducido */

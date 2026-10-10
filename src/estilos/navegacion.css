@@ -293,37 +293,79 @@
   padding-right: var(--e-1);
 }
 
-/* ------------------------------------ volver al principio (pie) */
+/* ------------------------------------------------- fin de la guía */
 
-.volver {
-  appearance: none;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
+/* Un cierre, no un enlace: para volver arriba están la pestaña activa y el
+   "↑ Subir" del costado. */
+.fin {
   display: flex;
   align-items: center;
   gap: var(--e-3);
-  width: 100%;
+  margin: 0;
   padding: var(--e-5) 0 var(--e-6);
   color: var(--tinta-3);
-  font-family: var(--serif);
-  transition: color 120ms;
+  user-select: none;
 }
-.volver:hover {
-  color: var(--acento);
-}
-
-.volver__linea {
+.fin__linea {
   flex: 1;
   height: 1px;
   background: currentColor;
   opacity: 0.45;
 }
-
-.volver__texto {
+.fin__texto {
   flex: none;
   font-size: var(--t-sm);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+}
+
+/* --------------------------------------------- "↑ Subir" lateral */
+
+/* Al costado derecho de la columna, en el espejo del índice: un `aside` del
+   alto de la guía con el enlace `sticky` adentro, justo debajo de la barra de
+   pestañas. Sólo donde hay lugar al costado; en pantallas más angostas, la
+   pestaña de la guía abierta cumple la misma función. */
+.subir-lateral { display: none; }
+
+@media (min-width: 980px) {
+  .vista { position: relative; }
+  .subir-lateral {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(100% + var(--e-4) + 0.75rem);
+    pointer-events: none;
+  }
+  .subir {
+    position: sticky;
+    top: 4.25rem;
+    margin-top: var(--e-6);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    padding: var(--e-1) 0;
+    appearance: none;
+    border: 0;
+    background: transparent;
+    font-family: var(--serif);
+    font-size: var(--t-sm);
+    color: var(--tinta-3);
+    cursor: pointer;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 220ms ease, transform 220ms ease, color 150ms;
+  }
+  .subir-lateral--visible .subir {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .subir:hover,
+  .subir:focus-visible {
+    color: var(--acento);
+  }
+  .subir__flecha { display: inline-block; }
 }
 
 /* -------------------------------------------- aviso del parcial */
@@ -426,50 +468,82 @@
 
 /* ------------------------------------------- menú de hamburguesa */
 
-/* Va en la esquina superior derecha de la columna, no de la ventana. */
+/* Va en la esquina superior derecha de la columna, no de la ventana. El
+   recuadro es siempre el mismo y adentro se apilan las dos caras: la
+   hamburguesa (en las secciones) y el logo de cafecito (en el inicio). Al
+   cambiar de cara, una gira y se achica mientras la otra hace lo inverso. */
 .navegacion {
   position: relative;
   flex: none;
 }
 
-/* `display: block` para que el botón no sume el espacio de la línea de texto
-   y la cabecera mida lo mismo con o sin menú. */
-.hamburguesa {
-  appearance: none;
-  cursor: pointer;
-  display: block;
+.navegacion__marco {
   position: relative;
   width: 2.5rem;
   height: 2.5rem;
-  padding: 0;
   border: 1px solid var(--borde-fuerte);
   border-radius: var(--radio-lg);
   background: var(--superficie);
   transition: background 150ms, border-color 150ms;
 }
-.hamburguesa:hover { background: var(--superficie-alta); border-color: var(--acento); }
+.navegacion__marco:hover { background: var(--superficie-alta); border-color: var(--acento); }
 
-/* Tres líneas que se cruzan en una X al abrir. */
+.hamburguesa,
+.cafecito {
+  position: absolute;
+  inset: 0;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+  transition: opacity 260ms ease, transform 380ms cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+.hamburguesa { appearance: none; }
+
+.cafecito {
+  display: grid;
+  place-items: center;
+  color: var(--acento);
+  font-size: 1.45rem;
+  opacity: 0;
+  transform: scale(0.4) rotate(-120deg);
+  pointer-events: none;
+}
+.navegacion--inicio .cafecito {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.navegacion--inicio .hamburguesa {
+  opacity: 0;
+  transform: scale(0.4) rotate(120deg);
+  pointer-events: none;
+}
+
+/* Tres líneas de 2 px en posiciones enteras: con medio píxel, el navegador
+   las suaviza y alguna se ve más fina que las otras. El recuadro interior
+   mide 38 px, así que las líneas quedan en 12, 18 y 24. */
 .hamburguesa__linea {
   position: absolute;
-  left: 50%;
-  width: 1.1rem;
-  height: 1.5px;
-  margin-left: -0.55rem;
+  left: calc(50% - 9px);
+  width: 18px;
+  height: 2px;
   border-radius: 1px;
   background: var(--tinta);
-  transition: transform 220ms ease, opacity 150ms ease, top 220ms ease;
+  transition: transform 240ms ease, opacity 150ms ease, top 240ms ease;
 }
-.hamburguesa__linea:nth-child(1) { top: calc(50% - 6px); }
-.hamburguesa__linea:nth-child(2) { top: calc(50% - 0.75px); }
-.hamburguesa__linea:nth-child(3) { top: calc(50% + 4.5px); }
+.hamburguesa__linea:nth-child(1) { top: 12px; }
+.hamburguesa__linea:nth-child(2) { top: 18px; }
+.hamburguesa__linea:nth-child(3) { top: 24px; }
 .hamburguesa[aria-expanded='true'] .hamburguesa__linea:nth-child(1) {
-  top: calc(50% - 0.75px);
+  top: 18px;
   transform: rotate(45deg);
 }
 .hamburguesa[aria-expanded='true'] .hamburguesa__linea:nth-child(2) { opacity: 0; }
 .hamburguesa[aria-expanded='true'] .hamburguesa__linea:nth-child(3) {
-  top: calc(50% - 0.75px);
+  top: 18px;
   transform: rotate(-45deg);
 }
 

@@ -20,6 +20,7 @@ import {
   IconoSimulacro,
 } from '../componentes/Iconos'
 import { ItemEjercicio } from '../componentes/ItemEjercicio'
+import { Modal } from '../componentes/Modal'
 import { Enunciado } from '../componentes/Mate'
 import { Tags, usarResaltado } from '../componentes/Tags'
 import { claveItemExamen, examenes, examenPorId } from '../datos/contenido'
@@ -38,8 +39,10 @@ import {
   elegirExamen,
   esCompleto,
   formatearTiempo,
+  poolDe,
   type EjercicioExamen,
   type Examen,
+  type TipoExamen,
 } from '../dominio/simulacro'
 import type { Intento } from '../dominio/tipos'
 
@@ -47,22 +50,36 @@ const CLAVE_CONFIG = 'probabilidad-app:simulacro-config:v1'
 
 type Config = {
   duracionMin: number
-  incluirIntegradoras: boolean
+  /** Qué se rinde: un parcial o una integradora. No se mezclan. */
+  tipo: TipoExamen
   mostrarTags: boolean
   mostrarFormulas: boolean
 }
 
 const CONFIG_POR_DEFECTO: Config = {
   duracionMin: 240,
-  incluirIntegradoras: false,
+  tipo: 'parcial',
   mostrarTags: false,
   mostrarFormulas: false,
 }
 
+/**
+ * La configuración guardada. Las versiones viejas guardaban un toggle
+ * `incluirIntegradoras` en lugar de `tipo`: se ignora y queda el tipo por
+ * defecto.
+ */
 function cargarConfig(): Config {
   try {
     const crudo = localStorage.getItem(CLAVE_CONFIG)
-    return crudo ? { ...CONFIG_POR_DEFECTO, ...JSON.parse(crudo) } : CONFIG_POR_DEFECTO
+    if (!crudo) return CONFIG_POR_DEFECTO
+    const leida = { ...CONFIG_POR_DEFECTO, ...JSON.parse(crudo) }
+    const tipo: TipoExamen = leida.tipo === 'integradora' ? 'integradora' : 'parcial'
+    return {
+      duracionMin: Number(leida.duracionMin) || CONFIG_POR_DEFECTO.duracionMin,
+      tipo,
+      mostrarTags: leida.mostrarTags === true,
+      mostrarFormulas: leida.mostrarFormulas === true,
+    }
   } catch {
     return CONFIG_POR_DEFECTO
   }
@@ -80,6 +97,8 @@ type Props = { api: ApiProgreso; sesion: ApiSesion }
 
 export function VistaSimulacro({ api, sesion }: Props) {
   const [config, setConfig] = useState<Config>(cargarConfig)
+  /** Si está abierta la confirmación para abandonar. */
+  const [preguntandoAbandono, setPreguntandoAbandono] = useState(false)
   /** Sólo existe para que el reloj se redibuje cada segundo. */
   const [, setTic] = useState(0)
 
@@ -115,9 +134,7 @@ export function VistaSimulacro({ api, sesion }: Props) {
   }
 
   function arrancar() {
-    const elegido = elegirExamen(examenes, {
-      incluirIntegradoras: config.incluirIntegradoras,
-    })
+    const elegido = elegirExamen(examenes, { tipo: config.tipo })
     if (!elegido) return
     limpiarItems(elegido)
     sesion.anotarSimulacro({
@@ -183,7 +200,10 @@ export function VistaSimulacro({ api, sesion }: Props) {
               Entregar
             </button>
           )}
-          <button class="boton boton--icono" onClick={() => cerrar(examen)}>
+          <button
+            class="boton boton--icono"
+            onClick={() => (sim.entregado ? cerrar(examen) : setPreguntandoAbandono(true))}
+          >
             {sim.entregado ? (
               <>
                 <IconoReintentar />
@@ -195,6 +215,26 @@ export function VistaSimulacro({ api, sesion }: Props) {
           </button>
         </div>
       </section>
+
+      <Modal
+        abierto={preguntandoAbandono}
+        titulo="¿Abandonar el simulacro?"
+        confirmar="Abandonar"
+        cancelar="Seguir rindiendo"
+        peligro
+        onCancelar={() => setPreguntandoAbandono(false)}
+        onConfirmar={() => {
+          // Primero se cierra la ventana (con su animación) y después se
+          // descarta el simulacro, que cambia la pantalla entera.
+          setPreguntandoAbandono(false)
+          setTimeout(() => cerrar(examen), 170)
+        }}
+      >
+        <p>
+          Se descartan las respuestas de este intento y no se calcula la nota. Los ítems que ya
+          comprobaste como correctos quedan registrados para las insignias.
+        </p>
+      </Modal>
 
       {!esCompleto(examen) && (
         <p class="nota-aviso">
@@ -319,6 +359,7 @@ function TarjetaExamen({
               permitirFormulas={mostrarFormulas || entregado}
               resaltado={resaltado.activo}
               mostrarMarcas={conTags}
+              enSimulacro
               onIntento={(intento, limpio) => onIntento(i, intento, limpio)}
             />
           )
@@ -331,6 +372,21 @@ function TarjetaExamen({
 /** Los atajos de duración, en minutos. */
 const DURACIONES = [60, 120, 180, 240]
 
+const TIPOS: { tipo: TipoExamen; nombre: string; descripcion: string; vacio: string }[] = [
+  {
+    tipo: 'parcial',
+    nombre: 'Parciales',
+    descripcion: 'guías 1 a 8',
+    vacio: 'Todavía no hay ninguno',
+  },
+  {
+    tipo: 'integradora',
+    nombre: 'Integradoras',
+    descripcion: 'toda la materia',
+    vacio: 'Todavía no hay ninguna',
+  },
+]
+
 function Configuracion({
   config,
   onCambiar,
@@ -340,11 +396,12 @@ function Configuracion({
   onCambiar: (c: Partial<Config>) => void
   onArrancar: () => void
 }) {
-  const disponibles = useMemo(
-    () => examenes.filter((e) => ejerciciosJugables(e).length > 0),
+  const pools = useMemo(
+    () => ({ parcial: poolDe(examenes, 'parcial'), integradora: poolDe(examenes, 'integradora') }),
     [],
   )
-  const parciales = disponibles.filter((e) => e.tipo === 'parcial')
+  const disponibles = pools[config.tipo]
+  const hayAlguno = pools.parcial.length + pools.integradora.length > 0
 
   return (
     <>
@@ -357,7 +414,7 @@ function Configuracion({
         </p>
       </section>
 
-      {parciales.length === 0 ? (
+      {!hayAlguno ? (
         <p class="vacio">Todavía no hay ningún examen con ejercicios verificados para rendir.</p>
       ) : (
         <>
@@ -396,13 +453,43 @@ function Configuracion({
               </div>
             </div>
 
+            <fieldset class="tipo-examen">
+              <legend class="sim-config__etiqueta">Examen</legend>
+              <div class="segmentado">
+                {TIPOS.map(({ tipo, nombre, descripcion, vacio }) => {
+                  const cantidad = pools[tipo].length
+                  return (
+                    <label
+                      key={tipo}
+                      class={
+                        'segmentado__opcion' +
+                        (config.tipo === tipo ? ' segmentado__opcion--activa' : '') +
+                        (cantidad === 0 ? ' segmentado__opcion--vacia' : '')
+                      }
+                      title={cantidad === 0 ? `${vacio} para rendir` : undefined}
+                    >
+                      <input
+                        class="sr-solo"
+                        type="radio"
+                        name="tipo-examen"
+                        value={tipo}
+                        checked={config.tipo === tipo}
+                        disabled={cantidad === 0}
+                        onChange={() => onCambiar({ tipo })}
+                      />
+                      <span class="segmentado__nombre">{nombre}</span>
+                      <span class="segmentado__dato">
+                        {cantidad === 0
+                          ? vacio
+                          : `${cantidad} ${cantidad === 1 ? 'disponible' : 'disponibles'} · ${descripcion}`}
+                      </span>
+                    </label>
+                  )
+                })}
+              </div>
+            </fieldset>
+
             <ul class="interruptores">
-              <Interruptor
-                etiqueta="Incluir integradoras"
-                descripcion="Suma al pool los exámenes integradores, además de los parciales."
-                activo={config.incluirIntegradoras}
-                onCambiar={(v) => onCambiar({ incluirIntegradoras: v })}
-              />
               <Interruptor
                 etiqueta="Mostrar tags al entregar"
                 descripcion="Al terminar, indica qué temas evaluaba cada ejercicio."
@@ -418,13 +505,17 @@ function Configuracion({
             </ul>
 
             <div class="sim-config__pie">
-              <button class="boton boton--acento boton--icono boton--grande" onClick={onArrancar}>
+              <button
+                class="boton boton--acento boton--icono boton--grande"
+                disabled={disponibles.length === 0}
+                onClick={onArrancar}
+              >
                 <IconoSimulacro />
                 Empezar simulacro
               </button>
               <p class="dato-chico">
                 El tiempo se mide con el reloj del sistema, de modo que sigue corriendo aunque se
-                cierre la página, como en un examen real. Las respuestas no se pierden.
+                cierre la página. Las respuestas no se pierden.
               </p>
             </div>
           </section>

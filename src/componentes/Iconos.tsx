@@ -116,6 +116,33 @@ export const IconoAviso = () => (
   </Svg>
 )
 
+export const IconoCandado = () => (
+  <Svg>
+    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </Svg>
+)
+
+// ---------------------------------------------------------- cafecito
+
+/**
+ * El logo de cafecito.app redibujado con trazo, para que tenga el mismo peso
+ * que el resto de los íconos: una taza vista desde arriba (el aro, con el asa
+ * a la izquierda) y adentro un globo de diálogo cuya cola sale por un corte
+ * del aro hacia abajo a la derecha. No es un trazado de Lucide.
+ */
+export const LogoCafecito = () => (
+  <Svg>
+    <path d="M17.09 19.7A8.5 8.5 0 1 1 21.2 15.59" />
+    <path d="M5.4 9.4H4.1a2.6 2.6 0 0 0 0 5.2h1.3" />
+    <path
+      d="M16.25 16.76 19.2 18.2l-.94-3.45A5.5 5.5 0 1 0 16.25 16.76Z"
+      fill="currentColor"
+      fill-opacity="0.16"
+    />
+  </Svg>
+)
+
 export const IconoCalendario = () => (
   <Svg>
     <path d="M8 2v4" />
