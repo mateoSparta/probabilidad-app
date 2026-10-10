@@ -49,37 +49,39 @@ export function IndiceGuia({ guia, sesion }: Props) {
 
   return (
     <aside class="indice" aria-label={`Índice de la guía ${guia.numero}`}>
-      <p class="indice__titulo">Guía {guia.numero}</p>
-      <ol class="indice__lista">
-        {temas.map((tema, i) => {
-          const resueltos = tema.ejercicios.filter((e) => {
-            const ej = ejercicioPorId.get(e.id)
-            if (!ej || !sesion) return false
-            return (
-              estadoEjercicio(
-                sesion.sesion,
-                ej.items.map((it) => claveItem(ej.id, it.id)),
-              ) === 'resuelto'
-            )
-          }).length
+      <div class="indice__contenido">
+        <p class="indice__titulo">Guía {guia.numero}</p>
+        <ol class="indice__lista">
+          {temas.map((tema, i) => {
+            const resueltos = tema.ejercicios.filter((e) => {
+              const ej = ejercicioPorId.get(e.id)
+              if (!ej || !sesion) return false
+              return (
+                estadoEjercicio(
+                  sesion.sesion,
+                  ej.items.map((it) => claveItem(ej.id, it.id)),
+                ) === 'resuelto'
+              )
+            }).length
 
-          return (
-            <li key={tema.id || i}>
-              <button
-                class="indice__tema"
-                onClick={() => irA(tema.id || 'ej-' + tema.ejercicios[0]?.id)}
-              >
-                {tema.titulo}
-              </button>
-              {tema.ejercicios.length > 0 && (
-                <span class="indice__avance">
-                  {resueltos}/{tema.ejercicios.length}
-                </span>
-              )}
-            </li>
-          )
-        })}
-      </ol>
+            return (
+              <li key={tema.id || i}>
+                <button
+                  class="indice__tema"
+                  onClick={() => irA(tema.id || 'ej-' + tema.ejercicios[0]?.id)}
+                >
+                  {tema.titulo}
+                </button>
+                {tema.ejercicios.length > 0 && (
+                  <span class="indice__avance">
+                    {resueltos}/{tema.ejercicios.length}
+                  </span>
+                )}
+              </li>
+            )
+          })}
+        </ol>
+      </div>
     </aside>
   )
 }

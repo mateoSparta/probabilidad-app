@@ -20,7 +20,9 @@ import {
   evaluarEscalar,
   TOL_REL_POR_DEFECTO,
 } from '../src/dominio/respuesta.ts'
-import { partirEnSegmentos, skillsMarcados } from '../src/dominio/marcas.ts'
+import { partirEnSegmentos, sinMarcas, skillsMarcados } from '../src/dominio/marcas.ts'
+import { markdownAHtml, textoAHtml } from '../src/componentes/latex.ts'
+import { escribirRuta, leerRuta } from '../src/dominio/ruta.ts'
 import {
   agregar,
   aJson,
@@ -174,10 +176,10 @@ for (const ej of ejercicios) {
   if (marcados.length > 0) {
     const segmentos = partirEnSegmentos(ej.enunciado)
     const reconstruido = segmentos.map((s) => s.texto).join('')
-    const esperado = ej.enunciado.replace(/\[\[[a-z0-9-]+\|([^\]]+)\]\]/g, '$1')
+    const esperado = sinMarcas(ej.enunciado)
     afirmar(reconstruido === esperado, `${ej.id}: partir el enunciado en segmentos pierde texto`)
     afirmar(
-      segmentos.some((s) => s.skill),
+      segmentos.some((s) => s.skills?.length),
       `${ej.id}: tiene marcas pero no se detectó ningún segmento marcado`,
     )
   }
@@ -744,6 +746,93 @@ for (const [valor, alternativa] of equivalentes) {
     armarPlan(todo, skills, skillsDeItem, config, hoy).itemsFaltantes ===
       planCorto.itemsFaltantes,
     'agregar un skill sin cobertura cambió los ítems faltantes',
+  )
+}
+
+// --------------------------------------------- puntuación pegada a fórmulas
+
+{
+  // El signo va adentro de la última caja de KaTeX, antes de cerrar la caja,
+  // el contenedor y la raíz.
+  const fin = textoAHtml('Calcular $P(A)$.')
+  afirmar(
+    fin.endsWith('<span class="puntuacion">.</span></span></span></span>'),
+    `el punto no quedó adentro de la última caja de la fórmula: ${fin.slice(-70)}`,
+  )
+
+  const varias = textoAHtml('Sean $a$, $b$ y $c$; luego ($x$).')
+  const signos = [...varias.matchAll(/class="puntuacion">([^<]*)</g)].map((m) => m[1])
+  // $a$ con la coma, $c$ con el punto y coma, $x$ con los dos paréntesis; $b$ no.
+  afirmar(
+    signos.join(' ') === ', ; ( ).',
+    `la puntuación repartida entre fórmulas fue ${JSON.stringify(signos)}`,
+  )
+  afirmar(varias.includes(' y '), 'se perdió texto entre fórmulas al repartir la puntuación')
+  afirmar(!varias.includes('luego (<'), 'el paréntesis de apertura quedó afuera de la fórmula')
+
+  // Lo que no lleva puntuación pegada no se toca.
+  const suelta = textoAHtml('vale $x$ y nada más')
+  afirmar(!suelta.includes('puntuacion'), 'se pegó puntuación a una fórmula que no la tenía')
+
+  // Una fórmula en display no lleva nada: ocupa su propio renglón.
+  afirmar(
+    !textoAHtml('$$x^2$$.').includes('puntuacion'),
+    'se pegó puntuación a una fórmula en display',
+  )
+
+  // En Markdown, igual, y la tabla va en su contenedor.
+  const md = markdownAHtml('Vale $x$.\n\n| a | b |\n|---|---|\n| $1$ | $2$ |\n')
+  afirmar(md.includes('class="puntuacion">.<'), 'en Markdown el punto no entró en la fórmula')
+  afirmar(md.includes('<div class="tabla"><table>'), 'la tabla de Markdown no va en su contenedor')
+}
+
+// ----------------------------------------------------------------- rutas
+
+{
+  const casos: [string, string, number][] = [
+    ['', 'menu', 1],
+    ['#/', 'menu', 1],
+    ['#/ejercicios/3', 'ejercicios', 3],
+    ['#/ejercicios', 'ejercicios', 1],
+    ['#/skills', 'skills', 1],
+    ['#/simulacro', 'simulacro', 1],
+    ['#/seguimiento', 'seguimiento', 1],
+    ['#/cualquiera', 'menu', 1],
+    ['#ej-g1-04', 'menu', 1],
+  ]
+  for (const [hash, seccion, guia] of casos) {
+    const r = leerRuta(hash)
+    afirmar(
+      r.seccion === seccion && r.guia === guia,
+      `leerRuta(${JSON.stringify(hash)}) dio ${r.seccion}/${r.guia}, se esperaba ${seccion}/${guia}`,
+    )
+  }
+  // La guía anterior se conserva al pasar por una sección que no la lleva.
+  afirmar(leerRuta('#/skills', 5).guia === 5, 'pasar por Skills hizo perder la guía')
+  // Escribir y volver a leer da la misma ruta.
+  for (const seccion of ['menu', 'ejercicios', 'skills', 'simulacro', 'seguimiento'] as const) {
+    const r = { seccion, guia: 4 }
+    const vuelta = leerRuta(escribirRuta(r), 4)
+    afirmar(vuelta.seccion === seccion && vuelta.guia === 4, `ida y vuelta de la ruta ${seccion}`)
+  }
+}
+
+// ---------------------------------------------- marcas con varios skills
+
+{
+  const t = 'Si [[prob-total,condicional|sale roja, se saca de $b$]]. Fin.'
+  const segs = partirEnSegmentos(t)
+  const marcado = segs.find((x) => x.skills)
+  afirmar(
+    marcado?.skills?.join(',') === 'prob-total,condicional',
+    'una marca con dos skills no se partió en dos',
+  )
+  // El punto que sigue a la marca pasa adentro del fragmento.
+  afirmar(marcado?.texto.endsWith('$b$.') ?? false, 'el punto tras la marca no pasó al fragmento')
+  afirmar(segs.map((x) => x.texto).join('') === sinMarcas(t), 'partir la marca perdió texto')
+  afirmar(
+    skillsMarcados(t).join(',') === 'prob-total,condicional',
+    'skillsMarcados no separa los skills de una marca',
   )
 }
 

@@ -9,7 +9,8 @@
  *   borde rojo      hay un error sin resolver
  *   borde verde     resuelto
  *
- * Al hacer clic se baja hasta el ejercicio.
+ * Al hacer clic se baja hasta el ejercicio. En Seguimiento, donde el ejercicio
+ * no está en la página, el clic lo resuelve quien usa el mapa (`onElegir`).
  */
 import type { ApiSesion } from '../datos/usarSesion'
 import { ejercicioPorId } from '../datos/contenido'
@@ -21,17 +22,21 @@ import {
 import { claveItem, type Guia } from '../dominio/tipos'
 
 /** Baja hasta un ancla sin romper si no existe (por ejemplo, en SSR). */
-export function irA(id: string): void {
+export function irA(id: string, suave = true): void {
   if (typeof document === 'undefined') return
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  document
+    .getElementById(id)
+    ?.scrollIntoView({ behavior: suave ? 'smooth' : 'auto', block: 'start' })
 }
 
 type Props = {
   guia: Guia
   sesion?: ApiSesion
+  /** Qué hacer al elegir un ejercicio. Por defecto, bajar hasta él. */
+  onElegir?: (idEjercicio: string) => void
 }
 
-export function MapaEjercicios({ guia, sesion }: Props) {
+export function MapaEjercicios({ guia, sesion, onElegir }: Props) {
   const ejercicios = guia.secuencia
     .filter((p) => p.tipo === 'ejercicio')
     .map((p) => ejercicioPorId.get(p.id))
@@ -62,7 +67,7 @@ export function MapaEjercicios({ guia, sesion }: Props) {
             <li key={ej.id}>
               <button
                 class={'punto punto--' + estado}
-                onClick={() => irA('ej-' + ej.id)}
+                onClick={() => (onElegir ? onElegir(ej.id) : irA('ej-' + ej.id))}
                 aria-label={`Ir al ejercicio ${etiqueta}`}
                 data-tip={etiqueta}
               >

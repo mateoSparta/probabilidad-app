@@ -2,7 +2,8 @@
  * Un ítem de un ejercicio: la unidad validable (PLAN.md §3).
  *
  * Cada ítem tiene su input, sus ayudas (fórmulas, pistas graduadas, ver
- * respuesta) y su feedback en línea. Los tags están ocultos hasta que se
+ * respuesta) y su feedback en línea. Los tags no van acá sino debajo del
+ * enunciado (ver TarjetaEjercicio), y aparecen recién cuando el ítem se
  * resuelve o se revela: recuperación activa antes que lectura.
  *
  * El estado vive en un solo objeto y se persiste completo en cada cambio, así
@@ -11,7 +12,7 @@
  */
 import { useState } from 'preact/hooks'
 
-import { formulasDeItem, skillPorId } from '../datos/contenido'
+import { formulasDeItem } from '../datos/contenido'
 import {
   evaluarCheckpoints,
   evaluarExpresion,
@@ -20,7 +21,14 @@ import {
 } from '../dominio/respuesta'
 import { ITEM_NUEVO, type SesionItem } from '../dominio/sesion'
 import type { Intento, Item } from '../dominio/tipos'
-import { Formula, Mate } from './Mate'
+import {
+  IconoComprobar,
+  IconoFormulas,
+  IconoPista,
+  IconoReintentar,
+  IconoVer,
+} from './Iconos'
+import { Formula, Mate, TextoMarcado } from './Mate'
 
 /** Un intento es limpio si acierta sin ver la respuesta: en el primer envío
  *  para `opcion` y en hasta 2 envíos para el resto (PLAN.md §5). */
@@ -45,7 +53,9 @@ type Props = {
   modoExamen?: boolean
   /** En el simulacro, el panel de fórmulas depende de un toggle. */
   permitirFormulas?: boolean
-  onResaltar: (skill: string | null) => void
+  /** Skill resaltado desde los tags, por si la pregunta tiene fragmentos. */
+  resaltado?: string | null
+  mostrarMarcas?: boolean
   onIntento?: (intento: Intento, limpio: boolean) => void
 }
 
@@ -57,7 +67,8 @@ export function ItemEjercicio({
   onReiniciar,
   modoExamen,
   permitirFormulas = true,
-  onResaltar,
+  resaltado,
+  mostrarMarcas,
   onIntento,
 }: Props) {
   const [est, setEst] = useState<SesionItem>(inicial ?? ITEM_NUEVO)
@@ -156,7 +167,11 @@ export function ItemEjercicio({
       <div class="item__cabeza">
         <span class="item__id">({item.id})</span>
         <div class="item__pregunta">
-          <Mate>{item.pregunta}</Mate>
+          <TextoMarcado
+            texto={item.pregunta}
+            resaltado={resaltado}
+            mostrarMarcas={mostrarMarcas}
+          />
         </div>
       </div>
 
@@ -226,21 +241,27 @@ export function ItemEjercicio({
         </div>
       )}
 
-      {/* --- acciones --- */}
-      <div class="item__acciones">
+      {/* --- acciones: una grilla que reparte el ancho entre los botones --- */}
+      <div class="botonera">
         {!resuelto && (
-          <button class="boton boton--acento" onClick={enviar}>
+          <button class="boton boton--acento boton--icono" onClick={enviar}>
+            <IconoComprobar />
             Comprobar
           </button>
         )}
         {puedeMostrarFormulas && (
-          <button class="boton boton--fantasma" onClick={() => setFormulasAbiertas((v) => !v)}>
+          <button
+            class={'boton boton--icono' + (formulasAbiertas ? ' boton--activo' : '')}
+            aria-expanded={formulasAbiertas}
+            onClick={() => setFormulasAbiertas((v) => !v)}
+          >
+            <IconoFormulas />
             Fórmulas
           </button>
         )}
         {item.pistas.length > 0 && !resuelto && !modoExamen && (
           <button
-            class="boton boton--fantasma"
+            class="boton boton--icono"
             disabled={est.pistasAbiertas >= item.pistas.length}
             onClick={() =>
               actualizar({
@@ -248,18 +269,21 @@ export function ItemEjercicio({
               })
             }
           >
+            <IconoPista />
             Pistas ({est.pistasAbiertas}/{item.pistas.length})
           </button>
         )}
         {!resuelto && !modoExamen && (
-          <button class="boton boton--fantasma" onClick={revelar}>
+          <button class="boton boton--icono" onClick={revelar}>
+            <IconoVer />
             Ver respuesta
           </button>
         )}
         {/* Sin esto, el ítem quedaría congelado para siempre una vez resuelto.
             El intento ya contó; rehacerlo no vuelve a contar el mismo día. */}
         {resuelto && !modoExamen && (
-          <button class="boton boton--fantasma" onClick={reintentar}>
+          <button class="boton boton--icono" onClick={reintentar}>
+            <IconoReintentar />
             Reintentar
           </button>
         )}
@@ -305,23 +329,6 @@ export function ItemEjercicio({
 
       {est.estado === 'revelado' && <Respuesta item={item} />}
 
-      {/* --- tags: sólo después de resolver o revelar --- */}
-      {resuelto && item.skills.length > 0 && (
-        <ul class="tags" onMouseLeave={() => onResaltar(null)}>
-          {item.skills.map((id) => (
-            <li key={id}>
-              <button
-                class="tag"
-                onMouseEnter={() => onResaltar(id)}
-                onFocus={() => onResaltar(id)}
-                onBlur={() => onResaltar(null)}
-              >
-                {skillPorId.get(id)?.nombre ?? id}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
     </li>
   )
 }

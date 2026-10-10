@@ -46,18 +46,31 @@ try {
 
   // --- la cabecera ---
   const cabecera = render(
-    createElement(Cabecera, {
-      vista: 'guia',
-      guiaActiva: 1,
-      onVista: () => {},
-      onGuia: () => {},
-    }),
+    createElement(Cabecera, { ruta: { seccion: 'ejercicios', guia: 1 } }),
   )
   for (let n = 1; n <= 8; n++) {
-    afirmar(cabecera.includes(`Guía ${n}`), `falta la tab de la guía ${n}`)
+    afirmar(cabecera.includes(`Guía ${n}`), `falta la pestaña de la guía ${n}`)
+    afirmar(cabecera.includes(`href="#/ejercicios/${n}"`), `la pestaña ${n} no enlaza a su guía`)
   }
-  afirmar(cabecera.includes('Simulacro'), 'falta el botón Simulacro')
-  afirmar(cabecera.includes('Panel de skills'), 'falta el botón Panel de skills')
+  afirmar(
+    /<a href="#\/"[^>]*>Probabilidad y Estadística B<\/a>/.test(cabecera),
+    'el título del encabezado no lleva al menú',
+  )
+  afirmar(
+    /class="migas__actual"[^>]*>.*Ejercicios/.test(cabecera),
+    'las migas no muestran la sección actual',
+  )
+  // Los botones de la esquina se reemplazaron por el menú principal.
+  afirmar(!cabecera.includes('Panel de skills'), 'volvió el botón "Panel de skills"')
+  afirmar(!cabecera.includes('cabecera__acciones'), 'volvieron los botones de la esquina')
+
+  // Las pestañas de las guías sólo existen en Ejercicios.
+  for (const seccion of ['menu', 'skills', 'simulacro', 'seguimiento']) {
+    const otra = render(createElement(Cabecera, { ruta: { seccion, guia: 1 } }))
+    afirmar(!otra.includes('class="barra-guias"'), `en ${seccion} se ven las pestañas de guías`)
+  }
+  const enMenu = render(createElement(Cabecera, { ruta: { seccion: 'menu', guia: 1 } }))
+  afirmar(!enMenu.includes('migas__actual'), 'en el menú las migas muestran una sección')
 
   // --- la guía 1 ---
   const html = render(createElement(VistaGuia, { numero: 1 }))
@@ -103,6 +116,16 @@ try {
   afirmar(html.includes('Ver respuesta'), 'no se ve el botón Ver respuesta')
   afirmar(html.includes('Pistas ('), 'no se ve el botón de pistas')
   afirmar(!html.includes('class="tags"'), 'los tags se ven sin haber resuelto nada')
+
+  // Los botones van en la grilla que reparte el ancho, y cada uno con ícono.
+  afirmar(html.includes('class="botonera"'), 'los botones no están en la botonera')
+  const botonesConIcono = (html.match(/class="boton[^"]*boton--icono"><svg class="icono"/g) ?? [])
+    .length
+  afirmar(botonesConIcono > 0, 'los botones de los ítems no llevan ícono')
+  afirmar(!html.includes('boton--fantasma'), 'quedaron botones sin borde en los ítems')
+
+  // La puntuación pegada a una fórmula va adentro de ella (componentes/latex.ts).
+  afirmar(html.includes('class="puntuacion"'), 'ninguna puntuación entró en su fórmula')
 
   // Y la respuesta no puede estar en el HTML inicial.
   afirmar(
@@ -157,6 +180,80 @@ try {
     `la guía ${sinContenido} está vacía y no avisa`,
   )
 
+  // --- tablas de la teoría ---
+  const { Teoria } = await servidor.ssrLoadModule('/src/componentes/Teoria.tsx')
+  const conTabla = contenido.teoria.find((t: { cuerpo: string }) => /^\|.*\|\s*$/m.test(t.cuerpo))
+  afirmar(!!conTabla, 'no hay ningún bloque de teoría con tabla para probar')
+  if (conTabla) {
+    const tabla = render(createElement(Teoria, { bloque: conTabla }))
+    afirmar(tabla.includes('<div class="tabla"><table>'), 'la tabla no va en su contenedor centrado')
+    afirmar(/<td[^>]*>.*class="katex/.test(tabla), 'las fórmulas de la tabla no se renderizaron')
+  }
+
+  // --- menú principal ---
+  const { VistaMenu } = await servidor.ssrLoadModule('/src/vistas/VistaMenu.tsx')
+  const { VistaSeguimiento } = await servidor.ssrLoadModule('/src/vistas/VistaSeguimiento.tsx')
+  const ritmoMenu = await servidor.ssrLoadModule('/src/dominio/ritmo.ts')
+  const progresoMenu = await servidor.ssrLoadModule('/src/dominio/progreso.ts')
+  const sesionMenu = await servidor.ssrLoadModule('/src/dominio/sesion.ts')
+  const planMenu = ritmoMenu.armarPlan(
+    progresoMenu.PROGRESO_VACIO,
+    contenido.skillsConItems(),
+    contenido.skillsDeItem,
+    contenido.config,
+    new Date('2026-10-08T10:00:00'),
+  )
+  const sesionVacia = {
+    sesion: sesionMenu.SESION_VACIA,
+    item: (c: string) => sesionMenu.itemDeSesion(sesionMenu.SESION_VACIA, c),
+    anotarItem: () => {},
+    reiniciarItem: () => {},
+    anotarSimulacro: () => {},
+    reiniciar: () => {},
+  }
+  const menu = render(
+    createElement(VistaMenu, {
+      guia: 3,
+      api: { progreso: progresoMenu.PROGRESO_VACIO },
+      sesion: sesionVacia,
+      plan: planMenu,
+    }),
+  )
+  for (const [nombre, href] of [
+    ['Ejercicios', '#/ejercicios/3'],
+    ['Skills', '#/skills'],
+    ['Simulacro', '#/simulacro'],
+    ['Seguimiento', '#/seguimiento'],
+  ]) {
+    afirmar(menu.includes(`>${nombre}<`), `el menú no tiene la opción ${nombre}`)
+    afirmar(menu.includes(`href="${href}"`), `la opción ${nombre} no lleva a ${href}`)
+  }
+  afirmar(
+    menu.includes(`0 de ${contenido.ejercicios.length} ejercicios resueltos`),
+    'el menú no resume los ejercicios resueltos',
+  )
+
+  // --- seguimiento ---
+  const seguimiento = render(
+    createElement(VistaSeguimiento, {
+      plan: planMenu,
+      sesion: sesionVacia,
+      onIrAEjercicio: () => {},
+    }),
+  )
+  afirmar(seguimiento.includes('class="ritmo'), 'Seguimiento no muestra el recuadro del ritmo')
+  afirmar(seguimiento.includes('class="leyenda"'), 'Seguimiento no explica los colores')
+  const puntosSeguimiento = (seguimiento.match(/class="punto punto--/g) ?? []).length
+  // La leyenda suma cuatro círculos de muestra.
+  afirmar(
+    puntosSeguimiento === contenido.ejercicios.length + 4,
+    `Seguimiento muestra ${puntosSeguimiento - 4} círculos para ${contenido.ejercicios.length} ejercicios`,
+  )
+  for (const g of contenido.guias) {
+    if (!contenido.guiaTieneContenido(g.numero)) continue
+    afirmar(seguimiento.includes(`Guía ${g.numero}</span>`), `Seguimiento no agrupa la guía ${g.numero}`)
+  }
+
   // --- panel de skills (fase 3) ---
   const { PanelSkills } = await servidor.ssrLoadModule('/src/vistas/PanelSkills.tsx')
   const progresoMod = await servidor.ssrLoadModule('/src/dominio/progreso.ts')
@@ -175,6 +272,8 @@ try {
   afirmar(limpio.includes('estado--sin_explorar'), 'sin intentos no se ve ningún sin_explorar')
   afirmar(limpio.includes('Exportar JSON') && limpio.includes('Importar JSON'),
     'faltan los botones de exportar o importar')
+  // El recuadro del ritmo se mudó a Seguimiento.
+  afirmar(!limpio.includes('class="ritmo'), 'el panel de skills sigue mostrando el ritmo')
 
   // Con tres intentos limpios de un skill, tiene que aparecer la insignia.
   let sembrado = progresoMod.PROGRESO_VACIO
@@ -232,6 +331,31 @@ try {
   afirmar(guiaRetomada.includes('Reintentar'), 'no se ve el botón de reintentar')
   afirmar(guiaRetomada.includes('value="1/6"'), 'no se recuperó lo tipeado')
   afirmar(guiaRetomada.includes('class="tags"'), 'con un ítem resuelto no aparecen los tags')
+  // Los tags van debajo del enunciado y antes de los ítems, no al final.
+  const tarjeta04 = guiaRetomada.slice(
+    guiaRetomada.indexOf('id="ej-g1-04"'),
+    guiaRetomada.indexOf('</article>', guiaRetomada.indexOf('id="ej-g1-04"')),
+  )
+  const posEnunciado = tarjeta04.indexOf('class="enunciado"')
+  const posTags = tarjeta04.indexOf('class="tags"')
+  const posItems = tarjeta04.indexOf('class="items"')
+  afirmar(
+    posEnunciado >= 0 && posEnunciado < posTags && posTags < posItems,
+    'los tags no quedaron entre el enunciado y los ítems',
+  )
+  // Cada tag que se ve tiene que resaltar algo: su skill está marcado en el
+  // enunciado o en alguna pregunta de la tarjeta.
+  for (const m of tarjeta04.matchAll(/class="tag[^"]*"[^>]*>([^<]+)</g)) {
+    const nombre = m[1]
+    const skill = contenido.skills.find((s: { nombre: string }) => s.nombre === nombre)
+    afirmar(!!skill, `el tag "${nombre}" no corresponde a ningún skill`)
+    if (skill) {
+      afirmar(
+        new RegExp(`data-skills="[^"]*\\b${skill.id}\\b`).test(tarjeta04),
+        `el tag "${nombre}" no tiene ningún fragmento que resaltar`,
+      )
+    }
+  }
   // El resto de los ítems tiene que seguir pendiente.
   afirmar(guiaRetomada.includes('item item--pendiente'), 'se marcaron resueltos ítems que no lo estaban')
 
@@ -350,19 +474,16 @@ try {
   const vistaVencida = render(createElement(AvisoParcialDetalle, { plan: planVencido }))
   afirmar(vistaVencida.includes('ya pasó'), 'con la fecha pasada el detalle no avisa')
 
-  // El encabezado lleva el aviso.
+  // El encabezado lleva el aviso, entre las migas y las pestañas.
   const cabeceraConPlan = render(
-    createElement(Cabecera, {
-      vista: 'guia',
-      guiaActiva: 1,
-      plan: planVacio,
-      onVista: () => {},
-      onGuia: () => {},
-    }),
+    createElement(Cabecera, { ruta: { seccion: 'ejercicios', guia: 1 }, plan: planVacio }),
   )
+  const posAviso = cabeceraConPlan.indexOf('class="aviso-parcial')
+  afirmar(posAviso >= 0, 'el encabezado no muestra el aviso del parcial')
   afirmar(
-    cabeceraConPlan.includes('class="aviso-parcial'),
-    'el encabezado no muestra el aviso del parcial',
+    cabeceraConPlan.indexOf('class="migas"') < posAviso &&
+      posAviso < cabeceraConPlan.indexOf('class="barra-guias"'),
+    'el aviso del parcial no quedó entre el título y las pestañas',
   )
 
   // --- los círculos cambian de color según el estado ---

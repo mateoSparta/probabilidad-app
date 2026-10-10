@@ -1,16 +1,17 @@
 /**
- * Tarjeta de ejercicio (PLAN.md §8): número, enunciado y la lista de ítems.
+ * Tarjeta de ejercicio (PLAN.md §8): número, enunciado, tags y la lista de
+ * ítems.
  *
- * El resaltado del fragmento vive acá y no en el ítem, porque el fragmento
- * está en el enunciado, que es compartido por todos los ítems.
+ * El resaltado vive acá y no en el ítem, porque los fragmentos pueden estar
+ * en el enunciado, que es compartido por todos los ítems, o en la pregunta de
+ * cualquiera de ellos.
  */
-import { useState } from 'preact/hooks'
-
 import type { ApiSesion } from '../datos/usarSesion'
 import { claveItem } from '../dominio/tipos'
 import type { Ejercicio, Intento } from '../dominio/tipos'
 import { ItemEjercicio } from './ItemEjercicio'
 import { Enunciado } from './Mate'
+import { Tags, usarResaltado } from './Tags'
 
 const ETIQUETA_PRIORIDAD: Record<string, string> = {
   recomendado: 'Recomendado',
@@ -25,19 +26,21 @@ type Props = {
 }
 
 export function TarjetaEjercicio({ ejercicio, sesion, onIntento }: Props) {
-  const [resaltado, setResaltado] = useState<string | null>(null)
+  const resaltado = usarResaltado()
 
   const etiqueta = ejercicio.prioridad && ETIQUETA_PRIORIDAD[ejercicio.prioridad]
 
   /**
-   * Las marcas del enunciado se destapan cuando algún ítem ya se resolvió.
-   * Se deriva de la sesión y no de un estado local, para que al recargar la
-   * página no vuelvan a esconderse con el ejercicio ya hecho.
+   * Los ítems resueltos o revelados. Se derivan de la sesión y no de un
+   * estado local, para que al recargar la página los tags y las marcas no
+   * vuelvan a esconderse con el ejercicio ya hecho.
    */
-  const algunoResuelto = ejercicio.items.some((item) => {
+  const resueltos = ejercicio.items.filter((item) => {
     const e = sesion?.item(claveItem(ejercicio.id, item.id)).estado
     return e === 'correcto' || e === 'revelado'
   })
+  const tags = [...new Set(resueltos.flatMap((item) => item.skills))]
+  const mostrarMarcas = resueltos.length > 0
 
   return (
     <article class="tarjeta" id={'ej-' + ejercicio.id}>
@@ -46,7 +49,13 @@ export function TarjetaEjercicio({ ejercicio, sesion, onIntento }: Props) {
         {etiqueta && <span class="insignia-prioridad">{etiqueta}</span>}
       </header>
 
-      <Enunciado texto={ejercicio.enunciado} resaltado={resaltado} mostrarMarcas={algunoResuelto} />
+      <Enunciado
+        texto={ejercicio.enunciado}
+        resaltado={resaltado.activo}
+        mostrarMarcas={mostrarMarcas}
+      />
+
+      <Tags skills={tags} resaltado={resaltado} />
 
       <ol class="items">
         {ejercicio.items.map((item) => {
@@ -59,7 +68,8 @@ export function TarjetaEjercicio({ ejercicio, sesion, onIntento }: Props) {
               inicial={sesion?.item(clave)}
               onGuardar={sesion ? (e) => sesion.anotarItem(clave, e) : undefined}
               onReiniciar={sesion ? () => sesion.reiniciarItem(clave) : undefined}
-              onResaltar={setResaltado}
+              resaltado={resaltado.activo}
+              mostrarMarcas={mostrarMarcas}
               onIntento={onIntento}
             />
           )

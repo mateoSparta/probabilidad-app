@@ -6,6 +6,8 @@
  * cambio de idea: en vez de esconder ejercicios para enfocarse en un tema,
  * mostrar de un vistazo el estado de todos y poder saltar al que haga falta.
  */
+import { useEffect } from 'preact/hooks'
+
 import { IndiceGuia } from '../componentes/IndiceGuia'
 import { irA, MapaEjercicios } from '../componentes/MapaEjercicios'
 import { TarjetaEjercicio } from '../componentes/TarjetaEjercicio'
@@ -18,10 +20,21 @@ type Props = {
   numero: number
   sesion?: ApiSesion
   onIntento?: (intento: Intento, limpio: boolean) => void
+  /** Ejercicio al que hay que bajar apenas se dibuje la guía. */
+  destino?: string | null
+  onDestinoAlcanzado?: () => void
 }
 
-export function VistaGuia({ numero, sesion, onIntento }: Props) {
+export function VistaGuia({ numero, sesion, onIntento, destino, onDestinoAlcanzado }: Props) {
   const guia = guiaPorNumero.get(numero)
+
+  // Se baja sin animación: viniendo de otra sección, una animación larga
+  // desde el principio de la guía no aporta nada.
+  useEffect(() => {
+    if (!destino) return
+    irA('ej-' + destino, false)
+    onDestinoAlcanzado?.()
+  }, [destino])
 
   if (!guia || guia.secuencia.length === 0) {
     return (
@@ -44,14 +57,14 @@ export function VistaGuia({ numero, sesion, onIntento }: Props) {
       </section>
 
       <div class="secuencia">
-        {guia.secuencia.map((paso, i) => {
+        {guia.secuencia.map((paso) => {
           if (paso.tipo === 'teoria') {
             const bloque = teoriaPorId.get(paso.id)
-            return bloque ? <Teoria key={i} bloque={bloque} /> : null
+            return bloque ? <Teoria key={paso.id} bloque={bloque} /> : null
           }
           const ej = ejercicioPorId.get(paso.id)
           return ej ? (
-            <TarjetaEjercicio key={i} ejercicio={ej} sesion={sesion} onIntento={onIntento} />
+            <TarjetaEjercicio key={paso.id} ejercicio={ej} sesion={sesion} onIntento={onIntento} />
           ) : null
         })}
       </div>

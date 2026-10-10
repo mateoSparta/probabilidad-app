@@ -5,33 +5,6 @@
 .guia__intro { margin-bottom: var(--e-6); }
 .guia__descripcion { color: var(--tinta-2); }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--e-2);
-  margin-top: var(--e-4);
-}
-
-.chip {
-  appearance: none;
-  cursor: pointer;
-  font-family: var(--serif);
-  font-size: var(--t-xs);
-  padding: 2px var(--e-3);
-  border-radius: var(--radio-pill);
-  border: 1px solid var(--borde-fuerte);
-  background: transparent;
-  color: var(--tinta-3);
-  transition: background 120ms, color 120ms, border-color 120ms;
-}
-.chip:hover { border-color: var(--acento); color: var(--tinta); }
-.chip--on {
-  background: var(--acento-suave);
-  border-color: color-mix(in srgb, var(--acento) 40%, transparent);
-  color: var(--acento);
-}
-.chip--reset { font-style: italic; }
-
 /* ------------------------------------------------------------- teoría */
 
 .teoria {
@@ -42,15 +15,42 @@
   margin-block: var(--e-6);
   border-radius: 0 var(--radio-lg) var(--radio-lg) 0;
 }
-/* Los anclas tienen que quedar abajo del header sticky al saltar hacia ellas. */
+/* Los anclas tienen que quedar abajo de la barra fija de las guías al saltar
+   hacia ellas. */
 .teoria,
 .tarjeta,
 .guia__intro {
-  scroll-margin-top: 7.5rem;
+  scroll-margin-top: 4.25rem;
 }
 .teoria h2, .teoria h3 { margin-top: 0; font-size: var(--t-md); }
 .teoria > :last-child { margin-bottom: 0; }
 .teoria ul, .teoria ol { padding-left: var(--e-5); margin-bottom: var(--e-4); }
+
+/* Tablas de la teoría: centradas, con borde visible y las celdas centradas,
+   que es como se leen las tablas de fórmulas. La primera columna, cuando es
+   texto, va alineada a la izquierda porque funciona como rótulo de la fila. */
+.tabla {
+  overflow-x: auto;
+  margin-block: var(--e-4);
+}
+.tabla table {
+  border-collapse: collapse;
+  margin-inline: auto;
+  font-size: var(--t-sm);
+  background: var(--superficie);
+}
+.tabla th,
+.tabla td {
+  border: 1px solid var(--borde-fuerte);
+  padding: var(--e-2) var(--e-4);
+  text-align: center;
+  vertical-align: middle;
+}
+.tabla th {
+  font-weight: 600;
+  background: color-mix(in srgb, var(--acento) 7%, var(--superficie));
+}
+.tabla td:first-child:not(:has(.katex)) { text-align: left; }
 
 /* ----------------------------------------------------------- tarjeta */
 
@@ -87,7 +87,7 @@
   padding: 0 var(--e-2);
 }
 
-.enunciado { margin-bottom: var(--e-4); }
+.enunciado { margin-bottom: var(--e-3); }
 
 /* Fragmento que justifica un tag. Neutro hasta que se resuelve el ítem. */
 .fragmento {
@@ -178,6 +178,31 @@
   margin-top: var(--e-3);
 }
 
+/* Los botones de un ítem se reparten el ancho de la tarjeta: cuatro en una
+   fila en pantallas anchas, dos por fila en un celular. Cuando quedan menos
+   (ítem resuelto), los que quedan se estiran hasta ocupar la fila. */
+.botonera {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: var(--e-2);
+  margin-top: var(--e-3);
+}
+
+.boton--icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-2);
+  padding-block: var(--e-2);
+  white-space: nowrap;
+}
+.boton--icono .icono { flex: none; font-size: 1.05em; }
+.boton--activo {
+  background: var(--acento-suave);
+  border-color: color-mix(in srgb, var(--acento) 55%, transparent);
+  color: var(--acento);
+}
+
 /* ----------------------------------------------------------- feedback */
 
 .feedback {
@@ -231,18 +256,19 @@
 
 /* --------------------------------------------------------------- tags */
 
+/* Van debajo del enunciado. Hover resalta; clic fija el resaltado. */
 .tags {
   display: flex;
   flex-wrap: wrap;
   gap: var(--e-2);
   list-style: none;
-  margin: var(--e-4) 0 0;
+  margin: 0 0 var(--e-4);
   padding: 0;
 }
 
 .tag {
   appearance: none;
-  cursor: help;
+  cursor: pointer;
   font-family: var(--serif);
   font-size: var(--t-xs);
   padding: 1px var(--e-2);
@@ -250,12 +276,29 @@
   border: 1px dashed color-mix(in srgb, var(--acento) 45%, transparent);
   background: transparent;
   color: var(--acento);
+  transition: background 120ms, color 120ms;
 }
 .tag:hover { background: var(--acento-suave); border-style: solid; }
+.tag--fijado,
+.tag--fijado:hover {
+  background: var(--acento);
+  border-color: var(--acento);
+  border-style: solid;
+  color: var(--superficie-alta);
+}
 
 /* ---------------------------------------------------------- matemática */
 
 .katex { font-size: 1.03em; }
+
+/* Puntuación pegada a una fórmula: va adentro de la caja de KaTeX para que
+   no quede sola al principio de un renglón (ver componentes/latex.ts). Se
+   devuelve a la tipografía y al tamaño del texto, porque `.katex` agranda. */
+.katex .puntuacion {
+  font-family: var(--serif);
+  font-size: calc(1em / 1.03);
+  font-style: normal;
+}
 .mate-roto {
   background: var(--flojo-suave);
   color: var(--flojo);
@@ -380,6 +423,19 @@
   color: var(--tinta-2);
 }
 .lista-items li { margin-bottom: var(--e-1); }
+
+/* Un botón que se ve como enlace: navega dentro de la app sin ser un ancla. */
+.enlace {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  color: var(--acento);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
 
 .datos {
   border-top: 1px solid var(--borde);

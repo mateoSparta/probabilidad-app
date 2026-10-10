@@ -14,6 +14,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks'
 
 import { ItemEjercicio } from '../componentes/ItemEjercicio'
 import { Enunciado } from '../componentes/Mate'
+import { Tags, usarResaltado } from '../componentes/Tags'
 import { claveItemExamen, examenes, examenPorId } from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
@@ -30,8 +31,10 @@ import {
   elegirExamen,
   esCompleto,
   formatearTiempo,
+  type EjercicioExamen,
   type Examen,
 } from '../dominio/simulacro'
+import type { Intento } from '../dominio/tipos'
 
 const CLAVE_CONFIG = 'probabilidad-app:simulacro-config:v1'
 
@@ -174,41 +177,22 @@ export function VistaSimulacro({ api, sesion }: Props) {
       {resultado && <Devolucion examen={examen} resultado={resultado} />}
 
       {jugables.map((ej) => (
-        <article key={ej.numero} class="tarjeta">
-          <header class="tarjeta__cabeza">
-            <h3 class="tarjeta__numero">Ejercicio {ej.numero}</h3>
-            {ej.variante && <span class="insignia-prioridad">{ej.variante}</span>}
-          </header>
-
-          <Enunciado texto={ej.enunciado} mostrarMarcas={sim.entregado && config.mostrarTags} />
-
-          <ol class="items">
-            {ej.items.map((item, i) => {
-              const clave = claveItemExamen(examen.id, ej.numero, item.id)
-              return (
-                <ItemEjercicio
-                  key={clave}
-                  item={item}
-                  clave={clave}
-                  inicial={sesion.item(clave)}
-                  onGuardar={(e) => sesion.anotarItem(clave, e)}
-                  modoExamen={!sim.entregado}
-                  permitirFormulas={config.mostrarFormulas || sim.entregado}
-                  onResaltar={() => {}}
-                  onIntento={(intento, limpio) => {
-                    const actual = sesion.sesion.simulacro
-                    if (actual) {
-                      sesion.anotarSimulacro(
-                        anotarRespuesta(actual, ej.numero, i, intento.correcto),
-                      )
-                    }
-                    api.registrar(intento, limpio)
-                  }}
-                />
-              )
-            })}
-          </ol>
-        </article>
+        <TarjetaExamen
+          key={ej.numero}
+          examen={examen}
+          ejercicio={ej}
+          sesion={sesion}
+          entregado={sim.entregado}
+          mostrarTags={config.mostrarTags}
+          mostrarFormulas={config.mostrarFormulas}
+          onIntento={(i, intento, limpio) => {
+            const actual = sesion.sesion.simulacro
+            if (actual) {
+              sesion.anotarSimulacro(anotarRespuesta(actual, ej.numero, i, intento.correcto))
+            }
+            api.registrar(intento, limpio)
+          }}
+        />
       ))}
 
       {/* Los que no se presentaron, para que se vea qué falta del examen real. */}
@@ -228,6 +212,68 @@ export function VistaSimulacro({ api, sesion }: Props) {
         </section>
       )}
     </>
+  )
+}
+
+/**
+ * Un ejercicio del examen. Es un componente aparte porque cada tarjeta lleva
+ * su propio estado de resaltado, y los hooks no pueden ir dentro de un `map`.
+ */
+function TarjetaExamen({
+  examen,
+  ejercicio: ej,
+  sesion,
+  entregado,
+  mostrarTags,
+  mostrarFormulas,
+  onIntento,
+}: {
+  examen: Examen
+  ejercicio: EjercicioExamen
+  sesion: ApiSesion
+  entregado: boolean
+  mostrarTags: boolean
+  mostrarFormulas: boolean
+  onIntento: (indiceItem: number, intento: Intento, limpio: boolean) => void
+}) {
+  const resaltado = usarResaltado()
+  // Los tags sólo después de entregar, y sólo si se pidieron: mientras se
+  // rinde, saber el tema sería una ayuda que el examen real no da.
+  const conTags = entregado && mostrarTags
+  const items = ej.items ?? []
+  const tags = conTags ? [...new Set(items.flatMap((item) => item.skills))] : []
+
+  return (
+    <article class="tarjeta">
+      <header class="tarjeta__cabeza">
+        <h3 class="tarjeta__numero">Ejercicio {ej.numero}</h3>
+        {ej.variante && <span class="insignia-prioridad">{ej.variante}</span>}
+      </header>
+
+      <Enunciado texto={ej.enunciado} resaltado={resaltado.activo} mostrarMarcas={conTags} />
+
+      <Tags skills={tags} resaltado={resaltado} />
+
+      <ol class="items">
+        {items.map((item, i) => {
+          const clave = claveItemExamen(examen.id, ej.numero, item.id)
+          return (
+            <ItemEjercicio
+              key={clave}
+              item={item}
+              clave={clave}
+              inicial={sesion.item(clave)}
+              onGuardar={(e) => sesion.anotarItem(clave, e)}
+              modoExamen={!entregado}
+              permitirFormulas={mostrarFormulas || entregado}
+              resaltado={resaltado.activo}
+              mostrarMarcas={conTags}
+              onIntento={(intento, limpio) => onIntento(i, intento, limpio)}
+            />
+          )
+        })}
+      </ol>
+    </article>
   )
 }
 

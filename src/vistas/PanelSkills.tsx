@@ -8,13 +8,11 @@
  */
 import { useState } from 'preact/hooks'
 
-import { AvisoParcialDetalle } from '../componentes/AvisoParcial'
 import { Formula } from '../componentes/Mate'
 import { descargar } from '../datos/almacenamiento'
 import { itemsPorSkill, skillPorId, skillsPorGuia, ubicacionDeItem } from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
-import type { Plan } from '../dominio/ritmo'
 import {
   avanceSkill,
   contarPorEstado,
@@ -38,11 +36,12 @@ function inicial(nombre: string): string {
 export function PanelSkills({
   api,
   sesion,
-  plan,
+  onIrAEjercicio,
 }: {
   api: ApiProgreso
   sesion?: ApiSesion
-  plan?: Plan
+  /** Lleva a un ejercicio, que está en otra sección. */
+  onIrAEjercicio?: (idEjercicio: string) => void
 }) {
   const { progreso, reemplazar, reiniciar } = api
   const [abierto, setAbierto] = useState<string | null>(null)
@@ -69,8 +68,6 @@ export function PanelSkills({
 
   return (
     <>
-      {plan && <AvisoParcialDetalle plan={plan} />}
-
       <section class="guia__intro">
         <h2>Panel de skills</h2>
         <p class="guia__descripcion">
@@ -128,7 +125,7 @@ export function PanelSkills({
         </section>
       ))}
 
-      {abierto && <Detalle id={abierto} api={api} />}
+      {abierto && <Detalle id={abierto} api={api} onIrAEjercicio={onIrAEjercicio} />}
 
       <section class="datos">
         <h3>Tus datos</h3>
@@ -188,7 +185,15 @@ export function PanelSkills({
 }
 
 /** Lo que falta de un skill: ítems pendientes y errores típicos repetidos. */
-function Detalle({ id, api }: { id: string; api: ApiProgreso }) {
+function Detalle({
+  id,
+  api,
+  onIrAEjercicio,
+}: {
+  id: string
+  api: ApiProgreso
+  onIrAEjercicio?: (idEjercicio: string) => void
+}) {
   const skill = skillPorId.get(id)
   if (!skill) return null
 
@@ -221,9 +226,9 @@ function Detalle({ id, api }: { id: string; api: ApiProgreso }) {
             return (
               <li key={clave}>
                 {u ? (
-                  <a href={'#ej-' + u.ejercicio.id}>
+                  <button class="enlace" onClick={() => onIrAEjercicio?.(u.ejercicio.id)}>
                     Ejercicio {u.ejercicio.numero} ({u.item})
-                  </a>
+                  </button>
                 ) : (
                   clave
                 )}

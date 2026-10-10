@@ -1,4 +1,75 @@
-/* Mapa de ejercicios, índice lateral, aviso del parcial y pie. */
+/* Menú principal, mapa de ejercicios, seguimiento, índice lateral, aviso
+   del parcial y pie. */
+
+/* ------------------------------------------------- menú principal */
+
+.menu__grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--e-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu__opcion {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'icono nombre'
+    'icono descripcion'
+    'icono dato';
+  column-gap: var(--e-4);
+  row-gap: var(--e-1);
+  height: 100%;
+  padding: var(--e-5);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra);
+  color: var(--tinta);
+  text-decoration: none;
+  transition: border-color 120ms, background 120ms;
+}
+.menu__opcion:hover {
+  border-color: color-mix(in srgb, var(--acento) 60%, transparent);
+  background: var(--superficie-alta);
+}
+
+.menu__icono {
+  grid-area: icono;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--acento-suave);
+  color: var(--acento);
+  font-size: 1.35rem;
+}
+
+.menu__nombre {
+  grid-area: nombre;
+  font-size: var(--t-md);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.menu__descripcion {
+  grid-area: descripcion;
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+  line-height: 1.45;
+}
+
+.menu__dato {
+  grid-area: dato;
+  margin-top: var(--e-2);
+  font-size: var(--t-xs);
+  color: var(--tinta-3);
+  letter-spacing: 0.01em;
+}
+.menu__dato--alerta { color: var(--acento); font-weight: 500; }
 
 /* ------------------------------------------- mapa de ejercicios */
 
@@ -88,24 +159,78 @@
   opacity: 1;
 }
 
+/* --------------------------------------------------- seguimiento */
+
+.seguimiento h3 { margin-bottom: var(--e-2); }
+
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2) var(--e-5);
+  list-style: none;
+  margin: 0 0 var(--e-5);
+  padding: 0;
+  font-size: var(--t-xs);
+  color: var(--tinta-2);
+}
+.leyenda li {
+  display: flex;
+  align-items: center;
+  gap: var(--e-2);
+}
+.leyenda .punto { cursor: default; }
+.leyenda .punto:hover { transform: none; }
+
+.unidad {
+  padding-block: var(--e-4);
+  border-top: 1px solid var(--borde);
+}
+.unidad__titulo {
+  margin: 0;
+  font-size: var(--t-sm);
+  font-weight: 500;
+  color: var(--tinta);
+}
+.unidad__numero {
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tinta-3);
+  margin-right: var(--e-2);
+}
+.unidad .mapa { margin-top: var(--e-3); }
+
 /* ----------------------------------------------- índice lateral */
 
 /* Vive en el espacio vacío de la izquierda. La columna central mide 760 px y
    el índice 184, separado 24 de la columna: eso deja 22 px de margen contra el
    borde a 1220 px de ancho, que es el breakpoint. Por debajo de eso se
-   esconde, porque apretaría la columna, que es lo que importa. */
+   esconde, porque apretaría la columna, que es lo que importa.
+
+   El `aside` ocupa todo el alto de la guía, al costado de la columna, y su
+   contenido es `sticky`: arranca a la altura del título de la guía y, al
+   bajar, queda fijo justo debajo de la barra de pestañas. Con `position:
+   fixed` quedaba tapado por la barra o flotando sobre el encabezado. */
 .indice {
   display: none;
 }
 
 @media (min-width: 1220px) {
+  main.columna {
+    position: relative;
+  }
   .indice {
     display: block;
-    position: fixed;
-    top: 9rem;
-    left: calc(50% - (var(--col) / 2) - 13rem);
+    position: absolute;
+    top: var(--e-5);
+    bottom: 0;
+    right: calc(100% + 1.5rem);
     width: 11.5rem;
-    max-height: calc(100vh - 11rem);
+  }
+  .indice__contenido {
+    position: sticky;
+    top: 4.5rem;
+    max-height: calc(100vh - 6rem);
     overflow-y: auto;
     scrollbar-width: thin;
   }
@@ -196,15 +321,27 @@
 
 /* -------------------------------------------- aviso del parcial */
 
+/* Un recuadro del ancho de la columna, con el texto centrado. El borde es
+   neutro y sólo la fecha lleva el color del ritmo: tiene que verse sin
+   llamar la atención. */
 .aviso-parcial {
-  margin: 0;
+  margin: var(--e-3) 0 0;
   display: flex;
-  align-items: baseline;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   gap: var(--e-2);
+  padding: var(--e-2) var(--e-4);
   font-size: var(--t-xs);
   color: var(--tinta-2);
-  border-left: 2px solid var(--color-ritmo, var(--borde-fuerte));
-  padding-left: var(--e-3);
+  text-align: center;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+}
+.aviso-parcial .icono {
+  color: var(--color-ritmo, var(--tinta-3));
+  font-size: 1.1em;
 }
 .aviso-parcial__fecha {
   font-weight: 500;

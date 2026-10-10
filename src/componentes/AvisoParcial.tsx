@@ -1,17 +1,18 @@
 /**
  * El aviso del parcial, en dos formatos.
  *
- * `AvisoParcialCompacto` va en el encabezado: una línea con la fecha y los días
- * que faltan, teñida según el ritmo. Es lo único que se ve siempre, y por eso
- * no dice nada más.
+ * `AvisoParcialCompacto` va en el encabezado, en un recuadro del ancho de la
+ * columna: la fecha y los días que faltan, con la fecha teñida según el ritmo.
+ * Es lo único que se ve siempre, y por eso no dice nada más.
  *
- * `AvisoParcialDetalle` va en el panel de skills, con la cuenta completa: qué
- * falta, cuántos ítems por día y si el ritmo de los últimos días alcanza.
+ * `AvisoParcialDetalle` va en Seguimiento, con la cuenta completa: qué falta,
+ * cuántos ítems por día y si el ritmo de los últimos días alcanza.
  */
 import { config } from '../datos/contenido'
 import { ETIQUETA_VEREDICTO, fechaCorta, type Plan } from '../dominio/ritmo'
+import { IconoCalendario } from './Iconos'
 
-/** Los estados que pintan de rojo, para no repetir la lista. */
+/** La clase de color que corresponde a cada veredicto. */
 function tono(plan: Plan): string {
   switch (plan.veredicto) {
     case 'listo':
@@ -41,6 +42,7 @@ export function AvisoParcialCompacto({ plan }: { plan: Plan }) {
 
   return (
     <p class={'aviso-parcial ' + tono(plan)}>
+      <IconoCalendario />
       <span class="aviso-parcial__fecha">Parcial {fechaCorta(config.parcial)}</span>
       <span class="aviso-parcial__sep" aria-hidden="true">
         ·
