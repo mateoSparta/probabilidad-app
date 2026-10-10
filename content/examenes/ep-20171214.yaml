@@ -1,0 +1,209 @@
+id: ep-20171214
+tipo: parcial
+titulo: Segundo recuperatorio, segundo cuatrimestre de 2017
+fecha: "2017-12-14"
+duracion_min: 240
+fuente: "fuentes/examenes/parciales/08 Parcial Resuelto - EP20171214Res.pdf#p5"
+# El PDF no enuncia el criterio de aprobación. Se usa el criterio actual de la
+# cátedra para los parciales de cinco ejercicios (tres bien resueltos).
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [1]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Un coche de la línea A del subte parte desde la terminal San Pedrito con
+      8 pasajeros. El conductor anuncia que solo se detendrá en las estaciones
+      Lima, Piedras, Perú o Plaza de Mayo. [[ocupacion,laplace|Cada pasajero
+      elige al azar la estación en que bajará.]]
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que exactamente 3 pasajeros bajen en la
+          estación Lima y ninguno en Perú.
+        skills: [ocupacion, laplace]
+        respuesta:
+          tipo: numerica
+          valor: "7/256"
+        pistas:
+          - >-
+            Cada pasajero elige entre 4 estaciones, de modo que hay $4^8$
+            elecciones equiprobables.
+          - >-
+            Primero elegí qué pasajeros bajan en Lima. Los demás no pueden
+            bajar ni en Lima ni en Perú.
+          - >-
+            Plan: multiplicá la cantidad de formas de elegir los 3 pasajeros
+            de Lima por la cantidad de formas en que los otros 5 se reparten
+            entre las dos estaciones permitidas, y dividí por $4^8$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "08 Parcial Resuelto - EP20171214Res.pdf#p5"
+              valor: "7/256"
+            - origen: tools/verify/ep20171214.py
+              valor: "7/256"
+
+  - numero: 2
+    guias: [3]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Una urna contiene tres bolas numeradas 1, 2 y 3. Se extraen al azar dos
+      bolas de la urna, una por una y sin reposición. [[esperanza|Sea $X$ el
+      número de la primera bola extraída e $Y$ el número de la segunda.]]
+    items:
+      - id: a
+        pregunta: 'Calcular [[covarianza|$\operatorname{cov}(X, Y)$]].'
+        skills: [covarianza, esperanza]
+        respuesta:
+          tipo: numerica
+          valor: "-1/3"
+        pistas:
+          - >-
+            Los 6 pares ordenados posibles son equiprobables, y de ahí sale la
+            distribución conjunta de $(X, Y)$.
+          - Las marginales de $X$ y de $Y$ son uniformes sobre $\{1, 2, 3\}$.
+          - >-
+            Plan: calculá $E[XY]$ promediando los productos de los 6 pares,
+            restale $E[X]\,E[Y]$ y analizá si el signo del resultado es
+            razonable.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "08 Parcial Resuelto - EP20171214Res.pdf#p5"
+              valor: "-1/3"
+            - origen: tools/verify/ep20171214.py
+              valor: "-1/3"
+
+  - numero: 3
+    guias: [2, 4]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Sea $(X, Y)$ un vector aleatorio con [[prob-geometrica|distribución
+      uniforme sobre el recinto $\Lambda$]] formado por la unión de la banda
+      $\{(x, y) \in [0, 1]^2 : 0 \le y - x \le 1/2\}$ y del triángulo de
+      vértices $(1/2, 0)$, $(1, 0)$ y $(1, 1/2)$. En el examen, el recinto se
+      da mediante una figura.
+    items:
+      - id: a
+        pregunta: >-
+          Hallar la [[transformacion-F|función de distribución de
+          $U = Y - X$]] y evaluarla donde se pide.
+        skills: [transformacion-F, prob-geometrica]
+        respuesta:
+          tipo: checkpoints
+          checkpoints:
+            - pregunta: '$F_U(-3/4)$'
+              valor: "1/16"
+            - pregunta: '$F_U(-1/4)$'
+              valor: "1/4"
+            - pregunta: '$F_U(1/4)$'
+              valor: "11/16"
+        pistas:
+          - >-
+            Como la distribución es uniforme, $F_U(u) = P(Y - X \le u)$ es el
+            área de la parte de $\Lambda$ que queda debajo de la recta
+            $y = x + u$, dividida por el área de $\Lambda$.
+          - >-
+            El área de $\Lambda$ es $1/2$. La banda aporta valores de $U$ entre
+            0 y $1/2$, y el triángulo, valores menores que $-1/2$.
+          - >-
+            Plan: para cada $u$ pedido, dibujá la recta $y = x + u$, calculá el
+            área de $\Lambda$ que queda por debajo, descomponiéndola en
+            triángulos y trapecios, y dividila por el área total.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "08 Parcial Resuelto - EP20171214Res.pdf#p6"
+              valor: "F_U(u) = (1+u)^2 en [-1,-1/2), 1/4 en [-1/2,0), 5/4 - (1-u)^2 en [0,1/2)"
+            - origen: tools/verify/ep20171214.py
+              valor: "1/16, 1/4, 11/16"
+
+  - numero: 4
+    guias: [1, 7]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      [[poisson-incrementos|A partir de las 10:00 clientes arriban a la fila
+      de un banco de acuerdo con un proceso de Poisson de intensidad 2 por
+      minuto.]]
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que a las 10:03 haya al menos 3 clientes
+          en la fila, [[condicional|sabiendo que el primer cliente arribó
+          antes de las 10:01]].
+        skills: [poisson-incrementos, condicional]
+        respuesta:
+          tipo: numerica
+          valor: "1 - 12*exp(-6)/(1 - exp(-2))"
+        pistas:
+          - >-
+            Conviene pasar al complemento, es decir, al evento de que a las
+            10:03 haya a lo sumo 2 clientes.
+          - >-
+            Separá el tiempo en los intervalos $(0, 1]$ y $(1, 3]$, en
+            minutos. Los conteos en esos intervalos son independientes, y el
+            dato solo involucra al primero.
+          - >-
+            Plan: descomponé el evento "al menos 1 en $(0, 1]$ y a lo sumo 2
+            en $(0, 3]$" según el conteo en $(0, 1]$, calculá su probabilidad
+            con dos Poisson independientes, dividí por $P(N(0, 1] \ge 1)$ y
+            restá el resultado de 1.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "08 Parcial Resuelto - EP20171214Res.pdf#p8"
+              valor: "0.9656"
+            - origen: tools/verify/ep20171214.py
+              valor: "(-exp(6) + 12 + exp(4))*exp(-4)/(1 - exp(2))"
+
+  - numero: 5
+    guias: [6, 8]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      El control de recepción para lotes de varillas consiste en seleccionar 5
+      varillas al azar del lote y aceptarlo solamente si se encuentran al
+      menos 4 varillas de longitud admisible y ninguna corta.
+      [[multinomial|Las longitudes de las varillas son independientes y cada
+      varilla es de longitud admisible con probabilidad $0{,}8$, corta con
+      probabilidad $0{,}05$, y larga con probabilidad $0{,}15$.]]
+    items:
+      - id: a
+        pregunta: >-
+          Calcular [[aproximacion-normal|aproximadamente la probabilidad de
+          aceptar al menos 60 lotes de un total de 100 lotes revisados]].
+        skills: [multinomial, aproximacion-normal]
+        respuesta:
+          tipo: numerica
+          valor: "1/2 + erf((63.488 - 59.5) / sqrt(2 * 100 * 0.63488 * 0.36512)) / 2"
+        pistas:
+          - >-
+            Primero hay que calcular la probabilidad $p$ de aceptar un lote.
+            Cada una de las 5 varillas cae en una de tres categorías.
+          - >-
+            Un lote se acepta con 5 varillas admisibles, o con 4 admisibles y 1
+            larga. Las dos situaciones son disjuntas.
+          - >-
+            Plan: calculá $p$ con la multinomial, modelá la cantidad de lotes
+            aceptados como una binomial con $n = 100$ y probabilidad $p$, y
+            aproximala por una normal con corrección por continuidad.
+        verificacion:
+          estado: verificado
+          metodo: exacto+distribucion-exacta
+          fuentes_valor:
+            - origen: "08 Parcial Resuelto - EP20171214Res.pdf#p9"
+              valor: "1 - Phi(-0.82813) = 0.79625"
+            - origen: tools/verify/ep20171214.py
+              valor: "erf(4985*sqrt(70742)/2263744)/2 + 1/2"
+            - origen: "tools/verify/ep20171214.py (control: binomial exacta)"
+              valor: "0.7970"

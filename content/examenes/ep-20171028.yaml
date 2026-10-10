@@ -1,0 +1,184 @@
+id: ep-20171028
+tipo: parcial
+titulo: Primer parcial, segundo cuatrimestre de 2017
+fecha: "2017-10-28"
+duracion_min: 240
+fuente: "fuentes/examenes/parciales/11 Parcial Resuelto - EP20171028Res.pdf#p4"
+# El PDF no enuncia el criterio de aprobación. Se usa el criterio actual de la
+# cátedra para los parciales de cinco ejercicios (tres bien resueltos).
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [2]
+    en_alcance: false
+    cargado: false
+    nota: >-
+      Pide simular tres valores con números aleatorios dados. La simulación
+      queda fuera del alcance de la app.
+    enunciado: |
+      El tiempo en años hasta que ocurre la primera falla en una heladera es
+      una variable aleatoria con función intensidad de fallas
+      $\lambda(t) = \frac{1}{18}\sqrt{t}\,\mathbf{1}\{t > 0\}$. Usando los
+      números aleatorios $0{,}54$, $0{,}94$ y $0{,}11$, simular tres valores del
+      tiempo de funcionamiento de dicha heladera hasta que ocurre la primera
+      falla.
+    items: []
+
+  - numero: 2
+    guias: [5]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Sean $X$ e $Y$ dos variables aleatorias tales que
+      $X \sim \mathcal{U}(-1, 1)$ y, [[esperanza-total|para cada
+      $x \in (-1, 1)$, $Y \mid X = x$ tiene distribución normal de media $x$ y
+      varianza $x^2$]].
+    items:
+      - id: a
+        pregunta: 'Calcular [[varianza|$E[Y^2]$]].'
+        skills: [esperanza-total, varianza]
+        respuesta:
+          tipo: numerica
+          valor: "2/3"
+        pistas:
+          - >-
+            Conocer la distribución de $Y$ condicionada a cada valor de $X$
+            permite calcular primero $E[Y^2 \mid X = x]$.
+          - >-
+            Para una variable de media $\mu$ y varianza $\sigma^2$, el momento
+            de segundo orden es $\sigma^2 + \mu^2$.
+          - >-
+            Plan: escribí $E[Y^2 \mid X = x]$ como función de $x$, reemplazá
+            $x$ por $X$ y tomá la esperanza respecto de la distribución
+            uniforme de $X$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "11 Parcial Resuelto - EP20171028Res.pdf#p4"
+              valor: "2/3"
+            - origen: tools/verify/ep20171028.py
+              valor: "2/3"
+
+  - numero: 3
+    guias: [1, 6]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Se emiten 3 bits por un canal de comunicación binario.
+      [[prob-total|Cada bit emitido es 1 con probabilidad $0{,}7$. El receptor
+      indica que hay un 1 cuando efectivamente el 1 ha sido emitido con
+      probabilidad $0{,}6$ e indica que hay un 0 cuando efectivamente el 0 ha
+      sido emitido con probabilidad $0{,}95$.]]
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que [[bernoulli-binomial|exactamente 1 de
+          los 3 bits emitidos se reciba correctamente]].
+        skills: [prob-total, bernoulli-binomial]
+        respuesta:
+          tipo: numerica
+          valor: "3 * 0.705 * 0.295^2"
+        pistas:
+          - >-
+            Primero hay que calcular la probabilidad de que un bit cualquiera
+            se reciba correctamente, que es la misma para los tres bits.
+          - >-
+            Un bit se recibe bien si se emitió un 1 y se leyó un 1, o si se
+            emitió un 0 y se leyó un 0. Los dos casos son disjuntos.
+          - >-
+            Plan: obtené $p = P(\text{bit recibido bien})$ por probabilidad
+            total y usá que la cantidad de bits recibidos correctamente es
+            binomial con $n = 3$ y probabilidad $p$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "11 Parcial Resuelto - EP20171028Res.pdf#p5"
+              valor: "0.18406"
+            - origen: tools/verify/ep20171028.py
+              valor: "1472463/8000000"
+
+  - numero: 4
+    guias: [1, 7]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      [[poisson-incrementos|A partir de las 9:00 se realizará un experimento
+      con un radioisótopo que emite partículas alfa de acuerdo con un proceso
+      de Poisson de intensidad 4 por hora.]] Se instala una alarma que suena
+      cuando [[prob-geometrica|el tiempo entre dos emisiones consecutivas no
+      supera 5 minutos]].
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que [[condicionar-Nt|entre las 9:00 y
+          las 9:30 el radioisótopo haya emitido exactamente 2 partículas]] y
+          haya sonado la alarma.
+        skills: [poisson-incrementos, condicionar-Nt, prob-geometrica]
+        respuesta:
+          tipo: numerica
+          valor: "11/18 * exp(-2)"
+        pistas:
+          - >-
+            El evento impone dos condiciones a la vez. Conviene separarlas con
+            la regla del producto, condicionando a la cantidad de emisiones.
+          - >-
+            Dado que en la media hora hubo exactamente 2 emisiones, sus
+            tiempos se comportan como dos uniformes independientes en ese
+            intervalo.
+          - >-
+            Plan: calculá $P(N = 2)$ con la Poisson de media
+            $4 \cdot \tfrac{1}{2}$ y multiplicala por la probabilidad de que
+            dos uniformes independientes en $(0, 1/2)$ disten a lo sumo $1/12$
+            de hora, que es un cociente de áreas en el cuadrado.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "11 Parcial Resuelto - EP20171028Res.pdf#p5"
+              valor: "11/18 e^-2 = 0.0827"
+            - origen: tools/verify/ep20171028.py
+              valor: "11*exp(-2)/18"
+
+  - numero: 5
+    guias: [8]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Los tiempos (en milisegundos) de transmisión de paquetes en un enlace
+      de Internet son variables aleatorias independientes con
+      [[esperanza,varianza|función densidad de la forma
+      $f(t) = 0{,}04\, e^{-0{,}04\,(t - 10)}\,\mathbf{1}\{t > 10\}$]].
+    items:
+      - id: a
+        pregunta: >-
+          Calcular aproximadamente la probabilidad de que [[tcl|el tiempo de
+          transmisión total de 3600 paquetes exceda 2 minutos y 7
+          segundos]].
+        skills: [tcl, esperanza, varianza]
+        respuesta:
+          tipo: numerica
+          valor: "1/2 - erf(sqrt(2)/3)/2"
+        pistas:
+          - >-
+            La densidad corresponde a una exponencial desplazada 10 ms. El
+            desplazamiento modifica la media pero no la varianza.
+          - >-
+            Hay que expresar todo en la misma unidad. Dos minutos y siete
+            segundos son 127000 ms.
+          - >-
+            Plan: calculá la media y la varianza de un tiempo, multiplicalas
+            por 3600 para obtener las de la suma y aproximá la suma por una
+            normal con esos parámetros.
+        verificacion:
+          estado: verificado
+          metodo: exacto+distribucion-exacta
+          fuentes_valor:
+            - origen: "11 Parcial Resuelto - EP20171028Res.pdf#p5"
+              valor: "1 - Phi(2/3) = 0.25249"
+            - origen: tools/verify/ep20171028.py
+              valor: "1/2 - erf(sqrt(2)/3)/2"
+            - origen: "tools/verify/ep20171028.py (control: la suma exacta es 36000 + Gamma(3600, 0.04))"
+              valor: "0.2515"

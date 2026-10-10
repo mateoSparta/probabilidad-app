@@ -1,0 +1,225 @@
+id: ep-20230527
+tipo: parcial
+titulo: Evaluación parcial, primer cuatrimestre de 2023
+fecha: "2023-05-27"
+duracion_min: 240
+# La fuente es un examen de alumno escaneado y corregido con nota 10. Las
+# respuestas de referencia son las de ese examen.
+fuente: "fuentes/examenes/parciales/01 Parcial Resuelto - 27_05_2023.pdf#p1"
+# El escaneo no muestra el criterio de aprobación. Se usa el criterio actual
+# de la cátedra para los parciales de cinco ejercicios (tres bien resueltos).
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [1]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      La empresa Ticket Online vende entradas para espectáculos deportivos y
+      musicales. [[inclusion-exclusion,condicional|Se sabe que la probabilidad
+      de que un cliente adquiera entradas para un espectáculo deportivo es
+      $0{,}8$, la probabilidad de que adquiera entradas para espectáculos
+      deportivos o musicales es $0{,}9$, y si un cliente adquiere entradas para
+      un espectáculo deportivo, la probabilidad de que no adquiera entradas
+      para un espectáculo musical es $0{,}375$.]] Sean los eventos $D$: "el
+      cliente compra entradas para un espectáculo deportivo" y $M$: "el
+      cliente compra entradas para un espectáculo musical".
+    items:
+      - id: a
+        pregunta: '¿Son $D$ y $M$ [[independencia|independientes]]?'
+        skills: [independencia, inclusion-exclusion, condicional]
+        respuesta:
+          tipo: opcion
+          opciones:
+            - id: c1
+              texto: 'No. $P(D \cap M) = 0{,}5$ y $P(D)\,P(M) = 0{,}48$.'
+              correcta: true
+            - id: c2
+              texto: 'Sí, porque $P(M \mid D) = 0{,}625$ coincide con $P(M)$.'
+              error_tipico: >-
+                $P(M)$ es distinta de $0{,}625$. Se obtiene despejando de
+                $P(D \cup M) = P(D) + P(M) - P(D \cap M)$, y vale $0{,}6$.
+            - id: c3
+              texto: 'No, porque $P(D \cup M) \ne P(D) + P(M)$.'
+              error_tipico: >-
+                Esa desigualdad indica que $D$ y $M$ no son disjuntos, que es
+                una propiedad diferente de la independencia.
+            - id: c4
+              texto: 'Sí, porque $P(D \cap M) = 0{,}8 \cdot 0{,}375 = 0{,}3$.'
+              error_tipico: >-
+                $0{,}375$ es $P(M^c \mid D)$, de modo que
+                $P(D \cap M) = P(D)\,(1 - 0{,}375)$. Además, para decidir hay
+                que comparar esa probabilidad con $P(D)\,P(M)$.
+        pistas:
+          - >-
+            Para decidir hay que comparar $P(D \cap M)$ con $P(D)\,P(M)$, y
+            ninguna de las dos es un dato directo.
+          - >-
+            El dato $0{,}375$ es la probabilidad condicional del complemento de
+            $M$ dado $D$. Su complemento es $P(M \mid D)$.
+          - >-
+            Plan: obtené $P(D \cap M)$ a partir de $P(M \mid D)$ y $P(D)$,
+            despejá $P(M)$ de la fórmula de la probabilidad de la unión y
+            compará.
+        verificacion:
+          estado: verificado
+          metodo: exacto
+          fuentes_valor:
+            - origen: "01 Parcial Resuelto - 27_05_2023.pdf#p2"
+              valor: "P(M ∩ D) = 0.5 != 0.48 = P(M)P(D): no son independientes"
+            - origen: tools/verify/ep20230527.py
+              valor: "P(D ∩ M) = 1/2, P(D)P(M) = 12/25"
+
+  - numero: 2
+    guias: [2, 3]
+    en_alcance: true
+    cargado: false
+    nota: >-
+      Pide construir una variable aleatoria con ciertas propiedades. Admite
+      infinitas respuestas correctas, de modo que no puede validarse con un
+      único valor.
+    enunciado: |
+      Sea $(\Omega, \mathcal{A}, P)$ un espacio de probabilidad en el que
+      $\Omega = \{1, 2, 3, 4, 5, 6\}$,
+      $\mathcal{A} = \{\emptyset, \{1\}, \{2\}, \{3, 4, 5, 6\}, \{1, 2\}, \{1, 3, 4, 5, 6\}, \{2, 3, 4, 5, 6\}, \Omega\}$,
+      $P(\{1\}) = \frac{1}{3}$ y $P(\{2\}) = \frac{1}{2}$. Definir una
+      variable aleatoria $X : \Omega \to \mathbb{R}$ tal que
+      $\{-2, 0\} \subset X(\Omega)$, $E[X] = 0$ y $\operatorname{var}(X) = 1$.
+    items: []
+
+  - numero: 3
+    guias: [4]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      La potencia $W$ (en watts) en un componente eléctrico está dada por
+      $W = rI^2$, donde $r$ es una constante (en ohms) de valor $0{,}2$ e $I$
+      (en amperes) es una variable aleatoria con distribución uniforme sobre
+      el intervalo $(5, 25)$.
+    items:
+      - id: a
+        pregunta: >-
+          Hallar la [[transformacion-F|función de distribución de $W$]] y
+          evaluarla donde se pide.
+        skills: [transformacion-F]
+        respuesta:
+          tipo: checkpoints
+          checkpoints:
+            - pregunta: '$F_W(4)$'
+              valor: "0"
+            - pregunta: '$F_W(20)$'
+              valor: "1/4"
+            - pregunta: '$F_W(80)$'
+              valor: "3/4"
+        pistas:
+          - >-
+            Escribí $F_W(w) = P(0{,}2\, I^2 \le w)$ y expresá el evento en
+            términos de $I$.
+          - >-
+            Como $I$ es positiva, $0{,}2\, I^2 \le w$ equivale a
+            $I \le \sqrt{5w}$. Fuera del rango de valores de $W$, la función
+            de distribución vale 0 o 1.
+          - >-
+            Plan: determiná el rango de $W$ a partir del de $I$, y dentro de
+            ese rango evaluá la función de distribución de la uniforme en
+            $\sqrt{5w}$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "01 Parcial Resuelto - 27_05_2023.pdf#p5"
+              valor: "F_W(w) = (sqrt(5w) - 5)/20 en [5, 125)"
+            - origen: tools/verify/ep20230527.py
+              valor: "0, 1/4, 3/4"
+
+  - numero: 4
+    guias: [6]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Los clientes que arriban a la taberna El Pony Pisador pueden ser Orcos,
+      Enanos o Hobbits con probabilidades $0{,}1$, $0{,}4$ y $0{,}5$
+      respectivamente. [[geometrica-pascal|Una noche dejan entrar clientes a
+      la taberna hasta que llega el quinto Orco y luego cierran las
+      puertas.]]
+    items:
+      - id: a
+        pregunta: >-
+          Sabiendo que entraron exactamente 12 clientes, calcular la
+          probabilidad de que [[multinomial|haya más Enanos que Hobbits]].
+        skills: [multinomial, geometrica-pascal]
+        respuesta:
+          tipo: numerica
+          valor: "1817344/4782969"
+        pistas:
+          - >-
+            Que hayan entrado exactamente 12 clientes significa que el
+            duodécimo es el quinto orco, de modo que entre los 11 primeros hay
+            4 orcos y 7 clientes que no lo son.
+          - >-
+            Si un cliente no es orco, la probabilidad de que sea enano es
+            $0{,}4 / 0{,}9$, independientemente de los demás clientes.
+          - >-
+            Plan: la cantidad de enanos entre los 7 clientes que no son orcos
+            es binomial. Que haya más enanos que hobbits significa al menos 4
+            enanos; sumá esas probabilidades sin redondear la probabilidad
+            condicional.
+        verificacion:
+          estado: discrepancia
+          metodo: exacto+enumeracion
+          nota: >-
+            El examen de referencia da 0.371 porque redondea 4/9 a 0.44 antes
+            de sumar la binomial (con 0.44 se obtiene 0.3706). Con 4/9 exacto
+            el resultado es 1817344/4782969 = 0.3800, que es el valor que se
+            carga.
+          fuentes_valor:
+            - origen: "01 Parcial Resuelto - 27_05_2023.pdf#p6"
+              valor: "0.371"
+            - origen: tools/verify/ep20230527.py
+              valor: "1817344/4782969"
+            - origen: "tools/verify/ep20230527.py (control: con 4/9 redondeado a 0.44)"
+              valor: "0.37062"
+
+  - numero: 5
+    guias: [8]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      La resistencia (en kgf) de un cable que sostiene un ascensor es una
+      variable aleatoria con distribución normal de media 1200 y varianza
+      $120^2$. La demanda sobre ese cable está dada por el peso de la cabina,
+      de 400 kgf, y el peso de las personas que suban.
+      [[combinacion-normales|Los pesos (en kgf) de las personas son variables
+      aleatorias independientes con distribución normal de media 80 y varianza
+      $16^2$.]]
+    items:
+      - id: a
+        pregunta: >-
+          Si se suben 6 personas al ascensor, calcular la probabilidad de que
+          [[normal|el peso total del mismo supere la resistencia del cable]].
+        skills: [combinacion-normales, normal]
+        respuesta:
+          tipo: numerica
+          valor: "1/2 - erf(20*sqrt(498)/249)/2"
+        pistas:
+          - >-
+            La carga total es la cabina más la suma de 6 pesos normales
+            independientes. Conviene estudiar la diferencia entre la
+            resistencia y la carga.
+          - >-
+            Una combinación lineal de normales independientes es normal, y en
+            su varianza los coeficientes aparecen al cuadrado.
+          - >-
+            Plan: suponiendo la resistencia independiente de los pesos,
+            calculá la media y la varianza de
+            $R - (400 + W_1 + \dots + W_6)$ y estandarizá para obtener la
+            probabilidad de que sea negativa.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "01 Parcial Resuelto - 27_05_2023.pdf#p3"
+              valor: "0.0056"
+            - origen: tools/verify/ep20230527.py
+              valor: "1/2 - erf(20*sqrt(498)/249)/2"

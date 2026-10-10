@@ -269,6 +269,18 @@
     - 'g \text{ creciente: } F_Y(t) = F_X\!\left(g^{-1}(t)\right)'
     - 'f_Y(t) = f_X\!\left(g^{-1}(t)\right) \left\lvert \dfrac{d}{dt} g^{-1}(t) \right\rvert'
 
+- id: cambio-variable
+  nombre: Cambio de variables con jacobiano
+  guia: 4
+  descripcion: >-
+    Obtener la densidad conjunta de una transformación inyectiva y
+    diferenciable de un vector continuo, a partir de la transformación inversa
+    y de su jacobiano.
+  formulas:
+    - 'f_{U,V}(u, v) = f_{X,Y}\big(g^{-1}(u, v)\big)\, \lvert J_{g^{-1}}(u, v) \rvert'
+    - 'J_{g^{-1}}(u, v) = \det \begin{pmatrix} \partial x / \partial u & \partial x / \partial v \ \partial y / \partial u & \partial y / \partial v \end{pmatrix}'
+    - '\operatorname{sop}(U, V) = g\big(\operatorname{sop}(X, Y)\big)'
+
 - id: min-max
   nombre: Mínimo, máximo y competencia de exponenciales
   guia: 4
@@ -346,6 +358,17 @@
   formulas:
     - 'P(X = k) = \dbinom{n}{k} p^k (1-p)^{n-k}'
     - 'E[X] = np, \quad \operatorname{var}[X] = np(1-p)'
+
+- id: multinomial
+  nombre: Multinomial
+  guia: 6
+  descripcion: >-
+    Contar cuántos de $n$ ensayos independientes caen en cada una de varias
+    categorías, cuando cada ensayo admite más de dos resultados.
+  formulas:
+    - 'P(X_1 = k_1, \dots, X_r = k_r) = \dfrac{n!}{k_1! \cdots k_r!}\, p_1^{k_1} \cdots p_r^{k_r}'
+    - 'k_1 + \dots + k_r = n, \quad p_1 + \dots + p_r = 1'
+    - 'X_i \sim \text{Bin}(n, p_i)'
 
 - id: geometrica-pascal
   nombre: Geométrica y Pascal

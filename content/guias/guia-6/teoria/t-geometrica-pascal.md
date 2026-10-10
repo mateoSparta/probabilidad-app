@@ -1,5 +1,5 @@
 ---
-id: t-geometrica
+id: t-geometrica-pascal
 skills: [geometrica-pascal, perdida-memoria]
 ---
 ## Geométrica, Pascal y pérdida de memoria

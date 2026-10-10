@@ -1,0 +1,202 @@
+id: ep-20171207
+tipo: parcial
+titulo: Segundo recuperatorio, segundo cuatrimestre de 2017
+fecha: "2017-12-07"
+duracion_min: 240
+fuente: "fuentes/examenes/parciales/09 Parcial Resuelto - EP20171207Res.pdf#p5"
+# El PDF no enuncia el criterio de aprobación. Se usa el criterio actual de la
+# cátedra para los parciales de cinco ejercicios (tres bien resueltos).
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [1]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Un servidor de mail posee un detector de spam. [[prob-total|La
+      probabilidad de que un mail sea spam es $0{,}15$. Si el mail recibido es
+      spam, la probabilidad de que sea detectado como spam es $0{,}8$. Si el
+      mail recibido no es spam, la probabilidad de que sea detectado como spam
+      es $0{,}1$.]]
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que un mail no sea spam [[bayes|sabiendo
+          que fue detectado como spam]].
+        skills: [bayes, prob-total]
+        respuesta:
+          tipo: numerica
+          valor: "17/41"
+        pistas:
+          - >-
+            Se pide la probabilidad de una causa (que el mail no sea spam)
+            dado un efecto (que se lo detecte como spam), lo que requiere
+            invertir la probabilidad condicional.
+          - >-
+            El denominador es la probabilidad de que un mail cualquiera sea
+            detectado como spam, que se obtiene por probabilidad total.
+          - >-
+            Plan: calculá la probabilidad de que un mail sea detectado como
+            spam sumando los dos caminos, y dividí por ella la probabilidad
+            del camino en el que el mail no es spam y es detectado.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "09 Parcial Resuelto - EP20171207Res.pdf#p5"
+              valor: "17/41"
+            - origen: tools/verify/ep20171207.py
+              valor: "17/41"
+
+  - numero: 2
+    guias: [5]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Sean $X$ e $Y$ variables aleatorias tales que $X$ se distribuye
+      uniformemente sobre el intervalo $(-1, 1)$ y
+      [[esperanza-condicional|para cada $x \in (-1, 1)$, $Y \mid X = x$ tiene
+      distribución uniforme sobre el intervalo $(-x, 1)$]].
+    items:
+      - id: a
+        pregunta: 'Calcular [[esperanza-total|$E[XY]$]].'
+        skills: [esperanza-total, esperanza-condicional]
+        respuesta:
+          tipo: numerica
+          valor: "-1/6"
+        pistas:
+          - >-
+            Al condicionar a $X$, el factor $X$ se comporta como una
+            constante, de modo que $E[XY \mid X] = X\, E[Y \mid X]$.
+          - La media de una uniforme en $(-x, 1)$ es el punto medio del intervalo.
+          - >-
+            Plan: obtené $E[Y \mid X]$ como función de $X$, multiplicala por
+            $X$ y calculá la esperanza con la densidad uniforme de $X$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "09 Parcial Resuelto - EP20171207Res.pdf#p5"
+              valor: "-1/6"
+            - origen: tools/verify/ep20171207.py
+              valor: "-1/6"
+
+  - numero: 3
+    guias: [6]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      [[multinomial|Un dado equilibrado tiene pintadas sus seis caras de la
+      siguiente manera: rojo, amarillo, amarillo, verde, verde, verde. Se
+      arrojará el dado 5 veces.]]
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que se obtenga una mayoría de caras
+          verdes y al menos una cara amarilla.
+        skills: [multinomial]
+        respuesta:
+          tipo: numerica
+          valor: "55/144"
+        pistas:
+          - >-
+            Las cantidades de caras rojas, amarillas y verdes en los 5 tiros
+            tienen distribución multinomial con probabilidades $1/6$, $2/6$ y
+            $3/6$.
+          - >-
+            Mayoría de verdes significa al menos 3 verdes. Listá las ternas
+            (rojas, amarillas, verdes) que cumplen las dos condiciones.
+          - >-
+            Plan: escribí las ternas posibles, que son pocas, calculá la
+            probabilidad multinomial de cada una y sumalas.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "09 Parcial Resuelto - EP20171207Res.pdf#p6"
+              valor: "55/144"
+            - origen: tools/verify/ep20171207.py
+              valor: "55/144"
+
+  - numero: 4
+    guias: [3, 7]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      [[poisson-incrementos|En un bosque de pinos las piñas caen de acuerdo
+      con un proceso de Poisson de intensidad una por hora.]]
+      [[superposicion-adelgazamiento|Independientemente del proceso de
+      caídas, cada una de las piñas romperá una teja del techo de la casa de
+      María con probabilidad $0{,}25$.]]
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la [[covarianza|covarianza entre la cantidad de piñas que
+          caerán de los pinos entre las 10:00 y las 13:00, y la cantidad de
+          piñas que romperán las tejas de la casa de María entre las 11:00 y
+          las 15:00]].
+        skills: [covarianza, superposicion-adelgazamiento, poisson-incrementos]
+        respuesta:
+          tipo: numerica
+          valor: "1/2"
+        pistas:
+          - >-
+            Las piñas que rompen tejas y las que no forman dos procesos de
+            Poisson independientes.
+          - >-
+            Descomponé cada conteo en sumas de conteos sobre intervalos
+            disjuntos y según el tipo de piña. Solo los términos comunes a los
+            dos conteos aportan a la covarianza.
+          - >-
+            Plan: identificá la parte común de los dos conteos, que es la
+            cantidad de piñas que rompen tejas en el tramo compartido, y usá
+            que la covarianza se reduce a la varianza de ese conteo.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "09 Parcial Resuelto - EP20171207Res.pdf#p6"
+              valor: "0.5"
+            - origen: tools/verify/ep20171207.py
+              valor: "1/2"
+
+  - numero: 5
+    guias: [8]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      En la pizzería Pun-Pin [[varianza|la cantidad de mozzarella que lleva
+      cada pizza es una variable aleatoria con distribución uniforme entre 250
+      y 350 gramos]]. El maestro pizzero dispone de 50 kilos de mozzarella.
+    items:
+      - id: a
+        pregunta: >-
+          Hallar aproximadamente la [[tcl|máxima cantidad de pizzas que podrá
+          cocinar con una probabilidad superior a $0{,}95$]].
+        skills: [tcl, varianza]
+        respuesta:
+          tipo: numerica
+          valor: "164"
+          # Es un máximo entero: la tolerancia no puede admitir otro entero.
+          tol_rel: 0.000001
+        pistas:
+          - >-
+            La cantidad total de mozzarella para $n$ pizzas es una suma de $n$
+            uniformes independientes. Pasá los 50 kilos a gramos.
+          - >-
+            Esta vez se busca un máximo, porque al aumentar $n$ disminuye la
+            probabilidad de que la mozzarella alcance.
+          - >-
+            Plan: aproximá el total por una normal, imponé que la probabilidad
+            de no superar los 50 kilos sea mayor que $0{,}95$, despejá $n$ con
+            la sustitución $u = \sqrt{n}$ y verificá que con una pizza más la
+            condición no se cumpla.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "09 Parcial Resuelto - EP20171207Res.pdf#p7"
+              valor: "164"
+            - origen: tools/verify/ep20171207.py
+              valor: "164"

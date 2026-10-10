@@ -12,19 +12,22 @@ archivos `guia-N.md` de esta carpeta.
 | 1 | 14 | 40 | 9 | 1.1 – 1.7, 1.10, 1.13, 1.15, 1.16, 1.22, 1.25, 1.28 |
 | 2 | 5 | 11 | 4 | 2.1, 2.8, 2.19, 2.22, 2.26 |
 | 3 | 6 | 10 | 4 | 3.1, 3.10, 3.12, 3.16, 3.20, 3.26 |
-| 4 | 4 | 9 | 3 | 4.6, 4.14, 4.19, 4.24 |
+| 4 | 4 | 9 | 4 | 4.6, 4.14, 4.19, 4.24 |
 | 5 | 6 | 9 | 3 | 5.9, 5.12, 5.13, 5.16, 5.21, 5.23 |
-| 6 | 6 | 10 | 2 | 6.1, 6.6, 6.11, 6.12, 6.19, 6.24 |
+| 6 | 6 | 10 | 3 | 6.1, 6.6, 6.11, 6.12, 6.19, 6.24 |
 | 7 | 6 | 17 | 4 | 7.1, 7.5, 7.6, 7.7, 7.10, 7.15 |
 | 8 | 6 | 7 | 2 | 8.2, 8.5, 8.9, 8.12, 8.15, 8.22 |
-| **Total** | **53** | **113** | **31** | **44 skills** |
+| **Total** | **53** | **113** | **33** | **46 skills** |
 
-Más 2 parciales con 1 ejercicio verificado cada uno (ver
-[examenes.md](examenes.md)).
+Más **14 parciales** en el simulacro: los 12 resueltos de 2017–2023, con 54 de
+sus 58 ejercicios cargados, y los dos de 2025, con uno cada uno (ver
+[examenes.md](examenes.md)). Los ítems de examen son 56.
 
-**Los 128 valores numéricos del contenido están verificados por dos caminos
-independientes** y el build los contrasta en cada corrida. Ninguno se escribió
-a mano.
+**Los 191 valores del contenido (guías y exámenes, incluidos checkpoints y
+expresiones) están verificados por dos caminos independientes** y el build los
+contrasta en cada corrida. Ninguno se escribió a mano. Tres valores de
+exámenes no coinciden con la resolución y están marcados como discrepancia
+(ver [examenes.md §2](examenes.md)).
 
 Se cargó el **núcleo recomendado** por la cátedra (los ejercicios marcados `!`
 en la guía) de cada guía, más algunos de la guía 1 que cubren huecos. Del
@@ -105,8 +108,9 @@ práctica de distinguir $P(-2 < X \le 2)$ de $P(-2 \le X \le 2)$, que es donde
 se equivoca todo el mundo. Con que me digas dónde están los tres saltos de la
 escalera, se carga entero.
 
-**El 6.14 es el segundo**, porque es el único de la multinomial y por eso falta
-ese skill en el catálogo.
+**El 6.14 es el segundo**, porque es el único de la multinomial en la guía. El
+skill ya existe (lo evalúan tres ejercicios de parciales), pero la guía 6 no
+tiene ningún ejercicio propio que lo practique.
 
 **Sobre el 4.3:** la reconstrucción más probable es
 $f_X(x) = \frac{12x}{\pi^2(e^x+1)}$, y hay un argumento fuerte a favor —integra
@@ -148,16 +152,18 @@ si una teoría explica un skill que nadie practica (con razón):
 
 | Skill | Entra cuando se cargue |
 |---|---|
-| `multinomial` | 6.14 |
-| `cambio-variable` (jacobiano) | 4.3 o 4.10 |
 | `espacio-muestral` | algún ítem descriptivo, como `opcion` |
+
+`multinomial` y `cambio-variable` entraron con los parciales, con su teoría
+(`t-multinomial` en la guía 6 y `t-cambio-variable` en la guía 4). Por ahora
+los evalúan solo ítems de examen.
 
 ### 3.5 Skills con un solo ítem
 
 Un skill evaluado por un único ítem **nunca puede llegar a "dominado"**, porque
-hace falta 3 intentos limpios en los últimos 5 y cuenta uno por día. Son:
-`combinacion-normales`, `esperanza-condicional-evento`, `mezclas`,
-`perdida-memoria`, `poisson-compuesto`, `varianza-total`, `variable-aleatoria`.
+hace falta 3 intentos limpios en los últimos 5 y cuenta uno por día. Contando
+los ítems de examen, quedan tres: `prob-discreta`, `desigualdades` y
+`cambio-variable` (este último, solo en el parcial del 26-05-2018).
 
 Se arregla cargando más ejercicios de esas guías. Mientras tanto, es una
 limitación a tener en cuenta al mirar el panel: no es que estés flojo, es que
@@ -167,10 +173,8 @@ no hay con qué practicar.
 
 ## 4. Los exámenes
 
-Ver [examenes.md](examenes.md). Resumen: el motor del simulacro está completo,
-pero de los 10 ejercicios de los dos parciales sólo 2 están cargados, porque
-los otros 8 son de las guías 2 a 8 y requieren modelar cada uno. Ahora que esas
-guías tienen skills, cargarlos es posible.
-
-Y los **12 parciales resueltos de 2017–2023** siguen sin tocar: son la
-ampliación más barata que queda, y traen la resolución, así que sirven de cruce.
+Ver [examenes.md](examenes.md). Resumen: el simulacro tiene 14 parciales. Los
+12 resueltos de 2017–2023 están casi completos (quedan fuera tres ejercicios
+de simulación y uno de respuesta abierta), y sus resoluciones sirvieron de
+cruce: coinciden en todo salvo tres valores, documentados como discrepancia.
+De los dos parciales de 2025 sigue cargado un ejercicio de cada uno.

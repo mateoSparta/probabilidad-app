@@ -12,7 +12,7 @@ from __future__ import annotations
 import itertools
 import random
 from fractions import Fraction
-from typing import Callable, Iterable, Sequence
+from typing import Callable, Iterable, NamedTuple, Sequence
 
 # Semilla fija: el reporte tiene que ser reproducible.
 SEMILLA = 20260408
@@ -22,6 +22,19 @@ N_MONTECARLO = 400_000
 # n = 4e5 es como mucho 0.0008, asi que 0.005 es ~6 sigma: pasa si el modelo
 # esta bien y falla si hay un error conceptual.
 TOL_MONTECARLO = 0.005
+
+
+class Ejercicio(NamedTuple):
+    """
+    Un ejercicio dentro de un modulo de examen (ver runner.py). El runner lo
+    corre igual que un modulo de guia: compara cada clave de `exacto()` con la
+    misma clave de `estimado()`, si existe, con la tolerancia dada.
+    """
+
+    numero: str
+    exacto: Callable[[], dict]
+    estimado: Callable[[], dict]
+    tolerancia: float = TOL_MONTECARLO
 
 
 def exacto_sobre(espacio: Iterable[tuple], evento: Callable[[tuple], bool]) -> Fraction:

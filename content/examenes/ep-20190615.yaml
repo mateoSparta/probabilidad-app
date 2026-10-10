@@ -1,0 +1,195 @@
+id: ep-20190615
+tipo: parcial
+titulo: Primer recuperatorio, primer cuatrimestre de 2019
+fecha: "2019-06-15"
+duracion_min: 240
+fuente: "fuentes/examenes/parciales/02 Parcial Resuelto - EP20190615Res.pdf#p5"
+# El PDF no enuncia el criterio de aprobación. Se usa el criterio actual de la
+# cátedra para los parciales de cinco ejercicios (tres bien resueltos).
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [1]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Se colocarán 12 bolas en 5 urnas. [[ocupacion|Las bolas son
+      indistinguibles y todas las configuraciones distintas son
+      equiprobables.]]
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que la primer urna quede vacía,
+          [[condicional|sabiendo que la última urna contiene exactamente 3
+          bolas]].
+        skills: [ocupacion, condicional]
+        respuesta:
+          tipo: numerica
+          valor: "1/4"
+        pistas:
+          - >-
+            Con bolas indistinguibles y configuraciones equiprobables, cada
+            probabilidad es un cociente entre cantidades de configuraciones.
+          - >-
+            Fijar que la última urna tiene exactamente 3 bolas deja 9 bolas
+            para repartir entre las otras cuatro urnas.
+          - >-
+            Plan: contá con barras y estrellas las configuraciones en las que
+            la última urna tiene 3 bolas y, entre ellas, las que además tienen
+            la primera urna vacía. El cociente es la probabilidad condicional.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "02 Parcial Resuelto - EP20190615Res.pdf#p5"
+              valor: "1/4"
+            - origen: tools/verify/ep20190615.py
+              valor: "1/4"
+
+  - numero: 2
+    guias: [2]
+    en_alcance: false
+    cargado: false
+    nota: >-
+      Pide simular dos valores con números aleatorios dados. La simulación
+      queda fuera del alcance de la app.
+    enunciado: |
+      Sea $T$ el tiempo hasta que ocurre la primera falla de los televisores
+      de marca Veep, con función intensidad de fallas
+      $\lambda(t) = \frac{1}{2}\, t^{-1/2}\,\mathbf{1}\{t > 0\}$. Simular una
+      muestra de 2 valores del tiempo hasta la primera falla de televisores
+      Veep, usando los números aleatorios $0{,}385$ y $0{,}711$.
+    items: []
+
+  - numero: 3
+    guias: [2, 4]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Sea $X$ una variable aleatoria con función de probabilidad
+      $p_X(x) = \dfrac{2^x}{7\, x!}$, $x \in \{0, 1, 2, 3, 4\}$. Sea
+      [[transformacion-F|$Y = 4X - X^2$]].
+    items:
+      - id: a
+        pregunta: >-
+          Hallar la [[truncamiento|función de probabilidad de
+          $Y \mid Y > 0$]] y evaluarla donde se pide.
+        skills: [transformacion-F, truncamiento]
+        respuesta:
+          tipo: checkpoints
+          checkpoints:
+            - pregunta: '$p_{Y \mid Y > 0}(3)$'
+              valor: "5/8"
+            - pregunta: '$p_{Y \mid Y > 0}(4)$'
+              valor: "3/8"
+        pistas:
+          - >-
+            Calculá la probabilidad de cada valor de $X$ y el valor de $Y$
+            que le corresponde.
+          - >-
+            Varios valores de $X$ producen el mismo valor de $Y$, y en ese caso
+            sus probabilidades se suman. Condicionar a $Y > 0$ elimina el valor
+            $Y = 0$.
+          - >-
+            Plan: armá la tabla de $p_Y$, calculá $P(Y > 0)$ y dividí por esa
+            probabilidad la de cada valor positivo de $Y$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "02 Parcial Resuelto - EP20190615Res.pdf#p7"
+              valor: "10/16, 6/16"
+            - origen: tools/verify/ep20190615.py
+              valor: "5/8, 3/8"
+
+  - numero: 4
+    guias: [7]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      [[superposicion-adelgazamiento|Clientes ingresan a un banco de acuerdo
+      con un proceso de Poisson de intensidad 15 por hora. La probabilidad de
+      que cada cliente sea Select es $0{,}2$, independientemente de todo lo
+      demás.]]
+    items:
+      - id: a
+        pregunta: >-
+          [[poisson-incrementos|Sabiendo que entre las 10:00 y las 10:15
+          ingresaron exactamente 2 clientes Select]], calcular la
+          [[tiempos-espera|esperanza del tiempo a partir de las 10:00 hasta que
+          ingresó el cuarto cliente Select]]. Expresar el resultado en minutos.
+        skills: [superposicion-adelgazamiento, poisson-incrementos, tiempos-espera]
+        respuesta:
+          tipo: numerica
+          valor: "55"
+        pistas:
+          - >-
+            Los clientes Select forman, por sí solos, un proceso de Poisson.
+            Su intensidad se obtiene adelgazando el proceso de todos los
+            clientes.
+          - >-
+            Lo que ocurre después de las 10:15 es independiente de lo ocurrido
+            antes, y a esa hora ya llegaron 2 de los 4 clientes Select.
+          - >-
+            Plan: el tiempo pedido es de 15 minutos más el tiempo, contado
+            desde las 10:15, hasta que lleguen otros dos clientes Select. Usá
+            la esperanza de una Gamma con la intensidad del proceso adelgazado.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "02 Parcial Resuelto - EP20190615Res.pdf#p8"
+              valor: "55"
+            - origen: tools/verify/ep20190615.py
+              valor: "55"
+
+  - numero: 5
+    guias: [6, 8]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Para la construcción de un edificio se compran pallets que contienen 198
+      ladrillos. Por problemas de fabricación y manipuleo,
+      [[bernoulli-binomial|cada ladrillo puede usarse con probabilidad
+      $0{,}6$]].
+    items:
+      - id: a
+        pregunta: >-
+          ¿Cuántos pallets deberán comprarse como mínimo para [[tcl|poder
+          levantar una pared de 4000 ladrillos con probabilidad mayor a
+          $0{,}95$]]?
+        skills: [tcl, bernoulli-binomial]
+        respuesta:
+          tipo: numerica
+          valor: "35"
+          # Es un mínimo entero: la tolerancia no puede admitir otro entero.
+          tol_rel: 0.000001
+        pistas:
+          - >-
+            La cantidad de ladrillos útiles en $n$ pallets es una suma de $n$
+            binomiales independientes con 198 ensayos cada una.
+          - >-
+            Antes de despejar conviene acotar. Con $n$ pallets la media de
+            ladrillos útiles es $118{,}8\, n$, y si esa media no supera 4000
+            la probabilidad no puede superar $0{,}5$.
+          - >-
+            Plan: aproximá la cantidad de ladrillos útiles por una normal,
+            imponé que la probabilidad de superar 4000 sea mayor que $0{,}95$,
+            despejá $n$ con la sustitución $u = \sqrt{n}$ y verificá que con
+            un pallet menos la condición no se cumpla.
+        verificacion:
+          estado: discrepancia
+          metodo: exacto+distribucion-exacta
+          nota: >-
+            La resuelta concluye 34 a partir de "n > 33.12", pero con 34
+            pallets la media es 4039.2 y la probabilidad de superar 4000 es
+            0.835. El despeje correcto da n > 34.23, es decir, 35, y la
+            binomial exacta da el mismo mínimo. Se carga 35.
+          fuentes_valor:
+            - origen: "02 Parcial Resuelto - EP20190615Res.pdf#p8"
+              valor: "34"
+            - origen: tools/verify/ep20190615.py
+              valor: "35"
+            - origen: "tools/verify/ep20190615.py (control: probabilidad con 34 pallets)"
+              valor: "0.8353"

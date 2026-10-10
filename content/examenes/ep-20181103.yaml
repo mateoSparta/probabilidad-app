@@ -1,0 +1,203 @@
+id: ep-20181103
+tipo: parcial
+titulo: Evaluación parcial, segundo cuatrimestre de 2018
+fecha: "2018-11-03"
+duracion_min: 240
+fuente: "fuentes/examenes/parciales/05 Parcial Resuelto - EP20181103Res.pdf#p7"
+# El PDF no enuncia el criterio de aprobación. Se usa el criterio actual de la
+# cátedra para los parciales de cinco ejercicios (tres bien resueltos).
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [1]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Se tiene una moneda cargada con probabilidad $3/5$ de salir cara.
+      [[independencia|El experimento consiste en arrojar la moneda hasta
+      obtener por primera vez dos caras consecutivas.]]
+    items:
+      - id: a
+        pregunta: >-
+          [[condicional|Si en los primeros dos tiros no se observaron
+          caras]], calcular la probabilidad de que tengan que realizarse más
+          de 5 tiros para que finalice el experimento.
+        skills: [condicional, independencia]
+        respuesta:
+          tipo: numerica
+          valor: "62/125"
+        pistas:
+          - >-
+            Conviene pasar al complemento, es decir, al evento de que el
+            experimento termine en 5 tiros o menos.
+          - >-
+            Como los dos primeros tiros son ceca, el experimento solo puede
+            terminar en el cuarto o en el quinto tiro. Pensá qué tiene que
+            salir en los tiros 3, 4 y 5 en cada caso.
+          - >-
+            Plan: listá las secuencias de los tiros 3 a 5 que producen por
+            primera vez dos caras consecutivas, sumá sus probabilidades usando
+            la independencia de los tiros y restá el resultado de 1.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "05 Parcial Resuelto - EP20181103Res.pdf#p8"
+              valor: "0.496"
+            - origen: tools/verify/ep20181103.py
+              valor: "62/125"
+
+  - numero: 2
+    guias: [2]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Juana y Pedro salieron a tomar cerveza. Sean $X$ e $Y$ las cantidades de
+      litros de cerveza que tomaron Juana y Pedro respectivamente.
+      [[conjunta-marginales|La densidad conjunta de $X$ e $Y$ es
+      $f_{X,Y}(x, y) = 2 \cdot \mathbf{1}\{0 < x < y < 1\}$.]]
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que [[prob-geometrica|entre ambos hayan
+          tomado más de 1 litro de cerveza y Pedro haya tomado menos de
+          $0{,}75$ litros]].
+        skills: [prob-geometrica, conjunta-marginales]
+        respuesta:
+          tipo: numerica
+          valor: "1/8"
+        pistas:
+          - >-
+            La densidad es constante sobre el triángulo $0 < x < y < 1$, de
+            modo que la probabilidad de una región es la densidad por su área.
+          - >-
+            La región pedida es $\{x + y > 1,\ y < 0{,}75\}$ dentro del
+            triángulo. Dibujala.
+          - >-
+            Plan: identificá la forma de la región, calculá su área y
+            multiplicala por el valor de la densidad.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "05 Parcial Resuelto - EP20181103Res.pdf#p9"
+              valor: "1/8"
+            - origen: tools/verify/ep20181103.py
+              valor: "1/8"
+
+  - numero: 3
+    guias: [3, 5]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Sea $X$ una variable aleatoria con distribución exponencial de media 1
+      y sea $Y$ una variable aleatoria tal que [[varianza-total|$Y \mid X = x$
+      tiene distribución uniforme en $(0, x)$]].
+    items:
+      - id: a
+        pregunta: >-
+          Hallar la [[covarianza|covarianza entre $X + Y$ y $X - Y$]].
+        skills: [covarianza, varianza-total]
+        respuesta:
+          tipo: numerica
+          valor: "7/12"
+        pistas:
+          - >-
+            Por la bilinealidad de la covarianza,
+            $\operatorname{cov}(X + Y, X - Y)$ se reduce a una diferencia de
+            varianzas.
+          - >-
+            La varianza de $Y$ se obtiene con la descomposición de la varianza
+            total, condicionando a $X$.
+          - >-
+            Plan: calculá $\operatorname{var}(X)$, obtené $E[Y \mid X]$ y
+            $\operatorname{var}(Y \mid X)$ a partir de la uniforme en
+            $(0, X)$, combinalas con la fórmula de la varianza total y restá.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "05 Parcial Resuelto - EP20181103Res.pdf#p9"
+              valor: "7/12"
+            - origen: tools/verify/ep20181103.py
+              valor: "7/12"
+
+  - numero: 4
+    guias: [7]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      [[tiempos-espera|Los colectivos de la línea 8104 llegan a la parada de
+      Paseo Colón 850 de acuerdo con un proceso de Poisson de intensidad 12
+      por hora. Kira llega a la parada a las 8:00 y se sube al tercer
+      colectivo que llega a la parada después de las 8:00.]]
+    items:
+      - id: a
+        pregunta: >-
+          Si Kira subió al colectivo a las 8:30, calcular la probabilidad de
+          que [[condicionar-Nt|entre las 8:00 y las 8:10 haya llegado
+          exactamente 1 colectivo]].
+        skills: [tiempos-espera, condicionar-Nt]
+        respuesta:
+          tipo: numerica
+          valor: "4/9"
+        pistas:
+          - >-
+            Que el tercer colectivo llegue a las 8:30 significa que entre las
+            8:00 y las 8:30 llegaron exactamente 2 colectivos.
+          - >-
+            Dada la cantidad de arribos en un intervalo, los tiempos de
+            arribo se comportan como uniformes independientes en ese
+            intervalo.
+          - >-
+            Plan: cada uno de los 2 colectivos cae entre las 8:00 y las 8:10
+            con probabilidad igual a la fracción del intervalo que ocupa ese
+            tramo, de modo que la cantidad que cae ahí es binomial.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "05 Parcial Resuelto - EP20181103Res.pdf#p10"
+              valor: "4/9"
+            - origen: tools/verify/ep20181103.py
+              valor: "4/9"
+
+  - numero: 5
+    guias: [2, 8]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      El peso (en kg) de la trucha arcoiris es una variable aleatoria con
+      distribución uniforme entre 1 y 5. [[truncamiento|En una campaña de
+      pesca en el Lago Hermoso, las truchas que pesan menos de 3 kg son
+      devueltas al lago y las que no, se conservan.]]
+    items:
+      - id: a
+        pregunta: >-
+          Si al finalizar la campaña se conservaron 50 truchas, calcular
+          (aproximadamente) la probabilidad de que [[tcl|el peso total de las
+          truchas conservadas sea mayor que $202{,}8$ kg]].
+        skills: [tcl, truncamiento]
+        respuesta:
+          tipo: numerica
+          valor: "1/2 - erf(7*sqrt(3)/25)/2"
+        pistas:
+          - >-
+            Las truchas conservadas pesan 3 kg o más. El peso de una trucha
+            conservada es la variable original truncada a ese evento.
+          - >-
+            Una uniforme truncada a un subintervalo sigue siendo uniforme,
+            ahora sobre ese subintervalo.
+          - >-
+            Plan: calculá la media y la varianza del peso de una trucha
+            conservada, multiplicalas por 50 y aproximá el peso total por una
+            normal con esos parámetros.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "05 Parcial Resuelto - EP20181103Res.pdf#p11"
+              valor: "1 - Phi(0.6858) = 0.2464"
+            - origen: tools/verify/ep20181103.py
+              valor: "1/2 - erf(7*sqrt(3)/25)/2"

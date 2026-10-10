@@ -1,0 +1,211 @@
+id: ep-20180616
+tipo: parcial
+titulo: Primer recuperatorio, primer cuatrimestre de 2018
+fecha: "2018-06-16"
+duracion_min: 240
+fuente: "fuentes/examenes/parciales/06 Parcial Resuelto - EP20180616Res.pdf#p5"
+# El PDF no enuncia el criterio de aprobación. Se usa el criterio actual de la
+# cátedra para los parciales de cinco ejercicios (tres bien resueltos).
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [1]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Se colocarán 10 bolas en 6 urnas. [[ocupacion|Las bolas son
+      indistinguibles y todas las configuraciones distintas son
+      equiprobables.]]
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que [[inclusion-exclusion|al menos una
+          urna quede vacía]].
+        skills: [ocupacion, inclusion-exclusion]
+        respuesta:
+          tipo: numerica
+          valor: "137/143"
+        pistas:
+          - Conviene pasar al complemento, es decir, que ninguna urna quede vacía.
+          - >-
+            Si ninguna urna queda vacía, cada una tiene al menos una bola.
+            Colocá una bola en cada urna y contá las formas de repartir las
+            restantes.
+          - >-
+            Plan: contá con barras y estrellas el total de configuraciones y
+            las que no dejan urnas vacías, y restá de 1 su cociente.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "06 Parcial Resuelto - EP20180616Res.pdf#p5"
+              valor: "2877/3003"
+            - origen: tools/verify/ep20180616.py
+              valor: "137/143"
+
+  - numero: 2
+    guias: [2, 3]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Sea $X$ una variable aleatoria cuya [[funcion-distribucion|función de
+      distribución $F_X(x) = P(X \le x)$]] es
+      $$F_X(x) = \begin{cases} 0 & x < -2 \\ (x + 2)/16 & -2 \le x < -1 \\ (x + 3)/16 & -1 \le x < 1 \\ 3/8 & 1 \le x < 3 \\ 1/2 + (x - 3)/4 & 3 \le x < 4 \\ 1 & x \ge 4 \end{cases}$$
+      En el examen, la función de distribución se da mediante su gráfico.
+    items:
+      - id: a
+        pregunta: >-
+          Calcular [[esperanza-condicional-evento|$E[X^2 \mid -1 < X \le 3]$]].
+        skills: [esperanza-condicional-evento, funcion-distribucion]
+        respuesta:
+          tipo: numerica
+          valor: "31/9"
+        pistas:
+          - >-
+            La función de distribución tiene saltos y tramos crecientes. Los
+            saltos son átomos de $X$, y en los tramos crecientes hay densidad.
+          - >-
+            Identificá los puntos donde $F_X$ salta y la medida de cada salto,
+            y derivá $F_X$ en los tramos continuos.
+          - >-
+            Plan: calculá $E[X^2\, \mathbf{1}\{-1 < X \le 3\}]$ integrando
+            $x^2$ contra la densidad en $(-1, 3]$ y sumando $x^2$ por la masa
+            de cada átomo de ese intervalo, y dividí por
+            $P(-1 < X \le 3) = F_X(3) - F_X(-1)$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "06 Parcial Resuelto - EP20180616Res.pdf#p6"
+              valor: "31/9"
+            - origen: tools/verify/ep20180616.py
+              valor: "31/9"
+
+  - numero: 3
+    guias: [3, 5]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Sea $X$ una variable aleatoria con distribución uniforme sobre el
+      intervalo $(-1, 1)$ y sea $Y$ una variable aleatoria tal que
+      [[esperanza-condicional|$E[Y \mid X] = X^3 - 1$]].
+    items:
+      - id: a
+        pregunta: >-
+          Hallar la ecuación de la [[covarianza|recta de regresión de $Y$ dada
+          $X$]].
+        skills: [esperanza-condicional, covarianza]
+        respuesta:
+          tipo: checkpoints
+          checkpoints:
+            - pregunta: 'Pendiente'
+              valor: "3/5"
+            - pregunta: 'Ordenada al origen'
+              valor: "-1"
+        pistas:
+          - >-
+            La recta de regresión es
+            $y = \dfrac{\operatorname{cov}(X, Y)}{\operatorname{var}(X)}\,(x - E[X]) + E[Y]$.
+          - >-
+            No se conoce la distribución de $Y$, pero alcanza con
+            $E[Y \mid X]$, porque $E[Y] = E\big[E[Y \mid X]\big]$ y
+            $E[XY] = E\big[X\, E[Y \mid X]\big]$.
+          - >-
+            Plan: calculá $E[X]$, $\operatorname{var}(X)$, $E[Y]$ y $E[XY]$
+            con esas identidades y los momentos de la uniforme, y reemplazá en
+            la ecuación de la recta.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "06 Parcial Resuelto - EP20180616Res.pdf#p7"
+              valor: "y = 3/5 x - 1"
+            - origen: tools/verify/ep20180616.py
+              valor: "3/5, -1"
+
+  - numero: 4
+    guias: [7]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Meteoro circula en el Mach 5 por una autopista cuyos radares de
+      velocidad están distribuidos de acuerdo a un proceso de Poisson de
+      intensidad $1/25$ por km. [[superposicion-adelgazamiento|El Mach 5
+      detecta cada radar con probabilidad $0{,}985$ independientemente de todo
+      lo demás.]] Cuando detecta un radar, Meteoro se asegura de circular a la
+      velocidad máxima permitida, pero cuando no lo detecta circula en exceso
+      de velocidad. Cada vez que pasa por un radar en exceso de velocidad
+      recibe una multa de \$4000.
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que [[poisson-incrementos|al recorrer
+          400 km Meteoro reciba más de \$4000 en multas]].
+        skills: [superposicion-adelgazamiento, poisson-incrementos]
+        respuesta:
+          tipo: numerica
+          valor: "1 - 31/25 * exp(-6/25)"
+        pistas:
+          - >-
+            Los radares que el Mach 5 no detecta forman, por sí solos, un
+            proceso de Poisson.
+          - >-
+            Recibir más de \$4000 en multas equivale a pasar por al menos dos
+            radares no detectados.
+          - >-
+            Plan: calculá la intensidad del proceso de radares no detectados,
+            la media de su conteo en 400 km y la probabilidad de que una
+            Poisson con esa media valga al menos 2.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "06 Parcial Resuelto - EP20180616Res.pdf#p7"
+              valor: "1 - 1.24 e^-0.24 = 0.0246"
+            - origen: tools/verify/ep20180616.py
+              valor: "1 - 31*exp(-6/25)/25"
+
+  - numero: 5
+    guias: [3, 8]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Ergueta reparte catálogos de productos de limpieza entre los vecinos del
+      barrio. [[varianza|Por cada catálogo repartido, su potencial cliente le
+      compra \$400 con probabilidad $0{,}1$, \$300 con probabilidad $0{,}4$, o
+      no le compra nada con probabilidad $0{,}5$.]]
+    items:
+      - id: a
+        pregunta: >-
+          Estimar la mínima cantidad de catálogos que deberá repartir Ergueta
+          para que [[tcl|la probabilidad de obtener un ingreso de no menos de
+          \$7000 sea mayor que $0{,}95$]].
+        skills: [tcl, varianza]
+        respuesta:
+          tipo: numerica
+          valor: "57"
+          # Es un mínimo entero: la tolerancia no puede admitir otro entero.
+          tol_rel: 0.000001
+        pistas:
+          - >-
+            El ingreso por catálogo es una variable discreta con tres valores.
+            Calculá su media y su varianza.
+          - >-
+            El ingreso total con $n$ catálogos es una suma de $n$ variables
+            independientes con esa distribución.
+          - >-
+            Plan: aproximá el ingreso total por una normal, imponé que la
+            probabilidad de alcanzar \$7000 sea mayor que $0{,}95$, despejá
+            $n$ con la sustitución $u = \sqrt{n}$ y verificá que con un
+            catálogo menos la condición no se cumpla.
+        verificacion:
+          estado: verificado
+          metodo: exacto+despeje
+          fuentes_valor:
+            - origen: "06 Parcial Resuelto - EP20180616Res.pdf#p8"
+              valor: "57"
+            - origen: tools/verify/ep20180616.py
+              valor: "57"
+            - origen: "tools/verify/ep20180616.py (control: con la distribución exacta de la suma alcanza con 56; el enunciado pide estimar)"
+              valor: "56"

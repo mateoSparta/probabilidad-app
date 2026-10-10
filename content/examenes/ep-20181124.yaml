@@ -1,0 +1,208 @@
+id: ep-20181124
+tipo: parcial
+titulo: Primer recuperatorio, segundo cuatrimestre de 2018
+fecha: "2018-11-24"
+duracion_min: 240
+fuente: "fuentes/examenes/parciales/04 Parcial Resuelto - EP20181124Res.pdf#p6"
+# El PDF no enuncia el criterio de aprobación. Se usa el criterio actual de la
+# cátedra para los parciales de cinco ejercicios (tres bien resueltos).
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [1]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      [[laplace|Alejo, Teodoro, Carla y Gastón se ordenan al azar en una
+      fila]] para comprar en el kiosco de la escuela.
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que [[inclusion-exclusion|Alejo compre
+          antes que Teodoro o Gastón]].
+        skills: [laplace, inclusion-exclusion]
+        respuesta:
+          tipo: numerica
+          valor: "2/3"
+        pistas:
+          - >-
+            Las $4!$ filas posibles son equiprobables. El evento es la unión
+            de dos eventos, que Alejo compre antes que Teodoro y que Alejo
+            compre antes que Gastón.
+          - >-
+            Cada uno de esos eventos tiene probabilidad $1/2$ por simetría.
+            Para la intersección alcanza con mirar el orden relativo de Alejo,
+            Teodoro y Gastón.
+          - >-
+            Plan: aplicá inclusión-exclusión. La intersección ocurre cuando
+            Alejo es el primero de esos tres, y cada uno de los tres tiene la
+            misma probabilidad de serlo.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "04 Parcial Resuelto - EP20181124Res.pdf#p6"
+              valor: "2/3"
+            - origen: tools/verify/ep20181124.py
+              valor: "2/3"
+
+  - numero: 2
+    guias: [2, 4]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Sea $X$ una variable aleatoria con [[funcion-distribucion|función de
+      distribución $F_X(x) = P(X \le x)$ dada por
+      $F_X(x) = (1 - e^{-x^2})\,\mathbf{1}\{x > 0\}$]].
+    items:
+      - id: a
+        pregunta: >-
+          Hallar la [[transformacion-F|distribución de la variable aleatoria
+          $Y = -\ln[F_X(X)]$]]. Escribir $F_Y(y)$ para $y > 0$.
+        skills: [transformacion-F, funcion-distribucion]
+        respuesta:
+          tipo: expresion
+          valor: "1 - exp(-y)"
+          vars:
+            y: [0.1, 5]
+        pistas:
+          - >-
+            La variable $U = F_X(X)$ tiene una distribución conocida cuando
+            $F_X$ es continua.
+          - >-
+            Si $F_X$ es continua, $F_X(X)$ es uniforme en $(0, 1)$, de modo que
+            $Y = -\ln U$ con $U$ uniforme.
+          - >-
+            Plan: escribí $F_Y(y) = P(-\ln U \le y)$, despejá $U$ y usá la
+            función de distribución de la uniforme.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "04 Parcial Resuelto - EP20181124Res.pdf#p7"
+              valor: "1 - e^-y"
+            - origen: tools/verify/ep20181124.py
+              valor: "1 - exp(-y)"
+
+  - numero: 3
+    guias: [5, 6]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      [[bernoulli-binomial|La probabilidad de acertar a un blanco es
+      $\frac{1}{5}$. Se realizan 10 tiros independientes y se cuenta la
+      cantidad de aciertos.]] Sean $X$ la cantidad total de aciertos en los
+      10 tiros, e $Y$ la cantidad de aciertos en el primer tiro.
+    items:
+      - id: a
+        pregunta: 'Hallar [[esperanza-condicional|$E[Y \mid X]$]].'
+        skills: [esperanza-condicional, bernoulli-binomial]
+        respuesta:
+          tipo: expresion
+          valor: "X/10"
+          vars:
+            X: [0, 10]
+        pistas:
+          - >-
+            $E[Y \mid X]$ es una función de $X$. Hay que hallar
+            $\varphi(x) = E[Y \mid X = x]$ y después reemplazar $x$ por $X$.
+          - >-
+            Como $Y$ solo toma los valores 0 y 1, resulta
+            $E[Y \mid X = x] = P(Y = 1 \mid X = x)$.
+          - >-
+            Plan: escribí $P(Y = 1, X = x)$ como el producto de la
+            probabilidad de acertar el primer tiro por la de obtener $x - 1$
+            aciertos en los otros 9, dividí por $P(X = x)$ y simplificá.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "04 Parcial Resuelto - EP20181124Res.pdf#p8"
+              valor: "X/10"
+            - origen: tools/verify/ep20181124.py
+              valor: "X/10"
+
+  - numero: 4
+    guias: [2, 7]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      [[tiempos-espera|Clientes arriban a una ferretería según un proceso de
+      Poisson de intensidad 20 por hora. La ferretería abre a las 9:00.]] Cada
+      cliente requiere un tiempo de servicio (en minutos), cuya distribución
+      es exponencial de media 7, independiente del momento de arribo.
+    items:
+      - id: a
+        pregunta: >-
+          [[truncamiento|Si se sabe que el primer cliente llegó antes de las
+          9:10]], calcular la probabilidad de que haya salido de la ferretería
+          después de las 09:10.
+        skills: [tiempos-espera, truncamiento]
+        respuesta:
+          tipo: numerica
+          valor: "7/4 * (exp(40/21) - 1) / (exp(10/3) - 1)"
+        pistas:
+          - >-
+            Sean $X$ el momento de llegada del primer cliente, en minutos
+            después de las 9:00, y $T$ su tiempo de servicio. $X$ es
+            exponencial, y $X$ y $T$ son independientes.
+          - >-
+            El cliente sale después de las 9:10 si $X + T > 10$. El dato
+            agrega la condición $X < 10$.
+          - >-
+            Plan: calculá $P(X + T > 10,\ X < 10)$ integrando el producto de
+            las dos densidades exponenciales sobre esa región, y dividí por
+            $P(X < 10)$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "04 Parcial Resuelto - EP20181124Res.pdf#p9"
+              valor: "0.3702"
+            - origen: tools/verify/ep20181124.py
+              valor: "7*(1 - exp(40/21))/(4*(1 - exp(10/3)))"
+
+  - numero: 5
+    guias: [3, 8]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      [[varianza|El volumen de hormigón (en m³) que cargan los camiones
+      mezcladores destinados a una obra es aleatorio con distribución uniforme
+      entre 7 y 8. A efectos de modelar probetas, de cada camión que llega a
+      la obra se extrae un volumen de hormigón (en m³) uniformemente
+      distribuido entre 0 y 1, independiente del volumen que carga el
+      camión.]] El resto se utiliza para llenar una platea de 600 m³.
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la mínima cantidad de camiones que deben llegar a la obra
+          para que [[tcl|la probabilidad de que el hormigón alcance para
+          llenar la platea sea mayor a $0{,}95$]].
+        skills: [tcl, varianza]
+        respuesta:
+          tipo: numerica
+          valor: "87"
+          # Es un mínimo entero: la tolerancia no puede admitir otro entero.
+          tol_rel: 0.000001
+        pistas:
+          - >-
+            El hormigón útil de cada camión es la diferencia entre lo que carga
+            y lo que se extrae. Calculá su media y su varianza.
+          - >-
+            Las varianzas se suman aunque se trate de una diferencia, porque
+            los dos volúmenes son independientes.
+          - >-
+            Plan: aproximá el volumen útil de $n$ camiones por una normal,
+            imponé que la probabilidad de superar 600 sea mayor que $0{,}95$,
+            despejá $n$ con la sustitución $u = \sqrt{n}$ y verificá que con
+            un camión menos la condición no se cumpla.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "04 Parcial Resuelto - EP20181124Res.pdf#p11"
+              valor: "87"
+            - origen: tools/verify/ep20181124.py
+              valor: "87"

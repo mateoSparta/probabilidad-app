@@ -1,0 +1,246 @@
+id: ep-20180526
+tipo: parcial
+titulo: Primer parcial, primer cuatrimestre de 2018
+fecha: "2018-05-26"
+duracion_min: 240
+fuente: "fuentes/examenes/parciales/07 Parcial Resuelto - EP20180526Res.pdf#p4"
+# El PDF no enuncia el criterio de aprobación. Se usa el criterio actual de la
+# cátedra para los parciales de cinco ejercicios (tres bien resueltos).
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [1]
+    en_alcance: true
+    cargado: true
+    # En el examen la conexión se muestra en una figura: los interruptores
+    # están en paralelo entre P y Q.
+    enunciado: |
+      Una sección de un circuito eléctrico consta de dos interruptores $a$ y
+      $b$ conectados en paralelo entre los puntos $P$ y $Q$.
+      [[inclusion-exclusion|La probabilidad de que $a$ esté cerrado y $b$ esté
+      abierto es $0{,}4$, la de que $a$ esté abierto y $b$ esté cerrado es
+      $0{,}1$, y la de que pase corriente de $P$ a $Q$ es $0{,}7$.]]
+    items:
+      - id: a
+        pregunta: >-
+          ¿Son [[independencia|independientes]] los eventos $A$, "el
+          interruptor $a$ está abierto", y $B$, "el interruptor $b$ está
+          abierto"?
+        skills: [independencia, inclusion-exclusion]
+        respuesta:
+          tipo: opcion
+          opciones:
+            - id: c1
+              texto: 'No. $P(A \cap B) = 0{,}3$ y $P(A)\,P(B) = 0{,}28$.'
+              correcta: true
+            - id: c2
+              texto: >-
+                Sí, porque cada interruptor funciona por separado y nada indica
+                que uno influya en el otro.
+              error_tipico: >-
+                La independencia es una propiedad de las probabilidades y se
+                verifica comparando $P(A \cap B)$ con $P(A)\,P(B)$. Que los
+                interruptores sean dispositivos separados no la garantiza.
+            - id: c3
+              texto: >-
+                No, porque $P(A \cap B^c)$ y $P(A^c \cap B)$ son distintas.
+              error_tipico: >-
+                Que esas dos probabilidades sean distintas no informa sobre la
+                independencia de $A$ y $B$. Hay que comparar $P(A \cap B)$ con
+                $P(A)\,P(B)$.
+            - id: c4
+              texto: 'No se puede decidir, porque falta el dato de $P(A \cap B)$.'
+              error_tipico: >-
+                $P(A \cap B)$ se obtiene de los datos. Con los interruptores en
+                paralelo pasa corriente si alguno está cerrado, y el
+                complemento de ese evento es que ambos estén abiertos.
+        pistas:
+          - >-
+            Para decidir hay que comparar $P(A \cap B)$ con $P(A)\,P(B)$, así
+            que hacen falta las tres probabilidades.
+          - >-
+            Con los interruptores en paralelo, pasa corriente si al menos uno
+            está cerrado. El complemento de ese evento es $A \cap B$.
+          - >-
+            Plan: obtené $P(A \cap B)$ como complemento de la probabilidad de
+            que pase corriente, calculá $P(A)$ y $P(B)$ sumándole a
+            $P(A \cap B)$ la probabilidad de que solo ese interruptor esté
+            abierto, y compará.
+        verificacion:
+          estado: verificado
+          metodo: exacto
+          fuentes_valor:
+            - origen: "07 Parcial Resuelto - EP20180526Res.pdf#p4"
+              valor: "P(A)P(B) = 0.28 != 0.3 = P(A ∩ B): no son independientes"
+            - origen: tools/verify/ep20180526.py
+              valor: "P(A ∩ B) = 3/10, P(A)P(B) = 7/25"
+
+  - numero: 2
+    guias: [4]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Sean $X$ e $Y$ dos variables aleatorias con densidad conjunta
+      $f_{XY}(x, y) = 3e^{-(2x + y)}\,\mathbf{1}\{0 < x < y\}$.
+    items:
+      - id: a
+        pregunta: >-
+          Hallar la [[cambio-variable|densidad conjunta de
+          $(U, V) = (X, 2X + Y)$]] y evaluarla donde se pide.
+        skills: [cambio-variable]
+        respuesta:
+          tipo: checkpoints
+          checkpoints:
+            - pregunta: '$f_{U,V}(1, 4)$'
+              valor: "3*exp(-4)"
+            - pregunta: '$f_{U,V}(1/2, 3)$'
+              valor: "3*exp(-3)"
+            - pregunta: '$f_{U,V}(1, 2)$'
+              valor: "0"
+        pistas:
+          - >-
+            La transformación es lineal e inversible. Despejá $x$ e $y$ en
+            función de $u$ y $v$.
+          - >-
+            El jacobiano de la inversa da el factor de escala. Además, el
+            soporte $0 < x < y$ se transforma, y hay que expresarlo en términos
+            de $u$ y $v$.
+          - >-
+            Plan: reemplazá la inversa en la densidad conjunta, multiplicá por
+            el valor absoluto del jacobiano y traducí el soporte. En los puntos
+            que quedan fuera del soporte nuevo la densidad vale 0.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "07 Parcial Resuelto - EP20180526Res.pdf#p5"
+              valor: "f(u, v) = 3 e^-v 1{0 < u < v/3}"
+            - origen: tools/verify/ep20180526.py
+              valor: "3*exp(-4), 3*exp(-3), 0"
+
+  - numero: 3
+    guias: [5]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Alkaios tiene dos alternativas de viaje a la FIUBA, en subte o en
+      colectivo, y las utiliza en las proporciones $0{,}6$ y $0{,}4$,
+      respectivamente. El tiempo de viaje (en min) en subte es una variable
+      aleatoria con distribución uniforme sobre el intervalo $(45, 60)$. El
+      tiempo de viaje (en min) en colectivo es una variable aleatoria con
+      distribución uniforme sobre el intervalo $(50, 70)$.
+    items:
+      - id: a
+        pregunta: >-
+          [[mezclas|El viernes Alkaios tardó exactamente 55 minutos en llegar a
+          la FIUBA]]. Calcular la probabilidad de que haya viajado en
+          colectivo.
+        skills: [mezclas]
+        respuesta:
+          tipo: numerica
+          valor: "1/3"
+        pistas:
+          - >-
+            La observación es un tiempo exacto, cuya probabilidad es cero. En
+            la regla de Bayes intervienen entonces las densidades en lugar de
+            las probabilidades.
+          - >-
+            La densidad de cada uniforme en 55 es la inversa de la longitud de
+            su intervalo, y 55 pertenece a los dos intervalos.
+          - >-
+            Plan: aplicá la regla de Bayes con las proporciones de uso como
+            probabilidades a priori y las densidades en 55 en el lugar de las
+            verosimilitudes.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "07 Parcial Resuelto - EP20180526Res.pdf#p5"
+              valor: "1/3"
+            - origen: tools/verify/ep20180526.py
+              valor: "1/3"
+
+  - numero: 4
+    guias: [5, 7]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      [[poisson-compuesto|Clientes arriban a un kiosco para cargar su tarjeta
+      SUBE de acuerdo con un proceso de Poisson de intensidad 10 por hora. Los
+      montos cargados por cada cliente son independientes entre sí e
+      independientes de los momentos en que realizan las cargas.]] La
+      distribución del monto (en \$) cargado por cada cliente es 50, 100, 150
+      con probabilidades $0{,}5$, $0{,}3$, $0{,}2$, respectivamente.
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la [[varianza-total|varianza del monto total cargado por
+          todos los clientes]] que arribaron al kiosko entre las 8:00 y las
+          13:00.
+        skills: [poisson-compuesto, varianza-total]
+        respuesta:
+          tipo: numerica
+          valor: "437500"
+          # Es un valor exacto entero: la tolerancia no admite otro entero.
+          tol_rel: 0.000001
+        pistas:
+          - >-
+            El monto total es una suma de una cantidad aleatoria de montos, y
+            esa cantidad tiene distribución de Poisson.
+          - >-
+            Condicioná a la cantidad $N$ de clientes. Dado $N$, el monto total
+            es una suma de $N$ montos independientes.
+          - >-
+            Plan: usá la fórmula de la varianza total con
+            $E[S \mid N] = N\,E[M]$ y
+            $\operatorname{var}(S \mid N) = N \operatorname{var}(M)$, y los
+            momentos de la Poisson que cuenta los clientes de las 8:00 a las
+            13:00.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "07 Parcial Resuelto - EP20180526Res.pdf#p5"
+              valor: "437500"
+            - origen: tools/verify/ep20180526.py
+              valor: "437500"
+
+  - numero: 5
+    guias: [3, 8]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Seth compra 75 bolsas de arena. Los pesos (en kg) de dichas bolsas son
+      variables aleatorias independientes de media $19{,}5$ y desvío estándar
+      $0{,}3$. [[varianza|En el traslado al punto de entrega, cada bolsa
+      perderá un peso (en kg) distribuido uniformemente sobre el intervalo
+      $[0,\ 0{,}5]$.]]
+    items:
+      - id: a
+        pregunta: >-
+          Calcular aproximadamente la probabilidad de que [[tcl|Seth reciba
+          menos de 1450 kg de arena en el punto de entrega]].
+        skills: [tcl, varianza]
+        respuesta:
+          tipo: numerica
+          valor: "1/2 + erf(25*sqrt(266)/266)/2"
+        pistas:
+          - >-
+            El peso que llega de cada bolsa es la diferencia entre su peso
+            inicial y lo que pierde. No hace falta conocer la distribución del
+            peso inicial.
+          - >-
+            La media de la diferencia es la diferencia de las medias, y por la
+            independencia las varianzas se suman.
+          - >-
+            Plan: calculá la media y la varianza del peso que llega de una
+            bolsa, multiplicalas por 75 y aproximá el total por una normal.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "07 Parcial Resuelto - EP20180526Res.pdf#p6"
+              valor: "Phi(2.16) = 0.98"
+            - origen: tools/verify/ep20180526.py
+              valor: "1/2 + erf(25*sqrt(266)/266)/2"

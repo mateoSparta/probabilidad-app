@@ -331,6 +331,9 @@ for (const dir of dirsGuia) {
       err(`${ruta}: el frontmatter no tiene \`id\``)
       continue
     }
+    // La app indexa la teoría por id: con dos iguales, una guía mostraría
+    // el bloque de la otra.
+    if (teoriaIds.has(meta.id)) err(`${ruta}: el id \`${meta.id}\` ya lo usa otro bloque de teoría`)
     teoriaIds.add(meta.id)
     const cuerpo = txt.slice(m[0].length)
     revisarEstilo(`teoría ${meta.id}`, cuerpo)
@@ -596,19 +599,57 @@ if (existsSync(VERIFICACION)) {
     }
   }
 
+  /**
+   * Una expresión se contrasta evaluando las dos en tres puntos de los
+   * rangos de sus variables (a un cuarto, a la mitad y a tres cuartos), con
+   * tolerancia relativa.
+   */
+  function contrastarExpresion(
+    quien: string,
+    delYaml: string,
+    calculado: string,
+    vars: Record<string, [number, number]>,
+  ): void {
+    for (const t of [0.25, 0.5, 0.75]) {
+      const punto = Object.fromEntries(
+        Object.entries(vars).map(([n, [a, b]]) => [n, a + t * (b - a)]),
+      )
+      let y: number, c: number
+      try {
+        y = num(evaluate(delYaml, { ...punto }))
+        c = num(evaluate(calculado, { ...punto }))
+      } catch {
+        err(`${quien}: \`${calculado}\` (de tools/verify) no se puede evaluar con las variables del ítem`)
+        return
+      }
+      if (Math.abs(y - c) > 1e-9 * Math.max(1, Math.abs(c))) {
+        err(
+          `${quien}: el YAML dice \`${delYaml}\` pero tools/verify calculó ` +
+            `\`${calculado}\`, y difieren en ${JSON.stringify(punto)}.`,
+        )
+        return
+      }
+    }
+  }
+
   let contrastados = 0
 
-  for (const ej of ejercicios) {
-    const calculado = res[ej.id]
-    if (!calculado) continue
-    for (const item of ej.items ?? []) {
+  /** Contrasta los ítems de un ejercicio contra su entrada del reporte. */
+  function contrastarItems(quien: string, items: Item[], calculado?: Res[string]): void {
+    if (!calculado) return
+    for (const item of items) {
       const r = item.respuesta
       if (!r) continue
+      const esperado = calculado.items[item.id]
 
-      if (r.tipo === 'numerica') {
-        const esperado = calculado.items[item.id]
-        if (!esperado) continue
-        contrastar(`${ej.id}(${item.id})`, String(r.valor), esperado.valor)
+      if (r.tipo === 'numerica' && esperado) {
+        contrastar(`${quien}(${item.id})`, String(r.valor), esperado.valor)
+        contrastados++
+      }
+
+      if (r.tipo === 'expresion' && esperado) {
+        const vars = (r.vars ?? {}) as Record<string, [number, number]>
+        contrastarExpresion(`${quien}(${item.id})`, String(r.valor), esperado.valor, vars)
         contrastados++
       }
 
@@ -617,30 +658,22 @@ if (existsSync(VERIFICACION)) {
       if (r.tipo === 'checkpoints') {
         const cps = (r.checkpoints ?? []) as { valor?: string }[]
         for (const [i, c] of cps.entries()) {
-          const clave = `${item.id}${i + 1}`
-          const esperado = calculado.items[clave]
-          if (!esperado || c.valor === undefined) continue
-          contrastar(`${ej.id}(${item.id}) checkpoint ${i + 1}`, String(c.valor), esperado.valor)
+          const esperadoCp = calculado.items[`${item.id}${i + 1}`]
+          if (!esperadoCp || c.valor === undefined) continue
+          contrastar(`${quien}(${item.id}) checkpoint ${i + 1}`, String(c.valor), esperadoCp.valor)
           contrastados++
         }
       }
     }
   }
 
-  // Los examenes se contrastan igual: la clave del modelo es
+  for (const ej of ejercicios) contrastarItems(ej.id, ej.items ?? [], res[ej.id])
+
+  // Los exámenes se contrastan igual: la clave del modelo es
   // `<id del examen>-<numero del ejercicio>`.
   for (const ex of examenes) {
     for (const ej of ex.ejercicios ?? []) {
-      const calculado = res[`${ex.id}-${ej.numero}`]
-      if (!calculado) continue
-      for (const item of ej.items ?? []) {
-        const r = item.respuesta
-        if (r?.tipo !== 'numerica') continue
-        const esperado = calculado.items[item.id]
-        if (!esperado) continue
-        contrastar(`${ex.id} ej ${ej.numero}(${item.id})`, String(r.valor), esperado.valor)
-        contrastados++
-      }
+      contrastarItems(`${ex.id} ej ${ej.numero}`, ej.items ?? [], res[`${ex.id}-${ej.numero}`])
     }
   }
 

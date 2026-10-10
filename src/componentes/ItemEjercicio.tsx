@@ -15,6 +15,7 @@ import { useState } from 'preact/hooks'
 import { formulasDeItem } from '../datos/contenido'
 import {
   evaluarCheckpoints,
+  evaluarEscalar,
   evaluarExpresion,
   evaluarNumerica,
   evaluarOpcion,
@@ -358,10 +359,32 @@ export function ItemEjercicio({
   )
 }
 
+/**
+ * El valor exacto de una respuesta, con su aproximación decimal cuando no es
+ * un número escrito en decimal: `1/2 + erf(2)/2 ≈ 0,9772`. La forma exacta
+ * sola no le sirve al alumno para comparar con lo que obtuvo.
+ */
+function Valor({ valor }: { valor: string }) {
+  const n = /^-?\d+(\.\d+)?$/.test(valor.trim()) ? null : evaluarEscalar(valor)
+  return (
+    <>
+      <code>{valor}</code>
+      {n !== null && ` ≈ ${Number(n.toPrecision(4)).toString().replace('.', ',')}`}
+    </>
+  )
+}
+
 /** El resultado final, sin pasos. Sólo cuando el alumno lo pidió. */
 function Respuesta({ item }: { item: Item }) {
   const r = item.respuesta
-  if (r.tipo === 'numerica' || r.tipo === 'expresion') {
+  if (r.tipo === 'numerica') {
+    return (
+      <p class="respuesta">
+        Respuesta: <Valor valor={String(r.valor)} />
+      </p>
+    )
+  }
+  if (r.tipo === 'expresion') {
     return (
       <p class="respuesta">
         Respuesta: <code>{r.valor}</code>
@@ -380,7 +403,7 @@ function Respuesta({ item }: { item: Item }) {
     <ul class="respuesta respuesta--lista">
       {r.checkpoints.map((c, i) => (
         <li key={i}>
-          <Mate>{c.pregunta}</Mate> <code>{c.valor}</code>
+          <Mate>{c.pregunta}</Mate> <Valor valor={String(c.valor)} />
         </li>
       ))}
     </ul>

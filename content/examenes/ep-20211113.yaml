@@ -1,0 +1,141 @@
+id: ep-20211113
+tipo: parcial
+titulo: Primer parcial (parte 2), segundo cuatrimestre de 2021
+fecha: "2021-11-13"
+duracion_min: 150
+fuente: "fuentes/examenes/parciales/12 Parcial Resuelto - EP 20211113Res.pdf#p1"
+# "De los 3 ejercicios, al menos 2 deben estar correctamente desarrollados y
+# resueltos para aprobar el examen", según el encabezado del PDF.
+aprueba_con: 2
+
+ejercicios:
+  - numero: 1
+    guias: [5]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Sea $(X, Y)$ una variable aleatoria con [[conjunta-marginales|función
+      de probabilidad]]
+      $$p_{X,Y}(x, y) = \frac{2^y\, y^x\, e^{-(2 + y/2)}}{2^x\, y!\, x!}\,\mathbf{1}\{x \in \mathbb{N}_0,\ y \in \mathbb{N}_0\}$$
+    items:
+      - id: a
+        pregunta: >-
+          Hallar [[esperanza-condicional|$P(\operatorname{var}(X \mid Y) > 2)$]].
+        skills: [esperanza-condicional, conjunta-marginales]
+        respuesta:
+          tipo: numerica
+          valor: "1 - 7*exp(-2)"
+        pistas:
+          - >-
+            Separá la función de probabilidad conjunta en un factor que
+            depende solo de $y$ y otro que depende de $x$ y de $y$. Cada uno
+            es una función de probabilidad conocida.
+          - >-
+            La conjunta es el producto de $p_Y(y)$ por $p_{X \mid Y = y}(x)$.
+            Identificá las dos distribuciones y sus parámetros.
+          - >-
+            Plan: con la distribución de $X \mid Y = y$ obtené
+            $\operatorname{var}(X \mid Y)$ como función de $Y$, traducí el
+            evento a una condición sobre $Y$ y calculá su probabilidad con la
+            marginal de $Y$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+suma-numerica
+          fuentes_valor:
+            - origen: "12 Parcial Resuelto - EP 20211113Res.pdf#p2"
+              valor: "1 - 7e^-2 = 0.052653"
+            - origen: tools/verify/ep20211113.py
+              valor: "1 - 7*exp(-2)"
+
+  - numero: 2
+    guias: [1, 6]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Una empresa produce rollos de tela. [[inclusion-exclusion|La
+      probabilidad de que un rollo tenga fallas de hilado es $0{,}16$, que
+      tenga fallas de teñido es $0{,}08$ y que tenga ambas fallas es
+      $0{,}06$]], de forma independiente para cada uno de los rollos
+      producidos.
+    items:
+      - id: a
+        pregunta: >-
+          [[condicional|Si se extraen al azar 30 rollos de tela de la
+          producción y exactamente 1 tiene ambas fallas]], calcular la
+          probabilidad de que [[bernoulli-binomial|más de 27 no tengan
+          fallas]].
+        skills: [inclusion-exclusion, condicional, bernoulli-binomial]
+        respuesta:
+          tipo: numerica
+          valor: "29 * (41/47)^28 * (6/47) + (41/47)^29"
+        pistas:
+          - >-
+            Calculá primero la probabilidad de que un rollo no tenga ninguna
+            falla, con la fórmula de la probabilidad de la unión.
+          - >-
+            El rollo con ambas fallas tiene fallas. De los otros 29 se sabe
+            que no tienen ambas fallas, y ese dato modifica la probabilidad de
+            que no tengan ninguna.
+          - >-
+            Plan: calculá la probabilidad de que un rollo no tenga fallas dado
+            que no tiene ambas, modelá la cantidad de rollos sin fallas entre
+            los otros 29 como una binomial y sumá los casos con 28 y con 29.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "12 Parcial Resuelto - EP 20211113Res.pdf#p3"
+              valor: "0.099896"
+            - origen: tools/verify/ep20211113.py
+              valor: "0.099896"
+
+  - numero: 3
+    guias: [2, 8]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      El peso (en gramos) de las manzanas cosechadas en un campo es una
+      variable aleatoria con distribución uniforme sobre el intervalo
+      $[180, 220]$. Las manzanas premium se separan del resto y se venden en
+      cajones de 48 unidades. [[truncamiento|Una manzana se considera premium
+      cuando supera cierto umbral.]]
+    items:
+      - id: a
+        pregunta: >-
+          ¿Cuál debe ser el mínimo valor del umbral, para que [[tcl|el peso de
+          un cajón de manzanas premium sea mayor a 10 kilos con probabilidad
+          mayor o igual a $0{,}95$]]?
+        skills: [tcl, truncamiento]
+        respuesta:
+          tipo: numerica
+          valor: "199.48"
+          # El umbral varía entre 180 y 220: una tolerancia de 0.2 % (±0.4 g)
+          # acepta los redondeos razonables y rechaza los planteos sin
+          # truncamiento.
+          tol_rel: 0.002
+        pistas:
+          - >-
+            El peso de una manzana premium es el de una manzana condicionado a
+            superar el umbral $u$, y una uniforme truncada sigue siendo
+            uniforme.
+          - >-
+            La media y la varianza del peso de un cajón dependen de $u$. El
+            desvío resulta proporcional a $220 - u$.
+          - >-
+            Plan: aproximá el peso del cajón por una normal con media y
+            varianza en función de $u$, imponé que la probabilidad de superar
+            10000 g sea al menos $0{,}95$ y despejá $u$, que aparece de forma
+            lineal.
+        verificacion:
+          estado: discrepancia
+          metodo: exacto+biseccion
+          nota: >-
+            La resuelta plantea 4720 - 24u <= -723.712 + 3.2896u y concluye
+            u >= 199.6, pero de esa desigualdad sale u >= 5443.712 / 27.2896
+            = 199.48. La diferencia es de 0.06 % y la tolerancia del ítem
+            acepta los dos valores. Se carga 199.48.
+          fuentes_valor:
+            - origen: "12 Parcial Resuelto - EP 20211113Res.pdf#p5"
+              valor: "199.6"
+            - origen: tools/verify/ep20211113.py
+              valor: "4987/25 = 199.48"

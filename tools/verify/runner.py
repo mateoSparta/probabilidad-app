@@ -8,6 +8,10 @@ caminos independientes: exacto (conteo o simbolico) y Monte Carlo. Si los dos
 coinciden, el valor sirve para el contenido. Si no, es un error del modelo y
 hay que mirarlo antes de cargar nada.
 
+Un modulo de examen (epAAAAMMDD.py) declara en cambio una lista EJERCICIOS,
+con un modelo por ejercicio. La clave de cada uno es `<ID_EXAMEN>-<numero>`,
+que es la que busca tools/check.ts.
+
 La salida va a content/.verificacion/resultados.json, que es lo que compara
 tools/check.ts contra los valores del YAML: asi un valor que se tocó a mano
 sin recalcular hace fallar el build.
@@ -42,8 +46,27 @@ def modelos(filtro: str | None) -> list[str]:
     )
     if filtro:
         clave = filtro.replace("-", "_")
-        nombres = [n for n in nombres if n == clave]
+        # Los de examen se piden como ep-20171028 y el modulo es ep20171028.
+        nombres = [n for n in nombres if n in (clave, filtro.replace("-", ""))]
     return nombres
+
+
+def modelos_de(mod, nombre: str):
+    """
+    (ident, numero, exacto, estimado, tolerancia) de cada modelo del modulo:
+    uno solo en los de guia, uno por ejercicio en los de examen.
+    """
+    if hasattr(mod, "EJERCICIOS"):
+        for ej in mod.EJERCICIOS:
+            yield f"{mod.ID_EXAMEN}-{ej.numero}", ej.numero, ej.exacto, ej.estimado, ej.tolerancia
+        return
+    yield (
+        getattr(mod, "ID", nombre.replace("_", "-")),
+        getattr(mod, "NUMERO", None),
+        mod.exacto,
+        mod.estimado,
+        getattr(mod, "TOLERANCIA", 0.005),
+    )
 
 
 def como_texto(v) -> str:
@@ -75,14 +98,14 @@ def main() -> int:
     resultados: dict[str, dict] = {}
     fallas = 0
 
-    for nombre in nombres:
-        mod = importlib.import_module(nombre)
-        ident = getattr(mod, "ID", nombre.replace("_", "-"))
-        exactos = mod.exacto()
-        estimados = mod.estimado()
-        tol = getattr(mod, "TOLERANCIA", 0.005)
+    modelos_a_correr = [
+        m for nombre in nombres for m in modelos_de(importlib.import_module(nombre), nombre)
+    ]
+    for ident, numero, f_exacto, f_estimado, tol in modelos_a_correr:
+        exactos = f_exacto()
+        estimados = f_estimado()
 
-        print(f"\n  {ident}  ({getattr(mod, 'NUMERO', '?')})")
+        print(f"\n  {ident}  ({numero if numero is not None else '?'})")
         items: dict[str, dict] = {}
         for clave, valor in exactos.items():
             txt = como_texto(valor)
@@ -107,7 +130,7 @@ def main() -> int:
                 print(f"    --  {clave:10s} {txt}   (sin Monte Carlo)")
 
             items[clave] = fila
-        resultados[ident] = {"numero": getattr(mod, "NUMERO", None), "items": items}
+        resultados[ident] = {"numero": numero, "items": items}
 
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
     SALIDA.write_text(

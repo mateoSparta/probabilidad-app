@@ -1,0 +1,215 @@
+id: ep-20190601
+tipo: parcial
+titulo: Evaluación parcial, primer cuatrimestre de 2019
+fecha: "2019-06-01"
+duracion_min: 240
+fuente: "fuentes/examenes/parciales/03 Parcial Resuelto - EP20190601Res.pdf#p6"
+# El PDF no enuncia el criterio de aprobación. Se usa el criterio actual de la
+# cátedra para los parciales de cinco ejercicios (tres bien resueltos).
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [1]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Un comercio de electrodomésticos recibe un lote de 20 lavarropas. El
+      lote se considera bueno si contiene como máximo un lavarropas con
+      defectos. [[conteo-muestras,laplace|La división de control de calidad
+      elige 3 lavarropas al azar para controlarlos]] y rechaza el lote si
+      encuentra alguno con defectos.
+    items:
+      - id: a
+        pregunta: >-
+          Si el lote es bueno, calcular la máxima probabilidad de tomar una
+          decisión incorrecta acerca del mismo.
+        skills: [conteo-muestras, laplace]
+        respuesta:
+          tipo: numerica
+          valor: "3/20"
+        pistas:
+          - >-
+            Un lote bueno tiene 0 o 1 lavarropas defectuosos, y la decisión
+            incorrecta sobre un lote bueno es rechazarlo.
+          - >-
+            Con 0 defectuosos el lote nunca se rechaza. En el otro caso
+            conviene calcular la probabilidad del complemento, es decir, que
+            los 3 elegidos sean buenos.
+          - >-
+            Plan: calculá la probabilidad de rechazo con 1 defectuoso como 1
+            menos el cociente entre las muestras de 3 que no lo incluyen y el
+            total de muestras de 3, y compará con el caso de 0 defectuosos.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "03 Parcial Resuelto - EP20190601Res.pdf#p6"
+              valor: "3/20"
+            - origen: tools/verify/ep20190601.py
+              valor: "3/20"
+
+  - numero: 2
+    guias: [2]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Una computadora ejecuta un programa en dos etapas. Los tiempos (en
+      minutos) que demora la primera y segunda etapa son variables aleatorias
+      $X$ e $Y$ [[conjunta-marginales|con distribución uniforme sobre la
+      región $\{(x, y) \in \mathbb{R}^2 : 0 < x < 10,\ 0 < y < x\}$]].
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que [[prob-geometrica|el programa
+          completo demore entre 8 y 12 minutos en ejecutarse]].
+        skills: [prob-geometrica, conjunta-marginales]
+        respuesta:
+          tipo: numerica
+          valor: "9/25"
+        pistas:
+          - >-
+            Como la distribución conjunta es uniforme, la probabilidad pedida
+            es un cociente de áreas.
+          - >-
+            El evento es $8 < X + Y < 12$. Dibujá el triángulo soporte y las
+            rectas $x + y = 8$ y $x + y = 12$.
+          - >-
+            Plan: calculá el área de la franja comprendida entre las dos
+            rectas dentro del triángulo, por ejemplo como el área del
+            triángulo menos las regiones que quedan fuera de la franja, y
+            dividila por el área total.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "03 Parcial Resuelto - EP20190601Res.pdf#p8"
+              valor: "0.36"
+            - origen: tools/verify/ep20190601.py
+              valor: "9/25"
+
+  - numero: 3
+    guias: [5]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Sea $(X, Y)$ un vector aleatorio con [[conjunta-marginales|densidad
+      conjunta
+      $f_{XY}(x, y) = \frac{y^2 x}{2}\, e^{-xy}\,\mathbf{1}\{x > 0,\ 0 < y < 2\}$]].
+    items:
+      - id: a
+        pregunta: 'Calcular [[esperanza-condicional|$P(E[X \mid Y] > 4/3)$]].'
+        skills: [esperanza-condicional, conjunta-marginales]
+        respuesta:
+          tipo: numerica
+          valor: "3/4"
+        pistas:
+          - >-
+            $E[X \mid Y]$ es una variable aleatoria, función de $Y$. Primero
+            hay que hallar $\varphi(y) = E[X \mid Y = y]$.
+          - >-
+            La densidad conjunta se factoriza como la densidad de $Y$ por una
+            densidad en $x$ que depende de $y$. Identificá las dos
+            distribuciones.
+          - >-
+            Plan: reconocé la distribución de $X \mid Y = y$ para obtener
+            $\varphi(y)$, traducí el evento $\varphi(Y) > 4/3$ a un evento
+            sobre $Y$ y calculá su probabilidad con la marginal de $Y$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+cuadratura
+          fuentes_valor:
+            - origen: "03 Parcial Resuelto - EP20190601Res.pdf#p9"
+              valor: "3/4"
+            - origen: tools/verify/ep20190601.py
+              valor: "3/4"
+
+  - numero: 4
+    guias: [7]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Los aviones de la aerolínea Aires arriban a un aeropuerto de acuerdo con
+      un proceso de Poisson de intensidad 10 por hora y los de la aerolínea
+      Cielos de acuerdo con un proceso de Poisson de intensidad 35 por hora.
+      [[superposicion-adelgazamiento|Los dos procesos de Poisson son
+      independientes.]]
+    items:
+      - id: a
+        pregunta: >-
+          [[condicionar-Nt|Sabiendo que el 1 de junio entre las 0:00 y las
+          0:05 arribaron exactamente dos aviones de la aerolínea Aires]],
+          calcular la probabilidad de que [[poisson-incrementos|entre las 0:00
+          y las 0:02 haya arribado por lo menos un avión]] al aeropuerto.
+        skills: [superposicion-adelgazamiento, condicionar-Nt, poisson-incrementos]
+        respuesta:
+          tipo: numerica
+          valor: "1 - 9/25 * exp(-7/6)"
+        pistas:
+          - >-
+            Conviene pasar al complemento. Que no haya arribado ningún avión
+            entre las 0:00 y las 0:02 exige que no llegue ninguno de Aires ni
+            ninguno de Cielos en ese intervalo.
+          - >-
+            El dato condiciona solo al proceso de Aires. El de Cielos es
+            independiente y no se ve afectado.
+          - >-
+            Plan: dados los dos arribos de Aires en los primeros 5 minutos,
+            cada uno cae después de las 0:02 de forma independiente y con
+            probabilidad proporcional a la longitud del intervalo. Multiplicá
+            esa probabilidad para los dos arribos por la de que no llegue
+            ningún avión de Cielos en 2 minutos, y restá el producto de 1.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "03 Parcial Resuelto - EP20190601Res.pdf#p10"
+              valor: "0.8879"
+            - origen: tools/verify/ep20190601.py
+              valor: "1 - 9*exp(-7/6)/25"
+
+  - numero: 5
+    guias: [6, 8]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      La probabilidad de que un celular de marca Acme dure menos de 40 días es
+      de $0{,}3$.
+    items:
+      - id: a
+        pregunta: >-
+          [[bernoulli-binomial|Si se eligen al azar 500 celulares de dicha
+          marca]], calcular [[aproximacion-normal|aproximadamente la
+          probabilidad de que más de 170 duren menos de 40 días]].
+        skills: [aproximacion-normal, bernoulli-binomial]
+        respuesta:
+          tipo: numerica
+          valor: "1/2 - erf(41*sqrt(210)/420)/2"
+          # Centrado en la aproximación con corrección por continuidad
+          # (0.0227). La resuelta da también la versión sin corrección
+          # (0.0255), y la tolerancia acepta las dos y la binomial exacta
+          # (0.0237).
+          tol_rel: 0.13
+        pistas:
+          - >-
+            La cantidad de celulares que duran menos de 40 días es binomial.
+            Con $n = 500$ el cálculo exacto es largo y conviene aproximar.
+          - >-
+            La binomial es una suma de variables de Bernoulli independientes,
+            de modo que se puede aproximar por una normal con su misma media y
+            su misma varianza.
+          - >-
+            Plan: calculá la media $np$ y la varianza $np(1-p)$, aplicá la
+            corrección por continuidad al evento "más de 170" y estandarizá.
+        verificacion:
+          estado: verificado
+          metodo: exacto+distribucion-exacta
+          fuentes_valor:
+            - origen: "03 Parcial Resuelto - EP20190601Res.pdf#p10"
+              valor: "0.0255 sin corrección por continuidad"
+            - origen: "03 Parcial Resuelto - EP20190601Res.pdf#p11"
+              valor: "0.0228 con corrección por continuidad"
+            - origen: tools/verify/ep20190601.py
+              valor: "1/2 - erf(41*sqrt(210)/420)/2"
+            - origen: "tools/verify/ep20190601.py (control: binomial exacta)"
+              valor: "0.0237"

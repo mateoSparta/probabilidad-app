@@ -1,0 +1,201 @@
+id: ep-20171118
+tipo: parcial
+titulo: Primer recuperatorio, segundo cuatrimestre de 2017
+fecha: "2017-11-18"
+duracion_min: 240
+fuente: "fuentes/examenes/parciales/10 Parcial Resuelto - EP20171118Res.pdf#p4"
+# El PDF no enuncia el criterio de aprobación. Se usa el criterio actual de la
+# cátedra para los parciales de cinco ejercicios (tres bien resueltos).
+aprueba_con: 3
+
+ejercicios:
+  - numero: 1
+    guias: [2, 4]
+    en_alcance: false
+    cargado: false
+    nota: >-
+      Pide simular cuatro duraciones con números aleatorios dados. La
+      simulación queda fuera del alcance de la app.
+    enunciado: |
+      Una catacumba será iluminada con 4 antorchas cuyas duraciones (en horas)
+      son independientes y cada una de las cuales se mantiene encendida
+      durante un tiempo aleatorio con función de densidad
+      $f(t) = \frac{2}{t^2}\,\mathbf{1}\{t > 2\}$. La catacumba se mantendrá
+      iluminada mientras alguna de las antorchas se mantenga encendida. Las
+      cuatro antorchas se encenderán simultáneamente a las 0:00 del 1 de
+      enero. Usando los números aleatorios $0{,}118$, $0{,}843$, $0{,}346$ y
+      $0{,}728$, simular las duraciones de las 4 antorchas y a partir de esos
+      valores determinar hasta qué hora la catacumba se mantendrá iluminada.
+    items: []
+
+  - numero: 2
+    guias: [2, 4]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Lucas y Monk esperan para ser atendidos en la fila de un cajero.
+      [[suma-independientes|El cajero demora tiempos exponenciales
+      independientes de media 5 minutos para atender a cada cliente.]]
+    items:
+      - id: a
+        pregunta: >-
+          [[truncamiento|Si el tiempo de atención para Lucas fue menor que el
+          tiempo de atención para Monk]], hallar la función de distribución
+          del tiempo total de atención de ambos. Escribir $F(t)$ para
+          $t \ge 0$.
+        skills: [truncamiento, suma-independientes]
+        respuesta:
+          tipo: expresion
+          valor: "1 - exp(-t/5) * (1 + t/5)"
+          vars:
+            t: [0.1, 30]
+        pistas:
+          - >-
+            Se pide $P(L + M \le t \mid L < M)$, que por definición es un
+            cociente de dos probabilidades.
+          - >-
+            Por simetría, $P(L < M) = 1/2$. El numerador es la integral de la
+            densidad conjunta sobre la región
+            $\{\ell + m \le t,\ \ell < m\}$.
+          - >-
+            Plan: integrá la densidad conjunta primero en $m$, entre $\ell$ y
+            $t - \ell$, y después en $\ell$, entre 0 y $t/2$, y dividí por
+            $P(L < M)$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "10 Parcial Resuelto - EP20171118Res.pdf#p5"
+              valor: "1 - e^(-t/5) (1 + t/5)"
+            - origen: tools/verify/ep20171118.py
+              valor: "(-t/5 + exp(t/5) - 1)*exp(-t/5)"
+
+  - numero: 3
+    guias: [3, 5, 6]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      Un motoquero transita por una avenida. Las probabilidades de que al
+      momento de llegar a un semáforo este se encuentre en rojo, amarillo o
+      verde son $0{,}4$, $0{,}1$ y $0{,}5$ respectivamente.
+      [[geometrica-pascal|Los estados de los semáforos son independientes y
+      el motoquero sólo se detiene al encontrar un semáforo en rojo.]]
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la [[covarianza,varianza-total|covarianza entre la cantidad
+          de luces verdes y la cantidad de luces amarillas que atravesó hasta
+          detenerse]].
+        skills: [covarianza, varianza-total, geometrica-pascal]
+        respuesta:
+          tipo: numerica
+          valor: "5/16"
+        pistas:
+          - >-
+            La cantidad $N$ de semáforos hasta el primer rojo es geométrica, y
+            los verdes y los amarillos atravesados suman $N - 1$.
+          - >-
+            Dado $N = n$, cada uno de los $n - 1$ semáforos atravesados es
+            verde con probabilidad $5/6$ y amarillo con probabilidad $1/6$,
+            independientemente de los demás.
+          - >-
+            Plan: escribí
+            $\operatorname{cov}(V, A) = \operatorname{cov}(V, N - 1 - V) = \operatorname{cov}(V, N) - \operatorname{var}(V)$
+            y calculá cada término condicionando a $N$, con la esperanza y la
+            varianza totales.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "10 Parcial Resuelto - EP20171118Res.pdf#p6"
+              valor: "5/16"
+            - origen: tools/verify/ep20171118.py
+              valor: "5/16"
+
+  - numero: 4
+    guias: [6, 7]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      A la posada El Póney Pisador ingresarán tres tipos de clientes de la
+      Tierra Media: hobbits, elfos y dwarves.
+      [[superposicion-adelgazamiento|Los hobbits, los elfos y los dwarves
+      ingresarán de acuerdo con tres procesos de Poisson independientes de
+      intensidades $\frac{3}{5}$, $\frac{2}{3}$ y $\frac{1}{2}$ por hora,
+      respectivamente.]] El Póney Pisador abrirá sus puertas a las 0:00.
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la probabilidad de que [[tiempos-espera|el cuarto cliente
+          de la Tierra Media ingrese después de las 0:30]] y [[multinomial|entre
+          los primeros tres haya por lo menos un hobbit y por lo menos un
+          elfo]].
+        skills: [superposicion-adelgazamiento, tiempos-espera, multinomial]
+        respuesta:
+          tipo: numerica
+          valor: "exp(-53/60) * (1 + 53/60 + (53/60)^2/2 + (53/60)^3/6) * (1 - ((35/53)^3 + (33/53)^3 - (15/53)^3))"
+        pistas:
+          - >-
+            Los tres procesos se superponen en un único proceso de Poisson de
+            clientes, cuya intensidad es la suma de las tres.
+          - >-
+            En el proceso superpuesto, el tipo de cada cliente es independiente
+            de los tiempos de llegada, y cada cliente es de un tipo dado con
+            probabilidad proporcional a la intensidad de ese tipo.
+          - >-
+            Plan: el evento se factoriza. Calculá $P(S_4 > 1/2)$ como la
+            probabilidad de a lo sumo 3 llegadas hasta las 0:30, calculá la
+            probabilidad de que entre los tres primeros haya algún hobbit y
+            algún elfo por inclusión-exclusión sobre la multinomial, y
+            multiplicalas.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "10 Parcial Resuelto - EP20171118Res.pdf#p6"
+              valor: "0.98735 * 0.49329 = 0.48705"
+            - origen: tools/verify/ep20171118.py
+              valor: "52620049*exp(-53/60)/44663100"
+
+  - numero: 5
+    guias: [8]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      María prepara una Chocotorta utilizando los siguientes ingredientes: un
+      pote de dulce de leche de 500 gramos, un pote de crema de 250 gramos, y
+      121 galletitas de chocolate. Los pesos en gramos de las galletitas de
+      chocolate son variables aleatorias independientes de media $3{,}75$ y
+      desvío estándar $0{,}5$.
+    items:
+      - id: a
+        pregunta: >-
+          ¿A cuántas personas, como máximo, les podrá convidar Chocotorta si
+          pretende que [[tcl|cada una reciba una porción de 40 gramos con una
+          probabilidad no menor que $0{,}95$]]?
+        skills: [tcl]
+        respuesta:
+          tipo: numerica
+          valor: "29"
+          # Es un máximo entero: la tolerancia no puede admitir otro entero.
+          tol_rel: 0.000001
+        pistas:
+          - >-
+            El peso de la torta es la constante de los dos potes más la suma
+            de los pesos de las 121 galletitas.
+          - >-
+            Para convidar a $n$ personas hacen falta más de $40n$ gramos. Al
+            aumentar $n$ disminuye la probabilidad de que alcance, de modo que
+            se busca un máximo.
+          - >-
+            Plan: aproximá la suma de las galletitas por una normal, imponé
+            que la probabilidad de que la torta pese más de $40n$ gramos sea al
+            menos $0{,}95$ y despejá el mayor $n$ entero que la cumple.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "10 Parcial Resuelto - EP20171118Res.pdf#p7"
+              valor: "29"
+            - origen: tools/verify/ep20171118.py
+              valor: "29"
