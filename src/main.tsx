@@ -12,6 +12,7 @@ import './estilos/tokens.css'
 import './estilos/global.css'
 import './estilos/componentes.css'
 import './estilos/navegacion.css'
+import './estilos/animaciones.css'
 
 import { App } from './app'
 

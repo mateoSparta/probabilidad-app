@@ -63,7 +63,7 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
       seccion: 'ejercicios',
       Icono: IconoEjercicios,
       descripcion:
-        'Las guías de la materia, organizadas por tema, con teoría breve y corrección inmediata.',
+        'Las guías de la materia, organizadas por tema, con teoría intercalada.',
       dato: `${resueltos} de ${ejercicios.length} ejercicios resueltos`,
     },
     {
@@ -94,8 +94,8 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
         Menú principal
       </h2>
       <ul class="menu__grilla">
-        {opciones.map(({ seccion, Icono, descripcion, dato }) => (
-          <li key={seccion}>
+        {opciones.map(({ seccion, Icono, descripcion, dato }, i) => (
+          <li key={seccion} style={{ '--i': i }}>
             <a class="menu__opcion" href={escribirRuta({ seccion, guia })}>
               <span class="menu__icono">
                 <Icono />

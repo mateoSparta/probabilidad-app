@@ -60,11 +60,11 @@ export function MapaEjercicios({ guia, sesion, onElegir }: Props) {
   return (
     <nav class="mapa" aria-label="Ejercicios de la guía">
       <ul class="mapa__fila">
-        {ejercicios.map((ej) => {
+        {ejercicios.map((ej, i) => {
           const estado = estadoDe(ej.id)
           const etiqueta = `${ej.numero} — ${ETIQUETA_ESTADO_EJERCICIO[estado]}`
           return (
-            <li key={ej.id}>
+            <li key={ej.id} style={{ '--i': i }}>
               <button
                 class={'punto punto--' + estado}
                 onClick={() => (onElegir ? onElegir(ej.id) : irA('ej-' + ej.id))}

@@ -3,9 +3,13 @@
 
 /* ------------------------------------------------- menú principal */
 
+/* `grid-auto-rows: 1fr` hace que todas las filas midan lo que la más alta:
+   las cuatro opciones quedan del mismo alto aunque su texto ocupe distinta
+   cantidad de renglones. */
 .menu__grilla {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  grid-auto-rows: 1fr;
   gap: var(--e-4);
   list-style: none;
   margin: 0;
@@ -216,15 +220,18 @@
 }
 
 @media (min-width: 1220px) {
-  main.columna {
+  /* El contenedor posicionado es `.vista` y no `main`: mientras dura la
+     animación de entrada, la vista tiene un `transform` y pasa a ser el
+     contenedor del índice igual, así que se lo fija ahí para que no salte. */
+  .vista {
     position: relative;
   }
   .indice {
     display: block;
     position: absolute;
-    top: var(--e-5);
+    top: 0;
     bottom: 0;
-    right: calc(100% + 1.5rem);
+    right: calc(100% + 1.5rem + var(--e-4));
     width: 11.5rem;
   }
   .indice__contenido {
@@ -286,7 +293,7 @@
   padding-right: var(--e-1);
 }
 
-/* --------------------------------------- volver al inicio (pie) */
+/* ------------------------------------ volver al principio (pie) */
 
 .volver {
   appearance: none;
@@ -342,6 +349,17 @@
 .aviso-parcial .icono {
   color: var(--color-ritmo, var(--tinta-3));
   font-size: 1.1em;
+}
+.aviso-parcial a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 150ms, color 150ms;
+}
+.aviso-parcial a:hover,
+.aviso-parcial a:focus-visible {
+  color: var(--acento);
+  border-bottom-color: currentColor;
 }
 .aviso-parcial__fecha {
   font-weight: 500;
@@ -404,4 +422,87 @@
   gap: var(--e-2) var(--e-5);
   font-size: var(--t-sm);
   color: var(--tinta-2);
+}
+
+/* ------------------------------------------- menú de hamburguesa */
+
+/* Va en la esquina superior derecha de la columna, no de la ventana. */
+.navegacion {
+  position: relative;
+  flex: none;
+}
+
+/* `display: block` para que el botón no sume el espacio de la línea de texto
+   y la cabecera mida lo mismo con o sin menú. */
+.hamburguesa {
+  appearance: none;
+  cursor: pointer;
+  display: block;
+  position: relative;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-lg);
+  background: var(--superficie);
+  transition: background 150ms, border-color 150ms;
+}
+.hamburguesa:hover { background: var(--superficie-alta); border-color: var(--acento); }
+
+/* Tres líneas que se cruzan en una X al abrir. */
+.hamburguesa__linea {
+  position: absolute;
+  left: 50%;
+  width: 1.1rem;
+  height: 1.5px;
+  margin-left: -0.55rem;
+  border-radius: 1px;
+  background: var(--tinta);
+  transition: transform 220ms ease, opacity 150ms ease, top 220ms ease;
+}
+.hamburguesa__linea:nth-child(1) { top: calc(50% - 6px); }
+.hamburguesa__linea:nth-child(2) { top: calc(50% - 0.75px); }
+.hamburguesa__linea:nth-child(3) { top: calc(50% + 4.5px); }
+.hamburguesa[aria-expanded='true'] .hamburguesa__linea:nth-child(1) {
+  top: calc(50% - 0.75px);
+  transform: rotate(45deg);
+}
+.hamburguesa[aria-expanded='true'] .hamburguesa__linea:nth-child(2) { opacity: 0; }
+.hamburguesa[aria-expanded='true'] .hamburguesa__linea:nth-child(3) {
+  top: calc(50% - 0.75px);
+  transform: rotate(-45deg);
+}
+
+.navegacion__lista {
+  position: absolute;
+  top: calc(100% + var(--e-2));
+  right: 0;
+  z-index: 30;
+  min-width: 12.5rem;
+  margin: 0;
+  padding: var(--e-2);
+  list-style: none;
+  background: var(--superficie-alta);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  box-shadow: 0 2px 4px #2b262014, 0 12px 32px #2b26201f;
+  transform-origin: top right;
+}
+.navegacion__lista[hidden] { display: none; }
+
+.navegacion__opcion {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  padding: var(--e-2) var(--e-3);
+  border-radius: var(--radio);
+  color: var(--tinta);
+  text-decoration: none;
+  transition: background 120ms, color 120ms;
+}
+.navegacion__opcion .icono { color: var(--acento); font-size: 1.1em; }
+.navegacion__opcion:hover,
+.navegacion__opcion:focus-visible {
+  background: var(--acento-suave);
+  color: var(--acento);
 }

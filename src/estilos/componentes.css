@@ -101,13 +101,45 @@
 
 /* -------------------------------------------------------------- ítems */
 
-.items { list-style: none; margin: 0; padding: 0; }
+/* La lista se extiende sobre el relleno de la tarjeta (margen negativo) y
+   cada ítem recupera ese espacio como relleno propio. Así el texto queda
+   alineado con el enunciado y, cuando el ítem se pinta, el recuadro de color
+   tiene margen alrededor del contenido. */
+.items {
+  list-style: none;
+  margin: var(--e-2) calc(-1 * var(--e-4)) calc(-1 * var(--e-2));
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-2);
+}
 
 .item {
-  border-top: 1px solid var(--borde);
-  padding-block: var(--e-4);
+  position: relative;
+  padding: var(--e-4);
+  border: 1px solid transparent;
+  border-radius: var(--radio-lg);
+  transition: background-color 280ms ease, border-color 280ms ease;
 }
-.item:last-child { padding-bottom: 0; }
+
+/* Separador entre ítems, en el hueco que los separa. No se dibuja junto a
+   un ítem pintado, porque el recuadro ya marca el límite. */
+.item::before {
+  content: '';
+  position: absolute;
+  top: calc(-1 * var(--e-1) - 1px);
+  left: var(--e-4);
+  right: var(--e-4);
+  height: 1px;
+  background: var(--borde);
+  transition: opacity 200ms;
+}
+.item--correcto::before,
+.item--revelado::before,
+.item--correcto + .item::before,
+.item--revelado + .item::before {
+  opacity: 0;
+}
 
 .item__cabeza { display: flex; gap: var(--e-2); align-items: baseline; }
 
@@ -120,8 +152,16 @@
 
 .item__pregunta { flex: 1; }
 
-.item--correcto { background: linear-gradient(90deg, var(--dominado-suave), transparent 40%); }
-.item--revelado { background: linear-gradient(90deg, var(--desarrollo-suave), transparent 40%); }
+/* Resuelto: un recuadro verde parejo, sin degradé. Revelado: el mismo
+   recuadro en ámbar. */
+.item--correcto {
+  background: var(--dominado-suave);
+  border-color: color-mix(in srgb, var(--dominado) 22%, transparent);
+}
+.item--revelado {
+  background: var(--desarrollo-suave);
+  border-color: color-mix(in srgb, var(--desarrollo) 22%, transparent);
+}
 
 /* ------------------------------------------------------------ entrada */
 
@@ -448,52 +488,384 @@
 
 /* --------------------------------------------------- simulacro (§6) */
 
-.simulacro__barra {
+/* Avisos con ícono: examen incompleto, veredicto parcial. */
+.nota-aviso {
   display: flex;
+  gap: var(--e-3);
   align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--e-4);
-  flex-wrap: wrap;
-}
-.simulacro__barra h2 { margin-bottom: var(--e-1); }
-
-.reloj {
-  font-family: var(--mono);
-  font-size: var(--t-xl);
-  font-variant-numeric: tabular-nums;
+  margin: 0 0 var(--e-5);
+  padding: var(--e-3) var(--e-4);
+  font-size: var(--t-sm);
+  line-height: 1.5;
   color: var(--tinta-2);
+  background: var(--desarrollo-suave);
+  border: 1px solid color-mix(in srgb, var(--desarrollo) 25%, transparent);
+  border-radius: var(--radio-lg);
+}
+.nota-aviso .icono {
+  flex: none;
+  margin-top: 0.15em;
+  font-size: 1.1em;
+  color: var(--desarrollo);
+}
+
+/* --- configuración --- */
+
+.sim-config {
+  background: var(--superficie);
   border: 1px solid var(--borde);
   border-radius: var(--radio-lg);
-  padding: var(--e-1) var(--e-3);
-  background: var(--superficie);
+  box-shadow: var(--sombra);
+  padding: var(--e-5);
+  margin-bottom: var(--e-6);
 }
-.reloj--poco { color: var(--flojo); border-color: var(--flojo); }
 
-.campos {
+/* Etiqueta arriba; campo y atajos en una fila que se parte si no entra. */
+.sim-config__duracion {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--e-4);
-  align-items: flex-end;
-  margin-block: var(--e-4);
+  align-items: center;
+  gap: var(--e-3) var(--e-4);
 }
-.campo { display: flex; flex-direction: column; gap: var(--e-1); font-size: var(--t-sm); }
-.campo > span { color: var(--tinta-2); font-size: var(--t-xs); }
-.campo--check { flex-direction: row; align-items: center; gap: var(--e-2); }
-.campo--check > span { font-size: var(--t-sm); color: var(--tinta); }
+
+.sim-config__etiqueta {
+  flex-basis: 100%;
+  display: block;
+  margin-bottom: calc(-1 * var(--e-1));
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tinta-3);
+}
+
+.duracion {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+}
+.duracion .entrada { width: 6rem; }
+
+.duracion__atajos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+}
+
+.chip-opcion {
+  appearance: none;
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: var(--t-sm);
+  padding: 2px var(--e-3);
+  border-radius: var(--radio-pill);
+  border: 1px solid var(--borde-fuerte);
+  background: transparent;
+  color: var(--tinta-2);
+  transition: background 150ms, color 150ms, border-color 150ms;
+}
+.chip-opcion:hover { border-color: var(--acento); color: var(--tinta); }
+.chip-opcion--activa,
+.chip-opcion--activa:hover {
+  background: var(--acento);
+  border-color: var(--acento);
+  color: var(--superficie-alta);
+}
+
+.interruptores {
+  list-style: none;
+  margin: var(--e-5) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--borde);
+}
+.interruptores li { border-bottom: 1px solid var(--borde); }
+
+.interruptor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-4);
+  padding-block: var(--e-3);
+  cursor: pointer;
+}
+.interruptor__texto { display: flex; flex-direction: column; gap: 2px; }
+.interruptor__etiqueta { font-size: var(--t-base); }
+.interruptor__descripcion { font-size: var(--t-xs); color: var(--tinta-3); }
+
+/* El interruptor es un checkbox real (accesible y con teclado), dibujado
+   como riel con una perilla que se desliza. */
+.interruptor__control {
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 2.5rem;
+  height: 1.4rem;
+  margin: 0;
+  border-radius: var(--radio-pill);
+  background: var(--borde-fuerte);
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+.interruptor__control::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(1.4rem - 6px);
+  height: calc(1.4rem - 6px);
+  border-radius: 50%;
+  background: var(--superficie-alta);
+  box-shadow: 0 1px 2px #2b262033;
+  transition: transform 220ms cubic-bezier(0.3, 0.7, 0.4, 1.2);
+}
+.interruptor__control:checked { background: var(--acento); }
+.interruptor__control:checked::before { transform: translateX(1.1rem); }
+
+.sim-config__pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-3) var(--e-5);
+  margin-top: var(--e-5);
+}
+.sim-config__pie .dato-chico { flex: 1 1 16rem; margin: 0; }
+
+.boton--grande {
+  font-size: var(--t-base);
+  padding: var(--e-3) var(--e-5);
+}
+
+/* --- pool --- */
+
+.pool__titulo,
+.pendientes__titulo {
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tinta-3);
+  font-weight: 500;
+  margin-bottom: var(--e-3);
+}
+
+.pool__grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--e-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.examen {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--e-4);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+}
+.examen__tipo {
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--acento);
+}
+.examen__titulo { font-weight: 600; }
+.examen__fecha { font-size: var(--t-sm); color: var(--tinta-2); }
+.examen .barra { margin-top: var(--e-3); }
+.examen__avance { font-size: var(--t-xs); color: var(--tinta-3); }
+
+/* Barra de avance: la usan el pool y la devolución. */
+.barra {
+  display: block;
+  height: 5px;
+  border-radius: var(--radio-pill);
+  background: var(--borde);
+  overflow: hidden;
+}
+.barra__relleno {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--acento);
+}
+
+/* --- rindiendo --- */
+
+/* Fija arriba mientras se rinde, para que el reloj esté siempre a la vista. */
+.sim-barra {
+  position: sticky;
+  top: var(--e-2);
+  z-index: 9;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-3) var(--e-5);
+  padding: var(--e-4) var(--e-5);
+  margin-bottom: var(--e-5);
+  background: color-mix(in srgb, var(--superficie) 94%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra);
+}
+.sim-barra--entregado { position: static; }
+
+.sim-barra__info { flex: 1 1 14rem; min-width: 0; }
+.sim-barra__tipo {
+  margin: 0;
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--acento);
+}
+.sim-barra__titulo { margin: 2px 0; font-size: var(--t-md); }
+.sim-barra__dato { margin: 0; font-size: var(--t-xs); color: var(--tinta-3); }
+
+.sim-barra__acciones { display: flex; gap: var(--e-2); }
+
+.reloj {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  padding: var(--e-1) var(--e-4);
+  border-radius: var(--radio-pill);
+  border: 1px solid var(--borde-fuerte);
+  background: var(--superficie-alta);
+  color: var(--tinta);
+  transition: color 300ms, border-color 300ms, background 300ms;
+}
+.reloj .icono { color: var(--tinta-3); }
+.reloj__tiempo {
+  font-family: var(--mono);
+  font-size: var(--t-md);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+.reloj--poco {
+  color: var(--flojo);
+  border-color: var(--flojo);
+  background: var(--flojo-suave);
+}
+.reloj--poco .icono { color: var(--flojo); }
+
+.sim-estado {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  padding: var(--e-1) var(--e-4);
+  border-radius: var(--radio-pill);
+  font-size: var(--t-sm);
+  color: var(--dominado);
+  background: var(--dominado-suave);
+  border: 1px solid color-mix(in srgb, var(--dominado) 30%, transparent);
+}
+
+/* --- ejercicios que no se rinden --- */
+
+.pendientes { margin-top: var(--e-6); }
+
+.pendientes__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-2);
+}
+
+.pendiente {
+  padding: var(--e-3) var(--e-4);
+  border: 1px dashed var(--borde-fuerte);
+  border-radius: var(--radio-lg);
+}
+.pendiente__cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-2);
+}
+.pendiente__numero { font-weight: 600; font-size: var(--t-sm); margin-right: var(--e-1); }
+.pendiente__nota { margin: var(--e-1) 0 0; font-size: var(--t-sm); color: var(--tinta-2); }
+
+.chip-guia {
+  font-size: var(--t-xs);
+  padding: 0 var(--e-2);
+  border-radius: var(--radio-pill);
+  color: var(--acento);
+  background: var(--acento-suave);
+}
+
+/* --- devolución --- */
 
 .devolucion {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--e-5);
+  align-items: start;
   background: var(--superficie-alta);
-  border: 1px solid var(--borde-fuerte);
-  border-left: 3px solid var(--acento);
+  border: 1px solid var(--borde);
   border-radius: var(--radio-lg);
-  padding: var(--e-4) var(--e-5);
-  margin-block: var(--e-5);
+  box-shadow: var(--sombra);
+  padding: var(--e-5);
+  margin-bottom: var(--e-6);
 }
-.devolucion h3 { margin-bottom: var(--e-2); }
+@media (max-width: 560px) {
+  .devolucion { grid-template-columns: 1fr; }
+}
+
+.devolucion__nota {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e-2);
+  padding-right: var(--e-5);
+  border-right: 1px solid var(--borde);
+}
+@media (max-width: 560px) {
+  .devolucion__nota { padding: 0 0 var(--e-4); border-right: 0; border-bottom: 1px solid var(--borde); }
+}
 
 .nota {
-  font-family: var(--mono);
-  font-size: var(--t-xl);
-  margin: 0 0 var(--e-2);
+  margin: 0;
+  font-family: var(--serif);
+  white-space: nowrap;
 }
-.nota strong { color: var(--acento); }
+.nota strong {
+  font-size: 2.6rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--acento);
+  font-variant-numeric: tabular-nums;
+}
+.nota span { font-size: var(--t-md); color: var(--tinta-3); }
+
+.veredicto {
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px var(--e-3);
+  border-radius: var(--radio-pill);
+}
+.veredicto--ok { color: var(--dominado); background: var(--dominado-suave); }
+.veredicto--mal { color: var(--flojo); background: var(--flojo-suave); }
+
+.devolucion__detalle > p:first-child { margin-top: 0; }
+.devolucion__detalle .nota-aviso { margin-bottom: var(--e-4); }
+
+.desglose {
+  list-style: none;
+  margin: 0 0 var(--e-3);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-2);
+}
+.desglose li {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr auto;
+  align-items: center;
+  gap: var(--e-3);
+  font-size: var(--t-sm);
+}
+.desglose__dato { color: var(--tinta-2); font-size: var(--t-xs); }

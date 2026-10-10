@@ -40,14 +40,20 @@ export function AvisoParcialCompacto({ plan }: { plan: Plan }) {
           ? 'es hoy'
           : 'ya pasó'
 
+  // La fecha lleva al simulacro (practicar el examen) y los días que faltan,
+  // al seguimiento (cómo viene el ritmo).
   return (
     <p class={'aviso-parcial ' + tono(plan)}>
       <IconoCalendario />
-      <span class="aviso-parcial__fecha">Parcial {fechaCorta(config.parcial)}</span>
+      <a class="aviso-parcial__fecha" href="#/simulacro" title="Practicar con un simulacro">
+        Parcial {fechaCorta(config.parcial)}
+      </a>
       <span class="aviso-parcial__sep" aria-hidden="true">
         ·
       </span>
-      <span>{texto}</span>
+      <a class="aviso-parcial__dias" href="#/seguimiento" title="Ver el seguimiento">
+        {texto}
+      </a>
     </p>
   )
 }

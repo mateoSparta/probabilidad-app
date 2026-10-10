@@ -48,7 +48,7 @@ export function VistaGuia({ numero, sesion, onIntento, destino, onDestinoAlcanza
     <>
       <IndiceGuia guia={guia} sesion={sesion} />
 
-      <section class="guia__intro" id="arriba">
+      <section class="guia__intro" id="principio">
         <h2>{guia.titulo}</h2>
         <p class="guia__descripcion">{guia.descripcion}</p>
         <MapaEjercicios guia={guia} sesion={sesion} />
@@ -67,17 +67,17 @@ export function VistaGuia({ numero, sesion, onIntento, destino, onDestinoAlcanza
         })}
       </div>
 
-      <VolverAlInicio />
+      <VolverAlPrincipio />
     </>
   )
 }
 
 /** El pie de la guía. */
-export function VolverAlInicio() {
+export function VolverAlPrincipio() {
   return (
-    <button class="volver" onClick={() => irA('arriba')}>
+    <button class="volver" onClick={() => irA('principio')}>
       <span class="volver__linea" aria-hidden="true" />
-      <span class="volver__texto">volver al inicio</span>
+      <span class="volver__texto">volver al principio</span>
       <span class="volver__linea" aria-hidden="true" />
     </button>
   )

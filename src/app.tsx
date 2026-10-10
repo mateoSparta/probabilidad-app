@@ -44,28 +44,35 @@ export function App() {
     <>
       <Cabecera ruta={ruta} plan={plan} />
       <main class="columna">
-        {ruta.seccion === 'menu' && (
-          <VistaMenu guia={ruta.guia} api={api} sesion={sesion} plan={plan} />
-        )}
-        {ruta.seccion === 'ejercicios' && (
-          // La key fuerza a montar la guía de cero al cambiar de pestaña: así
-          // no se arrastra estado de una guía a otra (tags fijos, por ejemplo).
-          <VistaGuia
-            key={ruta.guia}
-            numero={ruta.guia}
-            sesion={sesion}
-            onIntento={api.registrar}
-            destino={destino}
-            onDestinoAlcanzado={() => setDestino(null)}
-          />
-        )}
-        {ruta.seccion === 'skills' && (
-          <PanelSkills api={api} sesion={sesion} onIrAEjercicio={irAEjercicio} />
-        )}
-        {ruta.seccion === 'simulacro' && <VistaSimulacro api={api} sesion={sesion} />}
-        {ruta.seccion === 'seguimiento' && (
-          <VistaSeguimiento plan={plan} sesion={sesion} onIrAEjercicio={irAEjercicio} />
-        )}
+        {/* La key hace que cada cambio de sección (o de guía) monte la vista
+            de cero, y con eso se repite la animación de entrada. */}
+        <div
+          class="vista"
+          key={ruta.seccion === 'ejercicios' ? `ejercicios-${ruta.guia}` : ruta.seccion}
+        >
+          {ruta.seccion === 'menu' && (
+            <VistaMenu guia={ruta.guia} api={api} sesion={sesion} plan={plan} />
+          )}
+          {ruta.seccion === 'ejercicios' && (
+            // La key fuerza a montar la guía de cero al cambiar de pestaña: así
+            // no se arrastra estado de una guía a otra (tags fijos, por ejemplo).
+            <VistaGuia
+              key={ruta.guia}
+              numero={ruta.guia}
+              sesion={sesion}
+              onIntento={api.registrar}
+              destino={destino}
+              onDestinoAlcanzado={() => setDestino(null)}
+            />
+          )}
+          {ruta.seccion === 'skills' && (
+            <PanelSkills api={api} sesion={sesion} onIrAEjercicio={irAEjercicio} />
+          )}
+          {ruta.seccion === 'simulacro' && <VistaSimulacro api={api} sesion={sesion} />}
+          {ruta.seccion === 'seguimiento' && (
+            <VistaSeguimiento plan={plan} sesion={sesion} onIrAEjercicio={irAEjercicio} />
+          )}
+        </div>
       </main>
     </>
   )

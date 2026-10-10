@@ -72,6 +72,24 @@ try {
   const enMenu = render(createElement(Cabecera, { ruta: { seccion: 'menu', guia: 1 } }))
   afirmar(!enMenu.includes('migas__actual'), 'en el menú las migas muestran una sección')
 
+  // El menú de hamburguesa aparece fuera del inicio y lista las demás
+  // secciones, nunca la actual.
+  afirmar(!enMenu.includes('class="hamburguesa"'), 'en el inicio se ve el menú de hamburguesa')
+  for (const [seccion, nombre] of [
+    ['ejercicios', 'Ejercicios'],
+    ['skills', 'Skills'],
+    ['simulacro', 'Simulacro'],
+    ['seguimiento', 'Seguimiento'],
+  ]) {
+    const cab = render(createElement(Cabecera, { ruta: { seccion, guia: 1 } }))
+    afirmar(cab.includes('class="hamburguesa"'), `en ${seccion} no está el menú de hamburguesa`)
+    const lista = cab.slice(cab.indexOf('id="menu-navegacion"'))
+    afirmar(lista.includes('>Inicio<'), `en ${seccion} el menú no ofrece volver al inicio`)
+    afirmar(!lista.includes(`</svg>${nombre}<`), `en ${seccion} el menú ofrece la sección actual`)
+    const opciones = (lista.match(/class="navegacion__opcion"/g) ?? []).length
+    afirmar(opciones === 4, `en ${seccion} el menú tiene ${opciones} opciones en lugar de 4`)
+  }
+
   // --- la guía 1 ---
   const html = render(createElement(VistaGuia, { numero: 1 }))
 
@@ -84,9 +102,9 @@ try {
   afirmar(!html.includes('class="chip'), 'volvieron los chips de filtro')
   afirmar(html.includes('class="mapa"'), 'no se ve el mapa de ejercicios')
   afirmar(html.includes('class="indice"'), 'no se ve el índice lateral')
-  afirmar(html.includes('class="volver"'), 'no se ve el enlace de volver al inicio')
-  afirmar(html.includes('volver al inicio'), 'el pie no dice "volver al inicio"')
-  afirmar(html.includes('id="arriba"'), 'falta el ancla a la que vuelve el pie')
+  afirmar(html.includes('class="volver"'), 'no se ve el enlace de volver al principio')
+  afirmar(html.includes('volver al principio'), 'el pie no dice "volver al principio"')
+  afirmar(html.includes('id="principio"'), 'falta el ancla a la que vuelve el pie')
 
   // KaTeX tiene que haber corrido: si no, quedaría el `$...$` crudo.
   afirmar(html.includes('katex'), 'KaTeX no renderizó nada')
@@ -408,6 +426,8 @@ try {
   afirmar(simulacro.includes('240'), 'la duración por defecto no es 240 minutos')
   afirmar(simulacro.includes('Incluir integradoras'), 'falta el toggle de integradoras')
   afirmar(simulacro.includes('Exámenes en el pool'), 'no se lista el pool')
+  afirmar((simulacro.match(/role="switch"/g) ?? []).length === 3, 'faltan los interruptores')
+  afirmar(simulacro.includes('class="examen"'), 'el pool no se dibuja como tarjetas')
   // Arranca en la pantalla de configuración: no puede haber un enunciado
   // de examen visible antes de empezar.
   afirmar(
@@ -451,7 +471,8 @@ try {
       sesion: apiSesion(vencido),
     }),
   )
-  afirmar(tarde.includes('entregado'), 'un simulacro vencido no vuelve entregado')
+  afirmar(tarde.includes('class="sim-estado"'), 'un simulacro vencido no vuelve entregado')
+  afirmar(/\d+,\d\d/.test(tarde), 'la nota no usa coma decimal')
   afirmar(tarde.includes('class="nota"'), 'un simulacro vencido no muestra la nota')
   afirmar(tarde.includes('Ver respuesta'), 'tras entregar no vuelven las ayudas')
 
@@ -517,6 +538,15 @@ try {
     cabeceraConPlan.indexOf('class="migas"') < posAviso &&
       posAviso < cabeceraConPlan.indexOf('class="barra-guias"'),
     'el aviso del parcial no quedó entre el título y las pestañas',
+  )
+  // La fecha lleva al simulacro y los días que faltan, al seguimiento.
+  afirmar(
+    /<a[^>]*href="#\/simulacro"[^>]*>\s*Parcial 30\/10/.test(cabeceraConPlan),
+    '"Parcial 30/10" no lleva al simulacro',
+  )
+  afirmar(
+    /<a[^>]*href="#\/seguimiento"[^>]*>\s*faltan \d+ días/.test(cabeceraConPlan),
+    '"faltan N días" no lleva al seguimiento',
   )
 
   // --- los círculos cambian de color según el estado ---

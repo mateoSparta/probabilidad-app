@@ -6,6 +6,9 @@
  * al menú y la sección actual se muestra a continuación. Todo son enlaces
  * comunes al hash, así que el botón de atrás del navegador funciona igual.
  *
+ * Fuera del menú principal, a la derecha de las migas va el menú de
+ * hamburguesa con el resto de las secciones.
+ *
  * Las pestañas de las guías van fuera del `<header>` porque son lo único que
  * queda fijo al hacer scroll: con el encabezado completo fijo, en un celular
  * se perdería casi un cuarto de la pantalla.
@@ -14,6 +17,7 @@ import { guiaTieneContenido } from '../datos/contenido'
 import type { Plan } from '../dominio/ritmo'
 import { NOMBRE_SECCION, type Ruta } from '../dominio/ruta'
 import { AvisoParcialCompacto } from './AvisoParcial'
+import { MenuNavegacion } from './MenuNavegacion'
 
 const GUIAS = [1, 2, 3, 4, 5, 6, 7, 8]
 
@@ -30,26 +34,29 @@ export function Cabecera({ ruta, plan }: Props) {
     <>
       <header class="cabecera">
         <div class="columna">
-          <nav class="migas" aria-label="Ubicación">
-            <span class="migas__codigo">61.09 · 81.04 · CB003</span>
-            <ol class="migas__lista">
-              <li>
-                <h1 class="migas__titulo">
-                  <a href="#/" aria-current={seccion === 'menu' ? 'page' : undefined}>
-                    Probabilidad y Estadística B
-                  </a>
-                </h1>
-              </li>
-              {seccion !== 'menu' && (
-                <li class="migas__actual" aria-current="page">
-                  <span class="migas__sep" aria-hidden="true">
-                    ›
-                  </span>
-                  {NOMBRE_SECCION[seccion]}
+          <div class="cabecera__fila">
+            <nav class="migas" aria-label="Ubicación">
+              <span class="migas__codigo">61.09 · 81.04 · CB003</span>
+              <ol class="migas__lista">
+                <li>
+                  <h1 class="migas__titulo">
+                    <a href="#/" aria-current={seccion === 'menu' ? 'page' : undefined}>
+                      Probabilidad y Estadística B
+                    </a>
+                  </h1>
                 </li>
-              )}
-            </ol>
-          </nav>
+                {seccion !== 'menu' && (
+                  <li class="migas__actual" aria-current="page">
+                    <span class="migas__sep" aria-hidden="true">
+                      ›
+                    </span>
+                    {NOMBRE_SECCION[seccion]}
+                  </li>
+                )}
+              </ol>
+            </nav>
+            {seccion !== 'menu' && <MenuNavegacion ruta={ruta} />}
+          </div>
 
           {plan && <AvisoParcialCompacto plan={plan} />}
         </div>

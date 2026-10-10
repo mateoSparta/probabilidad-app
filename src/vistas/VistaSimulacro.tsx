@@ -12,6 +12,13 @@
  */
 import { useEffect, useMemo, useState } from 'preact/hooks'
 
+import {
+  IconoAviso,
+  IconoComprobar,
+  IconoReintentar,
+  IconoReloj,
+  IconoSimulacro,
+} from '../componentes/Iconos'
 import { ItemEjercicio } from '../componentes/ItemEjercicio'
 import { Enunciado } from '../componentes/Mate'
 import { Tags, usarResaltado } from '../componentes/Tags'
@@ -140,39 +147,65 @@ export function VistaSimulacro({ api, sesion }: Props) {
 
   return (
     <>
-      <section class="guia__intro">
-        <div class="simulacro__barra">
-          <div>
-            <h2>{examen.titulo}</h2>
-            <p class="dato-chico">
-              {examen.fecha} · {jugables.length} de {examen.ejercicios.length} ejercicios
-              presentados
-            </p>
-          </div>
-          <div class={'reloj' + (!sim.entregado && restante < 300 ? ' reloj--poco' : '')}>
-            {sim.entregado ? 'entregado' : formatearTiempo(restante)}
-          </div>
+      {/* La barra queda fija arriba mientras se rinde: el reloj tiene que
+          estar siempre a la vista, como el de un aula. */}
+      <section class={'sim-barra' + (sim.entregado ? ' sim-barra--entregado' : '')}>
+        <div class="sim-barra__info">
+          <p class="sim-barra__tipo">
+            {NOMBRE_TIPO[examen.tipo]} · {fechaLarga(examen.fecha)}
+          </p>
+          <h2 class="sim-barra__titulo">{examen.titulo}</h2>
+          <p class="sim-barra__dato">
+            {jugables.length} de {examen.ejercicios.length} ejercicios presentados
+          </p>
         </div>
 
-        {!esCompleto(examen) && (
-          <p class="feedback feedback--aviso">
-            Este examen se presenta incompleto, porque algunos de sus ejercicios todavía no
-            tienen respuestas verificadas. La nota se reescala sobre los ejercicios presentados
-            y el veredicto es parcial.
-          </p>
+        {sim.entregado ? (
+          <span class="sim-estado">
+            <IconoComprobar />
+            Entregado
+          </span>
+        ) : (
+          <div
+            class={'reloj' + (restante < 300 ? ' reloj--poco' : '')}
+            role="timer"
+            aria-label="Tiempo restante"
+          >
+            <IconoReloj />
+            <span class="reloj__tiempo">{formatearTiempo(restante)}</span>
+          </div>
         )}
 
-        <div class="item__acciones">
+        <div class="sim-barra__acciones">
           {!sim.entregado && (
-            <button class="boton boton--acento" onClick={() => entregar(sim)}>
+            <button class="boton boton--acento boton--icono" onClick={() => entregar(sim)}>
+              <IconoComprobar />
               Entregar
             </button>
           )}
-          <button class="boton boton--fantasma" onClick={() => cerrar(examen)}>
-            {sim.entregado ? 'Cerrar y volver al pool' : 'Abandonar'}
+          <button class="boton boton--icono" onClick={() => cerrar(examen)}>
+            {sim.entregado ? (
+              <>
+                <IconoReintentar />
+                Elegir otro examen
+              </>
+            ) : (
+              'Abandonar'
+            )}
           </button>
         </div>
       </section>
+
+      {!esCompleto(examen) && (
+        <p class="nota-aviso">
+          <IconoAviso />
+          <span>
+            Este examen se presenta incompleto, porque algunos de sus ejercicios todavía no
+            tienen respuestas verificadas. La nota se reescala sobre los ejercicios presentados
+            y el veredicto es parcial.
+          </span>
+        </p>
+      )}
 
       {resultado && <Devolucion examen={examen} resultado={resultado} />}
 
@@ -197,15 +230,22 @@ export function VistaSimulacro({ api, sesion }: Props) {
 
       {/* Los que no se presentaron, para que se vea qué falta del examen real. */}
       {examen.ejercicios.length > jugables.length && (
-        <section class="detalle-skill">
-          <h3>Ejercicios del examen que todavía no pueden rendirse</h3>
-          <ul class="lista-items">
+        <section class="pendientes">
+          <h3 class="pendientes__titulo">Ejercicios del examen que todavía no pueden rendirse</h3>
+          <ul class="pendientes__lista">
             {examen.ejercicios
               .filter((e) => !jugables.includes(e))
               .map((e) => (
-                <li key={e.numero}>
-                  <strong>Ejercicio {e.numero}</strong> (guías {e.guias.join(', ')})
-                  {e.nota && <> — {e.nota}</>}
+                <li key={e.numero} class="pendiente">
+                  <div class="pendiente__cabeza">
+                    <span class="pendiente__numero">Ejercicio {e.numero}</span>
+                    {e.guias.map((g) => (
+                      <span key={g} class="chip-guia">
+                        Guía {g}
+                      </span>
+                    ))}
+                  </div>
+                  {e.nota && <p class="pendiente__nota">{e.nota}</p>}
                 </li>
               ))}
           </ul>
@@ -213,6 +253,17 @@ export function VistaSimulacro({ api, sesion }: Props) {
       )}
     </>
   )
+}
+
+const NOMBRE_TIPO: Record<Examen['tipo'], string> = {
+  parcial: 'Parcial',
+  integradora: 'Integradora',
+}
+
+/** `2025-05-24` como `24/05/2025`. */
+function fechaLarga(iso: string): string {
+  const [a, m, d] = iso.split('-')
+  return d && m && a ? `${d}/${m}/${a}` : iso
 }
 
 /**
@@ -277,6 +328,9 @@ function TarjetaExamen({
   )
 }
 
+/** Los atajos de duración, en minutos. */
+const DURACIONES = [60, 120, 180, 240]
+
 function Configuracion({
   config,
   onCambiar,
@@ -293,91 +347,147 @@ function Configuracion({
   const parciales = disponibles.filter((e) => e.tipo === 'parcial')
 
   return (
-    <section class="guia__intro">
-      <h2>Simulacro</h2>
-      <p class="guia__descripcion">
-        Un examen elegido al azar, con tiempo límite y sin ayudas. Sus intentos son los más
-        valiosos para las insignias, porque los ejercicios aparecen mezclados y sin indicación
-        del tema.
-      </p>
+    <>
+      <section class="guia__intro">
+        <h2>Simulacro</h2>
+        <p class="guia__descripcion">
+          Un examen elegido al azar, con tiempo límite y sin ayudas. Sus intentos son los más
+          valiosos para las insignias, porque los ejercicios aparecen mezclados y sin indicación
+          del tema.
+        </p>
+      </section>
 
       {parciales.length === 0 ? (
-        <p class="vacio">
-          Todavía no hay ningún examen con ejercicios verificados para rendir.
-        </p>
+        <p class="vacio">Todavía no hay ningún examen con ejercicios verificados para rendir.</p>
       ) : (
         <>
-          <div class="campos">
-            <label class="campo">
-              <span>Duración (minutos)</span>
-              <input
-                class="entrada entrada--corta"
-                type="number"
-                min="5"
-                max="480"
-                value={config.duracionMin}
-                onInput={(e) =>
-                  onCambiar({ duracionMin: Number((e.target as HTMLInputElement).value) || 240 })
-                }
+          <section class="sim-config" aria-label="Configuración del simulacro">
+            <div class="sim-config__duracion">
+              <label class="sim-config__etiqueta" for="duracion">
+                Duración
+              </label>
+              <div class="duracion">
+                <input
+                  id="duracion"
+                  class="entrada entrada--corta"
+                  type="number"
+                  min="5"
+                  max="480"
+                  value={config.duracionMin}
+                  onInput={(e) =>
+                    onCambiar({
+                      duracionMin: Number((e.target as HTMLInputElement).value) || 240,
+                    })
+                  }
+                />
+                <span class="sufijo">minutos</span>
+              </div>
+              <div class="duracion__atajos" role="group" aria-label="Duraciones frecuentes">
+                {DURACIONES.map((m) => (
+                  <button
+                    key={m}
+                    class={'chip-opcion' + (config.duracionMin === m ? ' chip-opcion--activa' : '')}
+                    aria-pressed={config.duracionMin === m}
+                    onClick={() => onCambiar({ duracionMin: m })}
+                  >
+                    {m / 60} h
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <ul class="interruptores">
+              <Interruptor
+                etiqueta="Incluir integradoras"
+                descripcion="Suma al pool los exámenes integradores, además de los parciales."
+                activo={config.incluirIntegradoras}
+                onCambiar={(v) => onCambiar({ incluirIntegradoras: v })}
               />
-            </label>
-
-            <label class="campo campo--check">
-              <input
-                type="checkbox"
-                checked={config.incluirIntegradoras}
-                onChange={(e) =>
-                  onCambiar({ incluirIntegradoras: (e.target as HTMLInputElement).checked })
-                }
+              <Interruptor
+                etiqueta="Mostrar tags al entregar"
+                descripcion="Al terminar, indica qué temas evaluaba cada ejercicio."
+                activo={config.mostrarTags}
+                onCambiar={(v) => onCambiar({ mostrarTags: v })}
               />
-              <span>Incluir integradoras</span>
-            </label>
-
-            <label class="campo campo--check">
-              <input
-                type="checkbox"
-                checked={config.mostrarTags}
-                onChange={(e) => onCambiar({ mostrarTags: (e.target as HTMLInputElement).checked })}
+              <Interruptor
+                etiqueta="Permitir el panel de fórmulas"
+                descripcion="Habilita el botón Fórmulas mientras se rinde."
+                activo={config.mostrarFormulas}
+                onCambiar={(v) => onCambiar({ mostrarFormulas: v })}
               />
-              <span>Mostrar tags al entregar</span>
-            </label>
+            </ul>
 
-            <label class="campo campo--check">
-              <input
-                type="checkbox"
-                checked={config.mostrarFormulas}
-                onChange={(e) =>
-                  onCambiar({ mostrarFormulas: (e.target as HTMLInputElement).checked })
-                }
-              />
-              <span>Permitir el panel de fórmulas mientras rendís</span>
-            </label>
-          </div>
+            <div class="sim-config__pie">
+              <button class="boton boton--acento boton--icono boton--grande" onClick={onArrancar}>
+                <IconoSimulacro />
+                Empezar simulacro
+              </button>
+              <p class="dato-chico">
+                El tiempo se mide con el reloj del sistema, de modo que sigue corriendo aunque se
+                cierre la página, como en un examen real. Las respuestas no se pierden.
+              </p>
+            </div>
+          </section>
 
-          <div class="item__acciones">
-            <button class="boton boton--acento" onClick={onArrancar}>
-              Empezar simulacro
-            </button>
-          </div>
-
-          <p class="dato-chico">
-            El tiempo se mide con el reloj del sistema, de modo que sigue corriendo aunque se
-            cierre la página, como en un examen real. Las respuestas no se pierden.
-          </p>
-
-          <h3>Exámenes en el pool</h3>
-          <ul class="lista-items">
-            {disponibles.map((e) => (
-              <li key={e.id}>
-                {e.titulo} ({e.fecha}) — {ejerciciosJugables(e).length} de{' '}
-                {e.ejercicios.length} ejercicios
-                {e.tipo === 'integradora' && ' · integradora'}
-              </li>
-            ))}
-          </ul>
+          <section class="pool">
+            <h3 class="pool__titulo">Exámenes en el pool</h3>
+            <ul class="pool__grilla">
+              {disponibles.map((e, i) => {
+                const rendibles = ejerciciosJugables(e).length
+                const total = e.ejercicios.length
+                return (
+                  <li key={e.id} class="examen" style={{ '--i': i }}>
+                    <span class="examen__tipo">{NOMBRE_TIPO[e.tipo]}</span>
+                    <span class="examen__titulo">{e.titulo}</span>
+                    <span class="examen__fecha">{fechaLarga(e.fecha)}</span>
+                    <span class="barra" aria-hidden="true">
+                      <span
+                        class="barra__relleno"
+                        style={{ width: `${(100 * rendibles) / total}%` }}
+                      />
+                    </span>
+                    <span class="examen__avance">
+                      {rendibles} de {total} ejercicios rendibles
+                    </span>
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
         </>
       )}
-    </section>
+    </>
+  )
+}
+
+/** Un ajuste de sí o no, dibujado como interruptor. */
+function Interruptor({
+  etiqueta,
+  descripcion,
+  activo,
+  onCambiar,
+}: {
+  etiqueta: string
+  descripcion: string
+  activo: boolean
+  onCambiar: (v: boolean) => void
+}) {
+  return (
+    <li>
+      <label class="interruptor">
+        <span class="interruptor__texto">
+          <span class="interruptor__etiqueta">{etiqueta}</span>
+          <span class="interruptor__descripcion">{descripcion}</span>
+        </span>
+        <input
+          class="interruptor__control"
+          type="checkbox"
+          role="switch"
+          checked={activo}
+          onChange={(e) => onCambiar((e.target as HTMLInputElement).checked)}
+        />
+      </label>
+    </li>
   )
 }
 
@@ -390,35 +500,55 @@ function Devolucion({
 }) {
   return (
     <section class="devolucion">
-      <h3>Entregado</h3>
-      <p class="nota">
-        <strong>{resultado.nota.toFixed(2)}</strong> / 10
-      </p>
-      <p>
-        {resultado.ejerciciosEnteros} de {resultado.presentados} ejercicios presentados se
-        resolvieron por completo.
-      </p>
-      <p class={resultado.aprobaria ? 'feedback feedback--ok' : 'feedback feedback--mal'}>
-        {resultado.aprobaria ? '✓ Aprobaría.' : '✗ No aprobaría.'} La cátedra exige al menos{' '}
-        {examen.aprueba_con} ejercicios correctamente resueltos y justificados.
-      </p>
-      {resultado.veredictoParcial && (
-        <p class="feedback feedback--aviso">
-          Veredicto parcial. Se rindieron {resultado.presentados} de {resultado.totales}{' '}
-          ejercicios, de modo que el criterio de la cátedra no puede evaluarse por completo.
+      <div class="devolucion__nota">
+        <p class="nota">
+          <strong>{resultado.nota.toFixed(2).replace('.', ',')}</strong>
+          <span> / 10</span>
         </p>
-      )}
-      <ul class="lista-items">
-        {resultado.detalle.map((d) => (
-          <li key={d.numero}>
-            Ejercicio {d.numero}: {d.correctos} de {d.total} ítems
-          </li>
-        ))}
-      </ul>
-      <p class="dato-chico">
-        Las respuestas y las pistas quedaron habilitadas más abajo, y los ítems ya se
-        registraron como intentos para las insignias.
-      </p>
+        <span class={'veredicto ' + (resultado.aprobaria ? 'veredicto--ok' : 'veredicto--mal')}>
+          {resultado.aprobaria ? 'Aprobaría' : 'No aprobaría'}
+        </span>
+      </div>
+
+      <div class="devolucion__detalle">
+        <p>
+          {resultado.ejerciciosEnteros} de {resultado.presentados} ejercicios presentados se
+          resolvieron por completo. La cátedra exige al menos {examen.aprueba_con} ejercicios
+          correctamente resueltos y justificados.
+        </p>
+
+        {resultado.veredictoParcial && (
+          <p class="nota-aviso">
+            <IconoAviso />
+            <span>
+              Veredicto parcial. Se rindieron {resultado.presentados} de {resultado.totales}{' '}
+              ejercicios, de modo que el criterio de la cátedra no puede evaluarse por completo.
+            </span>
+          </p>
+        )}
+
+        <ul class="desglose">
+          {resultado.detalle.map((d) => (
+            <li key={d.numero}>
+              <span class="desglose__nombre">Ejercicio {d.numero}</span>
+              <span class="barra" aria-hidden="true">
+                <span
+                  class="barra__relleno"
+                  style={{ width: `${d.total ? (100 * d.correctos) / d.total : 0}%` }}
+                />
+              </span>
+              <span class="desglose__dato">
+                {d.correctos} de {d.total} ítems
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        <p class="dato-chico">
+          Las respuestas y las pistas quedaron habilitadas más abajo, y los ítems ya se
+          registraron como intentos para las insignias.
+        </p>
+      </div>
     </section>
   )
 }

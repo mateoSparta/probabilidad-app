@@ -291,11 +291,13 @@ export function ItemEjercicio({
 
       {/* --- feedback --- */}
       {est.estado === 'correcto' && <p class="feedback feedback--ok">✓ Correcto.</p>}
+      {/* Los mensajes de error llevan la cantidad de envíos como key: cada
+          error nuevo los vuelve a montar y la sacudida se repite. */}
       {est.estado === 'incorrecto' && !mensaje && !errorTipico && (
-        <p class="feedback feedback--mal">✗ La respuesta no es correcta. Revisala y probá de nuevo.</p>
+        <p key={est.envios} class="feedback feedback--mal">✗ La respuesta no es correcta. Revisala y probá de nuevo.</p>
       )}
       {errorTipico && (
-        <p class="feedback feedback--mal">
+        <p key={est.envios} class="feedback feedback--mal">
           ✗ <Mate>{errorTipico}</Mate>
         </p>
       )}

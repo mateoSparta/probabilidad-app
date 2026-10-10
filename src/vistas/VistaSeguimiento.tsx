@@ -50,8 +50,8 @@ export function VistaSeguimiento({ plan, sesion, onIrAEjercicio }: Props) {
           ))}
         </ul>
 
-        {conContenido.map((g) => (
-          <section key={g.numero} class="unidad">
+        {conContenido.map((g, i) => (
+          <section key={g.numero} class="unidad" style={{ '--i': i }}>
             <h4 class="unidad__titulo">
               <span class="unidad__numero">Guía {g.numero}</span> {g.titulo}
             </h4>

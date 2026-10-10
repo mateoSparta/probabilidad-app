@@ -65,8 +65,8 @@ export function Tags({ skills, resaltado }: Props) {
 
   return (
     <ul class="tags" ref={refFila} aria-label="Temas que evalúa el ejercicio">
-      {skills.map((id) => (
-        <li key={id}>
+      {skills.map((id, i) => (
+        <li key={id} style={{ '--i': i }}>
           <button
             class={'tag' + (fijado === id ? ' tag--fijado' : '')}
             aria-pressed={fijado === id}

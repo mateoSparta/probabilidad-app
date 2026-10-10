@@ -49,6 +49,13 @@ code, kbd, input, textarea, button, select {
 
 /* Migas: "Probabilidad y Estadística B › Ejercicios". La raíz es un enlace al
    menú; la sección actual va en el mismo tamaño pero sin peso. */
+.cabecera__fila {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--e-4);
+}
+
 .migas__codigo {
   display: block;
   font-size: var(--t-xs);
