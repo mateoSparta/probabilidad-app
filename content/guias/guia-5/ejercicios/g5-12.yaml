@@ -22,12 +22,12 @@ items:
       vars:
         X: [0, 36]
     pistas:
-      - '¿Puede pasar que $X = 10$ y $Y = 20$?'
-      - 'Cada tirada es par o impar, nunca las dos ni ninguna. ¿Cuánto vale $X + Y$?'
+      - '¿Puede ocurrir que $X = 10$ e $Y = 20$?'
+      - 'Cada resultado es par o impar, y no puede ser ambas cosas. ¿Cuánto vale $X + Y$?'
       - >-
-        Plan: $X + Y = 36$ siempre, así que $Y$ está determinada por $X$ y no
-        hay nada que promediar. La esperanza condicional de algo que ya se
-        conoce es ese algo.
+        Plan: $X + Y = 36$ siempre, de modo que $Y$ queda determinada por $X$.
+        La esperanza condicional de una función de $X$ dado $X$ es esa misma
+        función.
     verificacion:
       estado: verificado
       metodo: exacto
@@ -36,7 +36,7 @@ items:
           valor: "Y = 36 - X siempre, asi que E[Y|X] = 36 - X"
 
   - id: b
-    pregunta: 'Calcular $\operatorname{cov}(X, Y)$.'
+    pregunta: 'Calcular [[covarianza|$\operatorname{cov}(X, Y)$]].'
     skills: [covarianza, esperanza-condicional]
     respuesta:
       tipo: numerica
@@ -44,12 +44,12 @@ items:
       tol_rel: 0.005
     pistas:
       - 'Usá que $Y = 36 - X$ y las propiedades de la covarianza.'
-      - '$\operatorname{cov}(X, c - X)$ se simplifica mucho. ¿A qué?'
+      - '¿A qué se reduce $\operatorname{cov}(X, c - X)$?'
       - >-
         Plan: $\operatorname{cov}(X, 36 - X) = -\operatorname{var}[X]$, y $X$
-        es binomial de 36 intentos con probabilidad $1/2$. El resultado tiene
-        que ser negativo, y de hecho la correlación es exactamente $-1$ porque
-        una variable determina a la otra.
+        tiene distribución binomial con 36 ensayos y probabilidad $1/2$. El
+        resultado debe ser negativo; de hecho, la correlación es exactamente
+        $-1$, porque cada variable determina a la otra.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

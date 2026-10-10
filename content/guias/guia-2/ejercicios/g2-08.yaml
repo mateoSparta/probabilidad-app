@@ -13,7 +13,8 @@ enunciado: |
 items:
   - id: a
     pregunta: >-
-      Calcular $P(T_1 > 3)$ y $P(T_1 > 5 \mid T_1 > 2)$.
+      Calcular [[funcion-distribucion|$P(T_1 > 3)$]] y
+      [[truncamiento|$P(T_1 > 5 \mid T_1 > 2)$]].
     skills: [densidad, truncamiento, funcion-distribucion]
     respuesta:
       tipo: checkpoints
@@ -23,12 +24,13 @@ items:
         - pregunta: '$P(T_1 > 5 \mid T_1 > 2)$'
           valor: "exp(-3/2)"
     pistas:
-      - 'Con $k = 1$ la densidad se simplifica mucho. ¿Qué distribución queda?'
-      - 'Para el condicional, escribí $P(T_1 > 5 \mid T_1 > 2) = \dfrac{P(T_1 > 5)}{P(T_1 > 2)}$ y simplificá.'
+      - 'Con $k = 1$ la densidad se simplifica. ¿Qué distribución se obtiene?'
+      - 'Para la probabilidad condicional, escribí $P(T_1 > 5 \mid T_1 > 2) = \dfrac{P(T_1 > 5)}{P(T_1 > 2)}$ y simplificá.'
       - >-
-        Plan: integrá la densidad de $3$ a infinito para la primera, y hacé el
-        cociente para la segunda. Si los dos números dan iguales no es
-        casualidad: es la pérdida de memoria de la exponencial.
+        Plan: integrá la densidad entre $3$ e infinito para la primera
+        probabilidad y calculá el cociente para la segunda. La igualdad entre
+        ambos resultados es consecuencia de la pérdida de memoria de la
+        exponencial.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -38,7 +40,7 @@ items:
 
   - id: b
     pregunta: >-
-      Calcular $P(T_3 > 3)$ y $P(T_3 > 5 \mid T_3 > 2)$.
+      Calcular $P(T_3 > 3)$ y [[truncamiento|$P(T_3 > 5 \mid T_3 > 2)$]].
     skills: [densidad, truncamiento]
     respuesta:
       tipo: checkpoints
@@ -49,17 +51,17 @@ items:
           valor: "53*exp(-3/2)/20"
     pistas:
       - >-
-        Son las mismas dos cuentas del ítem anterior, pero ahora con $k = 3$.
-        Integrar por partes resuelve la cola.
+        Son los mismos dos cálculos del ítem anterior, ahora con $k = 3$. La
+        integral de la cola se resuelve por partes.
       - >-
-        Comparalos entre sí antes de seguir: ¿tendrían que dar iguales como en
-        el ítem (a)?
+        Antes de calcular, pensá si los dos resultados deberían coincidir,
+        como en el ítem (a).
       - >-
-        Plan: integrá la densidad de $T_3$ de $3$ a infinito, y después hacé el
-        cociente para el condicional. $T_3$ es una suma de tres exponenciales y
-        **no** tiene pérdida de memoria, así que los dos números tienen que dar
-        distintos: que ya hayan pasado 2 segundos sin las tres partículas es
-        información.
+        Plan: integrá la densidad de $T_3$ entre $3$ e infinito y después
+        calculá el cociente para la probabilidad condicional. $T_3$ es una
+        suma de tres exponenciales y **no** tiene pérdida de memoria, de modo
+        que los dos resultados deben ser distintos. Saber que pasaron 2
+        segundos sin que se emitieran las tres partículas aporta información.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

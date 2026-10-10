@@ -6,8 +6,8 @@ fuente:
   enunciado: fuentes/guias/parte1.pdf#p48
 
 enunciado: |
-  Un receptor recibe una señal de amplitud aleatoria $X = S + N$, donde $S$ es
-  una variable Bernoulli de parámetro $3/4$ y
+  Un receptor recibe una señal de amplitud aleatoria $X = S + N$, donde
+  [[mezclas|$S$ es una variable Bernoulli de parámetro $3/4$]] y
   [[normal|$N$ es un ruido con distribución normal de media 0 y desvío estándar
   $1/2$]] independiente de $S$. Cuando $S$ vale 1 la señal contiene información
   útil y cuando vale 0 no. El detector deja pasar la señal si $X > c$ y no la
@@ -23,18 +23,18 @@ items:
       valor: "1/2 - log(3)/4"
     pistas:
       - >-
-        Escribí $P(\text{error})$ como suma de los dos casos, pesados por
+        Escribí $P(\text{error})$ como la suma de los dos casos, ponderados por
         $P(S=1)$ y $P(S=0)$.
       - >-
-        Te va a quedar
+        Se obtiene
         $\tfrac{3}{4}\Phi\!\left(\tfrac{c-1}{1/2}\right) + \tfrac{1}{4}\left(1 - \Phi\!\left(\tfrac{c}{1/2}\right)\right)$.
         Derivá respecto de $c$ e igualá a cero.
       - >-
-        Plan: al derivar aparecen las dos densidades $\varphi$. Igualándolas y
-        tomando logaritmo, los términos cuadráticos se cancelan y queda una
-        ecuación lineal en $c$. El resultado va a ser **menor** que $1/2$: como
-        la señal útil es tres veces más probable, conviene correr el umbral
-        hacia abajo para equivocarse menos de ese lado.
+        Plan: al derivar aparecen las dos densidades $\varphi$. Al igualarlas y
+        tomar logaritmos, los términos cuadráticos se cancelan y queda una
+        ecuación lineal en $c$. El resultado es **menor** que $1/2$, porque la
+        señal útil es tres veces más probable y conviene desplazar el umbral
+        hacia abajo para reducir los errores sobre esa señal.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

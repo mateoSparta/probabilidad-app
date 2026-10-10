@@ -6,9 +6,9 @@ fuente:
   enunciado: fuentes/guias/parte1.pdf#p41
 
 enunciado: |
-  En una urna hay $k$ bolas blancas y 5 bolas negras, donde $0 \le k \le 6$.
-  [[hipergeometrica|El resultado de la extracción de 2 bolas al azar sin
-  reposición fue de 1 blanca y 1 negra.]]
+  [[laplace|En una urna hay $k$ bolas blancas y 5 bolas negras]], donde
+  $0 \le k \le 6$. [[hipergeometrica|El resultado de la extracción de 2 bolas
+  al azar sin reposición fue de 1 blanca y 1 negra.]]
 
 items:
   - id: a
@@ -28,8 +28,8 @@ items:
         - pregunta: 'con $k = 6$'
           valor: "6/11"
     pistas:
-      - 'Son extracciones sin reposición: ¿sobre cuántos pares posibles hay que contar?'
-      - '¿De cuántas formas se puede sacar una blanca y una negra?'
+      - 'Las extracciones son sin reposición. ¿Cuántos pares posibles hay?'
+      - '¿De cuántas formas se puede extraer una bola blanca y una negra?'
       - >-
         Plan: $\dfrac{k \cdot 5}{\binom{k+5}{2}}$, que se simplifica a
         $\dfrac{10k}{(k+5)(k+4)}$. Evaluala para cada $k$.
@@ -47,31 +47,31 @@ items:
       tipo: opcion
       opciones:
         - id: b1
-          texto: 'Hay un empate: tanto $k = 4$ como $k = 5$ dan el máximo, $5/9$.'
+          texto: 'Hay un empate, ya que tanto $k = 4$ como $k = 5$ dan el máximo, $5/9$.'
           correcta: true
         - id: b2
           texto: '$k = 5$, porque iguala la cantidad de blancas y negras.'
           error_tipico: >-
-            Da el máximo, pero no es el único: con $k = 4$ sale exactamente lo
-            mismo, $5/9$. La pregunta tiene dos respuestas.
+            $k = 5$ da el máximo, pero no es el único valor que lo alcanza. Con
+            $k = 4$ se obtiene exactamente el mismo resultado, $5/9$.
         - id: b3
           texto: '$k = 6$, porque es el mayor valor posible de $k$.'
           error_tipico: >-
-            Con $k = 6$ da $6/11 \approx 0{,}545$, menos que $5/9 \approx 0{,}556$.
-            Más blancas no es mejor: lo que conviene es que la mezcla esté
+            Con $k = 6$ se obtiene $6/11 \approx 0{,}545$, menos que
+            $5/9 \approx 0{,}556$. Aumentar la cantidad de bolas blancas no
+            siempre aumenta la probabilidad; conviene que la composición esté
             equilibrada.
         - id: b4
           texto: '$k = 3$, porque es el valor central del rango.'
           error_tipico: >-
-            Con $k = 3$ da $15/28 \approx 0{,}536$. El rango va de 0 a 6, pero
-            el máximo no tiene por qué estar en el centro del rango.
+            Con $k = 3$ se obtiene $15/28 \approx 0{,}536$. El máximo no tiene
+            por qué ubicarse en el centro del rango de valores de $k$.
     pistas:
       - Calculá la probabilidad para los siete valores de $k$ y comparalas.
-      - '¿Más blancas siempre es mejor para sacar una de cada color? Probá con $k = 6$.'
+      - '¿Agregar bolas blancas siempre aumenta la probabilidad de extraer una de cada color? Probá con $k = 6$.'
       - >-
-        Plan: mirá los siete números. Conviene que la urna esté equilibrada, y
-        fijate bien si el máximo se alcanza en un solo valor de $k$ o en más de
-        uno.
+        Plan: compará los siete valores. Verificá con cuidado si el máximo se
+        alcanza en un único valor de $k$ o en más de uno.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

@@ -20,10 +20,14 @@ import { marked } from 'marked'
 
 const RE_MATE = /\$\$([^$]+)\$\$|\$([^$]+)\$/g
 
-/** Signos que no pueden abrir un renglón: van pegados a lo que los precede. */
-const RE_CIERRE = /^[.,;:!?)\]»”…]+/
+/**
+ * Signos que no pueden abrir un renglón: van pegados a lo que los precede.
+ * La comilla recta está en los dos conjuntos porque pegada a una fórmula
+ * sólo puede ser de cierre (si va después) o de apertura (si va antes).
+ */
+const RE_CIERRE = /^[.,;:!?)\]»”"…]+/
 /** Signos que no pueden cerrar un renglón: van pegados a lo que les sigue. */
-const RE_APERTURA = /[(\[«“¿¡]+$/
+const RE_APERTURA = /[(\[«“"¿¡]+$/
 
 /** Cómo termina el HTML de una fórmula inline: la última caja, el contenedor y la raíz. */
 const FIN_KATEX = '</span></span></span>'
@@ -76,17 +80,33 @@ function inlineConPuntuacion(tex: string, apertura: string, cierre: string): str
   return antes + html + despues
 }
 
+/**
+ * `\$` es un signo de pesos, no el borde de una fórmula. Antes de buscar las
+ * fórmulas se lo reemplaza por un carácter de uso privado, y después se lo
+ * repone: como `$` en el texto y como `\$` adentro de una fórmula, que es
+ * como lo escribe KaTeX.
+ */
+const PESOS = ''
+const ocultarPesos = (t: string) => t.replace(/\\\$/g, PESOS)
+const pesosEnTexto = (t: string) => t.replaceAll(PESOS, '$')
+const pesosEnTex = (t: string) => t.replaceAll(PESOS, '\\$')
+
 type Tramo = { tipo: 'texto'; texto: string } | { tipo: 'mate'; tex: string; display: boolean }
 
 function partir(texto: string): Tramo[] {
   const tramos: Tramo[] = []
+  const oculto = ocultarPesos(texto)
   let ultimo = 0
-  for (const m of texto.matchAll(RE_MATE)) {
-    tramos.push({ tipo: 'texto', texto: texto.slice(ultimo, m.index) })
-    tramos.push({ tipo: 'mate', tex: m[1] ?? m[2], display: m[1] !== undefined })
+  for (const m of oculto.matchAll(RE_MATE)) {
+    tramos.push({ tipo: 'texto', texto: pesosEnTexto(oculto.slice(ultimo, m.index)) })
+    tramos.push({
+      tipo: 'mate',
+      tex: pesosEnTex(m[1] ?? m[2]),
+      display: m[1] !== undefined,
+    })
     ultimo = m.index + m[0].length
   }
-  tramos.push({ tipo: 'texto', texto: texto.slice(ultimo) })
+  tramos.push({ tipo: 'texto', texto: pesosEnTexto(oculto.slice(ultimo)) })
   return tramos
 }
 
@@ -130,7 +150,18 @@ export function textoAHtml(texto: string): string {
     piezas.push({ html: inlineConPuntuacion(t.tex, apertura, cierre) })
   }
 
-  return piezas.map((p) => ('texto' in p ? escapar(p.texto) : p.html)).join('')
+  return piezas.map((p) => ('texto' in p ? enLinea(escapar(p.texto)) : p.html)).join('')
+}
+
+/**
+ * El único formato que admite el texto fuera de la teoría: `**negrita**` para
+ * enfatizar y `` `código` `` para lo que el alumno tiene que tipear tal cual.
+ * Se aplica sobre texto ya escapado y fuera de las fórmulas.
+ */
+function enLinea(html: string): string {
+  return html
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
 }
 
 /**
@@ -148,17 +179,17 @@ export function markdownAHtml(md: string): string {
     return `@@MATE${guardadas.length - 1}@@`
   }
 
-  const protegido = md.replace(
-    /([(\[«“¿¡]*)(\$\$[^$]+\$\$|\$[^$]+\$)([.,;:!?)\]»”…]*)/g,
+  const protegido = ocultarPesos(md).replace(
+    /([(\[«“"¿¡]*)(\$\$[^$]+\$\$|\$[^$]+\$)([.,;:!?)\]»”"…]*)/g,
     (_m, apertura: string, formula: string, cierre: string) => {
       if (formula.startsWith('$$')) {
-        return apertura + guardar(renderTex(formula.slice(2, -2), true)) + cierre
+        return apertura + guardar(renderTex(pesosEnTex(formula.slice(2, -2)), true)) + cierre
       }
-      return guardar(inlineConPuntuacion(formula.slice(1, -1), apertura, cierre))
+      return guardar(inlineConPuntuacion(pesosEnTex(formula.slice(1, -1)), apertura, cierre))
     },
   )
 
-  const html = marked.parse(protegido, { async: false }) as string
+  const html = pesosEnTexto(marked.parse(protegido, { async: false }) as string)
   return (
     html
       .replace(/@@MATE(\d+)@@/g, (_m, i: string) => guardadas[Number(i)] ?? '')

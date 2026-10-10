@@ -7,12 +7,12 @@ fuente:
 
 enunciado: |
   El peso de ciertas bolsas de naranjas es una variable aleatoria uniforme
-  entre 3 y 6 kilos. [[esperanza-total|Se van agregando bolsas en una balanza
-  hasta que el peso supere 5 kilos.]]
+  entre 3 y 6 kilos. [[esperanza-total,truncamiento|Se van agregando bolsas en
+  una balanza hasta que el peso supere 5 kilos.]]
 
 items:
   - id: a
-    pregunta: Hallar la media y la varianza del peso final así obtenido.
+    pregunta: Hallar la media y [[varianza|la varianza]] del peso final así obtenido.
     skills: [esperanza-total, varianza, truncamiento]
     respuesta:
       tipo: checkpoints
@@ -23,18 +23,19 @@ items:
           valor: "11/4"
     pistas:
       - >-
-        Antes de plantear nada: ¿cuántas bolsas pueden llegar a hacer falta?
-        Mirá el peso mínimo de una bolsa.
+        Antes de plantear el cálculo, determiná cuántas bolsas pueden llegar a
+        hacer falta, teniendo en cuenta el peso mínimo de una bolsa.
       - >-
-        Si la primera bolsa ya pasa de 5, se termina ahí. Y si no pasa, la
-        segunda lleva el total a por lo menos 6, que ya supera 5. Nunca hacen
-        falta tres.
+        Si la primera bolsa supera los 5 kilos, el proceso termina. Si no los
+        supera, la segunda lleva el total a por lo menos 6 kilos. Por lo
+        tanto, nunca hacen falta tres bolsas.
       - >-
-        Plan: son sólo dos ramas. Con probabilidad $1/3$ el peso es
-        $L_1 \mid L_1 > 5$; con probabilidad $2/3$ es $L_1 + L_2$ con
-        $L_1 \mid L_1 \le 5$. Calculá $E[W]$ y $E[W^2]$ integrando las dos
-        ramas y usá $\operatorname{var} = E[W^2] - E[W]^2$. Tratar la cantidad
-        de bolsas como geométrica sin notar el tope es el error del ejercicio.
+        Plan: hay solo dos ramas. Con probabilidad $1/3$ el peso es
+        $L_1 \mid L_1 > 5$, y con probabilidad $2/3$ es $L_1 + L_2$ con
+        $L_1 \mid L_1 \le 5$. Calculá $E[W]$ y $E[W^2]$ integrando sobre las
+        dos ramas y usá $\operatorname{var} = E[W^2] - E[W]^2$. Modelar la
+        cantidad de bolsas como geométrica, sin advertir que está acotada, es
+        el error más frecuente en este ejercicio.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

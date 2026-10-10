@@ -63,13 +63,13 @@ export function AvisoParcialDetalle({ plan }: { plan: Plan }) {
 
       {veredicto === 'listo' ? (
         <p>
-          No te falta ningún tema: los {plan.skillsTotal} skills están dominados. De acá al
-          parcial lo que conviene es mantenerlos, porque el dominio se mide sobre los últimos
-          intentos y baja si dejás de practicar.
+          Los {plan.skillsTotal} skills están dominados. Hasta el parcial conviene mantenerlos,
+          porque el dominio se calcula sobre los intentos más recientes y disminuye si se deja
+          de practicar.
         </p>
       ) : veredicto === 'vencido' ? (
         <p>
-          La fecha del parcial ya pasó. Si cambió, editá <code>content/config.yaml</code>.
+          La fecha del parcial ya pasó. Si cambió, actualizala en <code>content/config.yaml</code>.
         </p>
       ) : (
         <>
@@ -78,10 +78,10 @@ export function AvisoParcialDetalle({ plan }: { plan: Plan }) {
             <span> {plan.porDia === 1 ? 'ítem' : 'ítems'} por día</span>
           </p>
           <p>
-            Te faltan <strong>{plan.itemsFaltantes} ítems</strong> —repartidos en{' '}
-            {plan.ejerciciosFaltantes} ejercicios— para dominar los temas que todavía no
-            están, y quedan {plan.diasRestantes} días. No hace falta hacer todos los
-            ejercicios de la guía: con esos alcanza para cubrir los{' '}
+            Faltan <strong>{plan.itemsFaltantes} ítems</strong>, distribuidos en{' '}
+            {plan.ejerciciosFaltantes} ejercicios, para dominar los temas pendientes, y quedan{' '}
+            {plan.diasRestantes} días. No es necesario resolver todos los ejercicios de las
+            guías; esos ítems alcanzan para cubrir los{' '}
             {plan.skillsTotal - plan.skillsDominados} skills que faltan.
           </p>
         </>
@@ -96,23 +96,23 @@ export function AvisoParcialDetalle({ plan }: { plan: Plan }) {
         </li>
         {veredicto !== 'sin_arrancar' && veredicto !== 'listo' && (
           <li>
-            tu ritmo de los últimos 7 días: <strong>{plan.ritmoReciente}</strong> por día
-            {plan.alDia ? ' (alcanza)' : ' (abajo del necesario)'}
+            ritmo de los últimos 7 días: <strong>{plan.ritmoReciente}</strong> por día
+            {plan.alDia ? ' (suficiente)' : ' (inferior al necesario)'}
           </li>
         )}
       </ul>
 
       {plan.skillsSinCobertura > 0 && (
         <p class="dato-chico">
-          Hay {plan.skillsSinCobertura} skills más que todavía no se pueden dominar porque
-          tienen menos de 3 ejercicios cargados. No cuentan para la meta: es contenido que
-          falta, no algo tuyo.
+          Hay {plan.skillsSinCobertura} skills más que todavía no pueden dominarse porque tienen
+          menos de 3 ítems cargados. No se consideran en la meta, ya que esa limitación
+          proviene del contenido disponible.
         </p>
       )}
 
       {veredicto === 'sin_arrancar' && (
         <p class="dato-chico">
-          En cuanto resuelvas algo, acá vas a ver si el ritmo alcanza.
+          Cuando resuelvas los primeros ítems, acá vas a ver si el ritmo es suficiente.
         </p>
       )}
     </section>

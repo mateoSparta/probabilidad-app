@@ -4,41 +4,42 @@ skills: [esperanza-condicional, esperanza-total]
 ---
 ## E[Y | X] es una variable aleatoria
 
-Hasta la guía 3, condicionar era condicionar a un **evento** y daba un número.
-Acá cambia: $E[Y \mid X]$ se condiciona a una **variable**, y el resultado es
-otra variable aleatoria.
+Hasta la guía 3, se condicionaba a un **evento** y el resultado era un
+número. En esta guía, $E[Y \mid X]$ se condiciona a una **variable**, y el
+resultado es otra variable aleatoria.
 
-Primero se calcula la **función de regresión**, que sí es una función común:
+Primero se calcula la **función de regresión**, que es una función real:
 
 $$\varphi(x) = E[Y \mid X = x]$$
 
-y después $E[Y \mid X] = \varphi(X)$: se reemplaza el valor por la variable. Es
-aleatoria porque $X$ lo es.
+Luego se define $E[Y \mid X] = \varphi(X)$, reemplazando el valor $x$ por la
+variable $X$. El resultado es aleatorio porque $X$ lo es.
 
-Que sea una variable permite tomarle esperanza, y de ahí sale la herramienta
-más útil de la guía, la **esperanza total**:
+Al ser una variable aleatoria, admite esperanza, y de ello se obtiene la
+herramienta más útil de la guía, la **fórmula de esperanza total**:
 
 $$E[Y] = E\big[E[Y \mid X]\big]$$
 
-Promediar las medias condicionales devuelve la media. Se usa cuando el
-problema se parte naturalmente en casos: "según qué senda elija la rata",
-"según cuál moneda salió".
+El promedio de las medias condicionales es la media. La fórmula se aplica
+cuando el problema se descompone naturalmente en casos, por ejemplo según la
+senda que elige la rata o según la moneda que salió.
 
-### Dos cosas que conviene tener a mano
+### Dos herramientas complementarias
 
-**El planteo puede referirse a sí mismo.** Si al elegir mal la rata vuelve al
-punto de partida, la espera que le queda tiene la misma media que la original.
-Eso da una ecuación con la incógnita en los dos lados, y se despeja. Olvidarse
-ese término es el error más común: da el promedio de los tiempos en vez de la
-respuesta.
+**Planteos recursivos.** Si la rata vuelve al punto de partida cuando elige
+una senda equivocada, el tiempo que le resta tiene la misma media que el
+tiempo original. Esto da una ecuación con la incógnita en ambos miembros, que
+se resuelve despejando. Omitir ese término es el error más común, y conduce
+al promedio de los tiempos en lugar de la respuesta correcta.
 
-**Y la identidad de Wald**, para cuando se suma una cantidad aleatoria de
-términos:
+**La identidad de Wald**, que se aplica a la suma de una cantidad aleatoria
+de términos:
 
 $$E\!\left[\sum_{i=1}^{N} L_i\right] = E[N]\, E[L]$$
 
-Vale si $N$ es un tiempo de parada sobre los $L_i$, que es el caso típico de
-"producir hasta que uno sirva". Suena demasiado bueno —el último término no es
-uno cualquiera, es el que cumplió la condición— y la intuición dice que el
-total debería ser mayor. Pero no: el último es más largo que el promedio y los
-$N-1$ anteriores son más cortos, y las dos cosas se compensan exactamente.
+Vale si $N$ es un tiempo de parada respecto de los $L_i$, como en el caso
+típico de producir hasta obtener una unidad que cumpla una condición. El
+resultado parece contraintuitivo, porque el último término está condicionado
+a cumplir la condición y cabría esperar un total mayor. Sin embargo, el
+último término es más largo que el promedio, los $N-1$ anteriores son más
+cortos, y ambos efectos se compensan exactamente.

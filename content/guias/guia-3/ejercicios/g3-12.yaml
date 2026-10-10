@@ -7,26 +7,28 @@ fuente:
 
 enunciado: |
   Sean $X$ e $Y$ dos variables aleatorias
-  [[independencia-va|independientes uniformes sobre el intervalo $(0, \pi)$]].
+  [[independencia-va,conjunta-marginales|independientes uniformes sobre el
+  intervalo $(0, \pi)$]].
 
 items:
   - id: a
-    pregunta: 'Calcular $E[X \operatorname{sen}(XY)]$.'
+    pregunta: 'Calcular [[momentos|$E[X \operatorname{sen}(XY)]$]].'
     skills: [momentos, conjunta-marginales, independencia-va]
     respuesta:
       tipo: numerica
       valor: "(pi^2 - sin(pi^2))/pi^3"
       tol_rel: 0.005
     pistas:
-      - '¿Cuánto vale la densidad conjunta? Usá que son independientes.'
+      - '¿Cuánto vale la densidad conjunta? Usá la independencia.'
       - >-
-        Integrá primero en $y$: $\int_0^\pi \operatorname{sen}(xy)\, dy$ sale
-        directo y el $x$ de adelante se cancela con el que aparece al integrar.
+        Conviene integrar primero en $y$. La integral
+        $\int_0^\pi \operatorname{sen}(xy)\, dy$ es inmediata, y el factor $x$
+        se cancela con el que aparece al integrar.
       - >-
         Plan: $E[g(X,Y)] = \iint g\, f_{(X,Y)}$, con $f_{(X,Y)} = 1/\pi^2$ en
-        el cuadrado. Integrá en $y$ y después en $x$. El resultado queda en
-        términos de $\operatorname{sen}(\pi^2)$, que no es un número redondo:
-        no es un error.
+        el cuadrado. Integrá en $y$ y después en $x$. El resultado queda
+        expresado en términos de $\operatorname{sen}(\pi^2)$, lo cual es
+        correcto.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

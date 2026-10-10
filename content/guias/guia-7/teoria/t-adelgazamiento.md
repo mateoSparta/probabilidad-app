@@ -4,39 +4,42 @@ skills: [superposicion-adelgazamiento]
 ---
 ## Superposición y adelgazamiento
 
-Dos operaciones que dejan al proceso de Poisson dentro de la familia, y por eso
-simplifican tanto.
+Hay dos operaciones que transforman procesos de Poisson en procesos de
+Poisson, y por eso simplifican mucho los cálculos.
 
 ### Superposición
 
-Juntar dos procesos de Poisson independientes da otro proceso de Poisson, con
-las intensidades sumadas:
+La unión de dos procesos de Poisson independientes es un proceso de Poisson
+cuya intensidad es la suma de las intensidades:
 
 $$\lambda = \lambda_1 + \lambda_2$$
 
-Y para el primer evento del proceso combinado valen las mismas tres cosas que
-en la competencia de exponenciales de la guía 4: llega en
-$\text{Exp}(\lambda_1 + \lambda_2)$, viene del primer proceso con probabilidad
-$\lambda_1/(\lambda_1+\lambda_2)$, y **cuándo llega y de quién es son
-independientes**.
+Para el primer evento del proceso combinado valen los mismos tres resultados
+que en la competencia de exponenciales de la guía 4. Ocurre en un tiempo
+$\text{Exp}(\lambda_1 + \lambda_2)$, proviene del primer proceso con
+probabilidad $\lambda_1/(\lambda_1+\lambda_2)$, y **el momento en que ocurre
+y el proceso del que proviene son independientes**.
 
 ### Adelgazamiento
 
-Si cada evento se conserva con probabilidad $p$, independientemente de los
-otros y del tiempo, lo que queda es un proceso de Poisson de intensidad
+Si cada evento se conserva con probabilidad $p$, de manera independiente de
+los demás y del tiempo, los eventos conservados forman un proceso de Poisson
+de intensidad
 
 $$\lambda_p = p\,\lambda$$
 
-Es el mismo razonamiento del 4.19: condicionado al total, cada evento tira una
-moneda para decidir si pasa el filtro.
+El razonamiento es el mismo del ejercicio 4.19. Condicionado al total, cada
+evento se conserva o se descarta de manera independiente.
 
-Esto resuelve de un paso problemas que parecen difíciles. Si las fallas de un
-alambre son Poisson de intensidad $1/20$ por metro y la máquina detecta cada
-una con probabilidad $0{,}75$, entonces las **detectadas** son Poisson de
-intensidad $0{,}75/20$, y la distancia hasta la primera detectada es
-exponencial de media $20/0{,}75$. No hay que sumar sobre cuántas fallas
-pasaron sin detectarse.
+Este resultado resuelve en un solo paso problemas que en apariencia son
+difíciles. Si las fallas de un alambre forman un proceso de Poisson de
+intensidad $1/20$ por metro y la máquina detecta cada una con probabilidad
+$0{,}75$, las fallas **detectadas** forman un proceso de Poisson de
+intensidad $0{,}75/20$, y la distancia hasta la primera falla detectada es
+exponencial de media $20/0{,}75$. No hace falta sumar sobre la cantidad de
+fallas no detectadas.
 
-Pero si la pregunta es por el **total** de fallas (detectadas y no) hasta la
-primera detectada, ahí sí aparece lo discreto: las que pasaron antes son los
-fracasos antes del primer éxito, o sea geométrica de media $(1-p)/p$.
+En cambio, si la pregunta es por el **total** de fallas, detectadas o no,
+hasta la primera detectada, interviene una distribución discreta. Las fallas
+anteriores son los fracasos previos al primer éxito, cuya cantidad tiene
+distribución geométrica de media $(1-p)/p$.

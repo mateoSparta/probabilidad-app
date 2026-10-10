@@ -1,10 +1,11 @@
 numero: 3
 titulo: Esperanza, varianza y covarianza
 descripcion: >-
-  Resumir una distribución en unos pocos números. La esperanza y el error de
-  pasarla por dentro de una función no lineal, la esperanza condicional a un
-  evento, la varianza y la covarianza con sus propiedades, y qué se puede
-  afirmar cuando no se conoce la distribución pero sí la media y la varianza.
+  Medidas que resumen una distribución en pocos números. La guía trata la
+  esperanza y el error de aplicarla dentro de una función no lineal, la
+  esperanza condicional a un evento, la varianza y la covarianza con sus
+  propiedades, y las cotas que pueden establecerse cuando solo se conocen la
+  media y la varianza.
 
 secuencia:
   - teoria: t-esperanza

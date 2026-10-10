@@ -4,21 +4,21 @@ skills: [independencia]
 ---
 ## Independencia
 
-Dos eventos son **independientes** cuando saber que pasó uno no cambia la
-probabilidad del otro. La definición operativa es el producto:
+Dos eventos son **independientes** cuando saber que ocurrió uno no modifica
+la probabilidad del otro. La definición formal se expresa como un producto:
 
 $$P(A \cap B) = P(A)\,P(B)$$
 
-En la práctica la independencia casi nunca se verifica: se **justifica desde el
-enunciado**. Dos extracciones de urnas distintas, tiradas sucesivas de un dado,
-componentes que fallan por su cuenta: ahí el producto está habilitado porque el
-mecanismo del experimento lo dice.
+En la práctica, la independencia rara vez se verifica con esta fórmula. Lo
+habitual es **justificarla a partir del enunciado**, cuando el mecanismo del
+experimento la garantiza, como en extracciones de urnas distintas, tiradas
+sucesivas de un dado o componentes que fallan por causas separadas.
 
-Para una familia de eventos no alcanza con que sean independientes de a pares:
-hace falta que el producto valga para **toda** subfamilia. Es un detalle que
-aparece seguido en contraejemplos.
+Para una familia de más de dos eventos no basta con la independencia de a
+pares. Se requiere que la regla del producto valga para **toda** subfamilia,
+condición que suele aparecer en los contraejemplos.
 
-Con independencia, una sucesión de repeticiones se vuelve manejable. Si cada
-intento falla con probabilidad $q$, entonces $n$ fracasos seguidos tienen
-probabilidad $q^n$, y de ahí sale casi todo lo que se pregunta sobre "cuántos
-intentos hasta el primer éxito".
+La independencia simplifica el estudio de repeticiones sucesivas. Si cada
+intento falla con probabilidad $q$, la probabilidad de $n$ fracasos
+consecutivos es $q^n$, y de este hecho se deduce la mayoría de los
+resultados sobre la cantidad de intentos hasta el primer éxito.

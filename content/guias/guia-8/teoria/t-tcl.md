@@ -5,48 +5,53 @@ skills: [tcl, aproximacion-normal]
 ## Teorema central del límite
 
 Si $X_1, X_2, \dots$ son independientes, con la misma distribución, media
-$\mu$ y varianza $\sigma^2$ finitas, entonces para $n$ grande
+$\mu$ y varianza $\sigma^2$ finitas, entonces, para $n$ grande,
 
 $$S_n = \sum_{i=1}^{n} X_i \approx N\!\left(n\mu,\ n\sigma^2\right)$$
 
-**Lo notable es lo que el teorema no pide**: no hace falta saber de qué
-distribución vienen las $X_i$. Si un enunciado dice "la longitud tiene media
-30 y desvío 2" y nunca aclara la distribución, no es un olvido: es que no hace
-falta. Con media y varianza alcanza.
+**Lo notable es que el teorema no requiere conocer la distribución de las
+$X_i$.** Si un enunciado indica que la longitud tiene media 30 y desvío 2 sin
+aclarar la distribución, la omisión es deliberada, porque la media y la
+varianza son suficientes.
 
-El procedimiento es siempre: calcular $E[S_n]$ y $\operatorname{var}[S_n]$,
+El procedimiento consiste en calcular $E[S_n]$ y $\operatorname{var}[S_n]$,
 estandarizar y buscar en la tabla.
 
-### Dimensionar: cuando la incógnita es $n$
+### Cuando la incógnita es $n$
 
-Muchos ejercicios dan vuelta la pregunta: en vez de pedir una probabilidad,
-piden el $n$ que garantiza cierta probabilidad. Ahí hay que plantear la
-condición, estandarizar, y despejar $n$ de una desigualdad donde aparece
-$\sqrt{n}$. Sustituyendo $u = \sqrt{n}$ queda una cuadrática.
+Muchos ejercicios invierten la pregunta y piden el valor de $n$ que
+garantiza cierta probabilidad. En ese caso se plantea la condición, se
+estandariza y se despeja $n$ de una desigualdad en la que aparece
+$\sqrt{n}$. Con la sustitución $u = \sqrt{n}$ se obtiene una ecuación
+cuadrática.
 
-Como $n$ tiene que ser entero, conviene **verificar la minimalidad**: que con
-el $n$ hallado la condición se cumpla y con $n-1$ (o $n+1$, según el sentido)
-no. Es la forma de no equivocarse al redondear.
+Como $n$ debe ser entero, conviene **verificar la minimalidad**, es decir,
+comprobar que con el $n$ hallado la condición se cumple y con $n-1$ (o
+$n+1$, según el sentido de la desigualdad) no. Esta verificación evita
+errores de redondeo.
 
-Comparalo con el 3.26: ahí el mismo tipo de pregunta se resolvía con Chebyshev
-y pedía 50000 datos, mientras el TCL pide 9604 para lo mismo. Chebyshev da una
-garantía que no supone nada; el TCL da un número ajustado suponiendo que la
-aproximación sirve.
+En el ejercicio 3.26 se resolvió el mismo tipo de pregunta con la
+desigualdad de Chebyshev, que requería 50000 datos, mientras que el TCL
+requiere 9604. Chebyshev ofrece una garantía sin supuestos sobre la
+distribución; el TCL da un valor más ajustado bajo el supuesto de que la
+aproximación normal es adecuada.
 
 ### Corrección por continuidad
 
-Al aproximar una variable **discreta** por la normal hay un desajuste: la
-discreta pone masa en los enteros y la normal reparte densidad en todo el eje.
-La corrección es estirar medio punto a cada lado:
+Al aproximar una variable **discreta** por una normal se produce un
+desajuste, porque la variable discreta concentra la probabilidad en los
+enteros y la normal la distribuye de manera continua. La corrección consiste
+en extender medio punto a cada lado:
 
-$$P(X = k) \approx \Phi\!\left(\frac{k + 0.5 - \mu}{\sigma}\right) - \Phi\!\left(\frac{k - 0.5 - \mu}{\sigma}\right)$$
+$$P(X = k) \approx \Phi\!\left(\frac{k + 0{,}5 - \mu}{\sigma}\right) - \Phi\!\left(\frac{k - 0{,}5 - \mu}{\sigma}\right)$$
 
-$$P(X > k) = P(X \ge k + 1) \approx 1 - \Phi\!\left(\frac{k + 0.5 - \mu}{\sigma}\right)$$
+$$P(X > k) = P(X \ge k + 1) \approx 1 - \Phi\!\left(\frac{k + 0{,}5 - \mu}{\sigma}\right)$$
 
-Sin la corrección, $P(X = k)$ daría cero, que es claramente inútil.
+Sin la corrección, la aproximación de $P(X = k)$ daría cero.
 
-**La aproximación es una aproximación.** Cuando la respuesta es un entero
-—"cuántas reservas aceptar"— puede pasar que la normal y el cálculo exacto den
-números distintos, y ninguno de los dos está mal: son métodos distintos. Vale
-la pena tenerlo presente para no desconfiar de tu cuenta si no coincide con una
-resuelta.
+**Los resultados de una aproximación pueden diferir de los exactos.** Cuando
+la respuesta es un entero, como la cantidad de reservas que pueden
+aceptarse, la aproximación normal y el cálculo exacto pueden dar valores
+distintos. Ambos resultados son correctos dentro de su método, y conviene
+tenerlo presente al comparar con una resolución que use el otro
+procedimiento.

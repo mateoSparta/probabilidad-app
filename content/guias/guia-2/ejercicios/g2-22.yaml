@@ -12,18 +12,18 @@ enunciado: |
 
 items:
   - id: a
-    pregunta: 'Calcular $P(\lvert Y \rvert < X)$.'
+    pregunta: 'Calcular [[prob-geometrica|$P(\lvert Y \rvert < X)$]].'
     skills: [conjunta-marginales, prob-geometrica]
     respuesta:
       tipo: numerica
       valor: "1/2"
     pistas:
-      - Si la conjunta es uniforme, toda probabilidad es un cociente de áreas.
-      - 'Dibujá la región $\lvert y \rvert < x$ dentro del semicírculo: queda un sector.'
+      - Si la distribución conjunta es uniforme, toda probabilidad es un cociente de áreas.
+      - 'Dibujá la región $\lvert y \rvert < x$ dentro del semicírculo. ¿Qué figura se obtiene?'
       - >-
         Plan: en coordenadas polares, $\lvert y \rvert < x$ con $x \ge 0$ es el
         sector $-\pi/4 < \theta < \pi/4$. Compará su ángulo con el del
-        semicírculo entero.
+        semicírculo completo.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -33,8 +33,8 @@ items:
 
   - id: b
     pregunta: >-
-      Hallar las densidades marginales de $X$ y de $Y$, y evaluarlas donde se
-      pide.
+      Hallar las [[densidad|densidades marginales]] de $X$ y de $Y$, y
+      evaluarlas donde se pide.
     skills: [conjunta-marginales, densidad]
     respuesta:
       tipo: checkpoints
@@ -48,17 +48,18 @@ items:
         - pregunta: '$f_Y(1)$'
           valor: "sqrt(3)/(2*pi)"
     pistas:
-      - '¿Cuánto vale la densidad conjunta? Es constante: uno sobre el área de $\Lambda$.'
+      - 'La densidad conjunta es constante e igual a la inversa del área de $\Lambda$.'
       - >-
         Para la marginal de $X$ hay que integrar en $y$ entre los dos bordes
-        del semicírculo, que dependen de $x$. Para la de $Y$, integrar en $x$
-        desde 0 hasta el borde.
+        del semicírculo, que dependen de $x$. Para la de $Y$, hay que integrar
+        en $x$ desde 0 hasta el borde.
       - >-
-        Plan: la marginal en un punto es la densidad conjunta por el largo del
-        corte de $\Lambda$ a esa altura. Ojo que los cortes no son simétricos:
-        en $x$ el corte va de $-\sqrt{4-x^2}$ a $\sqrt{4-x^2}$, pero en $y$ va
-        de $0$ a $\sqrt{4-y^2}$, porque el semicírculo es sólo la mitad
-        derecha. Como control, cada marginal tiene que integrar 1.
+        Plan: la marginal en un punto es la densidad conjunta multiplicada por
+        la longitud del corte de $\Lambda$ a esa altura. Los cortes no son
+        simétricos. Para $x$ fijo, $y$ varía entre $-\sqrt{4-x^2}$ y
+        $\sqrt{4-x^2}$, mientras que para $y$ fijo, $x$ varía entre $0$ y
+        $\sqrt{4-y^2}$, porque el semicírculo es solo la mitad derecha. Como
+        control, cada marginal tiene que integrar 1.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -69,39 +70,43 @@ items:
           valor: "1"
 
   - id: c
-    pregunta: '¿$X$ e $Y$ son variables aleatorias independientes?'
+    pregunta: '¿$X$ e $Y$ son [[independencia-va|variables aleatorias independientes]]?'
     skills: [independencia-va, conjunta-marginales]
     respuesta:
       tipo: opcion
       opciones:
         - id: c1
           texto: >-
-            No: el soporte no es un rectángulo, así que el rango posible de $Y$
+            No, porque el soporte no es un rectángulo y el rango posible de $Y$
             depende del valor de $X$.
           correcta: true
         - id: c2
           texto: 'Sí, porque la densidad conjunta es constante.'
           error_tipico: >-
-            Que la conjunta sea constante no alcanza. Para independencia tiene
-            que factorizar como $f_X(x) f_Y(y)$ **en todo el plano**, y acá el
-            producto de las marginales no se anula donde la conjunta sí.
+            Que la densidad conjunta sea constante no alcanza. Para que haya
+            independencia debe factorizarse como $f_X(x) f_Y(y)$ **en todo el
+            plano**, y en este caso el producto de las marginales es positivo
+            en puntos donde la conjunta se anula.
         - id: c3
           texto: 'Sí, porque $P(\lvert Y \rvert < X) = 1/2$ es un número redondo.'
           error_tipico: >-
-            Una probabilidad concreta no dice nada sobre independencia. Hay que
-            comparar la conjunta con el producto de las marginales.
+            Un valor puntual de probabilidad no informa sobre la independencia.
+            Hay que comparar la densidad conjunta con el producto de las
+            marginales.
         - id: c4
           texto: 'No se puede saber sin calcular la covarianza.'
           error_tipico: >-
-            La covarianza no decide independencia: puede ser cero sin que las
-            variables sean independientes. Y acá alcanza con mirar el soporte.
+            La covarianza no determina la independencia, ya que puede ser nula
+            entre variables dependientes. En este caso basta con analizar el
+            soporte.
     pistas:
-      - Dibujá el soporte de la conjunta y preguntate si es un producto de dos intervalos.
-      - '¿Qué valores puede tomar $Y$ si sabés que $X$ está cerca de 2?'
+      - Dibujá el soporte de la densidad conjunta y analizá si es un producto de dos intervalos.
+      - '¿Qué valores puede tomar $Y$ si se sabe que $X$ está cerca de 2?'
       - >-
-        Plan: multiplicá las marginales que hallaste y comparalo con la
-        conjunta. Alcanza con encontrar un punto donde no coincidan. El atajo:
-        si el soporte no es rectangular, no hay independencia.
+        Plan: multiplicá las marginales halladas y compará el producto con la
+        densidad conjunta; basta con encontrar un punto donde no coincidan.
+        Más directamente, si el soporte no es rectangular, las variables no
+        son independientes.
     verificacion:
       estado: verificado
       metodo: exacto

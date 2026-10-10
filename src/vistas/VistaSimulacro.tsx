@@ -156,9 +156,9 @@ export function VistaSimulacro({ api, sesion }: Props) {
 
         {!esCompleto(examen) && (
           <p class="feedback feedback--aviso">
-            Este examen se presenta incompleto: los ejercicios que faltan necesitan guías que
-            todavía no están cargadas. La nota se reescala sobre los presentados y el veredicto
-            queda parcial.
+            Este examen se presenta incompleto, porque algunos de sus ejercicios todavía no
+            tienen respuestas verificadas. La nota se reescala sobre los ejercicios presentados
+            y el veredicto es parcial.
           </p>
         )}
 
@@ -198,7 +198,7 @@ export function VistaSimulacro({ api, sesion }: Props) {
       {/* Los que no se presentaron, para que se vea qué falta del examen real. */}
       {examen.ejercicios.length > jugables.length && (
         <section class="detalle-skill">
-          <h3>Ejercicios que este examen tiene y todavía no se pueden rendir</h3>
+          <h3>Ejercicios del examen que todavía no pueden rendirse</h3>
           <ul class="lista-items">
             {examen.ejercicios
               .filter((e) => !jugables.includes(e))
@@ -296,8 +296,9 @@ function Configuracion({
     <section class="guia__intro">
       <h2>Simulacro</h2>
       <p class="guia__descripcion">
-        Un examen al azar, con timer y sin ayudas. Son los intentos más valiosos para las
-        insignias, porque vienen mezclados y sin aviso del tema.
+        Un examen elegido al azar, con tiempo límite y sin ayudas. Sus intentos son los más
+        valiosos para las insignias, porque los ejercicios aparecen mezclados y sin indicación
+        del tema.
       </p>
 
       {parciales.length === 0 ? (
@@ -360,8 +361,8 @@ function Configuracion({
           </div>
 
           <p class="dato-chico">
-            El reloj corre contra la hora, así que si cerrás la página el tiempo sigue pasando,
-            igual que en un examen. Lo que respondiste no se pierde.
+            El tiempo se mide con el reloj del sistema, de modo que sigue corriendo aunque se
+            cierre la página, como en un examen real. Las respuestas no se pierden.
           </p>
 
           <h3>Exámenes en el pool</h3>
@@ -394,17 +395,17 @@ function Devolucion({
         <strong>{resultado.nota.toFixed(2)}</strong> / 10
       </p>
       <p>
-        {resultado.ejerciciosEnteros} de {resultado.presentados} ejercicios presentados salieron
-        completos.
+        {resultado.ejerciciosEnteros} de {resultado.presentados} ejercicios presentados se
+        resolvieron por completo.
       </p>
       <p class={resultado.aprobaria ? 'feedback feedback--ok' : 'feedback feedback--mal'}>
-        {resultado.aprobaria ? '✓ Aprobaría' : '✗ No aprobaría'}: la cátedra pide al menos{' '}
+        {resultado.aprobaria ? '✓ Aprobaría.' : '✗ No aprobaría.'} La cátedra exige al menos{' '}
         {examen.aprueba_con} ejercicios correctamente resueltos y justificados.
       </p>
       {resultado.veredictoParcial && (
         <p class="feedback feedback--aviso">
-          Veredicto parcial: se rindieron {resultado.presentados} de {resultado.totales}{' '}
-          ejercicios, así que el criterio de la cátedra no se puede evaluar de verdad.
+          Veredicto parcial. Se rindieron {resultado.presentados} de {resultado.totales}{' '}
+          ejercicios, de modo que el criterio de la cátedra no puede evaluarse por completo.
         </p>
       )}
       <ul class="lista-items">
@@ -415,8 +416,8 @@ function Devolucion({
         ))}
       </ul>
       <p class="dato-chico">
-        Abajo quedaron las respuestas y las pistas habilitadas, y los ítems ya contaron como
-        intentos para las insignias.
+        Las respuestas y las pistas quedaron habilitadas más abajo, y los ítems ya se
+        registraron como intentos para las insignias.
       </p>
     </section>
   )

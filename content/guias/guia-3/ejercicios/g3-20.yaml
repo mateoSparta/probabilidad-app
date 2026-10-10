@@ -7,23 +7,23 @@ fuente:
 
 enunciado: |
   Sea $(X, Y)$ un vector aleatorio con
-  [[covarianza|distribución uniforme sobre el triángulo de vértices
+  [[conjunta-marginales|distribución uniforme sobre el triángulo de vértices
   $(0, 0)$, $(2, 2)$ y $(0, 2)$]].
 
 items:
   - id: a
-    pregunta: 'Calcular $\operatorname{cov}(X, Y)$.'
+    pregunta: 'Calcular [[covarianza|$\operatorname{cov}(X, Y)$]].'
     skills: [covarianza, conjunta-marginales]
     respuesta:
       tipo: numerica
       valor: "1/9"
     pistas:
-      - 'Describí el triángulo como región de integración: para cada $x$, entre qué valores va $y$?'
-      - 'Hacen falta tres esperanzas: $E[XY]$, $E[X]$ y $E[Y]$.'
+      - 'Describí el triángulo como región de integración. Para cada $x$, ¿entre qué valores varía $y$?'
+      - 'Hacen falta tres esperanzas, $E[XY]$, $E[X]$ y $E[Y]$.'
       - >-
-        Plan: el área del triángulo es 2, así que la densidad conjunta vale
-        $1/2$ adentro. Integrá con $y$ de $x$ a $2$ y $x$ de $0$ a $2$, y
-        aplicá $\operatorname{cov} = E[XY] - E[X]E[Y]$.
+        Plan: el área del triángulo es 2, de modo que la densidad conjunta vale
+        $1/2$ en su interior. Integrá con $y$ entre $x$ y $2$, y $x$ entre $0$
+        y $2$, y aplicá $\operatorname{cov} = E[XY] - E[X]E[Y]$.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -34,14 +34,14 @@ items:
           valor: "2/3, 4/3"
 
   - id: b
-    pregunta: 'Calcular $\operatorname{var}[X + Y]$.'
+    pregunta: 'Calcular [[varianza,covarianza|$\operatorname{var}[X + Y]$]].'
     skills: [covarianza, varianza]
     respuesta:
       tipo: numerica
       valor: "2/3"
     pistas:
-      - No hace falta integrar de nuevo si ya tenés la covarianza.
-      - 'La varianza de una suma no es la suma de las varianzas: hay un término cruzado.'
+      - No hace falta volver a integrar si ya calculaste la covarianza.
+      - La varianza de una suma incluye, además de las dos varianzas, un término cruzado.
       - >-
         Plan: $\operatorname{var}[X+Y] = \operatorname{var}[X] + \operatorname{var}[Y] + 2\operatorname{cov}(X,Y)$.
         Calculá las dos varianzas con $E[X^2] - E[X]^2$ y usá la covarianza del
@@ -56,18 +56,19 @@ items:
           valor: "2/3"
 
   - id: c
-    pregunta: 'Calcular $\operatorname{cov}(3X - Y + 2,\ X + Y)$.'
+    pregunta: 'Calcular [[covarianza|$\operatorname{cov}(3X - Y + 2,\ X + Y)$]].'
     skills: [covarianza]
     respuesta:
       tipo: numerica
       valor: "2/3"
     pistas:
-      - '¿Qué le hace el $+2$ a la covarianza?'
-      - La covarianza es lineal en cada argumento, así que se puede repartir.
+      - '¿Qué efecto tiene el $+2$ sobre la covarianza?'
+      - La covarianza es lineal en cada argumento, de modo que se puede distribuir.
       - >-
-        Plan: desarrollá usando linealidad. Te van a quedar sólo
+        Plan: desarrollá usando la linealidad. Solo quedan
         $\operatorname{var}[X]$, $\operatorname{var}[Y]$ y
-        $\operatorname{cov}(X,Y)$, que ya tenés. La constante no aporta nada.
+        $\operatorname{cov}(X,Y)$, que ya calculaste. La constante no
+        contribuye.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

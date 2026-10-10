@@ -8,8 +8,8 @@ fuente:
 enunciado: |
   Sean $X_1$, $X_2$ y $X_3$
   [[combinacion-normales|variables aleatorias independientes con distribución
-  normal]] de medias 1, 2 y 3 respectivamente, y varianzas $1/9$, $1/3$ y
-  $1/2$ respectivamente.
+  normal]] de [[normal|medias 1, 2 y 3 respectivamente, y varianzas $1/9$,
+  $1/3$ y $1/2$ respectivamente]].
 
 items:
   - id: a
@@ -19,16 +19,17 @@ items:
       tipo: numerica
       valor: "1/2 - erf(sqrt(2))/2"
     pistas:
-      - 'Pasá todo a un lado para que el evento quede de la forma $Y > 0$.'
+      - 'Reordená la desigualdad para que el evento quede de la forma $Y > 0$.'
       - >-
-        $Y$ es una combinación lineal de normales independientes, así que
-        vuelve a ser normal. Calculá su media y su varianza.
+        $Y$ es una combinación lineal de normales independientes, de modo que
+        también es normal. Calculá su media y su varianza.
       - >-
-        Plan: $Y = X_1 - \tfrac{1}{2}X_2 + \tfrac{1}{3}X_3 - 2$. En la media
-        los coeficientes van tal cual; en la varianza van **al cuadrado**, así
-        que el signo menos desaparece. Te va a quedar media $-1$ y varianza
-        $1/4$, o sea desvío $1/2$. Estandarizá y buscá en la tabla. Si la
-        varianza te da $4/9$, no elevaste los coeficientes al cuadrado.
+        Plan: $Y = X_1 - \tfrac{1}{2}X_2 + \tfrac{1}{3}X_3 - 2$. En la media,
+        los coeficientes intervienen sin modificación; en la varianza,
+        intervienen **al cuadrado**, de modo que el signo desaparece. Se
+        obtienen media $-1$ y varianza $1/4$, es decir, desvío $1/2$.
+        Estandarizá y buscá en la tabla. Si la varianza resulta $4/9$, los
+        coeficientes no se elevaron al cuadrado.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

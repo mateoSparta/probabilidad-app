@@ -14,8 +14,9 @@ enunciado: |
 items:
   - id: a
     pregunta: >-
-      Calcular la probabilidad de estos subconjuntos de $\Omega$. (El enunciado
-      pide los 8; alcanza con estos cuatro para saber si lo tenés.)
+      Calcular la probabilidad de los siguientes subconjuntos de $\Omega$. (La
+      guía pide los ocho subconjuntos; estos cuatro bastan para comprobar el
+      procedimiento.)
     skills: [prob-discreta]
     respuesta:
       tipo: checkpoints
@@ -30,7 +31,7 @@ items:
           valor: "1"
     pistas:
       - La probabilidad de un evento es la suma de los pesos de los puntos que contiene.
-      - ¿Cuántos puntos tiene el conjunto vacío? ¿Cuánto suma una suma sin términos?
+      - ¿Cuántos puntos tiene el conjunto vacío? ¿Cuánto vale una suma sin términos?
       - >-
         Plan: para cada subconjunto, sumá los pesos de sus elementos. Como
         control, los pesos de los tres puntos tienen que sumar 1.

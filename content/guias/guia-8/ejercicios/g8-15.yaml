@@ -14,24 +14,24 @@ enunciado: |
 items:
   - id: a
     pregunta: >-
-      Calcular aproximadamente la probabilidad de que la ganancia total por
-      vender 50 varillas sea mayor que \$460.
+      Calcular [[normal|aproximadamente]] la probabilidad de que la ganancia
+      total por vender 50 varillas sea mayor que \$460.
     skills: [tcl, normal]
     respuesta:
       tipo: numerica
       valor: "1/2 + erf(2)/2"
     pistas:
       - >-
-        Fijate que el enunciado **no dice** de qué distribución es la longitud.
-        ¿Hace falta saberlo?
+        Observá que el enunciado **no indica** la distribución de la longitud.
+        ¿Hace falta conocerla?
       - >-
-        La ganancia por varilla es $L - 20$. Restar una constante corre la
-        media pero no cambia el desvío.
+        La ganancia por varilla es $L - 20$. Restar una constante desplaza la
+        media pero no modifica el desvío.
       - >-
         Plan: la ganancia total tiene media $50 \cdot 10 = 500$ y varianza
-        $50 \cdot 4 = 200$. Por el TCL se la aproxima por una normal,
-        estandarizás y buscás en la tabla. El resultado va a quedar muy cerca
-        de 1: 460 está casi tres desvíos por debajo de la media.
+        $50 \cdot 4 = 200$. Por el TCL se aproxima por una normal; estandarizá
+        y buscá en la tabla. El resultado es muy cercano a 1, porque 460 está
+        casi tres desvíos por debajo de la media.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

@@ -40,8 +40,6 @@ export function VistaGuia({ numero, sesion, onIntento, destino, onDestinoAlcanza
     return (
       <p class="vacio">
         La guía {numero} todavía no tiene contenido cargado.
-        <br />
-        Se carga con el pipeline de la sección 7 del PLAN.
       </p>
     )
   }

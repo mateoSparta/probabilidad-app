@@ -784,6 +784,17 @@ for (const [valor, alternativa] of equivalentes) {
   const md = markdownAHtml('Vale $x$.\n\n| a | b |\n|---|---|\n| $1$ | $2$ |\n')
   afirmar(md.includes('class="puntuacion">.<'), 'en Markdown el punto no entró en la fórmula')
   afirmar(md.includes('<div class="tabla"><table>'), 'la tabla de Markdown no va en su contenedor')
+
+  // `\$` es un signo de pesos: no abre una fórmula, aunque haya varios.
+  const pesos = textoAHtml('aportando \\$2000, o bien \\$4000, con $p = 1/2$.')
+  afirmar(pesos.includes('aportando $2000, o bien $4000'), `los \\$ no quedaron como pesos: ${pesos.slice(0, 80)}`)
+  afirmar((pesos.match(/class="katex"/g) ?? []).length === 1, 'un \\$ abrió una fórmula')
+  afirmar(markdownAHtml('cuesta \\$20.').includes('cuesta $20.'), 'en Markdown el \\$ no quedó como pesos')
+
+  // El único formato en línea fuera de la teoría: negrita y código.
+  const formato = textoAHtml('es **menor** que $x$; escribí `l1`.')
+  afirmar(formato.includes('<strong>menor</strong>'), 'la negrita se ve con asteriscos')
+  afirmar(formato.includes('<code>l1</code>'), 'el código se ve con comillas invertidas')
 }
 
 // ----------------------------------------------------------------- rutas

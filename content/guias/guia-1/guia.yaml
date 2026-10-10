@@ -1,11 +1,12 @@
 numero: 1
 titulo: Espacios de probabilidad
 descripcion: >-
-  Qué es un experimento aleatorio, cómo se arma el espacio muestral y qué
-  familias de eventos admiten una probabilidad coherente. De ahí salen las
-  herramientas que se usan en todo lo que sigue: contar casos equiprobables,
-  manejar uniones y complementos, multiplicar cuando hay independencia,
-  condicionar, invertir un condicional con Bayes y pasar al límite cuando hay
+  Los fundamentos de la materia. La guía presenta el experimento aleatorio, la
+  construcción del espacio muestral y las familias de eventos que admiten una
+  asignación coherente de probabilidades. Sobre esa base se desarrollan las
+  herramientas que se usan en el resto de la materia: el conteo de casos
+  equiprobables, el cálculo con uniones y complementos, la independencia, la
+  probabilidad condicional, la regla de Bayes y el paso al límite con
   infinitos eventos.
 
 # La secuencia alterna teoría y ejercicios (PLAN.md §4.5). El orden importa:

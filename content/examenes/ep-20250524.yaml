@@ -14,33 +14,35 @@ ejercicios:
     en_alcance: true
     cargado: true
     enunciado: |
-      En una caja hay 5 bolitas blancas, 1 verde y 3 azules. Se extraen al azar
-      dos bolitas. [[condicional|Si son del mismo color, no se sacan más
+      [[laplace|En una caja hay 5 bolitas blancas, 1 verde y 3 azules.]] Se
+      extraen al azar dos bolitas. [[condicional|Si son del mismo color, no se sacan más
       bolitas; en caso contrario, se extraen otras dos (sin reponer ninguna
       bola extraída).]]
     items:
       - id: a
         pregunta: >-
-          Si se sabe que hubo una segunda extracción, en la cual se obtuvieron
-          dos bolitas del mismo color, ¿cuál es la probabilidad de que en la
-          primera hayan salido exactamente una blanca y una verde?
+          [[bayes|Si se sabe que hubo una segunda extracción, en la cual se
+          obtuvieron dos bolitas del mismo color]], ¿cuál es la probabilidad de
+          que en la primera hayan salido exactamente una blanca y una verde?
         skills: [bayes, condicional, laplace]
         respuesta:
           tipo: numerica
           valor: "15/61"
         pistas:
           - >-
-            El dato "hubo una segunda extracción" ya dice algo sobre la
-            primera: las dos primeras bolitas fueron de distinto color.
+            El dato "hubo una segunda extracción" informa sobre la primera,
+            porque implica que las dos primeras bolitas fueron de distinto
+            color.
           - >-
             Hay tres formas de que la primera extracción dé colores distintos.
-            Para cada una, lo que queda en la caja es diferente, y eso cambia
-            la probabilidad de que la segunda dé dos del mismo color.
+            En cada caso la composición de la caja es diferente, lo que
+            modifica la probabilidad de que la segunda extracción dé dos
+            bolitas del mismo color.
           - >-
-            Plan: condicionar sobre cuál fue el par de colores de la primera
-            extracción (blanca-verde, blanca-azul, verde-azul), calcular para
-            cada caso la probabilidad de que la segunda dé dos iguales, y
-            aplicar Bayes.
+            Plan: condicioná según el par de colores de la primera extracción
+            (blanca-verde, blanca-azul, verde-azul), calculá para cada caso la
+            probabilidad de que la segunda dé dos bolitas iguales y aplicá la
+            regla de Bayes.
         verificacion:
           estado: verificado
           metodo: exacto+montecarlo
@@ -53,9 +55,9 @@ ejercicios:
     en_alcance: true
     cargado: false
     nota: >-
-      Requiere la guía 5 (esperanza condicional). El examen trae dos
-      variantes: el Curso 4 tiene que hallar E(Y|X=3) y los otros cursos
-      calcular P(E(Y|X) < 10).
+      Corresponde a la guía 5 (esperanza condicional). El examen incluye dos
+      variantes; el Curso 4 debe hallar E(Y|X=3) y los demás cursos, calcular
+      P(E(Y|X) < 10).
     variante: "Curso 4 / Otros cursos"
     enunciado: |
       Sea $(X, Y)$ un vector aleatorio continuo con función densidad de
@@ -70,9 +72,8 @@ ejercicios:
     en_alcance: true
     cargado: false
     nota: >-
-      Requiere la guía 2 (distribución conjunta) y la guía 4 (transformaciones).
-      Al cargarlo va como `checkpoints`, porque pide hallar y graficar una
-      función de distribución.
+      Corresponde a la guía 2 (distribución conjunta) y a la guía 4
+      (transformaciones). Pide hallar y graficar una función de distribución.
     enunciado: |
       Se usan dos métodos para medir la humedad de la atmósfera. La
       distribución de probabilidad conjunta de las dos mediciones $(X, Y)$ es
@@ -86,7 +87,8 @@ ejercicios:
     en_alcance: true
     cargado: false
     nota: >-
-      Requiere la guía 7 (proceso de Poisson: superposición y condicionamiento a N(t)=n).
+      Corresponde a la guía 7 (proceso de Poisson, superposición y
+      condicionamiento a N(t) = n).
     enunciado: |
       A una dirección de correo electrónico llegan mensajes de SPAM y NO SPAM.
       Los tiempos de arribo de los SPAM siguen un proceso de Poisson de tasa 4
@@ -102,9 +104,9 @@ ejercicios:
     en_alcance: true
     cargado: false
     nota: >-
-      Requiere la guía 8 (teorema central del límite). El enunciado quedó
-      cortado en la transcripción automática: hay que completarlo leyendo el
-      PDF antes de cargarlo.
+      Corresponde a la guía 8 (teorema central del límite). El enunciado quedó
+      incompleto en la transcripción automática y debe completarse a partir
+      del PDF.
     enunciado: |
       Un reconocido influencer inicia una campaña solidaria.
       *(Enunciado incompleto: completar desde `fuentes/examenes/finales/EP_20250524.pdf`.)*

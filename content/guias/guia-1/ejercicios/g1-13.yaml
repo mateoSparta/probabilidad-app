@@ -6,17 +6,15 @@ fuente:
   enunciado: fuentes/guias/parte1.pdf#p5
 
 enunciado: |
-  Una urna contiene 10 bolas numeradas del $0$ al $9$. Se extraen al azar
-  cinco bolas. [[conteo-muestras|El mismo juego de preguntas se responde dos
-  veces: una con reposición y otra sin reposición.]]
+  [[laplace|Una urna contiene 10 bolas numeradas del $0$ al $9$.]]
 
 items:
   - id: a
     pregunta: >-
-      **Con reposición.** Calcular la probabilidad de que
-      (1) las cinco sean iguales; (2) según el orden de extracción se observen
-      los números $1,3,5,7,9$; (3) se observen los cinco números impares, en
-      cualquier orden; (4) las cinco sean distintas.
+      Se extraen al azar [[conteo-muestras|con reposición]] cinco bolas.
+      Calcular la probabilidad de que (1) las cinco sean iguales; (2) según el
+      orden de extracción se observen los números $1,3,5,7,9$; (3) se observen
+      los cinco números impares; (4) las cinco sean distintas.
     skills: [conteo-muestras, laplace]
     respuesta:
       tipo: checkpoints
@@ -30,14 +28,14 @@ items:
         - pregunta: (4) las cinco distintas
           valor: "189/625"
     pistas:
-      - Con reposición y en orden, las muestras posibles son $10^5$ y todas igual de probables.
+      - Con reposición y teniendo en cuenta el orden, hay $10^5$ muestras posibles, todas equiprobables.
       - >-
-        Ojo con la diferencia entre (2) y (3): en (2) el orden está fijado, en
-        (3) cualquier orden de los cinco impares sirve.
+        Los casos (2) y (3) difieren en el orden. En (2) el orden está fijado,
+        mientras que en (3) sirve cualquier orden de los cinco números impares.
       - >-
         Plan: contá en cada caso cuántas de las $10^5$ muestras ordenadas
-        cumplen. Para (3) son las permutaciones de cinco números; para (4),
-        las muestras ordenadas sin repetir.
+        cumplen la condición. En (3) son las permutaciones de cinco números; en
+        (4), las muestras ordenadas sin repetición.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -47,7 +45,8 @@ items:
 
   - id: b
     pregunta: >-
-      **Sin reposición.** Calcular las mismas cuatro probabilidades.
+      Calcular las probabilidades del inciso anterior, suponiendo que las
+      extracciones se hacen [[conteo-muestras|sin reposición]].
     skills: [conteo-muestras, laplace]
     respuesta:
       tipo: checkpoints
@@ -62,11 +61,11 @@ items:
           valor: "1"
     pistas:
       - Sin reposición, ¿cuántas muestras ordenadas de cinco bolas hay?
-      - Dos de los cuatro casos no necesitan ninguna cuenta: pensá si pueden o no pasar.
+      - Dos de los cuatro casos se resuelven sin cálculos. Analizá si pueden ocurrir cuando no hay reposición.
       - >-
         Plan: el total es $10 \cdot 9 \cdot 8 \cdot 7 \cdot 6$. Contá los
-        favorables de (2) y (3) igual que antes, y resolvé (1) y (4) por
-        lo que sin reposición es imposible y lo que es seguro.
+        casos favorables de (2) y (3) como en el inciso anterior, y resolvé (1)
+        y (4) observando qué es imposible y qué es seguro sin reposición.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

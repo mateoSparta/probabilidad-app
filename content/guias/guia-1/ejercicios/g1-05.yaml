@@ -5,8 +5,8 @@ fuente:
   enunciado: fuentes/guias/parte1.pdf#p3
 
 enunciado: |
-  Se tienen dos urnas $a$ y $b$. En $a$ hay 5 bolas rojas y 3 blancas, y en $b$
-  hay 2 rojas y 3 blancas.
+  Se tienen dos urnas $a$ y $b$. [[laplace|En $a$ hay 5 bolas rojas y 3
+  blancas, y en $b$ hay 2 rojas y 3 blancas.]]
   [[independencia|Si se extraen al azar una bola de cada urna]], hallar la
   probabilidad de que
 
@@ -18,8 +18,8 @@ items:
       tipo: numerica
       valor: "1/4"
     pistas:
-      - Las dos extracciones son de urnas distintas, así que una no afecta a la otra.
-      - ¿Cuál es la probabilidad de sacar roja de cada urna por separado?
+      - Las dos extracciones se hacen en urnas distintas, de modo que una no afecta a la otra.
+      - ¿Cuál es la probabilidad de extraer una bola roja de cada urna por separado?
       - 'Plan: multiplicá las dos probabilidades.'
     verificacion:
       estado: verificado
@@ -35,8 +35,8 @@ items:
       tipo: numerica
       valor: "19/40"
     pistas:
-      - "\"Del mismo color\" se parte en dos casos que no pueden pasar juntos."
-      - Calculá cada caso por separado con el producto y sumalos.
+      - 'El evento "del mismo color" se descompone en dos casos incompatibles.'
+      - Calculá cada caso por separado con la regla del producto y sumalos.
       - 'Plan: $P(\text{ambas rojas}) + P(\text{ambas blancas})$.'
     verificacion:
       estado: verificado
@@ -68,8 +68,8 @@ items:
       tipo: numerica
       valor: "3/5"
     pistas:
-      - Lo que pasa en la urna $a$ no tiene ninguna influencia acá.
-      - 'Plan: contá sobre la urna $b$ nomás.'
+      - El resultado de la urna $a$ no influye en este evento.
+      - 'Plan: aplicá la regla de Laplace a la composición de la urna $b$.'
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

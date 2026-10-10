@@ -18,9 +18,9 @@ items:
       tipo: numerica
       valor: "41/50"
     pistas:
-      - Son dos eventos que se solapan: hay estudiantes que cursan las dos.
-      - Si sumás los que cursan cada una, los que cursan ambas quedan contados dos veces.
-      - 'Plan: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$, con los tres números leídos del enunciado.'
+      - Los dos eventos tienen intersección no vacía, porque hay estudiantes que cursan ambas materias.
+      - Si sumás los que cursan cada materia, los que cursan ambas quedan contados dos veces.
+      - 'Plan: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$, con los tres números del enunciado.'
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -35,7 +35,7 @@ items:
       tipo: numerica
       valor: "9/50"
     pistas:
-      - '"Ni una ni la otra" es el complemento de un evento que ya calculaste.'
+      - 'El evento "ni una ni la otra" es el complemento de un evento que ya calculaste.'
       - 'Plan: $P((A \cup B)^c) = 1 - P(A \cup B)$.'
     verificacion:
       estado: verificado
@@ -52,10 +52,10 @@ items:
       valor: "37/40"
     pistas:
       - Con tres eventos hay que descontar las intersecciones de a pares.
-      - Al descontar las tres intersecciones de a pares, los que cursan las tres quedan restados de más.
+      - Al descontar las tres intersecciones de a pares, los que cursan las tres materias quedan restados de más.
       - >-
-        Plan: sumá las tres, restá las tres intersecciones de a pares y volvé a
-        sumar la de las tres.
+        Plan: sumá las tres probabilidades, restá las tres intersecciones de a
+        pares y sumá la intersección de las tres.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -70,13 +70,16 @@ items:
       tipo: numerica
       valor: "67/200"
     pistas:
-      - "\"Solo Álgebra II\" no es lo mismo que \"Álgebra II\": hay que sacarle los que además cursan otra."
+      - 'El evento "solo Álgebra II" excluye a quienes además cursan alguna de las otras dos materias.'
       - >-
-        Conviene armar el diagrama de Venn de adentro hacia afuera: primero los
-        18 del centro, después las zonas de a pares, después las de una sola.
+        Conviene completar el diagrama de Venn desde el centro hacia afuera,
+        empezando por los 18 estudiantes que cursan las tres materias,
+        siguiendo por las zonas de dos materias y terminando por las de una
+        sola.
       - >-
-        Plan: para cada materia, restale las dos intersecciones de a pares y
-        volvé a sumar la de las tres. Sumá las tres zonas que te quedan.
+        Plan: para cada materia, restá las dos intersecciones de a pares que la
+        involucran y sumá la intersección de las tres. Después sumá las tres
+        zonas obtenidas.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

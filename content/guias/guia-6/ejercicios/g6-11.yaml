@@ -12,8 +12,9 @@ enunciado: |
 items:
   - id: a
     pregunta: >-
-      Calcular la esperanza de la cantidad de lanzamientos del dado que deberán
-      realizarse para observar sus tres colores.
+      Calcular [[esperanza|la esperanza de la cantidad de lanzamientos]] del
+      dado que deberán realizarse
+      [[inclusion-exclusion|para observar sus tres colores]].
     skills: [geometrica-pascal, esperanza, inclusion-exclusion]
     respuesta:
       tipo: numerica
@@ -21,18 +22,18 @@ items:
       tol_rel: 0.002
     pistas:
       - >-
-        Los tres colores **no** son equiprobables: salen con probabilidad
-        $1/6$, $2/6$ y $3/6$. La fórmula del coleccionista equiprobable no
-        sirve.
+        Los tres colores **no** son equiprobables, ya que salen con
+        probabilidades $1/6$, $2/6$ y $3/6$. Por eso no se aplica la fórmula
+        del coleccionista con probabilidades iguales.
       - >-
         Para una variable que toma valores enteros positivos vale
         $E[T] = \sum_{t \ge 0} P(T > t)$. ¿Qué significa $T > t$?
       - >-
-        Plan: $T > t$ es que después de $t$ tiros falte algún color. Calculá esa
-        probabilidad por inclusión-exclusión sobre los tres colores: cada
-        término queda una serie geométrica. **No te olvides el término de los
-        tres colores a la vez**: aporta 1, y olvidarlo da $6{,}3$ en vez de
-        $7{,}3$.
+        Plan: $T > t$ significa que después de $t$ lanzamientos falta algún
+        color. Calculá esa probabilidad por inclusión-exclusión sobre los tres
+        colores, de modo que cada término da una serie geométrica. **Incluí el
+        término correspondiente a los tres colores**, que aporta 1; omitirlo
+        conduce a $6{,}3$ en lugar de $7{,}3$.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

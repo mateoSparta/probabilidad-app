@@ -7,6 +7,10 @@
  *   - un ítem no tiene skills o no tiene pistas
  *   - un `valor` no parsea
  *   - una marca `[[skill|…]]` usa un skill que el ejercicio no declara
+ *   - un skill de un ítem no está marcado ni en el enunciado ni en su
+ *     pregunta (su tag no resaltaría nada)
+ *   - el texto propio (teoría, pistas, distractores, descripciones) usa una
+ *     de las expresiones que la guía de estilo descarta
  *   - un ejercicio o un bloque de la secuencia no existe
  *   - un valor del YAML no coincide con lo que calculó tools/verify/
  *
@@ -55,7 +59,158 @@ type Item = {
   verificacion?: { estado?: string; fuentes_valor?: { origen: string; valor: string }[] }
 }
 type Ejercicio = { id: string; guia: number; numero: string; enunciado?: string; items?: Item[] }
-type Guia = { numero: number; titulo?: string; secuencia?: { teoria?: string; ejercicio?: string }[] }
+type Guia = {
+  numero: number
+  titulo?: string
+  descripcion?: string
+  secuencia?: { teoria?: string; ejercicio?: string }[]
+}
+
+// ---------------------------------------------------------------- estilo
+
+/**
+ * Expresiones que el texto propio no puede usar. El registro buscado es el de
+ * un apunte de cátedra: claro y cercano, pero no coloquial. La lista no
+ * pretende ser una guía de estilo completa; frena las muletillas que ya
+ * aparecieron y que el autor pidió sacar.
+ *
+ * Se aplica a lo que escribimos nosotros (teoría, pistas, distractores,
+ * descripciones), no a los enunciados, que se transcriben de la guía.
+ */
+const ESTILO_PROHIBIDO: [RegExp, string][] = [
+  [/\bsale(n)? sol[oa]s?\b/i, '"sale solo"'],
+  [/\blind[oa]s?\b/i, '"lindo"'],
+  [/\bnomás\b/i, '"nomás"'],
+  [/\bojo con\b|\bojo:/i, '"ojo con"'],
+  [/\bde una\b(?=[.,;]|$)/i, '"de una" (por "directamente")'],
+  [/\bse come[n]?\b/i, '"se come"'],
+  [/\btruco\b/i, '"truco"'],
+  [/\bno (?:es|son|era|eran)\b[^.;:?!]{1,80}?\bsino\b/i, 'la estructura "no es X sino Y"'],
+  [/\bno (?:es|son|era|eran)\b[^.;:?!]{1,80}?: (?:es|son|era|eran)\b/i, 'la estructura "no es X: es Y"'],
+  [/\bno (?:es|son)\b[^.;:?!]{1,60}?, (?:es|son)\b(?! decir)/i, 'la estructura "no es X, es Y"'],
+]
+
+/** Saca las fórmulas, para no confundir un `:` de LaTeX con puntuación. */
+function sinFormulas(t: string): string {
+  return t.replace(/\$\$[^$]+\$\$|\$[^$]+\$/g, 'X')
+}
+
+function revisarEstilo(quien: string, texto?: unknown): void {
+  if (texto === undefined || texto === null) return
+  const limpio = sinFormulas(String(texto)).replace(/\s+/g, ' ')
+  for (const [re, nombre] of ESTILO_PROHIBIDO) {
+    const m = limpio.match(re)
+    if (m) err(`${quien}: usa ${nombre} ("…${m[0]}…")`)
+  }
+}
+
+/**
+ * Una fórmula en display ocupa su renglón, así que la puntuación que le sigue
+ * quedaría sola al principio del siguiente. Tiene que ir dentro de la fórmula.
+ */
+function revisarPuntuacionTrasDisplay(quien: string, texto?: string): void {
+  if (texto && /\$\$\s*[.,;:]/.test(texto)) {
+    err(`${quien}: hay un signo de puntuación después de una fórmula en display; va adentro de la fórmula`)
+  }
+}
+
+// ---------------------------------------------------------------- marcas
+
+const RE_MARCA = /\[\[([a-zA-Z0-9-]+(?:,[a-zA-Z0-9-]+)*)\|([\s\S]+?)\]\](?!\])/g
+
+function marcados(texto?: string): Set<string> {
+  return new Set([...(texto ?? '').matchAll(RE_MARCA)].flatMap((m) => m[1].split(',')))
+}
+
+/**
+ * Las marcas de un ejercicio (de guía o de examen).
+ *
+ * Cada skill de un ítem tiene que estar marcado en el enunciado o en la
+ * pregunta del propio ítem: los tags aparecen debajo del enunciado y, al
+ * pasarles el mouse, resaltan su fragmento. Un tag sin fragmento no señala
+ * nada, y eso es justo lo que se quiere evitar.
+ */
+function validarMarcas(quien: string, enunciado: string | undefined, items: Item[]): void {
+  const delEjercicio = new Set(items.flatMap((i) => i.skills ?? []))
+  const enEnunciado = marcados(enunciado)
+
+  for (const texto of [enunciado, ...items.map((i) => i.pregunta)]) {
+    const resto = (texto ?? '').replace(RE_MARCA, '')
+    if (resto.includes('[[') || resto.includes(']]')) {
+      err(`${quien}: hay una marca mal formada (\`[[\` o \`]]\` sueltos)`)
+    }
+  }
+
+  for (const s of enEnunciado) {
+    if (!idsSkills.has(s)) {
+      err(`${quien}: la marca \`[[${s}|…]]\` usa un skill que no existe`)
+    } else if (items.length > 0 && !delEjercicio.has(s)) {
+      err(`${quien}: la marca \`[[${s}|…]]\` usa un skill que ningún ítem declara`)
+    }
+  }
+
+  for (const item of items) {
+    const enPregunta = marcados(item.pregunta)
+    for (const s of enPregunta) {
+      if (!(item.skills ?? []).includes(s)) {
+        err(`${quien}(${item.id}): la pregunta marca \`${s}\`, que el ítem no declara`)
+      }
+    }
+    for (const s of item.skills ?? []) {
+      if (!enEnunciado.has(s) && !enPregunta.has(s)) {
+        err(
+          `${quien}(${item.id}): el skill \`${s}\` no está marcado ni en el enunciado ni en ` +
+            'la pregunta, así que su tag no resaltaría nada',
+        )
+      }
+    }
+  }
+}
+
+/**
+ * Todo lo que se muestra como texto tiene que ser texto. En YAML, un escalar
+ * sin comillas que contiene `: ` se lee como un diccionario, y el renderer
+ * recibiría un objeto en lugar de un string: la página entera se cae al abrir
+ * esa pista. Hay que entrecomillarlo o usar `>-`.
+ */
+function exigirTexto(quien: string, valor: unknown): void {
+  if (valor === undefined) return
+  if (typeof valor !== 'string') {
+    const visto = JSON.stringify(valor)
+    err(
+      `${quien}: tendría que ser texto y YAML lo leyó como ${Array.isArray(valor) ? 'lista' : typeof valor}` +
+        ` (${visto.length > 70 ? visto.slice(0, 70) + '…' : visto}). Entrecomillalo o usá \`>-\`.`,
+    )
+  }
+}
+
+/** El texto propio de un ítem: pistas y distractores. */
+function revisarTextoDeItem(quien: string, item: Item): void {
+  exigirTexto(`${quien} pregunta`, item.pregunta)
+  for (const [i, pista] of (item.pistas ?? []).entries()) exigirTexto(`${quien} pista ${i + 1}`, pista)
+  const opciones = (item.respuesta?.opciones ?? []) as Record<string, unknown>[]
+  for (const o of opciones) {
+    exigirTexto(`${quien} opción ${o.id}`, o.texto)
+    exigirTexto(`${quien} opción ${o.id} (error típico)`, o.error_tipico)
+  }
+  const cps = (item.respuesta?.checkpoints ?? []) as Record<string, unknown>[]
+  for (const [i, c] of cps.entries()) exigirTexto(`${quien} checkpoint ${i + 1}`, c.pregunta)
+
+  for (const [i, pista] of (item.pistas ?? []).entries()) {
+    revisarEstilo(`${quien} pista ${i + 1}`, pista)
+    revisarPuntuacionTrasDisplay(`${quien} pista ${i + 1}`, pista)
+  }
+  const ops = (item.respuesta?.opciones ?? []) as {
+    id: string
+    texto?: string
+    error_tipico?: string
+  }[]
+  for (const o of ops) {
+    revisarEstilo(`${quien} opción ${o.id}`, o.texto)
+    revisarEstilo(`${quien} opción ${o.id} (error típico)`, o.error_tipico)
+  }
+  revisarPuntuacionTrasDisplay(quien, item.pregunta)
+}
 
 // --------------------------------------------------------------- catálogo
 
@@ -70,6 +225,7 @@ const idsSkills = new Set(skills.map((s) => s.id))
 for (const s of skills) {
   if (!s.id || !s.nombre) err(`skills.yaml: un skill sin id o sin nombre (${JSON.stringify(s)})`)
   if (typeof s.guia !== 'number') err(`skill ${s.id}: falta \`guia\``)
+  revisarEstilo(`skill ${s.id}`, (s as { descripcion?: string }).descripcion)
 }
 
 // ----------------------------------------------------------------- config
@@ -123,8 +279,6 @@ const teoriaIds = new Set<string>()
 /** skill -> ítems que lo evalúan */
 const evaluadoPor = new Map<string, string[]>()
 
-const RE_MARCA = /\[\[([a-z0-9-]+)\|([^\]]+)\]\]/g
-
 for (const dir of dirsGuia) {
   for (const ruta of listar(join(dir, 'ejercicios'), '.yaml')) {
     const ej = leerYaml<Ejercicio>(ruta)
@@ -137,10 +291,9 @@ for (const dir of dirsGuia) {
     const items = ej.items ?? []
     if (items.length === 0) err(`${ej.id}: no tiene items`)
 
-    const skillsDelEjercicio = new Set(items.flatMap((i) => i.skills ?? []))
-
     for (const item of items) {
       const quien = `${ej.id}(${item.id})`
+      revisarTextoDeItem(quien, item)
 
       if (!item.skills?.length) err(`${quien}: no declara skills`)
       if (!item.pistas?.length) err(`${quien}: no tiene pistas`)
@@ -161,16 +314,9 @@ for (const dir of dirsGuia) {
       }
     }
 
-    // Las marcas del enunciado tienen que usar skills del ejercicio: el
-    // enunciado es compartido, así que se valida contra la unión de los ítems.
-    for (const m of (ej.enunciado ?? '').matchAll(RE_MARCA)) {
-      const s = m[1]
-      if (!idsSkills.has(s)) {
-        err(`${ej.id}: la marca \`[[${s}|…]]\` usa un skill que no existe`)
-      } else if (!skillsDelEjercicio.has(s)) {
-        err(`${ej.id}: la marca \`[[${s}|…]]\` usa un skill que ningún ítem declara`)
-      }
-    }
+    exigirTexto(`${ej.id} enunciado`, ej.enunciado)
+    validarMarcas(ej.id, ej.enunciado, items)
+    revisarPuntuacionTrasDisplay(ej.id, ej.enunciado)
   }
 
   for (const ruta of listar(join(dir, 'teoria'), '.md')) {
@@ -186,6 +332,9 @@ for (const dir of dirsGuia) {
       continue
     }
     teoriaIds.add(meta.id)
+    const cuerpo = txt.slice(m[0].length)
+    revisarEstilo(`teoría ${meta.id}`, cuerpo)
+    revisarPuntuacionTrasDisplay(`teoría ${meta.id}`, cuerpo)
     for (const s of meta.skills ?? []) {
       if (!idsSkills.has(s)) err(`teoría ${meta.id}: el skill \`${s}\` no existe`)
     }
@@ -251,9 +400,10 @@ for (const ex of examenes) {
       avisar(`${quienEj}: no está cargado y no explica por qué`)
     }
 
-    const skillsDelEjercicio = new Set(items.flatMap((i) => i.skills ?? []))
+    revisarEstilo(`${quienEj} nota`, ej.nota)
     for (const item of items) {
       const quien = `${quienEj}(${item.id})`
+      revisarTextoDeItem(quien, item)
       if (!item.skills?.length) err(`${quien}: no declara skills`)
       for (const s of item.skills ?? []) {
         if (!idsSkills.has(s)) err(`${quien}: el skill \`${s}\` no existe`)
@@ -268,13 +418,9 @@ for (const ex of examenes) {
       }
     }
 
-    for (const m of (ej.enunciado ?? '').matchAll(RE_MARCA)) {
-      if (!idsSkills.has(m[1])) {
-        err(`${quienEj}: la marca \`[[${m[1]}|…]]\` usa un skill que no existe`)
-      } else if (items.length > 0 && !skillsDelEjercicio.has(m[1])) {
-        err(`${quienEj}: la marca \`[[${m[1]}|…]]\` usa un skill que ningún ítem declara`)
-      }
-    }
+    exigirTexto(`${quienEj} enunciado`, ej.enunciado)
+    validarMarcas(quienEj, ej.enunciado, items)
+    revisarPuntuacionTrasDisplay(quienEj, ej.enunciado)
   }
 }
 
@@ -288,6 +434,7 @@ for (const dir of dirsGuia) {
     err(`${ruta}: falta \`numero\``)
     continue
   }
+  revisarEstilo(`guía ${guia.numero} (descripción)`, guia.descripcion)
   for (const paso of guia.secuencia ?? []) {
     if (paso.ejercicio && !idsEjercicios.has(paso.ejercicio)) {
       err(`guía ${guia.numero}: la secuencia referencia el ejercicio \`${paso.ejercicio}\`, que no existe`)

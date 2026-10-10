@@ -4,27 +4,30 @@ skills: [desigualdades]
 ---
 ## Markov y Chebyshev
 
-A veces no se conoce la distribución y hay que decir algo igual. Para eso
-sirven estas dos cotas, que valen para **cualquier** distribución.
+En ocasiones no se conoce la distribución de una variable y, aun así, se
+necesita acotar alguna probabilidad. Para eso sirven las dos desigualdades
+siguientes, que valen para **cualquier** distribución.
 
-**Markov**, si $X \ge 0$ y $a > 0$:
+**Desigualdad de Markov.** Si $X \ge 0$ y $a > 0$,
 
 $$P(X \ge a) \le \frac{E[X]}{a}$$
 
-Sólo necesita la media. Si una variable positiva tiene media 15, entonces
-$P(X \ge 60) \le 15/60 = 1/4$, sin saber nada más.
+Solo requiere conocer la media. Si una variable no negativa tiene media 15,
+entonces $P(X \ge 60) \le 15/60 = 1/4$, sin ninguna otra información.
 
-**Chebyshev**, que es Markov aplicado a $(X - \mu)^2$:
+**Desigualdad de Chebyshev.** Se obtiene aplicando la desigualdad de Markov a
+$(X - \mu)^2$:
 
 $$P(\lvert X - \mu \rvert \ge \varepsilon) \le \frac{\operatorname{var}[X]}{\varepsilon^2}$$
 
-Necesita media y varianza, y acota lo lejos que la variable se puede ir del
-centro.
+Requiere la media y la varianza, y acota la probabilidad de que la variable
+se aleje de su media.
 
-**Son cotas, no aproximaciones.** Eso es lo importante: valen siempre, pero
-suelen ser flojas. Para dimensionar una muestra, Chebyshev puede pedir cinco
-veces más datos que la aproximación normal del teorema central del límite.
-Ninguna de las dos está mal: Chebyshev da una garantía que no supone nada, y
-el TCL da un número ajustado a costa de suponer que la aproximación normal
-sirve. Cuando un ejercicio pide un tamaño de muestra, hay que fijarse cuál de
-las dos herramientas quiere.
+**Ambas desigualdades dan cotas, que valen siempre pero suelen ser poco
+ajustadas.** Para dimensionar una muestra, Chebyshev puede requerir cinco
+veces más datos que la aproximación normal basada en el teorema central del
+límite. Las dos herramientas son válidas. Chebyshev ofrece una garantía sin
+supuestos sobre la distribución, mientras que el TCL da un valor más ajustado
+a costa de suponer que la aproximación normal es adecuada. Cuando un
+ejercicio pide un tamaño de muestra, hay que identificar cuál de las dos
+herramientas corresponde usar.

@@ -10,8 +10,9 @@ enunciado: |
   sendas. [[esperanza-total|Si elige la primera se perderá en el laberinto y
   luego de 12 minutos volverá a su posición inicial; si elige la segunda
   volverá a su posición inicial luego de 14 minutos; si elige la tercera saldrá
-  del laberinto luego de 9 minutos.]] En cada intento, la rata elige con igual
-  probabilidad cualquiera de las tres sendas.
+  del laberinto luego de 9 minutos.]]
+  [[esperanza-condicional|En cada intento, la rata elige con igual probabilidad
+  cualquiera de las tres sendas.]]
 
 items:
   - id: a
@@ -22,16 +23,17 @@ items:
       valor: "35"
       tol_rel: 0.005
     pistas:
-      - 'Partí según cuál senda elige primero: son tres casos equiprobables.'
+      - Condicioná según la primera senda elegida, lo que da tres casos equiprobables.
       - >-
-        En dos de los tres casos la rata vuelve al punto de partida. ¿Cuánto le
-        falta, en media, desde ahí?
+        En dos de los tres casos la rata vuelve al punto de partida. ¿Cuál es,
+        en media, el tiempo que le resta desde allí?
       - >-
         Plan: llamá $m$ al tiempo medio. Como al volver al inicio la situación
-        es idéntica a la original, la espera restante vuelve a tener media $m$.
-        Escribí $m$ como el promedio de los tres casos, con el $+m$ en los dos
-        que vuelven, y despejá. Si te da $35/3 \approx 11{,}7$, te olvidaste
-        ese término: ése es el promedio de los tres tiempos, no la respuesta.
+        es idéntica a la original, el tiempo restante vuelve a tener media $m$.
+        Escribí $m$ como el promedio de los tres casos, sumando $m$ en los dos
+        casos en que la rata vuelve, y despejá. Si obtenés
+        $35/3 \approx 11{,}7$, omitiste ese término y calculaste el promedio
+        de los tres tiempos.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

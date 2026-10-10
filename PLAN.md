@@ -265,6 +265,12 @@ El build falla si se da alguno de estos casos:
   sin recalcularlo rompe el build.
 - Un ejercicio de examen dice `cargado: true` sin ítems, o tiene ítems sin
   declararse cargado. Es el campo que decide si el simulacro lo presenta.
+- Un skill de un ítem no está marcado ni en el enunciado ni en la pregunta
+  del ítem: su tag no resaltaría nada. Una marca puede llevar varios skills,
+  `[[prob-total,condicional|…]]`.
+- Un texto que se muestra (pregunta, pista, opción) no es un string. Pasa con
+  un escalar YAML sin comillas que contiene `: `, que se lee como diccionario.
+- El texto propio usa una expresión que la sección 4.9 descarta.
 
 Además, emite un warning por cada ítem con `estado ≠ verificado`.
 
@@ -277,6 +283,26 @@ cubren:
 - **`render-check`**: renderiza la app con Vite en modo SSR y verifica que la
   página se dibuje, que KaTeX corra, y que los tags y la respuesta **no**
   estén en el HTML inicial.
+
+### 4.9 Registro del texto
+
+El texto propio (teoría, pistas, distractores, descripciones) sigue el
+registro de un apunte de cátedra: preciso y pedagógico, sin coloquialismos.
+Los enunciados se transcriben de la guía y no se reescriben.
+
+- La teoría va en forma impersonal ("se calcula", "conviene"). Las pistas
+  pueden usar el imperativo con voseo ("calculá", "compará").
+- Los dos puntos se reservan para introducir una fórmula, una enumeración o
+  un rótulo como "Plan:". No se usan para encadenar una aclaración; en ese
+  caso van dos oraciones o un conector (porque, ya que, es decir, de modo
+  que).
+- Se evitan los contrastes del tipo "no es X sino Y", "no es X: es Y" o "no
+  son X, son Y". Se afirma directamente lo que es.
+- Se evitan expresiones como "sale solo", "se ve lindo", "nomás", "de una",
+  "ojo con", "truco" o "se come". `tools/check.ts` rechaza estas y las
+  estructuras anteriores.
+- Fuera de la teoría, el único formato admitido es `**negrita**` y
+  `` `código` ``; `\$` es un signo de pesos.
 
 ---
 

@@ -9,7 +9,8 @@ enunciado: |
   Sea $\{N(t),\ t \ge 0\}$ el proceso de conteo asociado a un
   [[poisson-incrementos|proceso de Poisson de intensidad 2]] y sea
   $N(a, b) = N(b) - N(a)$ el incremento del proceso en el intervalo $(a, b]$.
-  Sea además $S_3$ el tiempo de espera hasta que ocurre el tercer evento.
+  Sea además [[tiempos-espera|$S_3$ el tiempo de espera hasta que ocurre el
+  tercer evento]].
 
 items:
   - id: a
@@ -19,8 +20,8 @@ items:
       tipo: numerica
       valor: "exp(-2)"
     pistas:
-      - 'El conteo en un intervalo es Poisson. ¿Con qué media?'
-      - 'Plan: Poisson de media $\lambda \cdot 1 = 2$, evaluada en 0.'
+      - 'El conteo en un intervalo tiene distribución de Poisson. ¿Con qué media?'
+      - 'Plan: evaluá en 0 la función de probabilidad de una Poisson de media $\lambda \cdot 1 = 2$.'
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -35,8 +36,8 @@ items:
       tipo: numerica
       valor: "2*exp(-2)"
     pistas:
-      - 'El intervalo $(1, 2]$ tiene el mismo largo que $(0, 1]$. ¿Importa dónde está?'
-      - 'Plan: por estacionariedad, sólo cuenta el largo. Poisson de media 2, evaluada en 1.'
+      - 'El intervalo $(1, 2]$ tiene la misma longitud que $(0, 1]$. ¿Influye su ubicación?'
+      - 'Plan: por estacionariedad, solo importa la longitud. Evaluá en 1 la función de probabilidad de una Poisson de media 2.'
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -51,11 +52,11 @@ items:
       tipo: numerica
       valor: "16*exp(-8)"
     pistas:
-      - 'Fijate si los tres intervalos se solapan o no: $(0,1]$, $(1,2]$ y $(2,4]$.'
-      - Sobre intervalos disjuntos los incrementos son independientes.
+      - 'Analizá si los intervalos $(0,1]$, $(1,2]$ y $(2,4]$ se superponen.'
+      - Los incrementos sobre intervalos disjuntos son independientes.
       - >-
         Plan: multiplicá las tres probabilidades, cada una con la media que le
-        corresponde según su largo ($2$, $2$ y $4$).
+        corresponde según la longitud del intervalo ($2$, $2$ y $4$).
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -64,21 +65,21 @@ items:
           valor: "16*exp(-8)"
 
   - id: d
-    pregunta: 'Calcular $\operatorname{cov}(N(1, 3),\ N(2, 4))$.'
+    pregunta: 'Calcular [[covarianza|$\operatorname{cov}(N(1, 3),\ N(2, 4))$]].'
     skills: [poisson-incrementos, covarianza]
     respuesta:
       tipo: numerica
       valor: "2"
       tol_rel: 0.005
     pistas:
-      - 'Acá los intervalos **sí** se solapan. ¿En qué parte?'
+      - 'En este caso los intervalos **sí** se superponen. ¿En qué parte?'
       - >-
-        Escribí cada incremento como suma de la parte común más la parte
+        Escribí cada incremento como la suma de la parte común y la parte
         propia, y usá que las partes disjuntas son independientes.
       - >-
         Plan: $N(1,3) = N(1,2) + N(2,3)$ y $N(2,4) = N(2,3) + N(3,4)$. Al
-        desarrollar la covarianza, todo lo que involucra partes disjuntas se
-        anula y queda $\operatorname{var}(N(2,3)) = \lambda \cdot 1$.
+        desarrollar la covarianza, los términos que involucran partes
+        disjuntas se anulan y queda $\operatorname{var}(N(2,3)) = \lambda \cdot 1$.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -94,7 +95,7 @@ items:
       valor: "5*exp(-1)/2"
     pistas:
       - 'Traducí el evento sobre el tiempo a un evento sobre el conteo.'
-      - 'Que el tercer evento no haya llegado en $(0, 1/2]$ es que hubo a lo sumo 2.'
+      - 'Que el tercer evento no haya ocurrido en $(0, 1/2]$ equivale a que hayan ocurrido a lo sumo 2.'
       - 'Plan: $P(S_3 > 1/2) = P(N(1/2) \le 2)$, con $N(1/2)$ Poisson de media 1.'
     verificacion:
       estado: verificado
@@ -104,7 +105,7 @@ items:
           valor: "5*exp(-1)/2"
 
   - id: f
-    pregunta: 'Calcular $P(N(1/4) = 1 \mid S_3 = 1/2)$.'
+    pregunta: 'Calcular [[condicionar-Nt|$P(N(1/4) = 1 \mid S_3 = 1/2)$]].'
     skills: [condicionar-Nt]
     respuesta:
       tipo: numerica
@@ -114,12 +115,12 @@ items:
         Si el tercer evento ocurrió exactamente en $1/2$, ¿qué se puede decir
         de los dos primeros?
       - >-
-        Condicionado a eso, los dos primeros son uniformes independientes en
-        $(0, 1/2)$.
+        Dado ese evento, los dos primeros tiempos de arribo se distribuyen como
+        dos uniformes independientes en $(0, 1/2)$.
       - >-
-        Plan: cada uno cae en $(0, 1/4]$ con probabilidad $1/2$, así que es una
-        binomial de 2 intentos. Fijate que la intensidad 2 no aparece en la
-        respuesta: es la señal de que usaste bien la propiedad.
+        Plan: cada uno cae en $(0, 1/4]$ con probabilidad $1/2$, de modo que el
+        conteo es binomial con 2 ensayos. La intensidad no interviene en la
+        respuesta, lo que confirma que la propiedad se aplicó correctamente.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -138,12 +139,13 @@ items:
         Si en $(0, 1/4]$ hubo 1 evento, ¿cuántos más pueden ocurrir en
         $(1/4, 1/2]$ para que el tercero todavía no haya llegado?
       - >-
-        Lo que pasa después de $1/4$ es independiente de lo que pasó antes.
+        Lo que ocurre después de $1/4$ es independiente de lo que ocurrió
+        antes.
       - >-
-        Plan: hace falta que $N(1/4, 1/2) \le 1$, con ese incremento Poisson de
-        media $2 \cdot 1/4$. Ojo: a diferencia del ítem (f), acá la intensidad
-        **sí** aparece, porque el condicionante es un conteo parcial y no el
-        total.
+        Plan: hace falta que $N(1/4, 1/2) \le 1$, donde ese incremento tiene
+        distribución de Poisson de media $2 \cdot 1/4$. A diferencia del ítem
+        (f), en este caso la intensidad **sí** interviene, porque se
+        condiciona a un conteo parcial y no al total.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

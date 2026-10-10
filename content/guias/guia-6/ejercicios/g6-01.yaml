@@ -20,11 +20,12 @@ items:
       valor: "1 - 0.99^10 - 10*0.01*0.99^9"
     pistas:
       - '¿Cuántos discos defectuosos admite la garantía? ¿Cuándo se incumple?'
-      - Conviene ir por el complemento: los paquetes con 0 o con 1 defectuoso.
+      - Conviene calcular el complemento, que corresponde a los paquetes con 0 o 1 discos defectuosos.
       - >-
         Plan: $X \sim \text{Bin}(10;\ 0{,}01)$ y se pide $P(X \ge 2)$. Calculá
-        $1 - P(X=0) - P(X=1)$. Va a quedar como $0{,}0043$: mucho más chico que
-        el $0{,}01$ de un disco.
+        $1 - P(X=0) - P(X=1)$. El resultado es aproximadamente $0{,}0043$,
+        mucho menor que la probabilidad $0{,}01$ de que un disco sea
+        defectuoso.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -42,12 +43,12 @@ items:
       valor: "3*(1 - 0.99^10 - 10*0.01*0.99^9)*(0.99^10 + 10*0.01*0.99^9)^2"
       tol_rel: 0.005
     pistas:
-      - Ahora los intentos son los paquetes, no los discos.
-      - '¿Con qué probabilidad "falla" un paquete? Ya la calculaste.'
+      - Ahora los ensayos son los paquetes.
+      - '¿Con qué probabilidad un paquete incumple la garantía? Ese valor ya lo calculaste.'
       - >-
-        Plan: otra binomial, de 3 intentos, con la probabilidad del ítem (a).
-        Ojo con usar $0{,}01$ acá: ésa es la probabilidad de que falle un
-        **disco**, no un paquete, y da un resultado más del doble del correcto.
+        Plan: usá otra binomial, con 3 ensayos y la probabilidad del ítem (a).
+        Usar $0{,}01$ es incorrecto, porque esa es la probabilidad de que falle
+        un **disco**, y conduce a un resultado de más del doble del correcto.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

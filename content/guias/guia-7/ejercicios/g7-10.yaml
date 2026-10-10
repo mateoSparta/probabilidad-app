@@ -13,7 +13,9 @@ enunciado: |
 
 items:
   - id: a
-    pregunta: Hallar la media y la varianza de la longitud de los rollos de alambre.
+    pregunta: >-
+      Hallar la media y la varianza de
+      [[tiempos-espera|la longitud de los rollos de alambre]].
     skills: [superposicion-adelgazamiento, tiempos-espera]
     respuesta:
       tipo: checkpoints
@@ -26,14 +28,14 @@ items:
     pistas:
       - ¿Qué proceso forman las fallas **detectadas**?
       - >-
-        Al filtrar un proceso de Poisson quedándose con cada evento con
-        probabilidad $p$, lo que queda es otro Poisson de intensidad
-        $p\lambda$.
+        Si en un proceso de Poisson se conserva cada evento con probabilidad
+        $p$, los eventos conservados forman un proceso de Poisson de
+        intensidad $p\lambda$.
       - >-
-        Plan: la intensidad de las detectadas es $0{,}75/20$ por metro. El
-        largo del rollo es el tiempo de espera hasta la primera, o sea
-        exponencial. Para una exponencial, la varianza es el cuadrado de la
-        media.
+        Plan: la intensidad de las fallas detectadas es $0{,}75/20$ por metro.
+        La longitud del rollo es la distancia hasta la primera falla
+        detectada, que tiene distribución exponencial. Para una exponencial,
+        la varianza es el cuadrado de la media.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -42,21 +44,22 @@ items:
           valor: "80/3, 6400/9"
 
   - id: b
-    pregunta: Hallar la cantidad media de fallas en los rollos.
+    pregunta: Hallar la cantidad media de [[geometrica-pascal|fallas en los rollos]].
     skills: [superposicion-adelgazamiento, geometrica-pascal]
     respuesta:
       tipo: numerica
       valor: "4/3"
       tol_rel: 0.005
     pistas:
-      - Ojo que pregunta por **todas** las fallas, no sólo las detectadas.
+      - La pregunta se refiere a **todas** las fallas, incluidas las no detectadas.
       - >-
-        En el rollo hay la falla detectada que lo cortó, más las que pasaron
-        sin detectarse antes de ella. ¿Cuántas son esas, en media?
+        El rollo contiene la falla detectada que lo cortó y las fallas no
+        detectadas anteriores a ella. ¿Cuántas son estas últimas, en media?
       - >-
-        Plan: las no detectadas antes de la primera detectada son los fracasos
-        antes del primer éxito con $p = 0{,}75$, o sea geométrica de media
-        $(1-p)/p$. Sumale la detectada.
+        Plan: las fallas no detectadas anteriores a la primera detectada son
+        los fracasos previos al primer éxito con $p = 0{,}75$, cuya cantidad
+        tiene distribución geométrica de media $(1-p)/p$. A ese valor hay que
+        sumarle la falla detectada.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

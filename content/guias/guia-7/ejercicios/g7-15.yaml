@@ -14,8 +14,8 @@ enunciado: |
 items:
   - id: a
     pregunta: >-
-      Calcular la media y la varianza del tiempo de trabajo consumido por el
-      servidor entre las 11:00 y las 12:00.
+      Calcular la media y [[varianza-total|la varianza del tiempo de trabajo
+      consumido]] por el servidor entre las 11:00 y las 12:00.
     skills: [poisson-compuesto, varianza-total]
     respuesta:
       tipo: checkpoints
@@ -31,14 +31,15 @@ items:
         El total es una suma con una cantidad **aleatoria** de términos. ¿Cuál
         es la distribución de esa cantidad en una hora?
       - >-
-        Para la media alcanza con $E[N]\,E[X]$. Para la varianza hay **dos**
-        términos, y salen de condicionar a $N$ con la varianza total.
+        Para la media basta con $E[N]\,E[X]$. La varianza tiene **dos**
+        términos, que se obtienen condicionando a $N$ con la fórmula de
+        varianza total.
       - >-
         Plan: $\operatorname{var}[T] = E[N]\operatorname{var}[X] + \operatorname{var}[N]\,(E[X])^2$,
-        y para una Poisson $\operatorname{var}[N] = E[N] = 4$. Si te da 1,
-        usaste sólo el primer término: el que domina es el segundo, porque la
-        variabilidad viene de cuántos clientes llegan y no de cuánto dura cada
-        servicio.
+        y para una Poisson $\operatorname{var}[N] = E[N] = 4$. Si obtenés 1,
+        usaste solo el primer término. El término dominante es el segundo,
+        porque la mayor parte de la variabilidad proviene de la cantidad de
+        clientes que llegan.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

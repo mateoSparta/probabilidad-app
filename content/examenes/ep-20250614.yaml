@@ -13,8 +13,8 @@ ejercicios:
     cargado: true
     enunciado: |
       El control de recepción de una pieza que se recibe en cajas de 10
-      unidades consiste en elegir dos piezas —sin reposición— de cada caja y
-      rechazar la misma si alguna es defectuosa.
+      unidades consiste en [[conteo-muestras|elegir dos piezas —sin
+      reposición— de cada caja]] y rechazar la misma si alguna es defectuosa.
       [[prob-total|El honesto proveedor coloca en cada caja un número de
       defectuosas que depende del resultado de arrojar un dado de la siguiente
       manera: si sale un 1, no pone ninguna; si el resultado es 2, 3, 4 ó 5,
@@ -24,8 +24,9 @@ ejercicios:
     items:
       - id: a
         pregunta: >-
-          Sabiendo que una caja fue rechazada, ¿cuál es la probabilidad de que
-          el proveedor haya colocado a lo sumo una defectuosa en esa caja?
+          [[bayes|Sabiendo que una caja fue rechazada]], ¿cuál es la
+          probabilidad de que el proveedor haya colocado a lo sumo una
+          defectuosa en esa caja?
         skills: [bayes, prob-total, conteo-muestras]
         respuesta:
           tipo: numerica
@@ -36,13 +37,13 @@ ejercicios:
             caja, cada uno con su probabilidad.
           - >-
             Para cada escenario hay que calcular la probabilidad de que la
-            caja sea rechazada. Conviene ir por el complemento: que las dos
-            piezas elegidas sean buenas.
+            caja sea rechazada. Conviene calcular el complemento, es decir, la
+            probabilidad de que las dos piezas elegidas sean buenas.
           - >-
-            Plan: calcular $P(\text{rechazo} \mid d)$ para $d = 0, 1, 4$
-            contando sobre $\binom{10}{2}$, armar $P(\text{rechazo})$ por
-            probabilidad total, y aplicar Bayes para los escenarios con
-            $d \le 1$.
+            Plan: calculá $P(\text{rechazo} \mid d)$ para $d = 0, 1, 4$
+            contando sobre los $\binom{10}{2}$ pares, obtené
+            $P(\text{rechazo})$ por probabilidad total y aplicá la regla de
+            Bayes a los escenarios con $d \le 1$.
         verificacion:
           estado: verificado
           metodo: exacto+montecarlo
@@ -57,8 +58,9 @@ ejercicios:
     en_alcance: true
     cargado: false
     nota: >-
-      Requiere la guía 3 (esperanza) y la guía 6 (hipergeométrica y binomial).
-      Mezcla dos mecanismos de extracción según el resultado de la moneda.
+      Corresponde a la guía 3 (esperanza) y a la guía 6 (hipergeométrica y
+      binomial). Combina dos mecanismos de extracción según el resultado de la
+      moneda.
     enunciado: |
       Se tiene una moneda cargada con probabilidad de cara $0{,}3$, y una caja
       con 6 bolas rojas y 4 azules. Se arroja la moneda: si sale cara se
@@ -72,8 +74,8 @@ ejercicios:
     en_alcance: true
     cargado: false
     nota: >-
-      Requiere la guía 2 (distribución conjunta) y la guía 4
-      (transformaciones). Al cargarlo va como `checkpoints`.
+      Corresponde a la guía 2 (distribución conjunta) y a la guía 4
+      (transformaciones). Pide hallar y graficar una función de distribución.
     enunciado: |
       Se usan dos métodos para medir la humedad de la atmósfera. La
       distribución de probabilidad conjunta de las dos mediciones $(X, Y)$ es
@@ -87,7 +89,7 @@ ejercicios:
     en_alcance: true
     cargado: false
     nota: >-
-      Requiere la guía 7 (proceso de Poisson: adelgazamiento).
+      Corresponde a la guía 7 (proceso de Poisson, adelgazamiento).
     enunciado: |
       A una dirección de correo electrónico llegan mensajes de SPAM y NO SPAM.
       Los tiempos de arribo de los correos siguen un proceso de Poisson de tasa
@@ -102,7 +104,7 @@ ejercicios:
     guias: [8]
     en_alcance: true
     cargado: false
-    nota: Requiere la guía 8 (teorema central del límite).
+    nota: Corresponde a la guía 8 (teorema central del límite).
     enunciado: |
       Un reconocido influencer inicia una campaña solidaria para ayudar con su
       propia carrera futbolística. Sus seguidores pueden elegir ser socio

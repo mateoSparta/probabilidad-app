@@ -7,7 +7,8 @@ fuente:
 
 enunciado: |
   Se quiere saber la proporción de fumadores en una población. Para ello se
-  eligen $n$ individuos al azar y se halla la proporción de los que fuman.
+  eligen $n$ individuos al azar y se halla
+  [[varianza|la proporción de los que fuman]].
   [[desigualdades|¿Qué valor debe tener $n$ para que esta proporción no difiera
   de la real en más de $0{,}01$, con probabilidad mayor o igual que
   $0{,}95$?]]
@@ -28,12 +29,12 @@ items:
         La proporción muestral es un promedio. ¿Cuánto valen su media y su
         varianza en función de $p$ y $n$?
       - >-
-        No se conoce $p$, así que hay que usar el peor caso. ¿Cuál es el máximo
-        de $p(1-p)$?
+        Como $p$ es desconocido, hay que considerar el peor caso. ¿Cuál es el
+        máximo de $p(1-p)$?
       - >-
         Plan: aplicá Chebyshev con $\varepsilon = 0{,}01$, acotá
-        $p(1-p) \le 1/4$, pedí que la cota sea $\le 0{,}05$ y despejá $n$.
-        Redondeá para arriba.
+        $p(1-p) \le 1/4$, imponé que la cota sea $\le 0{,}05$ y despejá $n$,
+        redondeando hacia arriba.
     verificacion:
       estado: verificado
       metodo: exacto

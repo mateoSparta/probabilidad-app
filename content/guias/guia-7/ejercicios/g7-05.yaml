@@ -9,8 +9,8 @@ enunciado: |
   Los colectivos de la línea 61.09 llegan a la parada de Paseo Colón 850
   [[poisson-incrementos|según un proceso de Poisson de intensidad 12 por
   hora]]. Cuatro personas llegan a la parada de formas distintas, y a todas se
-  les pregunta lo mismo: la probabilidad de esperar **más de 5 minutos** hasta
-  que llegue el primer colectivo.
+  les pregunta lo mismo: [[tiempos-espera|la probabilidad de esperar **más de
+  5 minutos** hasta que llegue el primer colectivo]].
 
 items:
   - id: a
@@ -20,8 +20,8 @@ items:
       tipo: numerica
       valor: "exp(-1)"
     pistas:
-      - 'Pasá la intensidad a por minuto: 12 por hora son 1 cada 5 minutos.'
-      - 'Esperar más de 5 minutos es que no llegue ninguno en esos 5 minutos.'
+      - 'Expresá la intensidad por minuto; 12 por hora equivale a 1 cada 5 minutos.'
+      - 'Esperar más de 5 minutos equivale a que no llegue ningún colectivo en esos 5 minutos.'
       - 'Plan: $P(N(5\text{ min}) = 0) = e^{-\lambda \cdot 5}$ con $\lambda = 1/5$ por minuto.'
     verificacion:
       estado: verificado
@@ -31,14 +31,14 @@ items:
           valor: "exp(-1)"
 
   - id: b
-    pregunta: Jemina llega a la parada a las 19:31.
+    pregunta: '[[perdida-memoria|Jemina llega a la parada a las 19:31.]]'
     skills: [poisson-incrementos, perdida-memoria]
     respuesta:
       tipo: numerica
       valor: "exp(-1)"
     pistas:
       - '¿Cambia algo que llegue un minuto más tarde?'
-      - 'Plan: por estacionariedad, el resultado depende sólo del largo del intervalo, no de dónde empieza. Da lo mismo que el ítem (a).'
+      - 'Plan: por estacionariedad, el resultado depende solo de la longitud del intervalo y coincide con el del ítem (a).'
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -48,19 +48,20 @@ items:
 
   - id: c
     pregunta: >-
-      Matías llega a las 19:3X, donde $X$ es equiprobable sobre el conjunto
-      $\{2, 3, 4, 5\}$ e independiente del proceso de arribos.
+      Matías llega a las 19:3X, donde [[esperanza-total|$X$ es equiprobable
+      sobre el conjunto $\{2, 3, 4, 5\}$]] e independiente del proceso de
+      arribos.
     skills: [poisson-incrementos, esperanza-total]
     respuesta:
       tipo: numerica
       valor: "exp(-1)"
     pistas:
-      - Condicioná a cada valor posible de $X$ y usá esperanza total.
-      - '¿Cuánto da la probabilidad para cada valor de $X$ por separado?'
+      - Condicioná a cada valor posible de $X$ y usá la fórmula de esperanza total.
+      - '¿Cuánto vale la probabilidad para cada valor de $X$ por separado?'
       - >-
-        Plan: para cada $X$ el resultado es el mismo que en (a), porque la hora
-        de llegada es independiente del proceso. Promediar cuatro números
-        iguales devuelve ese número.
+        Plan: para cada valor de $X$ el resultado coincide con el de (a),
+        porque la hora de llegada es independiente del proceso. El promedio de
+        cuatro valores iguales es ese mismo valor.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -70,19 +71,21 @@ items:
 
   - id: d
     pregunta: >-
-      Magdalena llega a las 19:00 + $U$, donde $U$ es uniforme sobre el
-      intervalo $(0, 60)$ e independiente del proceso de arribos.
+      Magdalena llega a las 19:00 + $U$, donde [[esperanza-total|$U$ es
+      uniforme sobre el intervalo $(0, 60)$]] e independiente del proceso de
+      arribos.
     skills: [poisson-incrementos, esperanza-total]
     respuesta:
       tipo: numerica
       valor: "exp(-1)"
     pistas:
-      - Es el mismo argumento del ítem anterior, pero con una hora de llegada continua.
+      - Es el mismo argumento del ítem anterior, con una hora de llegada continua.
       - >-
-        Plan: condicionando a $U = u$ el resultado no depende de $u$, así que
-        integrar sobre $u$ devuelve lo mismo. Los cuatro ítems dan igual, y eso
-        es el punto del ejercicio: el proceso no se acuerda de nada, así que no
-        importa cuándo llegues a la parada.
+        Plan: condicionando a $U = u$ el resultado no depende de $u$, de modo
+        que al integrar sobre $u$ se obtiene el mismo valor. Los cuatro ítems
+        tienen la misma respuesta, y ese es el objetivo del ejercicio. Como el
+        proceso no tiene memoria, el instante de llegada a la parada no
+        influye.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

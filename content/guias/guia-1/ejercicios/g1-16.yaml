@@ -21,13 +21,12 @@ items:
       valor: "7/110"
     pistas:
       - >-
-        Cuidado con el espacio muestral: como los gatos son indistinguibles,
-        los casos equiprobables son las configuraciones $(n_1,\dots,n_5)$ con
-        $\sum n_i = 7$, no los repartos de gatos con nombre.
-      - '¿Cuántas configuraciones hay en total? Es el conteo de soluciones enteras no negativas de $n_1 + \dots + n_5 = 7$.'
+        Como los gatos son indistinguibles, los casos equiprobables son las
+        configuraciones $(n_1,\dots,n_5)$ con $\sum n_i = 7$.
+      - '¿Cuántas configuraciones hay en total? Es la cantidad de soluciones enteras no negativas de $n_1 + \dots + n_5 = 7$.'
       - >-
         Plan: fijá $n_1 = 2$ y $n_5 = 0$, contá las configuraciones de los
-        5 gatos que sobran en las 3 cajas del medio, y dividí por el total.
+        5 gatos restantes en las 3 cajas intermedias y dividí por el total.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -42,8 +41,8 @@ items:
       tipo: numerica
       valor: "7/66"
     pistas:
-      - '"Más de 3" con 7 gatos en total deja pocos valores posibles para la cuarta caja.'
-      - Para cada cantidad posible en la cuarta caja, el resto se reparte libremente en las otras cuatro.
+      - 'Con 7 gatos en total, la condición "más de 3" deja pocos valores posibles para la cuarta caja.'
+      - Para cada cantidad posible en la cuarta caja, los gatos restantes se reparten libremente en las otras cuatro.
       - >-
         Plan: para $k = 4, 5, 6, 7$ contá las configuraciones con $n_4 = k$,
         sumalas y dividí por el total de configuraciones.

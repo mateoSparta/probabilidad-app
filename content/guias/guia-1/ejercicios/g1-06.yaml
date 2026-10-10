@@ -6,22 +6,22 @@ fuente:
   enunciado: fuentes/guias/parte1.pdf#p4
 
 enunciado: |
-  Cada noche, después de cenar, el matrimonio Galíndez tira 4 dados.
-  [[independencia|Si no sale ningún 1, le toca al Sr. Galíndez lavar los platos.
-  En caso contrario, a su esposo.]]
+  Cada noche, después de cenar, el matrimonio Galíndez
+  [[independencia,laplace|tira 4 dados]]. Si no sale ningún 1, le toca al
+  Sr. Galíndez lavar los platos. En caso contrario, a su esposo.
 
 items:
   - id: a
     pregunta: >-
-      Calcular la probabilidad de que le toque lavar al Sr. Galíndez, es decir
+      Calcular la probabilidad de que le toque lavar al Sr. Galíndez, es decir,
       la de que no salga ningún $1$ en las cuatro tiradas.
     skills: [independencia, laplace]
     respuesta:
       tipo: numerica
       valor: "625/1296"
     pistas:
-      - "\"Ningún 1\" quiere decir que los cuatro dados a la vez no son 1."
-      - Las cuatro tiradas son independientes, así que la probabilidad se multiplica.
+      - 'El evento "ningún 1" significa que ninguno de los cuatro dados muestra un 1.'
+      - Las cuatro tiradas son independientes, así que las probabilidades se multiplican.
       - 'Plan: elevá a la cuarta la probabilidad de que un dado no salga 1.'
     verificacion:
       estado: verificado
@@ -42,21 +42,23 @@ items:
         - id: b2
           texto: El Sr. Galíndez
           error_tipico: >-
-            $(5/6)^4 \approx 0{,}482$ es menor que $1/2$, así que "ningún 1"
-            pasa menos de la mitad de las noches. Al Sr. le toca menos.
+            $(5/6)^4 \approx 0{,}482$ es menor que $1/2$, de modo que "ningún
+            1" ocurre en menos de la mitad de las noches. Al Sr. Galíndez le
+            toca lavar con menor frecuencia.
         - id: b3
           texto: Los dos lavan con la misma frecuencia
           error_tipico: >-
-            Darían iguales sólo si $(5/6)^4$ fuera exactamente $1/2$, y no lo es.
+            Las frecuencias serían iguales solo si $(5/6)^4$ fuera exactamente
+            $1/2$, y no lo es.
         - id: b4
           texto: No se puede saber sin conocer cuántas noches cenan juntos
           error_tipico: >-
-            La comparación es entre dos probabilidades por noche: no depende de
-            cuántas noches haya.
+            La comparación se hace entre dos probabilidades por noche, que no
+            dependen de la cantidad de noches.
     pistas:
-      - Ya tenés la probabilidad de un caso; la del otro es el complemento.
+      - Ya conocés la probabilidad de uno de los casos; la del otro es el complemento.
       - Compará ese número con $1/2$.
-      - 'Plan: si $(5/6)^4 < 1/2$, lava más seguido el del otro caso.'
+      - 'Plan: si $(5/6)^4 < 1/2$, lava con más frecuencia la persona del caso complementario.'
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

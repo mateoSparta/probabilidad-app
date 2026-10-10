@@ -8,7 +8,7 @@ fuente:
 enunciado: |
   El diámetro $X$ (en mm) de las arandelas fabricadas por una máquina tiene
   como función de densidad a
-  $f_X(x) = \dfrac{2x}{225}\, \mathbf{1}\{0 < x < 15\}$.
+  [[densidad|$f_X(x) = \dfrac{2x}{225}\, \mathbf{1}\{0 < x < 15\}$]].
   [[truncamiento|Un sistema de control descarta las arandelas cuyo diámetro es
   inferior a 3 o superior a 12.]]
 
@@ -25,15 +25,15 @@ items:
           valor: "2/27"
         - pregunta: 'la densidad en $x = 10$'
           valor: "4/27"
-        - pregunta: 'P(X < 6) entre las no descartadas'
+        - pregunta: '$P(X < 6)$ entre las no descartadas'
           valor: "1/5"
     pistas:
       - Primero hace falta la probabilidad de que una arandela no sea descartada.
-      - La densidad condicional es la original restringida al intervalo, dividida por esa probabilidad.
+      - La densidad condicional es la original restringida al intervalo y dividida por esa probabilidad.
       - >-
         Plan: integrá $f_X$ entre 3 y 12 para obtener $P(A)$, y después usá
-        $f_{X \mid A}(x) = f_X(x)/P(A)$ para $3 < x < 12$. Como control, esa
-        densidad nueva tiene que integrar 1 en $(3, 12)$.
+        $f_{X \mid A}(x) = f_X(x)/P(A)$ para $3 < x < 12$. Como control, la
+        nueva densidad tiene que integrar 1 en $(3, 12)$.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -58,14 +58,15 @@ items:
         - pregunta: 'la densidad en $x = 5$'
           valor: "0"
     pistas:
-      - El evento "descartada" son dos condiciones que no pueden pasar a la vez.
+      - 'El evento "descartada" es la unión de dos condiciones incompatibles.'
       - >-
-        ¿Cuál es el soporte de esta densidad? Fijate que no es un intervalo:
-        hay un hueco en el medio.
+        ¿Cuál es el soporte de esta densidad? Observá que no es un intervalo,
+        porque excluye una zona intermedia.
       - >-
         Plan: $P(\text{descartada}) = 1 - P(\text{aceptada})$, y la densidad es
-        $f_X(x)$ dividida por eso, pero **sólo** donde la arandela se descarta.
-        Entre 3 y 12 vale cero: es el error típico del ejercicio.
+        $f_X(x)$ dividida por esa probabilidad, **solo** en la zona donde la
+        arandela se descarta. Entre 3 y 12 la densidad vale cero, y omitir ese
+        detalle es el error más frecuente en este ejercicio.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

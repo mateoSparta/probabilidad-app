@@ -7,8 +7,9 @@ fuente:
 
 enunciado: |
   El peso de ciertas bolsas de naranjas es una variable aleatoria
-  [[tiempos-espera|exponencial de media 3 kilos]]. Se van agregando bolsas en
-  una balanza hasta que el peso supera 5 kilos.
+  [[tiempos-espera|exponencial de media 3 kilos]].
+  [[perdida-memoria|Se van agregando bolsas en una balanza hasta que el peso
+  supera 5 kilos.]]
 
 items:
   - id: a
@@ -19,17 +20,17 @@ items:
       valor: "exp(-2/3)"
     pistas:
       - >-
-        Compará este enunciado con el 5.23: ahí las bolsas eran uniformes, acá
-        son exponenciales. Eso cambia todo.
+        Compará este enunciado con el del 5.23. Allí los pesos eran uniformes
+        y aquí son exponenciales, lo que cambia por completo el planteo.
       - >-
-        Si los pesos acumulados son exponenciales, forman un proceso de Poisson
-        sobre el eje de los kilos. ¿Qué dice la falta de memoria sobre lo que
-        sobra por encima de los 5 kilos?
+        Si los pesos son exponenciales, los pesos acumulados forman un proceso
+        de Poisson sobre el eje de los kilos. ¿Qué implica la pérdida de
+        memoria para el exceso por encima de los 5 kilos?
       - >-
-        Plan: el exceso por encima de 5 vuelve a ser exponencial de media 3,
-        sin importar cuántas bolsas hicieron falta ni cuánto pesaba la última.
-        Entonces $P(\text{final} > 7) = P(\text{exceso} > 2)$. No hace falta
-        sumar sobre la cantidad de bolsas.
+        Plan: el exceso por encima de 5 kilos vuelve a ser exponencial de media
+        3, independientemente de cuántas bolsas hicieron falta. Entonces
+        $P(\text{final} > 7) = P(\text{exceso} > 2)$, sin necesidad de sumar
+        sobre la cantidad de bolsas.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

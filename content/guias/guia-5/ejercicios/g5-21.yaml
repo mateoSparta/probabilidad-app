@@ -8,8 +8,8 @@ fuente:
 enunciado: |
   La longitud de los rollos de tela producidos por cierta máquina obedece a una
   distribución uniforme entre 20 y 30 metros. Un buen día un cliente requiere
-  [[esperanza-total|un rollo con por lo menos 28 metros]], de los que no hay
-  ninguno en stock.
+  [[esperanza-total,truncamiento|un rollo con por lo menos 28 metros]], de los
+  que no hay ninguno en stock.
 
 items:
   - id: a
@@ -22,8 +22,8 @@ items:
       valor: "5"
       tol_rel: 0.005
     pistas:
-      - '¿Con qué probabilidad un rollo cualquiera sirve?'
-      - Se produce hasta el primer éxito, así que la cantidad es geométrica.
+      - '¿Con qué probabilidad un rollo cumple el requisito?'
+      - Se produce hasta obtener el primer éxito, de modo que la cantidad de rollos tiene distribución geométrica.
       - 'Plan: $E[N] = 1/p$ con $p = P(L \ge 28)$.'
     verificacion:
       estado: verificado
@@ -43,17 +43,18 @@ items:
       tol_rel: 0.001
     pistas:
       - >-
-        Hay dos caminos y los dos funcionan. Uno: separar el último rollo de
-        los anteriores. Otro: la identidad de Wald.
+        Hay dos caminos válidos. Uno consiste en separar el último rollo de los
+        anteriores, y el otro en aplicar la identidad de Wald.
       - >-
-        Si lo hacés separando, el último rollo **no** es un rollo cualquiera:
-        está condicionado a medir al menos 28. Los otros, a medir menos de 28.
+        Si separás el último rollo, tené en cuenta que está condicionado a
+        medir al menos 28 metros, mientras que los anteriores están
+        condicionados a medir menos de 28.
       - >-
         Plan: $E[N-1]\,E[L \mid L < 28] + E[L \mid L \ge 28]$, con las dos
-        medias condicionales calculadas sobre la uniforme. Si en cambio usás
-        Wald, $E[N]\,E[L]$, tiene que darte lo mismo: el último es más largo
-        que el promedio pero los anteriores son más cortos, y se compensan
-        exactamente.
+        medias condicionales calculadas a partir de la uniforme. La identidad
+        de Wald, $E[N]\,E[L]$, da el mismo resultado, porque el último rollo
+        es más largo que el promedio y los anteriores son más cortos, y ambos
+        efectos se compensan exactamente.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -66,15 +67,15 @@ items:
   - id: c
     pregunta: >-
       Calcular la longitud total media de tela de los rollos que irán a stock,
-      es decir sin incluir el vendido al cliente.
+      es decir, sin incluir el vendido al cliente.
     skills: [esperanza-total, truncamiento]
     respuesta:
       tipo: numerica
       valor: "96"
       tol_rel: 0.002
     pistas:
-      - Son los rollos que no sirvieron.
-      - 'Plan: restale al total del ítem anterior la longitud media del rollo vendido, o calculá directamente $E[N-1]\,E[L \mid L < 28]$.'
+      - Son los rollos que no cumplieron el requisito.
+      - 'Plan: restá al total del ítem anterior la longitud media del rollo vendido, o calculá directamente $E[N-1]\,E[L \mid L < 28]$.'
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

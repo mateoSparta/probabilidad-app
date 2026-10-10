@@ -30,9 +30,9 @@ export function VistaSeguimiento({ plan, sesion, onIrAEjercicio }: Props) {
       <section class="guia__intro">
         <h2>Seguimiento</h2>
         <p class="guia__descripcion">
-          La meta no es resolver todos los ejercicios, sino dominar todos los temas. El cálculo
-          de abajo estima cuántos ítems faltan para lograrlo y cuántos conviene resolver por día
-          hasta la fecha del parcial.
+          La meta es dominar todos los temas, y para lograrlo alcanza con un subconjunto de los
+          ejercicios. El cálculo siguiente estima cuántos ítems faltan y cuántos conviene
+          resolver por día hasta la fecha del parcial.
         </p>
       </section>
 

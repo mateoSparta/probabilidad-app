@@ -19,14 +19,15 @@ items:
       valor: "36*0.8^3*0.2^7"
       tol_rel: 0.005
     pistas:
-      - '"Se llena en exactamente 10 minutos" ¿qué dice sobre el minuto 10 en particular?'
+      - '¿Qué implica "se llena en exactamente 10 minutos" sobre lo que ocurre en el minuto 10?'
       - >-
         El tercer coche tiene que estacionar justo en el minuto 10, y los otros
         dos en los nueve minutos anteriores.
       - >-
-        Plan: es Pascal, no binomial. $\binom{9}{2}\,0{,}8^3\,0{,}2^7$. Si usás
-        $\binom{10}{3}$ estás contando también los casos en que se llenó antes
-        del minuto 10, y el resultado sale más del triple.
+        Plan: corresponde una distribución de Pascal,
+        $\binom{9}{2}\,0{,}8^3\,0{,}2^7$. Con $\binom{10}{3}$ se cuentan
+        también los casos en que el estacionamiento se llenó antes del minuto
+        10, y el resultado es más del triple del correcto.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

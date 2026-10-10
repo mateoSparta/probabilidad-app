@@ -7,26 +7,28 @@ fuente:
 
 enunciado: |
   Sea $X$ una variable aleatoria con función de distribución
-  [[esperanza|$F_X(x) = \dfrac{x^3}{3}\,\mathbf{1}\{0 \le x < 1\} + \dfrac{2x+1}{6}\,\mathbf{1}\{1 \le x < 2\} + \mathbf{1}\{x \ge 2\}$]].
+  [[funcion-distribucion|$F_X(x) = \dfrac{x^3}{3}\,\mathbf{1}\{0 \le x < 1\} + \dfrac{2x+1}{6}\,\mathbf{1}\{1 \le x < 2\} + \mathbf{1}\{x \ge 2\}$]].
 
 items:
   - id: a
-    pregunta: 'Calcular $E[X]$.'
+    pregunta: 'Calcular [[esperanza|$E[X]$]].'
     skills: [esperanza, funcion-distribucion]
     respuesta:
       tipo: numerica
       valor: "5/4"
     pistas:
       - >-
-        Antes de integrar, fijate si $F_X$ es continua. Evaluá el primer tramo
-        y el segundo en $x = 1$ y compará.
+        Antes de integrar, verificá si $F_X$ es continua. Evaluá el primer y
+        el segundo tramo en $x = 1$ y compará los valores.
       - >-
-        Hay dos saltos, en $x = 1$ y en $x = 2$. Cada salto es masa puntual, y
-        su tamaño es la diferencia de los dos tramos en ese punto.
+        Hay dos saltos, en $x = 1$ y en $x = 2$. Cada salto corresponde a una
+        masa puntual, cuyo valor es la diferencia entre los dos tramos en ese
+        punto.
       - >-
         Plan: derivá $F_X$ en cada tramo para obtener la densidad, integrá
-        $x\,f_X(x)$ ahí, y sumá aparte cada átomo multiplicado por su valor.
-        Control: la masa total (integrales más átomos) tiene que dar 1.
+        $x\,f_X(x)$ en esos tramos y sumá cada átomo multiplicado por su
+        valor. Como control, la masa total (integrales más átomos) tiene que
+        ser 1.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -37,7 +39,9 @@ items:
           valor: "1/6"
 
   - id: b
-    pregunta: 'Calcular $E[X \mid X < 1]$ y $E[X \mid X \le 1]$.'
+    pregunta: >-
+      Calcular [[esperanza-condicional-evento,esperanza|$E[X \mid X < 1]$ y
+      $E[X \mid X \le 1]$]].
     skills: [esperanza-condicional-evento, esperanza]
     respuesta:
       tipo: checkpoints
@@ -48,14 +52,14 @@ items:
           valor: "5/6"
     pistas:
       - >-
-        Los dos eventos no son el mismo: uno incluye el punto $x = 1$ y el otro
-        no. Con esta variable eso importa.
-      - '¿Cuánto valen $P(X < 1)$ y $P(X \le 1)$? Se leen de $F_X$.'
+        Los dos eventos difieren en el punto $x = 1$, que uno incluye y el otro
+        no. Para esta variable, esa diferencia es relevante.
+      - '¿Cuánto valen $P(X < 1)$ y $P(X \le 1)$? Se leen en $F_X$.'
       - >-
         Plan: para cada evento, calculá $E[X\,\mathbf{1}_A]$ y dividí por
-        $P(A)$. En el segundo caso hay que sumar el átomo de $x = 1$ tanto
-        arriba como abajo. Control: los dos resultados tienen que quedar entre
-        0 y 1.
+        $P(A)$. En el segundo caso, el átomo de $x = 1$ se suma tanto en el
+        numerador como en el denominador. Como control, los dos resultados
+        tienen que estar entre 0 y 1.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

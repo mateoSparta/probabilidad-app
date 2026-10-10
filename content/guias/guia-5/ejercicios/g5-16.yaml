@@ -7,7 +7,7 @@ fuente:
 
 enunciado: |
   Sea $(X, Y)$ un vector aleatorio tal que $X$ tiene distribución exponencial
-  de media 2, [[varianza-total|$E[Y \mid X] = X$ y
+  de media 2, [[varianza-total,esperanza-condicional|$E[Y \mid X] = X$ y
   $\operatorname{var}[Y \mid X] = X$]].
 
 items:
@@ -20,15 +20,15 @@ items:
       valor: "6"
       tol_rel: 0.005
     pistas:
-      - 'La varianza se parte en dos términos, no en uno. ¿Cuáles?'
+      - 'La varianza se descompone en dos términos. ¿Cuáles son?'
       - >-
-        Un término es el promedio de las varianzas condicionales; el otro, la
-        varianza de la media condicional. Los dos datos del enunciado te dan
-        uno cada uno.
+        Un término es el promedio de las varianzas condicionales y el otro es
+        la varianza de la media condicional. Cada uno de los dos datos del
+        enunciado permite calcular uno de ellos.
       - >-
         Plan: $\operatorname{var}[Y] = E[\operatorname{var}[Y \mid X]] + \operatorname{var}[E[Y \mid X]] = E[X] + \operatorname{var}[X]$.
-        Para una exponencial de media $m$, la varianza es $m^2$. Si te da 4,
-        usaste sólo el segundo término.
+        Para una exponencial de media $m$, la varianza es $m^2$. Si obtenés 4,
+        usaste solo el segundo término.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

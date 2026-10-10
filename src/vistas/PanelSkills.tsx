@@ -8,7 +8,7 @@
  */
 import { useState } from 'preact/hooks'
 
-import { Formula } from '../componentes/Mate'
+import { Formula, Mate } from '../componentes/Mate'
 import { descargar } from '../datos/almacenamiento'
 import { itemsPorSkill, skillPorId, skillsPorGuia, ubicacionDeItem } from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
@@ -71,8 +71,8 @@ export function PanelSkills({
       <section class="guia__intro">
         <h2>Panel de skills</h2>
         <p class="guia__descripcion">
-          El estado de cada skill se mide sobre sus últimos {VENTANA} intentos, así que no se
-          gana para siempre: si dejás de practicar algo, vuelve a bajar.
+          El estado de cada skill se calcula sobre sus últimos {VENTANA} intentos, de modo que
+          no es permanente y disminuye si se deja de practicar.
         </p>
 
         <ul class="resumen">
@@ -130,10 +130,11 @@ export function PanelSkills({
       <section class="datos">
         <h3>Tus datos</h3>
         <p class="guia__descripcion">
-          Todo se guarda en este navegador, sin servidor ni base de datos. Son dos cosas
-          separadas: el <strong>historial</strong> de intentos, que es de donde salen las
-          insignias, y <strong>dónde quedaste</strong> (ítems resueltos, lo que escribiste, el
-          simulacro a medio rendir). Exportá el historial si querés llevarlo a otra máquina.
+          Todo se guarda en este navegador, sin servidor ni base de datos. Se registran dos
+          cosas por separado: el <strong>historial</strong> de intentos, del que surgen las
+          insignias, y <strong>dónde quedaste</strong> (ítems resueltos, respuestas escritas y
+          el simulacro en curso). Para usar el historial en otra computadora, exportalo e
+          importalo allí.
         </p>
         <div class="item__acciones">
           <button class="boton" onClick={() => descargar(progreso)}>
@@ -160,12 +161,12 @@ export function PanelSkills({
               onClick={() => {
                 if (
                   confirm(
-                    'Esto deja todos los ejercicios sin resolver de nuevo, pero no toca el ' +
-                      'historial ni las insignias. ¿Seguís?',
+                    'Todos los ejercicios volverán a quedar sin resolver. El historial y las ' +
+                      'insignias no se modifican. ¿Continuar?',
                   )
                 ) {
                   sesion.reiniciar()
-                  setAviso('Listo: todos los ejercicios quedaron para rehacer.')
+                  setAviso('Todos los ejercicios quedaron disponibles para rehacer.')
                 }
               }}
             >
@@ -204,7 +205,11 @@ function Detalle({
   return (
     <section class="detalle-skill">
       <h3>{skill.nombre}</h3>
-      {skill.descripcion && <p class="guia__descripcion">{skill.descripcion}</p>}
+      {skill.descripcion && (
+        <p class="guia__descripcion">
+          <Mate>{skill.descripcion}</Mate>
+        </p>
+      )}
 
       {skill.formulas?.length ? (
         <div class="panel panel--formulas">
@@ -216,9 +221,9 @@ function Detalle({
         </div>
       ) : null}
 
-      <h4>Ítems sin resolver limpio</h4>
+      <h4>Ítems sin un intento limpio</h4>
       {falta.length === 0 ? (
-        <p class="dato-chico">Ninguno: todos tuvieron al menos un intento limpio.</p>
+        <p class="dato-chico">Ninguno. Todos tuvieron al menos un intento limpio.</p>
       ) : (
         <ul class="lista-items">
           {falta.map((clave) => {
@@ -238,7 +243,7 @@ function Detalle({
         </ul>
       )}
 
-      <h4>Errores típicos en los que caíste</h4>
+      <h4>Errores típicos cometidos</h4>
       {caidas.length === 0 ? (
         <p class="dato-chico">Todavía ninguno.</p>
       ) : (

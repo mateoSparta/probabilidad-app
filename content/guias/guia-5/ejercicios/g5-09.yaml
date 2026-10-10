@@ -13,26 +13,27 @@ enunciado: |
 items:
   - id: a
     pregunta: >-
-      Si se recibe una señal de amplitud $0{,}87$, ¿cuál es la probabilidad de
-      que contenga la letra $0{,}2$?
+      Si se recibe una señal de amplitud $0{,}87$, [[bayes|¿cuál es la
+      probabilidad de que contenga la letra $0{,}2$?]]
     skills: [mezclas, bayes]
     respuesta:
       tipo: numerica
       valor: "exp(9/125)/(1 + exp(9/125) + exp(67/500))"
     pistas:
       - >-
-        Es Bayes, pero el dato que condiciona es continuo. ¿Qué reemplaza a
+        Se trata de la regla de Bayes con un dato continuo. ¿Qué reemplaza a
         $P(X = 0{,}87)$?
       - >-
         Dado $S = s$, la amplitud recibida es normal de media $s$ y desvío 1,
-        así que su densidad en $0{,}87$ es $\varphi(0{,}87 - s)$.
+        de modo que su densidad en $0{,}87$ es $\varphi(0{,}87 - s)$.
       - >-
-        Plan: el posterior es proporcional a $\varphi(0{,}87 - s)$ por el
-        prior, y como las tres letras son equiprobables el prior se cancela.
-        Queda el cociente entre la densidad de la letra buscada y la suma de
-        las tres. El resultado va a quedar cerca de $1/3$: las tres amplitudes
-        están muy juntas frente a un ruido de desvío 1, así que el dato casi no
-        informa.
+        Plan: la probabilidad a posteriori es proporcional a
+        $\varphi(0{,}87 - s)$ multiplicada por la probabilidad a priori, que
+        se cancela porque las tres letras son equiprobables. Queda el cociente
+        entre la densidad correspondiente a la letra buscada y la suma de las
+        tres densidades. El resultado es cercano a $1/3$, porque las tres
+        amplitudes están muy próximas en relación con un ruido de desvío 1 y
+        la observación aporta poca información.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

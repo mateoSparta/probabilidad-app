@@ -82,7 +82,7 @@ export function evaluarNumerica(entrada: string, r: RespuestaNumerica): Veredict
 
   const x = evaluarEscalar(entrada)
   if (x === null) {
-    return { ok: false, motivo: 'no_parsea', detalle: 'No pude interpretar eso como un número.' }
+    return { ok: false, motivo: 'no_parsea', detalle: 'No se pudo interpretar la respuesta como un número.' }
   }
 
   const v = evaluarEscalar(r.valor)
@@ -110,7 +110,7 @@ export function evaluarExpresion(entrada: string, r: RespuestaExpresion): Veredi
     dado = compile(normalizar(entrada))
     esperado = compile(r.valor)
   } catch {
-    return { ok: false, motivo: 'no_parsea', detalle: 'No pude interpretar esa expresión.' }
+    return { ok: false, motivo: 'no_parsea', detalle: 'No se pudo interpretar la expresión.' }
   }
 
   const nombres = Object.keys(r.vars)
@@ -127,7 +127,7 @@ export function evaluarExpresion(entrada: string, r: RespuestaExpresion): Veredi
       x = aNumero(dado.evaluate(punto))
       v = aNumero(esperado.evaluate(punto))
     } catch {
-      return { ok: false, motivo: 'no_parsea', detalle: 'La expresión no se puede evaluar ahí.' }
+      return { ok: false, motivo: 'no_parsea', detalle: 'La expresión no puede evaluarse en todo el rango de las variables.' }
     }
     if (x === null || v === null) return { ok: false, motivo: 'incorrecto' }
     if (!cerca(x, v, tol)) return { ok: false, motivo: 'incorrecto' }

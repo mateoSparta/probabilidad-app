@@ -359,6 +359,39 @@ try {
   // El resto de los ítems tiene que seguir pendiente.
   afirmar(guiaRetomada.includes('item item--pendiente'), 'se marcaron resueltos ítems que no lo estaban')
 
+  // --- todos los tags señalan algo ---
+  // Con todos los ítems resueltos aparecen todos los tags. Cada uno tiene que
+  // tener al menos un fragmento marcado en su tarjeta: si no, el hover y el
+  // clic no resaltarían nada.
+  let tagsRevisados = 0
+  for (const g of contenido.guias) {
+    let todoResuelto = sesionMod.SESION_VACIA
+    for (const paso of g.secuencia) {
+      if (paso.tipo !== 'ejercicio') continue
+      const ej = contenido.ejercicioPorId.get(paso.id)
+      for (const it of ej.items) {
+        todoResuelto = sesionMod.guardarItem(todoResuelto, `${ej.id}:${it.id}`, {
+          estado: 'correcto',
+          envios: 1,
+          pistasAbiertas: 0,
+        })
+      }
+    }
+    const vista = render(createElement(VistaGuia, { numero: g.numero, sesion: apiSesion(todoResuelto) }))
+    for (const tarjeta of vista.split('<article').slice(1)) {
+      const id = tarjeta.match(/id="ej-([^"]+)"/)?.[1] ?? '?'
+      for (const m of tarjeta.matchAll(/<button class="tag[^"]*"[^>]*>([^<]+)</g)) {
+        const skill = contenido.skills.find((s: { nombre: string }) => s.nombre === m[1])
+        tagsRevisados++
+        afirmar(
+          !!skill && new RegExp(`data-skills="([^"]* )?${skill.id}( [^"]*)?"`).test(tarjeta),
+          `${id}: el tag "${m[1]}" no tiene ningún fragmento que resaltar`,
+        )
+      }
+    }
+  }
+  afirmar(tagsRevisados > 100, `se revisaron sólo ${tagsRevisados} tags: el render no los mostró`)
+
   // --- simulacro (fase 5) ---
   const { VistaSimulacro } = await servidor.ssrLoadModule('/src/vistas/VistaSimulacro.tsx')
 
@@ -448,7 +481,7 @@ try {
 
   // El detalle da la cuenta completa.
   const detalleRitmo = render(createElement(AvisoParcialDetalle, { plan: planVacio }))
-  afirmar(detalleRitmo.includes('Todavía no arrancaste'), 'el detalle no saluda al que no arrancó')
+  afirmar(detalleRitmo.includes('Todavía no empezaste'), 'el detalle no avisa que no se empezó')
   afirmar(detalleRitmo.includes('skills dominados'), 'el detalle no muestra los skills dominados')
   afirmar(
     detalleRitmo.includes(String(planVacio.porDia)),

@@ -18,7 +18,7 @@ items:
     pistas:
       - ¿Cuántos pares ordenados $(i, j)$ hay en total?
       - Las sumas no son equiprobables, pero los pares sí. Contá sobre los pares.
-      - 'Plan: listá los pares que suman 7 y dividí por 36.'
+      - 'Plan: identificá los pares que suman 7 y dividí su cantidad por 36.'
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -33,11 +33,11 @@ items:
       tipo: numerica
       valor: "5/12"
     pistas:
-      - Los 36 pares se parten en tres grupos según cómo se comparen las dos tiradas.
-      - Por simetría, "el primero mayor" y "el segundo mayor" tienen la misma probabilidad.
+      - Los 36 pares se dividen en tres grupos según cómo se comparen las dos tiradas.
+      - Por simetría, "el primero es mayor" y "el segundo es mayor" tienen la misma probabilidad.
       - >-
         Plan: contá los pares con empate, restalos de 36 y repartí el resto en
-        dos mitades iguales.
+        dos partes iguales.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -52,8 +52,8 @@ items:
       tipo: numerica
       valor: "1/2"
     pistas:
-      - Son dos condiciones a la vez sobre el mismo par.
-      - Conviene recorrer los valores posibles del primer dado y ver cuántos segundos lo cumplen.
+      - Son dos condiciones simultáneas sobre el mismo par.
+      - Conviene recorrer los valores posibles del primer dado y contar cuántos valores del segundo cumplen ambas condiciones.
       - >-
         Plan: para cada $i$ de 1 a 6, contá los $j \ne i$ con $i + j \le 7$, y
         sumá sobre $i$.
@@ -71,11 +71,11 @@ items:
       tipo: numerica
       valor: "5/9"
     pistas:
-      - 'El complemento es más corto de contar: $|i - j| \le 1$.'
-      - '$|i - j| \le 1$ son los empates y los pares de valores consecutivos.'
+      - 'Conviene contar el complemento, $|i - j| \le 1$, que tiene menos casos.'
+      - 'La condición $|i - j| \le 1$ incluye los empates y los pares de valores consecutivos.'
       - >-
-        Plan: contá los pares con $|i - j| = 0$ y los con $|i - j| = 1$, sumalos
-        y pasá al complemento.
+        Plan: contá los pares con $|i - j| = 0$ y con $|i - j| = 1$, sumalos y
+        pasá al complemento.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

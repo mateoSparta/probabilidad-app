@@ -7,8 +7,8 @@ fuente:
 
 enunciado: |
   **[Experimento de Galton]** Una bola roja realiza una caminata aleatoria de
-  la siguiente manera: cada 10 segundos se desplaza 3 cm hacia la derecha o
-  hacia la izquierda, con igual probabilidad, y
+  la siguiente manera: [[bernoulli-binomial|cada 10 segundos se desplaza 3 cm
+  hacia la derecha o hacia la izquierda, con igual probabilidad]], y
   [[aproximacion-normal|las sucesivas direcciones de la caminata son
   independientes]]. Si al cabo de dos minutos se ha desplazado $\ell$ veces
   hacia la izquierda va a parar a la urna $\ell$, con
@@ -34,10 +34,10 @@ items:
         falta la corrección por continuidad.
       - >-
         Plan: integrá la densidad normal de media 6 y desvío $\sqrt{3}$ entre
-        $3{,}5$ y $4{,}5$, o sea
-        $\Phi\!\left(\tfrac{4.5-6}{\sqrt{3}}\right) - \Phi\!\left(\tfrac{3.5-6}{\sqrt{3}}\right)$.
-        Si querés, comparalo con el valor exacto $\binom{12}{4}/2^{12}$: la
-        aproximación se queda un poco corta.
+        $3{,}5$ y $4{,}5$, es decir, calculá
+        $\Phi\!\left(\tfrac{4{,}5-6}{\sqrt{3}}\right) - \Phi\!\left(\tfrac{3{,}5-6}{\sqrt{3}}\right)$.
+        Como control, podés compararlo con el valor exacto
+        $\binom{12}{4}/2^{12}$, que resulta algo mayor.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -61,25 +61,25 @@ items:
         - id: b2
           texto: 'La urna 0, porque es la primera.'
           error_tipico: >-
-            La urna 0 requiere que los 12 pasos hayan sido a la derecha, cuya
-            probabilidad es $(1/2)^{12}$: la más chica de todas.
+            La urna 0 requiere que los 12 pasos hayan sido hacia la derecha, lo
+            que tiene probabilidad $(1/2)^{12}$, la menor de todas.
         - id: b3
           texto: 'La urna 12, porque acumula todos los desplazamientos.'
           error_tipico: >-
             Es el caso simétrico del anterior y tiene la misma probabilidad,
-            $(1/2)^{12}$. También es la más chica.
+            $(1/2)^{12}$, que también es la menor.
         - id: b4
           texto: 'Todas tienen la misma probabilidad, porque cada paso es equiprobable.'
           error_tipico: >-
-            Cada **paso** es equiprobable, pero las urnas no: hay muchas más
-            formas de dar 6 pasos a la izquierda que de dar 12. Eso es el
-            coeficiente binomial.
+            Cada **paso** es equiprobable, pero las urnas no lo son. Hay muchas
+            más formas de dar 6 pasos hacia la izquierda que de dar 12, y esa
+            cantidad es el coeficiente binomial.
     pistas:
-      - 'La urna es $\ell$, la cantidad de pasos a la izquierda. ¿Cuál es su valor más probable?'
-      - 'Para una binomial con $p = 1/2$ la distribución es simétrica. ¿Alrededor de qué?'
+      - 'La urna es $\ell$, la cantidad de pasos hacia la izquierda. ¿Cuál es su valor más probable?'
+      - 'Para una binomial con $p = 1/2$, la distribución es simétrica. ¿Respecto de qué valor?'
       - >-
-        Plan: la moda de una $\text{Bin}(n, 1/2)$ está en $n/2$. También se ve
-        en la aproximación normal: la densidad es máxima en la media.
+        Plan: la moda de una $\text{Bin}(n, 1/2)$ es $n/2$. Lo mismo se observa
+        en la aproximación normal, cuya densidad es máxima en la media.
     verificacion:
       estado: verificado
       metodo: exacto

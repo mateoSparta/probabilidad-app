@@ -12,7 +12,8 @@ items:
   - id: a
     pregunta: >-
       Si la longitud del alambre $L$ es una variable aleatoria con distribución
-      exponencial de media 60 cm, calcular la media del área del círculo.
+      exponencial de media 60 cm, calcular
+      [[esperanza|la media del área del círculo]].
     skills: [momentos, esperanza]
     respuesta:
       tipo: numerica
@@ -20,13 +21,14 @@ items:
       # Respuesta exacta: el 1 % por defecto dejaria pasar un error de 5 unidades.
       tol_rel: 0.001
     pistas:
-      - 'El alambre cerrado es el perímetro. Escribí el área en función de $L$.'
-      - 'Te va a quedar $A = L^2/(4\pi)$, así que hace falta $E[L^2]$, no $E[L]^2$.'
+      - 'La longitud del alambre es el perímetro del círculo. Escribí el área en función de $L$.'
+      - 'Se obtiene $A = L^2/(4\pi)$, de modo que hace falta $E[L^2]$, que difiere de $E[L]^2$.'
       - >-
-        Plan: para una exponencial de media $m$ vale $E[L^2] = 2m^2$ (se
-        obtiene integrando, o de $\sigma^2 + \mu^2$ con $\sigma = \mu = m$).
-        Dividí por $4\pi$. Si te da el área del círculo de 60 cm de perímetro,
-        pasaste la media por dentro de la función y eso no vale.
+        Plan: para una exponencial de media $m$ vale $E[L^2] = 2m^2$, que se
+        obtiene integrando o a partir de $\sigma^2 + \mu^2$ con
+        $\sigma = \mu = m$. Dividí por $4\pi$. Si el resultado coincide con el
+        área del círculo de 60 cm de perímetro, se aplicó la esperanza dentro
+        de la función, lo cual no es válido.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -39,7 +41,8 @@ items:
   - id: b
     pregunta: >-
       Si el área del círculo $A$ es una variable aleatoria con distribución
-      exponencial de media 15 cm², calcular la media del perímetro del círculo.
+      exponencial de media 15 cm², calcular
+      [[esperanza|la media del perímetro del círculo]].
     skills: [momentos, esperanza]
     respuesta:
       tipo: numerica
@@ -47,12 +50,12 @@ items:
       tol_rel: 0.001
     pistas:
       - 'Ahora el dato es el área. Despejá el radio y escribí el perímetro en función de $A$.'
-      - 'Te va a quedar $P = 2\sqrt{\pi A}$, así que hace falta $E[\sqrt{A}]$.'
+      - 'Se obtiene $P = 2\sqrt{\pi A}$, de modo que hace falta $E[\sqrt{A}]$.'
       - >-
         Plan: integrá $\sqrt{a}$ contra la densidad exponencial. La integral
-        $\int_0^\infty \sqrt{a}\, e^{-a/m}/m\, da$ sale con la función Gamma y
-        da $\sqrt{m}\,\sqrt{\pi}/2$. Ojo: $E[\sqrt{A}]$ es **menor** que
-        $\sqrt{E[A]}$, no mayor.
+        $\int_0^\infty \sqrt{a}\, e^{-a/m}/m\, da$ se resuelve con la función
+        Gamma y vale $\sqrt{m}\,\sqrt{\pi}/2$. Observá que $E[\sqrt{A}]$ es
+        **menor** que $\sqrt{E[A]}$.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

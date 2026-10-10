@@ -13,7 +13,7 @@ items:
   - id: a
     pregunta: >-
       Calcular $E[W]$ cuando $r = 3$ y el voltaje tiene distribución normal de
-      media 6 y varianza 1.
+      [[varianza|media 6 y varianza 1]].
     skills: [momentos, varianza]
     respuesta:
       tipo: numerica
@@ -21,13 +21,13 @@ items:
       # Es un entero exacto: con el 1 % por defecto pasaria 112.
       tol_rel: 0.0005
     pistas:
-      - 'La constante sale afuera: $E[W] = r\,E[V^2]$. Lo que falta es $E[V^2]$.'
+      - 'Por linealidad, $E[W] = r\,E[V^2]$, de modo que falta calcular $E[V^2]$.'
       - '¿Qué relación hay entre $E[V^2]$, la varianza y la media?'
       - >-
-        Plan: de $\operatorname{var}[V] = E[V^2] - (E[V])^2$ sale
-        $E[V^2] = \sigma^2 + \mu^2$. No hace falta integrar la densidad normal.
-        Si te da $3 \cdot 36 = 108$, usaste $E[V]^2$ en lugar de $E[V^2]$ y te
-        falta justo la varianza.
+        Plan: de $\operatorname{var}[V] = E[V^2] - (E[V])^2$ se obtiene
+        $E[V^2] = \sigma^2 + \mu^2$, sin necesidad de integrar la densidad
+        normal. Si obtenés $3 \cdot 36 = 108$, usaste $E[V]^2$ en lugar de
+        $E[V^2]$ y falta el término de la varianza.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

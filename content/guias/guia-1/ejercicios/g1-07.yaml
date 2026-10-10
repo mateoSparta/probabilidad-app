@@ -20,11 +20,11 @@ items:
       vars:
         n: [1, 15]
     pistas:
-      - Para que $N = n$ tienen que pasar dos cosas en las primeras $n$ tiradas.
+      - Para que $N = n$ deben cumplirse dos condiciones en las primeras $n$ tiradas.
       - Las primeras $n-1$ tiradas no son 6 y la $n$-ésima sí. Las tiradas son independientes.
       - >-
-        Plan: multiplicá la probabilidad de $n-1$ fracasos seguidos por la de un
-        éxito en la última.
+        Plan: multiplicá la probabilidad de $n-1$ fracasos consecutivos por la
+        de un éxito en la última tirada.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -55,9 +55,9 @@ items:
       tipo: numerica
       valor: "390625/1679616"
     pistas:
-      - '$N > 8$ no dice cuándo sale el 6: dice que en las primeras 8 tiradas no salió.'
-      - No hace falta sumar una serie. El evento se describe con una sola condición.
-      - 'Plan: probabilidad de 8 fracasos seguidos.'
+      - 'El evento $N > 8$ significa que en las primeras 8 tiradas no salió ningún 6.'
+      - No hace falta sumar una serie, porque el evento se describe con una sola condición.
+      - 'Plan: calculá la probabilidad de 8 fracasos consecutivos.'
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -67,7 +67,7 @@ items:
 
   - id: e
     pregunta: >-
-      Sea $B = \bigcap_{n \ge 1} B_n$. Calcular $P(B)$.
+      Sea [[continuidad-P|$B = \bigcap_{n \ge 1} B_n$]]. Calcular $P(B)$.
     skills: [continuidad-P]
     respuesta:
       tipo: numerica
@@ -75,7 +75,7 @@ items:
       tol_rel: 0.001
     pistas:
       - En palabras, $B$ es el evento de que el dado nunca salga 6.
-      - 'La sucesión $B_n$ es decreciente: $B_{n+1} \subset B_n$. Eso habilita pasar al límite.'
+      - 'La sucesión $B_n$ es decreciente, $B_{n+1} \subset B_n$, lo que permite aplicar la continuidad de $P$.'
       - >-
         Plan: calculá $P(B_n)$ para $n$ genérico y tomá el límite cuando
         $n \to \infty$. Un evento puede ser no vacío y tener probabilidad cero.

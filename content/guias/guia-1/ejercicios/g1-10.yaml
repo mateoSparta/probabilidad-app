@@ -18,9 +18,9 @@ items:
       tipo: numerica
       valor: "1/1000"
     pistas:
-      - Fijar los primeros tres dígitos es fijar un intervalo. ¿Cuál?
+      - Fijar los primeros tres dígitos equivale a fijar un intervalo. ¿Cuál?
       - Los números que empiezan con $0{,}314$ son los del intervalo $[0{,}314,\ 0{,}315)$.
-      - 'Plan: la probabilidad es la longitud de ese intervalo sobre la longitud de $[0,1]$.'
+      - 'Plan: la probabilidad es la longitud de ese intervalo dividida por la longitud de $[0,1]$.'
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -29,14 +29,16 @@ items:
           valor: "1/1000"
 
   - id: b
-    pregunta: Hallar la probabilidad de que el $0$ no esté entre los primeros $4$ dígitos.
+    pregunta: >-
+      Hallar la probabilidad de que el $0$ no esté entre
+      [[independencia|los primeros $4$ dígitos]].
     skills: [prob-geometrica, independencia]
     respuesta:
       tipo: numerica
       valor: "6561/10000"
     pistas:
       - Los dígitos de un número sorteado al azar en $[0,1]$ son independientes y uniformes en $\{0,\dots,9\}$.
-      - ¿Cuántos valores puede tomar un dígito que no es $0$?
+      - ¿Cuántos valores puede tomar un dígito distinto de $0$?
       - 'Plan: elevá a la cuarta la probabilidad de que un dígito no sea $0$.'
     verificacion:
       estado: verificado
@@ -46,19 +48,21 @@ items:
           valor: "6561/10000"
 
   - id: c
-    pregunta: Hallar la probabilidad de que el $0$ no sea uno de sus dígitos.
+    pregunta: >-
+      Hallar la probabilidad de que el $0$ no sea
+      [[continuidad-P|uno de sus dígitos]].
     skills: [prob-geometrica, continuidad-P]
     respuesta:
       tipo: numerica
       valor: "0"
       tol_rel: 0.001
     pistas:
-      - Ahora la condición es sobre todos los dígitos, que son infinitos.
+      - La condición involucra ahora a todos los dígitos, que son infinitos.
       - 'El evento es la intersección de los eventos "el $0$ no está entre los primeros $n$ dígitos", que forman una sucesión decreciente.'
       - >-
         Plan: generalizá el ítem anterior a $n$ dígitos y tomá el límite
-        cuando $n \to \infty$. Que la probabilidad sea cero no quiere decir
-        que el evento sea imposible.
+        cuando $n \to \infty$. Que la probabilidad sea cero no implica que el
+        evento sea imposible.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

@@ -6,17 +6,17 @@ fuente:
   enunciado: fuentes/guias/parte1.pdf#p40
 
 enunciado: |
-  Un motoquero transita por una avenida. Las probabilidades de que al momento
-  de llegar a un semáforo este se encuentre en rojo, amarillo o verde son
-  $0{,}45$, $0{,}05$ y $0{,}5$ respectivamente. Los estados de los semáforos
-  son independientes y [[geometrica-pascal|el motoquero sólo se detiene al
-  encontrar un semáforo en rojo]]. Sea $N$ la cantidad de luces verdes que
-  atravesó hasta detenerse.
+  Un motoquero transita por una avenida.
+  [[condicional|Las probabilidades de que al momento de llegar a un semáforo
+  este se encuentre en rojo, amarillo o verde son $0{,}45$, $0{,}05$ y $0{,}5$
+  respectivamente.]] Los estados de los semáforos son independientes y
+  [[geometrica-pascal|el motoquero sólo se detiene al encontrar un semáforo en
+  rojo]]. Sea $N$ la cantidad de luces verdes que atravesó hasta detenerse.
 
 items:
   - id: a
     pregunta: >-
-      Hallar la función de probabilidad de $N$, y evaluarla donde se pide.
+      Hallar la función de probabilidad de $N$ y evaluarla donde se pide.
     skills: [geometrica-pascal, condicional]
     respuesta:
       tipo: checkpoints
@@ -28,14 +28,15 @@ items:
         - pregunta: '$P(N = 3)$'
           valor: "9000/130321"
     pistas:
-      - '¿Qué le pasa a $N$ cuando el motoquero encuentra un amarillo?'
+      - '¿Cómo cambia $N$ cuando el motoquero encuentra un semáforo en amarillo?'
       - >-
-        El amarillo no lo detiene y tampoco suma a $N$: para esta cuenta, ese
-        semáforo es como si no hubiera existido.
+        El amarillo no lo detiene ni se suma a $N$, de modo que para este
+        cálculo ese semáforo puede ignorarse.
       - >-
-        Plan: mirá sólo los semáforos que son rojo o verde. Entre esos, la
-        probabilidad de que sea verde es $0{,}5/0{,}95 = 10/19$. Con eso $N$ es
-        geométrica. Usar $0{,}5$ directo es el error del ejercicio.
+        Plan: considerá solo los semáforos en rojo o en verde. Entre ellos, la
+        probabilidad de verde es $0{,}5/0{,}95 = 10/19$, y con ese valor $N$
+        tiene distribución geométrica. Usar directamente $0{,}5$ es el error
+        más frecuente en este ejercicio.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -52,8 +53,8 @@ items:
       tipo: numerica
       valor: "1000/6859"
     pistas:
-      - '$N > 2$ es que los tres primeros semáforos que importan fueron verdes.'
-      - 'Plan: $(10/19)^3$. Con $0{,}5^3 = 1/8$ te estarías olvidando del amarillo.'
+      - 'El evento $N > 2$ significa que los tres primeros semáforos relevantes estaban en verde.'
+      - 'Plan: $(10/19)^3$. El valor $0{,}5^3 = 1/8$ no tiene en cuenta los semáforos en amarillo.'
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

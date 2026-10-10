@@ -1,11 +1,12 @@
 numero: 7
 titulo: Proceso de Poisson
 descripcion: >-
-  Eventos que ocurren al azar en el tiempo. Dos miradas del mismo objeto —el
-  conteo en intervalos y los tiempos de espera— y el puente entre las dos. Lo
-  que pasa al condicionar al total de eventos (los tiempos se vuelven
-  uniformes y la intensidad desaparece de la cuenta), lo que pasa al juntar o
-  filtrar procesos, y cómo se suma una cantidad aleatoria de términos.
+  El modelo para eventos que ocurren al azar en el tiempo. La guía estudia sus
+  dos descripciones equivalentes, el conteo en intervalos y los tiempos de
+  espera, y la relación entre ambas; el efecto de condicionar al total de
+  eventos, que vuelve uniformes los tiempos de arribo y elimina la intensidad
+  del cálculo; la superposición y el adelgazamiento de procesos; y la suma de
+  una cantidad aleatoria de términos.
 
 secuencia:
   - teoria: t-poisson

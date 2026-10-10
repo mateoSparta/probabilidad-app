@@ -4,30 +4,32 @@ skills: [bernoulli-binomial, hipergeometrica]
 ---
 ## Binomial e hipergeométrica
 
-La **binomial** cuenta éxitos en $n$ intentos independientes con la misma
-probabilidad $p$:
+La **distribución binomial** cuenta la cantidad de éxitos en $n$ ensayos
+independientes con la misma probabilidad de éxito $p$:
 
 $$P(X = k) = \binom{n}{k} p^k (1-p)^{n-k}, \qquad E[X] = np$$
 
-El coeficiente binomial está porque los $k$ éxitos pueden caer en cualquier
-orden. Olvidarlo es el error más frecuente de toda la guía.
+El coeficiente binomial aparece porque los $k$ éxitos pueden ocurrir en
+cualquier orden, y omitirlo es el error más frecuente de la guía.
 
-La **hipergeométrica** es lo mismo pero **sin reposición**:
+La **distribución hipergeométrica** corresponde al mismo experimento **sin
+reposición**:
 
 $$P(X = k) = \frac{\dbinom{B}{k}\dbinom{N-B}{n-k}}{\dbinom{N}{n}}$$
 
-Acá los intentos **no** son independientes: sacar una blanca cambia la
-composición de lo que queda. Si la población es grande respecto de la muestra
-las dos distribuciones se parecen mucho, pero con poblaciones chicas la
-diferencia importa.
+En este caso los ensayos **no** son independientes, porque cada extracción
+modifica la composición de la urna. Si la población es grande en relación
+con la muestra, ambas distribuciones son muy parecidas, pero con poblaciones
+pequeñas la diferencia es apreciable.
 
 ### Dos binomiales encadenadas
 
-Un patrón que aparece seguido: cada paquete de 10 discos falla la garantía con
-cierta probabilidad $q$, y después se compran 3 paquetes. Hay **dos niveles**:
-primero hay que calcular $q$ con una binomial sobre los discos, y después usar
-$q$ en otra binomial sobre los paquetes.
+Hay un patrón que aparece con frecuencia. Cada paquete de 10 discos incumple
+la garantía con cierta probabilidad $q$, y luego se compran 3 paquetes. El
+problema tiene **dos niveles**. Primero se calcula $q$ con una binomial sobre
+los discos, y después se usa $q$ en otra binomial sobre los paquetes.
 
-El error clásico es saltearse el primer nivel y usar la probabilidad de un
-disco defectuoso como si fuera la de un paquete que falla. No son lo mismo y la
-diferencia puede ser de órdenes de magnitud.
+El error habitual consiste en omitir el primer nivel y usar la probabilidad
+de que un disco sea defectuoso como si fuera la probabilidad de que un
+paquete incumpla la garantía. Ambas probabilidades son distintas, y la
+diferencia puede ser de varios órdenes de magnitud.

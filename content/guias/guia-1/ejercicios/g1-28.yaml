@@ -6,17 +6,17 @@ fuente:
   enunciado: fuentes/guias/parte1.pdf#p8
 
 enunciado: |
-  [[independencia|Dos escenarios donde hay que decidir si dos eventos son
-  independientes, con y sin condicionar.]] En los dos, $A_i$ es el evento
-  "salió cara en el $i$-ésimo tiro", con $i = 1, 2$.
+  En los dos incisos, $A_i$ es el evento "salió cara en el $i$-ésimo tiro",
+  con $i = 1, 2$.
 
 items:
   - id: a
     pregunta: >-
       Se tienen dos monedas, $a$ y $b$, con probabilidades $1/2$ y $1/3$ de
-      cara respectivamente. Se elige una moneda al azar y se la tira dos veces.
-      Sea $B$ el evento "se eligió la moneda $a$". ¿Qué pasa con la
-      independencia de $A_1$ y $A_2$?
+      cara, respectivamente. Se elige una moneda al azar y se la tira dos
+      veces. Sea $B$ el evento "se eligió la moneda $a$".
+      [[independencia,condicional|¿Dado $B$, $A_1$ y $A_2$ son independientes?
+      ¿$A_1$ y $A_2$ son independientes?]]
     skills: [independencia, condicional]
     respuesta:
       tipo: opcion
@@ -27,31 +27,29 @@ items:
         - id: a2
           texto: 'Son independientes en los dos casos.'
           error_tipico: >-
-            Sin condicionar, el primer tiro informa sobre cuál moneda se
-            eligió, y eso cambia la probabilidad del segundo:
-            $P(A_1 \cap A_2) = 13/72$ pero $P(A_1)P(A_2) = 25/144$.
+            Sin condicionar, el primer tiro aporta información sobre la moneda
+            elegida y, por lo tanto, modifica la probabilidad del segundo. En
+            efecto, $P(A_1 \cap A_2) = 13/72$, mientras que
+            $P(A_1)P(A_2) = 25/144$.
         - id: a3
           texto: 'No son independientes en ninguno de los dos casos.'
           error_tipico: >-
-            Fijada la moneda, los tiros no se influyen:
+            Una vez fijada la moneda, los tiros no se influyen entre sí, ya que
             $P(A_1 \cap A_2 \mid B) = 1/4 = (1/2)(1/2)$.
         - id: a4
           texto: 'Sin condicionar son independientes, pero dado $B$ no lo son.'
           error_tipico: >-
-            Es justo al revés. Condicionar a la moneda saca la única fuente de
-            dependencia que había.
+            Ocurre lo contrario. Condicionar a la moneda elimina la única
+            fuente de dependencia entre los tiros.
     pistas:
-      - >-
-        Son dos chequeos distintos: uno dentro del mundo donde la moneda ya
-        está fijada, y otro en el mundo completo.
+      - Hay que hacer dos verificaciones, una con la moneda ya fijada y otra sin información sobre la moneda.
       - >-
         Para el caso sin condicionar, calculá $P(A_1)$ y $P(A_1 \cap A_2)$ por
-        probabilidad total sobre cuál moneda se eligió.
+        probabilidad total sobre la moneda elegida.
       - >-
-        Plan: comparar $P(A_1 \cap A_2)$ con $P(A_1)P(A_2)$, primero
-        condicionando a $B$ y después sin condicionar. Si el primer tiro te
-        dice algo sobre qué moneda tenés en la mano, también te dice algo
-        sobre el segundo.
+        Plan: compará $P(A_1 \cap A_2)$ con $P(A_1)P(A_2)$, primero
+        condicionando a $B$ y después sin condicionar. Si el primer tiro aporta
+        información sobre la moneda, también la aporta sobre el segundo tiro.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -62,7 +60,8 @@ items:
   - id: b
     pregunta: >-
       Se tira una moneda equilibrada dos veces. Sea $B$ el evento "salió al
-      menos una ceca". ¿Qué pasa con la independencia de $A_1$ y $A_2$?
+      menos una ceca". [[independencia,condicional|¿$A_1$ y $A_2$ son
+      independientes? ¿Dado $B$, $A_1$ y $A_2$ son independientes?]]
     skills: [independencia, condicional]
     respuesta:
       tipo: opcion
@@ -73,27 +72,30 @@ items:
         - id: b2
           texto: 'Son independientes en los dos casos.'
           error_tipico: >-
-            Dado $B$ no pueden ser independientes: $P(A_1 \cap A_2 \mid B) = 0$,
-            porque dos caras contradicen "al menos una ceca", mientras que
+            Dado $B$ no pueden ser independientes. Se tiene
+            $P(A_1 \cap A_2 \mid B) = 0$, porque dos caras son incompatibles
+            con "al menos una ceca", mientras que
             $P(A_1 \mid B)P(A_2 \mid B) = 1/9$.
         - id: b3
           texto: 'No son independientes en ninguno de los dos casos.'
           error_tipico: >-
-            Sin condicionar sí lo son: la moneda es equilibrada y los tiros no
-            se influyen, $P(A_1 \cap A_2) = 1/4 = (1/2)(1/2)$.
+            Sin condicionar son independientes, porque la moneda es
+            equilibrada y los tiros no se influyen, y
+            $P(A_1 \cap A_2) = 1/4 = (1/2)(1/2)$.
         - id: b4
           texto: 'Dado $B$ son independientes, pero sin condicionar no lo son.'
           error_tipico: >-
-            Es al revés que en el ítem anterior: acá condicionar es lo que
-            **crea** la dependencia, porque $B$ relaciona los dos tiros.
+            La situación es la inversa de la del ítem anterior. En este caso,
+            condicionar **crea** la dependencia, porque $B$ relaciona los dos
+            tiros.
     pistas:
-      - 'Enumerá los cuatro resultados posibles y marcá cuáles están en $B$.'
-      - '¿Puede pasar $A_1 \cap A_2$ sabiendo que salió al menos una ceca?'
+      - 'Enumerá los cuatro resultados posibles e identificá cuáles pertenecen a $B$.'
+      - '¿Puede ocurrir $A_1 \cap A_2$ si se sabe que salió al menos una ceca?'
       - >-
         Plan: calculá $P(A_1 \mid B)$, $P(A_2 \mid B)$ y
-        $P(A_1 \cap A_2 \mid B)$ sobre los tres resultados que quedan en $B$,
-        y comparalos. Condicionar a un evento que vincula los dos tiros puede
-        romper una independencia que existía.
+        $P(A_1 \cap A_2 \mid B)$ sobre los tres resultados de $B$ y
+        comparalos. Condicionar a un evento que vincula los dos tiros puede
+        destruir una independencia que existía.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo

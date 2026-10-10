@@ -8,8 +8,8 @@
   nombre: Álgebras de eventos
   guia: 1
   descripcion: >-
-    Reconocer y construir la menor álgebra que contiene ciertos eventos:
-    cerrar por complemento y unión.
+    Reconocer y construir la menor álgebra que contiene a una familia de
+    eventos, cerrando por complemento y unión.
   formulas:
     - '\Omega \in \mathcal{A}'
     - 'A \in \mathcal{A} \implies A^c \in \mathcal{A}'
@@ -19,8 +19,8 @@
   nombre: Probabilidad en espacios discretos
   guia: 1
   descripcion: >-
-    Asignar una probabilidad por pesos sobre los puntos de Ω y calcular la de
-    un evento sumando los pesos que contiene.
+    Asignar probabilidades mediante pesos sobre los puntos de Ω y calcular la
+    probabilidad de un evento como la suma de los pesos de sus puntos.
   formulas:
     - 'P(A) = \sum_{\omega \in A} p(\omega)'
     - '\sum_{\omega \in \Omega} p(\omega) = 1'
@@ -30,7 +30,7 @@
   guia: 1
   descripcion: >-
     Contar casos favorables sobre casos totales en un espacio equiprobable,
-    con y sin orden, con y sin reposición.
+    con orden o sin él y con reposición o sin ella.
   formulas:
     - 'P(A) = \dfrac{\#A}{\#\Omega}'
     - '\binom{n}{k} = \dfrac{n!}{k!\,(n-k)!}'
@@ -40,7 +40,7 @@
   guia: 1
   descripcion: >-
     Calcular la probabilidad de una unión descontando las intersecciones, y
-    pasar al complemento cuando conviene.
+    recurrir al complemento cuando simplifica el cálculo.
   formulas:
     - 'P(A \cup B) = P(A) + P(B) - P(A \cap B)'
     - 'P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(AB) - P(AC) - P(BC) + P(ABC)'
@@ -50,8 +50,8 @@
   nombre: Independencia
   guia: 1
   descripcion: >-
-    Multiplicar probabilidades cuando los eventos no se influyen, y reconocer
-    cuándo eso vale.
+    Multiplicar probabilidades de eventos que no se influyen entre sí, y
+    reconocer cuándo el enunciado justifica la independencia.
   formulas:
     - 'P(A \cap B) = P(A)\,P(B)'
     - 'P\!\left(\bigcap_{i=1}^{n} A_i\right) = \prod_{i=1}^{n} P(A_i)'
@@ -60,8 +60,8 @@
   nombre: Continuidad de P
   guia: 1
   descripcion: >-
-    Pasar al límite en una sucesión monótona de eventos para calcular la
-    probabilidad de la intersección o la unión de todos.
+    Tomar el límite en una sucesión monótona de eventos para calcular la
+    probabilidad de su intersección o de su unión.
   formulas:
     - 'B_{n+1} \subset B_n \implies P\!\left(\bigcap_{n \ge 1} B_n\right) = \lim_{n \to \infty} P(B_n)'
     - 'A_n \subset A_{n+1} \implies P\!\left(\bigcup_{n \ge 1} A_n\right) = \lim_{n \to \infty} P(A_n)'
@@ -70,8 +70,9 @@
   nombre: Muestras con y sin reposición
   guia: 1
   descripcion: >-
-    Elegir el espacio muestral según si importa el orden y si hay reposición,
-    que es lo que define cuántos casos equiprobables hay.
+    Elegir el espacio muestral según importe o no el orden y haya o no
+    reposición, ya que esas dos condiciones determinan los casos
+    equiprobables.
   formulas:
     - '\text{con orden, con reposición: } n^k'
     - '\text{con orden, sin reposición: } \dfrac{n!}{(n-k)!}'
@@ -81,8 +82,8 @@
   nombre: Problemas de ocupación
   guia: 1
   descripcion: >-
-    Repartir objetos en cajas. Lo que cambia todo es si los objetos son
-    distinguibles o no, porque cambia cuáles son los casos equiprobables.
+    Distribuir objetos en cajas. El aspecto decisivo es si los objetos son
+    distinguibles, porque de eso dependen los casos equiprobables.
   formulas:
     - '\text{distinguibles en } r \text{ cajas: } r^n'
     - '\text{indistinguibles: } \binom{n + r - 1}{r - 1}'
@@ -92,8 +93,8 @@
   nombre: Probabilidad geométrica
   guia: 1
   descripcion: >-
-    Cuando el espacio muestral es un intervalo o una región, la probabilidad
-    es la medida del evento sobre la medida del total.
+    Calcular probabilidades cuando el espacio muestral es un intervalo o una
+    región, como cociente entre la medida del evento y la medida del total.
   formulas:
     - 'P(A) = \dfrac{\text{medida}(A)}{\text{medida}(\Omega)}'
 
@@ -101,8 +102,8 @@
   nombre: Probabilidad condicional
   guia: 1
   descripcion: >-
-    Recalcular una probabilidad cuando se sabe que ocurrió otro evento:
-    restringir el espacio y renormalizar.
+    Recalcular una probabilidad cuando se sabe que ocurrió otro evento,
+    restringiendo el espacio muestral y renormalizando.
   formulas:
     - 'P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}, \quad P(B) > 0'
     - 'P(A \cap B) = P(B)\,P(A \mid B)'
@@ -111,8 +112,8 @@
   nombre: Probabilidad total
   guia: 1
   descripcion: >-
-    Descomponer un evento según una partición y sumar los caminos que llevan
-    a él.
+    Descomponer un evento según una partición y sumar las probabilidades de
+    los caminos que conducen a él.
   formulas:
     - 'P(A) = \sum_i P(A \mid B_i)\,P(B_i)'
 
@@ -120,7 +121,8 @@
   nombre: Regla de Bayes
   guia: 1
   descripcion: >-
-    Invertir un condicional: pasar de P(efecto | causa) a P(causa | efecto).
+    Invertir una probabilidad condicional, es decir, pasar de $P(\text{efecto}
+    \mid \text{causa})$ a $P(\text{causa} \mid \text{efecto})$.
   formulas:
     - 'P(B_j \mid A) = \dfrac{P(A \mid B_j)\,P(B_j)}{\sum_i P(A \mid B_i)\,P(B_i)}'
 
@@ -130,8 +132,8 @@
   nombre: Variable aleatoria y medibilidad
   guia: 2
   descripcion: >-
-    Reconocer cuándo una función de Ω en los reales es variable aleatoria:
-    que sus preimágenes pertenezcan al álgebra.
+    Reconocer cuándo una función de Ω en los reales es una variable aleatoria,
+    verificando que sus preimágenes pertenezcan al álgebra.
   formulas:
     - '\{\omega : X(\omega) \le t\} \in \mathcal{A} \quad \forall t \in \mathbb{R}'
 
@@ -139,8 +141,8 @@
   nombre: Función de distribución
   guia: 2
   descripcion: >-
-    Leer y usar $F_X(x) = P(X \le x)$: dónde concentra masa, cómo salen las
-    probabilidades de intervalos abiertos y cerrados.
+    Interpretar y usar $F_X(x) = P(X \le x)$, identificar dónde concentra masa
+    la variable y calcular probabilidades de intervalos abiertos y cerrados.
   formulas:
     - 'F_X(x) = P(X \le x)'
     - 'P(a < X \le b) = F_X(b) - F_X(a)'
@@ -151,8 +153,8 @@
   nombre: Densidad de una variable continua
   guia: 2
   descripcion: >-
-    Integrar una densidad para obtener probabilidades, y usar que integra 1
-    como control.
+    Integrar una densidad para obtener probabilidades, y verificar que integre
+    1 como control.
   formulas:
     - 'P(a < X < b) = \int_a^b f_X(x)\,dx'
     - '\int_{-\infty}^{\infty} f_X(x)\,dx = 1'
@@ -162,8 +164,8 @@
   nombre: Condicionamiento a un evento
   guia: 2
   descripcion: >-
-    La distribución de una variable restringida a un evento: quedarse con el
-    pedazo y renormalizar.
+    Obtener la distribución de una variable condicionada a un evento,
+    restringiéndola a ese evento y renormalizando.
   formulas:
     - 'f_{X \mid A}(x) = \dfrac{f_X(x)\,\mathbf{1}\{x \in A\}}{P(A)}'
     - 'F_{X \mid A}(x) = \dfrac{P(X \le x,\ A)}{P(A)}'
@@ -172,8 +174,8 @@
   nombre: Conjunta y marginales
   guia: 2
   descripcion: >-
-    Pasar de la densidad conjunta de un vector a las marginales de cada
-    coordenada, integrando sobre la otra.
+    Obtener las densidades marginales de un vector aleatorio integrando la
+    densidad conjunta respecto de la otra variable.
   formulas:
     - 'f_X(x) = \int_{-\infty}^{\infty} f_{(X,Y)}(x, y)\,dy'
     - 'f_Y(y) = \int_{-\infty}^{\infty} f_{(X,Y)}(x, y)\,dx'
@@ -183,8 +185,8 @@
   nombre: Independencia de variables aleatorias
   guia: 2
   descripcion: >-
-    Reconocer independencia por la factorización de la conjunta, y el soporte
-    rectangular como condición necesaria.
+    Reconocer la independencia por la factorización de la densidad conjunta,
+    teniendo en cuenta que el soporte rectangular es una condición necesaria.
   formulas:
     - 'f_{(X,Y)}(x, y) = f_X(x)\,f_Y(y)'
     - 'F_{(X,Y)}(x, y) = F_X(x)\,F_Y(y)'
@@ -195,8 +197,8 @@
   nombre: Esperanza
   guia: 3
   descripcion: >-
-    Calcular la media de una variable: integral contra la densidad en la parte
-    continua, más la suma de los átomos si hay saltos.
+    Calcular la media de una variable integrando contra la densidad en la
+    parte continua y sumando los átomos cuando hay saltos.
   formulas:
     - 'E[X] = \displaystyle\int_{-\infty}^{\infty} x\, f_X(x)\, dx'
     - 'E[X] = \displaystyle\sum_k x_k\, P(X = x_k)'
@@ -206,8 +208,8 @@
   nombre: Momentos y esperanza de una función
   guia: 3
   descripcion: >-
-    Calcular $E[g(X)]$ integrando $g$ contra la densidad, sin pasar la media
-    por dentro de la función.
+    Calcular $E[g(X)]$ integrando $g$ contra la densidad, sin aplicar la
+    esperanza dentro de la función.
   formulas:
     - 'E[g(X)] = \displaystyle\int g(x)\, f_X(x)\, dx'
     - 'E[g(X,Y)] = \displaystyle\iint g(x,y)\, f_{(X,Y)}(x,y)\, dx\, dy'
@@ -217,8 +219,8 @@
   nombre: Esperanza condicional a un evento
   guia: 3
   descripcion: >-
-    La media de una variable restringida a un evento, usando la densidad
-    condicional.
+    Calcular la media de una variable condicionada a un evento, usando la
+    densidad condicional.
   formulas:
     - 'E[X \mid A] = \dfrac{E[X\, \mathbf{1}_A]}{P(A)}'
     - 'E[X \mid A] = \displaystyle\int x\, f_{X \mid A}(x)\, dx'
@@ -227,7 +229,7 @@
   nombre: Varianza
   guia: 3
   descripcion: >-
-    Medir la dispersión, y usar la identidad que la liga con el momento de
+    Medir la dispersión y usar la identidad que la relaciona con el momento de
     segundo orden.
   formulas:
     - '\operatorname{var}[X] = E\!\left[(X - \mu)^2\right] = E[X^2] - (E[X])^2'
@@ -237,8 +239,8 @@
   nombre: Covarianza
   guia: 3
   descripcion: >-
-    La covarianza y sus propiedades, que es lo que permite calcular la
-    varianza de una suma sin volver a integrar.
+    Usar la covarianza y sus propiedades, que permiten calcular la varianza de
+    una suma sin volver a integrar.
   formulas:
     - '\operatorname{cov}(X, Y) = E[XY] - E[X]\,E[Y]'
     - '\operatorname{var}[X + Y] = \operatorname{var}[X] + \operatorname{var}[Y] + 2\operatorname{cov}(X, Y)'
@@ -248,7 +250,7 @@
   nombre: Desigualdades de Markov y Chebyshev
   guia: 3
   descripcion: >-
-    Acotar una probabilidad conociendo sólo la media, o la media y la
+    Acotar una probabilidad conociendo solo la media, o la media y la
     varianza, sin conocer la distribución.
   formulas:
     - 'P(X \ge a) \le \dfrac{E[X]}{a} \quad (X \ge 0,\ a > 0)'
@@ -260,8 +262,8 @@
   nombre: Transformaciones por el método de la F
   guia: 4
   descripcion: >-
-    Hallar la distribución de $Y = g(X)$ traduciendo el evento
-    $\{g(X) \le t\}$ a un evento sobre $X$.
+    Hallar la distribución de $Y = g(X)$ expresando el evento $\{g(X) \le t\}$
+    en términos de $X$.
   formulas:
     - 'F_Y(t) = P(g(X) \le t)'
     - 'g \text{ creciente: } F_Y(t) = F_X\!\left(g^{-1}(t)\right)'
@@ -271,8 +273,9 @@
   nombre: Mínimo, máximo y competencia de exponenciales
   guia: 4
   descripcion: >-
-    La distribución del mínimo y del máximo de variables independientes, y
-    quién gana una carrera entre exponenciales.
+    Obtener la distribución del mínimo y del máximo de variables
+    independientes, y determinar cuál de varias exponenciales independientes
+    resulta la menor.
   formulas:
     - 'P(\min > t) = \displaystyle\prod_i P(X_i > t)'
     - 'P(\max \le t) = \displaystyle\prod_i P(X_i \le t)'
@@ -283,8 +286,8 @@
   nombre: Suma de variables independientes
   guia: 4
   descripcion: >-
-    La distribución de una suma por convolución, y los casos que se cierran
-    solos (Poisson con Poisson, normal con normal).
+    Obtener la distribución de una suma por convolución, y reconocer las
+    familias cerradas bajo la suma, como la Poisson y la normal.
   formulas:
     - 'f_{X+Y}(z) = \displaystyle\int f_X(x)\, f_Y(z - x)\, dx'
     - '\text{Poisson}(\lambda) + \text{Poisson}(\mu) = \text{Poisson}(\lambda + \mu)'
@@ -296,8 +299,8 @@
   nombre: Mezclas y Bayes con datos continuos
   guia: 5
   descripcion: >-
-    Invertir un condicional cuando lo observado es continuo: en lugar de
-    probabilidades aparecen densidades.
+    Invertir una probabilidad condicional cuando la observación es continua,
+    caso en que intervienen densidades en lugar de probabilidades.
   formulas:
     - 'P(S = s \mid X = x) = \dfrac{f_{X \mid S = s}(x)\, P(S = s)}{\sum_j f_{X \mid S = s_j}(x)\, P(S = s_j)}'
     - 'f_X(x) = \displaystyle\sum_j f_{X \mid S = s_j}(x)\, P(S = s_j)'
@@ -306,8 +309,8 @@
   nombre: Esperanza condicional como variable
   guia: 5
   descripcion: >-
-    $E[Y \mid X]$ no es un número sino una variable aleatoria, función de $X$.
-    La función de regresión es su expresión.
+    Tratar $E[Y \mid X]$ como una variable aleatoria, función de $X$, cuya
+    expresión es la función de regresión.
   formulas:
     - '\varphi(x) = E[Y \mid X = x]'
     - 'E[Y \mid X] = \varphi(X)'
@@ -317,8 +320,8 @@
   nombre: Esperanza total
   guia: 5
   descripcion: >-
-    Calcular una media promediando las medias condicionales, incluso cuando el
-    planteo se refiere a sí mismo.
+    Calcular una media como promedio de medias condicionales, incluso en
+    planteos recursivos.
   formulas:
     - 'E[Y] = E\big[E[Y \mid X]\big] = \displaystyle\sum_i E[Y \mid X = x_i]\, P(X = x_i)'
     - 'E\!\left[\textstyle\sum_{i=1}^{N} L_i\right] = E[N]\, E[L] \quad \text{(Wald)}'
@@ -327,8 +330,8 @@
   nombre: Varianza total
   guia: 5
   descripcion: >-
-    Partir la varianza en la parte que queda dentro de cada valor de $X$ y la
-    que viene de que $X$ varía.
+    Descomponer la varianza en la parte que queda dentro de cada valor de $X$
+    y la parte que se debe a la variación de $X$.
   formulas:
     - '\operatorname{var}[Y] = E\big[\operatorname{var}[Y \mid X]\big] + \operatorname{var}\big[E[Y \mid X]\big]'
 
@@ -338,8 +341,8 @@
   nombre: Bernoulli y binomial
   guia: 6
   descripcion: >-
-    Contar éxitos en una cantidad fija de intentos independientes, y reconocer
-    cuándo el modelo aplica.
+    Contar éxitos en una cantidad fija de ensayos independientes, y reconocer
+    cuándo el modelo es aplicable.
   formulas:
     - 'P(X = k) = \dbinom{n}{k} p^k (1-p)^{n-k}'
     - 'E[X] = np, \quad \operatorname{var}[X] = np(1-p)'
@@ -348,8 +351,8 @@
   nombre: Geométrica y Pascal
   guia: 6
   descripcion: >-
-    Contar intentos hasta el primer éxito, o hasta el $k$-ésimo. Lo que se fija
-    no es la cantidad de intentos sino la de éxitos.
+    Contar ensayos hasta el primer éxito o hasta el $k$-ésimo, cuando lo que
+    se fija es la cantidad de éxitos.
   formulas:
     - 'P(N = n) = (1-p)^{n-1} p, \quad E[N] = \dfrac{1}{p}'
     - 'P(N > n) = (1-p)^n'
@@ -359,8 +362,9 @@
   nombre: Pérdida de memoria
   guia: 6
   descripcion: >-
-    La geométrica y la exponencial olvidan lo que pasó: condicionar a que
-    todavía no ocurrió el éxito no cambia nada.
+    Usar que la geométrica y la exponencial no tienen memoria, de modo que
+    condicionar a que el éxito todavía no ocurrió no modifica la distribución
+    de lo que resta.
   formulas:
     - 'P(N > n + m \mid N > n) = P(N > m)'
     - 'P(T > s + t \mid T > s) = P(T > t)'
@@ -369,8 +373,8 @@
   nombre: Hipergeométrica
   guia: 6
   descripcion: >-
-    Extracciones sin reposición de una población finita, donde los intentos no
-    son independientes.
+    Modelar extracciones sin reposición de una población finita, en las que
+    los ensayos no son independientes.
   formulas:
     - 'P(X = k) = \dfrac{\dbinom{B}{k}\dbinom{N - B}{n - k}}{\dbinom{N}{n}}'
 
@@ -380,19 +384,20 @@
   nombre: Proceso de Poisson e incrementos
   guia: 7
   descripcion: >-
-    Contar eventos en intervalos. Lo único que importa es el largo del
-    intervalo, y los intervalos disjuntos son independientes.
+    Contar eventos en intervalos, teniendo en cuenta que solo importa la
+    longitud del intervalo y que los conteos en intervalos disjuntos son
+    independientes.
   formulas:
     - 'N(a, b] \sim \text{Poisson}(\lambda (b-a))'
     - '\text{intervalos disjuntos} \implies \text{incrementos independientes}'
-    - '\operatorname{cov}(N(a,b],\, N(c,d]) = \lambda \cdot \text{largo del solapamiento}'
+    - '\operatorname{cov}(N(a,b],\, N(c,d]) = \lambda \cdot \text{longitud de la intersección}'
 
 - id: tiempos-espera
   nombre: Tiempos de espera del proceso de Poisson
   guia: 7
   descripcion: >-
-    Pasar del conteo al tiempo: el $n$-ésimo evento tarda lo que tarda que el
-    conteo llegue a $n$.
+    Pasar del conteo al tiempo, usando que el $n$-ésimo evento ocurre cuando
+    el conteo alcanza el valor $n$.
   formulas:
     - 'S_n > t \iff N(t) \le n - 1'
     - 'S_1 \sim \text{Exp}(\lambda)'
@@ -402,8 +407,9 @@
   nombre: Condicionamiento a N(t) = n
   guia: 7
   descripcion: >-
-    Si se sabe cuántos eventos hubo, sus tiempos son uniformes independientes
-    y la intensidad desaparece de la cuenta.
+    Usar que, dada la cantidad de eventos, sus tiempos de arribo se
+    distribuyen como uniformes independientes y la intensidad deja de
+    intervenir.
   formulas:
     - 'N(t) = n \implies \text{los } n \text{ tiempos son i.i.d. } U(0, t)'
     - 'P(N(s) = k \mid N(t) = n) = \dbinom{n}{k}\left(\tfrac{s}{t}\right)^{k}\left(1 - \tfrac{s}{t}\right)^{n-k}'
@@ -412,8 +418,9 @@
   nombre: Superposición y adelgazamiento
   guia: 7
   descripcion: >-
-    Juntar dos procesos de Poisson suma las intensidades; filtrar uno al azar
-    la multiplica por la probabilidad de pasar el filtro.
+    Usar que la superposición de procesos de Poisson independientes suma las
+    intensidades, y que el adelgazamiento aleatorio multiplica la intensidad
+    por la probabilidad de conservar cada evento.
   formulas:
     - '\text{superposición: } \lambda = \lambda_1 + \lambda_2'
     - '\text{adelgazamiento con probabilidad } p: \ \lambda_p = p\,\lambda'
@@ -423,7 +430,8 @@
   nombre: Poisson compuesto
   guia: 7
   descripcion: >-
-    Sumar una cantidad aleatoria de términos, cuando esa cantidad es Poisson.
+    Sumar una cantidad aleatoria de términos cuando esa cantidad tiene
+    distribución de Poisson.
   formulas:
     - 'T = \displaystyle\sum_{i=1}^{N} X_i, \quad E[T] = E[N]\, E[X]'
     - '\operatorname{var}[T] = E[N]\operatorname{var}[X] + \operatorname{var}[N]\,(E[X])^2'
@@ -434,8 +442,8 @@
   nombre: Distribución normal
   guia: 8
   descripcion: >-
-    Estandarizar para poder usar la tabla, y trabajar con la densidad cuando
-    hay que optimizar.
+    Estandarizar para usar la tabla, y trabajar con la densidad en problemas
+    de optimización.
   formulas:
     - 'X \sim N(\mu, \sigma^2) \implies Z = \dfrac{X - \mu}{\sigma} \sim N(0, 1)'
     - 'P(X \le x) = \Phi\!\left(\dfrac{x - \mu}{\sigma}\right)'
@@ -446,7 +454,7 @@
   nombre: Combinación lineal de normales
   guia: 8
   descripcion: >-
-    Una combinación lineal de normales independientes vuelve a ser normal, con
+    Usar que una combinación lineal de normales independientes es normal, con
     los coeficientes al cuadrado en la varianza.
   formulas:
     - '\textstyle\sum_i a_i X_i + b \sim N\!\left(\sum_i a_i \mu_i + b,\ \sum_i a_i^2 \sigma_i^2\right)'
@@ -455,8 +463,8 @@
   nombre: Teorema central del límite
   guia: 8
   descripcion: >-
-    La suma de muchas variables independientes es aproximadamente normal, sin
-    importar de qué distribución vengan.
+    Aproximar por una normal la suma de muchas variables independientes e
+    idénticamente distribuidas, sin necesidad de conocer su distribución.
   formulas:
     - 'S_n = \textstyle\sum_{i=1}^{n} X_i \approx N\!\left(n\mu,\ n\sigma^2\right)'
     - '\dfrac{S_n - n\mu}{\sigma\sqrt{n}} \xrightarrow{d} N(0, 1)'
@@ -465,9 +473,10 @@
   nombre: Aproximación normal de una discreta
   guia: 8
   descripcion: >-
-    Aproximar una binomial o una Poisson por la normal, con la corrección por
-    continuidad que hace falta porque una es discreta y la otra no.
+    Aproximar una binomial o una Poisson por una normal, aplicando la
+    corrección por continuidad que requiere pasar de una variable discreta a
+    una continua.
   formulas:
     - '\text{Bin}(n, p) \approx N\big(np,\ np(1-p)\big)'
-    - 'P(X = k) \approx \Phi\!\left(\dfrac{k + 0.5 - \mu}{\sigma}\right) - \Phi\!\left(\dfrac{k - 0.5 - \mu}{\sigma}\right)'
-    - 'P(X > k) = P(X \ge k+1) \approx 1 - \Phi\!\left(\dfrac{k + 0.5 - \mu}{\sigma}\right)'
+    - 'P(X = k) \approx \Phi\!\left(\dfrac{k + 0{,}5 - \mu}{\sigma}\right) - \Phi\!\left(\dfrac{k - 0{,}5 - \mu}{\sigma}\right)'
+    - 'P(X > k) = P(X \ge k+1) \approx 1 - \Phi\!\left(\dfrac{k + 0{,}5 - \mu}{\sigma}\right)'

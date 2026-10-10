@@ -25,25 +25,28 @@ items:
         - id: a2
           texto: 'Sí, porque está definida en todo $\Omega$ y toma valores reales.'
           error_tipico: >-
-            Para ser variable aleatoria no alcanza con ser una función de
-            $\Omega$ en $\mathbb{R}$: sus preimágenes tienen que pertenecer al
-            álgebra.
+            Ser una función de $\Omega$ en $\mathbb{R}$ no alcanza. Además, las
+            preimágenes de los intervalos $(-\infty, t]$ tienen que pertenecer
+            al álgebra.
         - id: a3
           texto: 'Sí, porque es inyectiva y por lo tanto medible.'
           error_tipico: >-
-            La inyectividad no tiene nada que ver, y de hecho acá juega en
-            contra: al separar todos los puntos, parte los bloques del álgebra.
+            La inyectividad no garantiza la medibilidad. En este caso es
+            justamente el problema, porque al separar todos los puntos la
+            función divide los bloques del álgebra.
         - id: a4
           texto: 'No, porque toma seis valores distintos y $\mathcal{A}$ tiene cuatro elementos.'
           error_tipico: >-
-            La cantidad de valores no es el criterio. Lo que importa es si las
-            preimágenes caen dentro de $\mathcal{A}$.
+            La cantidad de valores que toma la función no determina la
+            medibilidad. El criterio es que las preimágenes pertenezcan a
+            $\mathcal{A}$.
     pistas:
       - '¿Qué tiene que cumplir el conjunto $\{\omega : X(\omega) \le t\}$ para cada $t$?'
-      - 'Los elementos de $\mathcal{A}$ son sólo cuatro: el vacío, los impares, los pares y todo $\Omega$.'
+      - 'El álgebra $\mathcal{A}$ tiene solo cuatro elementos, que son el conjunto vacío, los impares, los pares y $\Omega$.'
       - >-
-        Plan: tomá algún $t$ y calculá la preimagen $\{X \le t\}$. Si no es uno
-        de esos cuatro conjuntos, no es variable aleatoria.
+        Plan: elegí algún $t$ y calculá la preimagen $\{X \le t\}$. Si no
+        coincide con ninguno de esos cuatro conjuntos, $X$ no es una variable
+        aleatoria.
     verificacion:
       estado: verificado
       metodo: exacto
@@ -58,29 +61,29 @@ items:
       tipo: opcion
       opciones:
         - id: b1
-          texto: 'Sí: es constante en los impares y constante en los pares, que son los bloques de $\mathcal{A}$.'
+          texto: 'Sí, porque es constante en los impares y en los pares, que son los bloques de $\mathcal{A}$.'
           correcta: true
         - id: b2
-          texto: 'No, porque sólo toma los valores 0 y 1.'
+          texto: 'No, porque solo toma los valores 0 y 1.'
           error_tipico: >-
-            Tomar pocos valores no es un problema. Una indicadora puede ser
-            perfectamente una variable aleatoria.
+            Tomar pocos valores no impide la medibilidad. Una función
+            indicadora puede ser una variable aleatoria.
         - id: b3
           texto: 'No, porque $\{X \le 0\} = \{1, 3, 5\}$ y ese conjunto no está en $\mathcal{A}$.'
           error_tipico: >-
-            $\{1,3,5\}$ **sí** pertenece a $\mathcal{A}$: es uno de los cuatro
-            elementos que lista el enunciado.
+            $\{1,3,5\}$ **sí** pertenece a $\mathcal{A}$, ya que es uno de los
+            cuatro elementos que lista el enunciado.
         - id: b4
           texto: 'Depende de cómo se defina $P$ sobre $\mathcal{A}$.'
           error_tipico: >-
-            La medibilidad es una condición sobre $X$ y $\mathcal{A}$ nada más.
-            No interviene $P$.
+            La medibilidad es una condición que involucra únicamente a $X$ y a
+            $\mathcal{A}$. La probabilidad $P$ no interviene.
     pistas:
-      - Calculá qué vale esta función en cada punto de $\Omega$.
-      - 'Fijate si toma el mismo valor en todo $\{1,3,5\}$ y el mismo en todo $\{2,4,6\}$.'
+      - Calculá el valor de esta función en cada punto de $\Omega$.
+      - 'Verificá si toma un único valor en $\{1,3,5\}$ y un único valor en $\{2,4,6\}$.'
       - >-
         Plan: si la función es constante en cada bloque del álgebra, toda
-        preimagen es una unión de bloques, y esas uniones están en
+        preimagen es una unión de bloques, y esas uniones pertenecen a
         $\mathcal{A}$.
     verificacion:
       estado: verificado
@@ -101,22 +104,23 @@ items:
         - id: c2
           texto: 'Sí, porque es una indicadora y el ítem anterior también lo era.'
           error_tipico: >-
-            Que sea indicadora no alcanza: lo que importa es **de qué**
-            conjunto. $\{1,4\}$ cruza los dos bloques del álgebra.
+            Ser una indicadora no alcanza. Lo que importa es **de qué**
+            conjunto lo es, y $\{1,4\}$ contiene puntos de los dos bloques del
+            álgebra.
         - id: c3
           texto: 'Sí, porque $\{1, 4\}$ tiene un elemento par y uno impar.'
           error_tipico: >-
-            Eso es justamente lo que lo arruina: al mezclar un impar con un par,
-            la función deja de ser constante en cada bloque.
+            Esa es justamente la causa del problema. Al mezclar un impar con un
+            par, la función deja de ser constante en cada bloque.
         - id: c4
           texto: 'No, porque $\{1,4\}$ no pertenece a $\mathcal{A}$.'
           error_tipico: >-
-            El razonamiento llega a la conclusión correcta por el camino
-            equivocado: lo que tiene que estar en $\mathcal{A}$ son las
-            preimágenes $\{X \le t\}$, no el conjunto que define la indicadora.
-            Acá coinciden en el veredicto, pero el criterio es el otro.
+            La conclusión es correcta, pero el criterio no lo es. Lo que debe
+            pertenecer a $\mathcal{A}$ son las preimágenes $\{X \le t\}$. En
+            este caso ambos razonamientos llevan al mismo veredicto, pero solo
+            el de las preimágenes es válido en general.
     pistas:
-      - Comparalo con el ítem anterior: ¿en qué cambia el conjunto de la indicadora?
+      - Compará este conjunto con el del ítem anterior. ¿En qué se diferencian?
       - '¿Toma el mismo valor en 1 que en 3?'
       - >-
         Plan: calculá $\{X \le 0\}$ y comparalo con los cuatro elementos de

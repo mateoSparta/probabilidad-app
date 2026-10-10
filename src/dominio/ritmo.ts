@@ -228,7 +228,7 @@ export function armarPlan(
 
 export const ETIQUETA_VEREDICTO: Record<Veredicto, string> = {
   listo: 'Tenés todos los temas dominados',
-  sin_arrancar: 'Todavía no arrancaste',
+  sin_arrancar: 'Todavía no empezaste',
   holgado: 'Vas holgado',
   justo: 'Vas justo',
   apretado: 'El ritmo que hace falta es alto',

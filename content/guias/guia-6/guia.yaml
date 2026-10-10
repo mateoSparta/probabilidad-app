@@ -1,11 +1,11 @@
 numero: 6
 titulo: Distribuciones discretas
 descripcion: >-
-  Los modelos discretos que aparecen una y otra vez. La binomial cuando se fija
-  la cantidad de intentos, la geométrica y Pascal cuando lo que se fija es la
-  cantidad de éxitos, la hipergeométrica cuando no hay reposición, y la pérdida
-  de memoria, que es lo que hace que la geométrica y la exponencial sean
-  distintas de todas las demás.
+  Los modelos discretos de uso más frecuente. La binomial, cuando se fija la
+  cantidad de ensayos; la geométrica y la de Pascal, cuando se fija la
+  cantidad de éxitos; la hipergeométrica, cuando las extracciones son sin
+  reposición; y la pérdida de memoria, propiedad que distingue a la
+  geométrica y a la exponencial de todas las demás distribuciones.
 
 secuencia:
   - teoria: t-binomial

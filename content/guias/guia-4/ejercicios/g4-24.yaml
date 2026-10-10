@@ -6,14 +6,15 @@ fuente:
   enunciado: fuentes/guias/parte1.pdf#p27
 
 enunciado: |
-  Sean $X$ e $Y$ dos variables aleatorias independientes con distribución
-  uniforme sobre el intervalo $(0, 1]$. Sea
+  Sean $X$ e $Y$ dos variables aleatorias
+  [[conjunta-marginales,prob-geometrica|independientes con distribución
+  uniforme sobre el intervalo $(0, 1]$]]. Sea
   [[transformacion-F|$R = \sqrt{X^2 + Y^2}$]].
 
 items:
   - id: a
     pregunta: >-
-      Hallar la función de distribución de $R$, y evaluarla donde se pide.
+      Hallar la función de distribución de $R$ y evaluarla donde se pide.
     skills: [transformacion-F, conjunta-marginales, prob-geometrica]
     respuesta:
       tipo: checkpoints
@@ -26,16 +27,17 @@ items:
           valor: "pi*1.44/4 - 1.44*acos(1/1.2) + sqrt(1.44 - 1)"
     pistas:
       - >-
-        $(X, Y)$ es uniforme sobre el cuadrado unitario, así que
+        $(X, Y)$ es uniforme sobre el cuadrado unitario, de modo que
         $F_R(r) = P(X^2+Y^2 \le r^2)$ es un **área**.
       - >-
         Dibujá el círculo de radio $r$ centrado en el origen sobre el cuadrado.
-        ¿Entra siempre completo el cuarto de círculo?
+        ¿El cuarto de círculo queda siempre contenido en el cuadrado?
       - >-
-        Plan: hay dos tramos. Mientras $r \le 1$ el cuarto de círculo entra en
-        el cuadrado y el área es $\pi r^2/4$. Cuando $r > 1$ el círculo se sale
-        por los dos lados y hay que restarle los pedazos que sobran. Control:
-        en $r = \sqrt{2}$ tiene que valer 1.
+        Plan: hay dos tramos. Para $r \le 1$, el cuarto de círculo está
+        contenido en el cuadrado y el área es $\pi r^2/4$. Para $r > 1$, el
+        círculo excede el cuadrado por dos lados y hay que restar las regiones
+        que quedan afuera. Como control, en $r = \sqrt{2}$ la función tiene
+        que valer 1.
     verificacion:
       estado: verificado
       metodo: exacto+montecarlo
@@ -52,7 +54,7 @@ items:
       tipo: numerica
       valor: "1 - pi/16"
     pistas:
-      - Es el complemento de algo que ya calculaste.
+      - Es el complemento de una probabilidad que ya calculaste.
       - 'Plan: $1 - F_R(1/2)$.'
     verificacion:
       estado: verificado

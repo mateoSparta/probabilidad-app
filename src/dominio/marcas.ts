@@ -20,7 +20,7 @@
 const MARCA = /\[\[([a-zA-Z0-9-]+(?:,[a-zA-Z0-9-]+)*)\|([\s\S]+?)\]\](?!\])/g
 
 /** Puntuación que, si sigue a una marca, se incorpora al fragmento. */
-const CIERRE = /^[.,;:!?)\]»”…]+/
+const CIERRE = /^[.,;:!?)\]»”"…]+/
 
 export type Segmento = {
   texto: string

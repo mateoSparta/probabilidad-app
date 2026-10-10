@@ -143,7 +143,7 @@ export function ItemEjercicio({
     }
     actualizar({ envios: n, estado: 'incorrecto' })
     if (v.motivo === 'vacio') setMensaje('Escribí una respuesta.')
-    else if (v.motivo === 'no_parsea') setMensaje(v.detalle ?? 'No pude interpretar eso.')
+    else if (v.motivo === 'no_parsea') setMensaje(v.detalle ?? 'No se pudo interpretar la respuesta.')
   }
 
   function revelar() {
@@ -292,7 +292,7 @@ export function ItemEjercicio({
       {/* --- feedback --- */}
       {est.estado === 'correcto' && <p class="feedback feedback--ok">✓ Correcto.</p>}
       {est.estado === 'incorrecto' && !mensaje && !errorTipico && (
-        <p class="feedback feedback--mal">✗ No es correcto. Probá de nuevo.</p>
+        <p class="feedback feedback--mal">✗ La respuesta no es correcta. Revisala y probá de nuevo.</p>
       )}
       {errorTipico && (
         <p class="feedback feedback--mal">

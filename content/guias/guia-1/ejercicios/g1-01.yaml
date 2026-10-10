@@ -11,8 +11,8 @@ enunciado: |
 items:
   - id: a
     pregunta: >-
-      ¿Cuál es la menor álgebra de subconjuntos de $\Omega$ tal que
-      $\{1, 2, 3\}$ pertenezca a ella?
+      ¿Cuál es la [[algebras|menor álgebra de subconjuntos de $\Omega$]] tal
+      que $\{1, 2, 3\}$ pertenezca a ella?
     skills: [algebras]
     respuesta:
       tipo: opcion
@@ -23,24 +23,26 @@ items:
         - id: a2
           texto: '$\{\{1,2,3\},\ \{4,5,6\}\}$'
           error_tipico: >-
-            Un álgebra siempre contiene $\emptyset$ y $\Omega$. Acá faltan los dos.
+            Toda álgebra contiene a $\emptyset$ y a $\Omega$, y esta familia no
+            incluye a ninguno de los dos.
         - id: a3
           texto: '$\{\emptyset,\ \{1,2,3\},\ \Omega\}$'
           error_tipico: >-
-            Si $\{1,2,3\}$ pertenece, su complemento $\{4,5,6\}$ también tiene
-            que pertenecer.
+            Si $\{1,2,3\}$ pertenece al álgebra, su complemento $\{4,5,6\}$
+            también tiene que pertenecer.
         - id: a4
           texto: 'Los $64$ subconjuntos de $\Omega$'
           error_tipico: >-
-            Ésa es la mayor álgebra, no la menor. Se pide la más chica que
-            contenga a $\{1,2,3\}$.
+            Esa es la mayor álgebra de subconjuntos de $\Omega$. Se pide la
+            menor que contenga a $\{1,2,3\}$.
     pistas:
       - ¿Qué tres condiciones tiene que cumplir una familia de subconjuntos para ser un álgebra?
-      - Si $\{1,2,3\}$ pertenece, la condición del complemento obliga a que haya otro conjunto. ¿Cuál?
+      - Si $\{1,2,3\}$ pertenece, la condición del complemento obliga a incluir otro conjunto. ¿Cuál?
       - >-
-        Plan: arrancá con $\{1,2,3\}$, agregá su complemento, agregá
-        $\emptyset$ y $\Omega$, y verificá que las uniones de lo que tenés ya
-        estén en la familia. Si no entra nada nuevo, ésa es la menor.
+        Plan: empezá por $\{1,2,3\}$, agregá su complemento, $\emptyset$ y
+        $\Omega$, y verificá que las uniones entre esos conjuntos ya estén en
+        la familia. Si no aparece ningún conjunto nuevo, esa es la menor
+        álgebra.
     verificacion:
       estado: verificado
       metodo: exacto
@@ -50,8 +52,8 @@ items:
 
   - id: b
     pregunta: >-
-      ¿Cuántos conjuntos tiene la menor álgebra de subconjuntos de $\Omega$ tal
-      que $\{1, 2\}$, $\{3, 4\}$ y $\{5, 6\}$ pertenezcan a ella?
+      ¿Cuántos conjuntos tiene la [[algebras|menor álgebra de subconjuntos de
+      $\Omega$]] tal que $\{1, 2\}$, $\{3, 4\}$ y $\{5, 6\}$ pertenezcan a ella?
     skills: [algebras]
     respuesta:
       tipo: opcion
@@ -63,23 +65,25 @@ items:
           texto: '$5$'
           error_tipico: >-
             Contaste los tres conjuntos dados más $\emptyset$ y $\Omega$, pero
-            falta cerrar por unión: $\{1,2\} \cup \{3,4\}$ también tiene que estar.
+            falta cerrar la familia por uniones. Por ejemplo,
+            $\{1,2\} \cup \{3,4\}$ también tiene que pertenecer.
         - id: b3
           texto: '$6$'
           error_tipico: >-
-            Quedaron uniones afuera. Fijate que hay tres uniones de a pares
-            distintas, no una sola.
+            Faltan uniones. Entre los conjuntos dados hay tres uniones de a
+            pares distintas.
         - id: b4
           texto: '$64$'
           error_tipico: >-
-            Ésa es la cantidad de subconjuntos de $\Omega$, o sea la mayor
-            álgebra. Con estos tres generadores alcanza con mucho menos.
+            Esa es la cantidad de subconjuntos de $\Omega$, que corresponde a
+            la mayor álgebra. La menor álgebra que contiene a estos tres
+            conjuntos tiene muchos menos elementos.
     pistas:
-      - Los tres conjuntos dados son disjuntos y cubren todo $\Omega$: forman una partición.
-      - ¿Qué conjuntos se obtienen uniendo algunos de esos tres bloques?
+      - 'Los tres conjuntos dados son disjuntos y su unión es $\Omega$, de modo que forman una partición.'
+      - ¿Qué conjuntos se obtienen al unir algunos de esos tres bloques?
       - >-
-        Plan: cada elemento del álgebra queda determinado por cuáles de los
-        tres bloques incluye. Contá cuántas elecciones hay.
+        Plan: cada conjunto del álgebra queda determinado por los bloques de la
+        partición que incluye. Contá cuántas elecciones posibles hay.
     verificacion:
       estado: verificado
       metodo: exacto
