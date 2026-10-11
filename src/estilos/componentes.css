@@ -638,11 +638,13 @@
   gap: var(--e-2);
 }
 /* El de importar es un `label` (envuelve al campo de archivo): sin esto
-   hereda el interlineado del texto y queda más alto que los otros. */
+   hereda el interlineado del texto y queda más alto que los otros. Con el
+   interlineado de un botón, los tres miden lo mismo que los botones con
+   ícono del resto de la app. */
 .pie__acciones .boton {
   display: inline-flex;
   align-items: center;
-  line-height: 1.5;
+  line-height: normal;
 }
 .pie__acciones label.boton { cursor: pointer; }
 .pie .feedback { margin-top: var(--e-2); }

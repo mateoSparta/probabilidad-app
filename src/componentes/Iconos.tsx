@@ -123,6 +123,36 @@ export const IconoCandado = () => (
   </Svg>
 )
 
+// --------------------------------------------------------- tus datos
+
+/** Exportar: el progreso baja a un archivo. */
+export const IconoExportar = () => (
+  <Svg>
+    <path d="M12 15V3" />
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <path d="m7 10 5 5 5-5" />
+  </Svg>
+)
+
+/** Importar: un archivo sube al navegador. */
+export const IconoImportar = () => (
+  <Svg>
+    <path d="M12 3v12" />
+    <path d="m17 8-5-5-5 5" />
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+  </Svg>
+)
+
+export const IconoBorrar = () => (
+  <Svg>
+    <path d="M3 6h18" />
+    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+    <path d="M10 11v6" />
+    <path d="M14 11v6" />
+  </Svg>
+)
+
 // ---------------------------------------------------------- cafecito
 
 /**

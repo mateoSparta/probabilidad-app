@@ -13,6 +13,7 @@ import { descargar } from '../datos/almacenamiento'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
 import { desdeJson } from '../dominio/progreso'
+import { IconoBorrar, IconoExportar, IconoImportar } from './Iconos'
 import { Modal } from './Modal'
 
 export function TusDatos({ api, sesion }: { api: ApiProgreso; sesion?: ApiSesion }) {
@@ -51,14 +52,17 @@ export function TusDatos({ api, sesion }: { api: ApiProgreso; sesion?: ApiSesion
         Para pasar el progreso a otra compu, exportalo e importalo allá.
       </p>
       <div class="pie__acciones">
-        <button class="boton" onClick={() => descargar(progreso)}>
+        <button class="boton boton--icono" onClick={() => descargar(progreso)}>
+          <IconoExportar />
           Exportar JSON
         </button>
-        <label class="boton">
+        <label class="boton boton--icono">
+          <IconoImportar />
           Importar JSON
           <input type="file" accept="application/json" class="sr-solo" onChange={importar} />
         </label>
-        <button class="boton boton--borrar" onClick={() => setConfirmando(true)}>
+        <button class="boton boton--icono boton--borrar" onClick={() => setConfirmando(true)}>
+          <IconoBorrar />
           Borrar mis datos
         </button>
       </div>
