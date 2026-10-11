@@ -46,7 +46,7 @@ export function LogoCatedra({ visible }: { visible: boolean }) {
         data-tip="Página de cátedra"
         tabIndex={fase === 'saliendo' ? -1 : undefined}
       >
-        <img src={logo} alt="" width="72" height="72" draggable={false} />
+        <img src={logo} alt="" width="144" height="144" draggable={false} />
       </a>
     </div>
   )

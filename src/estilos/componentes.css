@@ -1375,8 +1375,8 @@
 }
 .catedra__boton {
   display: block;
-  width: 4.5rem;
-  height: 4.5rem;
+  width: 9rem;
+  height: 9rem;
   border-radius: 50%;
   overflow: hidden;
   background: #fff;
@@ -1395,5 +1395,5 @@
 }
 @media (max-width: 40rem) {
   .catedra { right: var(--e-4); bottom: var(--e-4); }
-  .catedra__boton { width: 3.5rem; height: 3.5rem; }
+  .catedra__boton { width: 7rem; height: 7rem; }
 }
