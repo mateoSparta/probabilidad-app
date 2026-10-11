@@ -76,7 +76,11 @@ export function Cabecera({ ruta, plan }: Props) {
               <ol class="migas__lista">
                 <li>
                   <h1 class="migas__titulo">
-                    <a href="#/" aria-current={seccion === 'menu' ? 'page' : undefined}>
+                    <a
+                      href="#/"
+                      aria-current={seccion === 'menu' ? 'page' : undefined}
+                      data-tip={seccion === 'menu' ? undefined : 'Volver al inicio'}
+                    >
                       Probabilidad y Estadística B
                     </a>
                   </h1>
@@ -141,7 +145,9 @@ function PestanasGuias({ activa }: { activa: number }) {
               class="tab"
               href={`#/ejercicios/${n}`}
               aria-current={n === activa ? 'page' : undefined}
-              title={n === activa ? titulo : undefined}
+              // Vacío no muestra nada, pero deja la pestaña a la escucha del
+              // globo, que la sigue mientras el texto se calcula al entrar.
+              data-tip={n === activa ? (titulo ?? '') : undefined}
               onPointerEnter={
                 n === activa
                   ? () => setTitulo(mapaFueraDeVista() ? 'Volver al principio' : undefined)
@@ -156,7 +162,7 @@ function PestanasGuias({ activa }: { activa: number }) {
               key={n}
               class="tab tab--bloqueada"
               aria-disabled="true"
-              title="Se desbloquean después del parcial"
+              data-tip="Se desbloquean después del parcial"
             >
               <IconoCandado />
               Guía {n}

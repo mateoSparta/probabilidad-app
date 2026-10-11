@@ -196,3 +196,25 @@ code, kbd, input, textarea, button, select {
 }
 
 main { padding-block: var(--e-5) var(--e-7); }
+
+/* En el inicio, la página ocupa al menos el alto de la ventana y "Tus datos"
+   queda al pie: la columna se estira y el pie empuja con `margin-top: auto`.
+   Se limita al inicio para no tocar el resto de las vistas, donde la barra
+   de las guías es `sticky`. */
+#app:has(.vista--menu) {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+#app:has(.vista--menu) main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: var(--e-4);
+}
+.vista--menu {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.vista--menu .menu { margin-bottom: var(--e-5); }

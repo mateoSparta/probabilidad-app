@@ -45,13 +45,13 @@ export function AvisoParcialCompacto({ plan }: { plan: Plan }) {
   return (
     <p class={'aviso-parcial ' + tono(plan)}>
       <IconoCalendario />
-      <a class="aviso-parcial__fecha" href="#/simulacro" title="Practicar con un simulacro">
+      <a class="aviso-parcial__fecha" href="#/simulacro" data-tip="Practicar con un simulacro">
         Parcial {fechaCorta(config.parcial)}
       </a>
       <span class="aviso-parcial__sep" aria-hidden="true">
         ·
       </span>
-      <a class="aviso-parcial__dias" href="#/seguimiento" title="Ver el seguimiento">
+      <a class="aviso-parcial__dias" href="#/seguimiento" data-tip="Ver el seguimiento">
         {texto}
       </a>
     </p>
@@ -69,9 +69,9 @@ export function AvisoParcialDetalle({ plan }: { plan: Plan }) {
 
       {veredicto === 'listo' ? (
         <p>
-          Los {plan.skillsTotal} skills están dominados. Hasta el parcial conviene mantenerlos,
-          porque el dominio se calcula sobre los intentos más recientes y disminuye si se deja
-          de practicar.
+          Los {plan.skillsTotal} skills están dominados. Hasta el parcial conviene seguir
+          practicando, porque el estado de cada skill se calcula sobre sus últimos 5 intentos y
+          los errores nuevos desplazan a los aciertos anteriores.
         </p>
       ) : veredicto === 'vencido' ? (
         <p>
@@ -110,14 +110,6 @@ export function AvisoParcialDetalle({ plan }: { plan: Plan }) {
           </li>
         )}
       </ul>
-
-      {plan.skillsSinCobertura > 0 && (
-        <p class="dato-chico">
-          Hay {plan.skillsSinCobertura} skills más que todavía no pueden dominarse porque tienen
-          menos de 3 ítems cargados. No se consideran en la meta, ya que esa limitación
-          proviene del contenido disponible.
-        </p>
-      )}
 
       {veredicto === 'sin_arrancar' && (
         <p class="dato-chico">

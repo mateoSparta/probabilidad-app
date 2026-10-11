@@ -61,7 +61,7 @@ try {
       .map((t: string) => t.slice(0, t.indexOf('</span>')))
     afirmar(
       bloqueadas.some(
-        (t: string) => t.endsWith(`Guía ${n}`) && t.includes('title="Se desbloquean después del parcial"'),
+        (t: string) => t.endsWith(`Guía ${n}`) && t.includes('data-tip="Se desbloquean después del parcial"'),
       ),
       `la guía ${n} no aparece bloqueada`,
     )
@@ -296,6 +296,17 @@ try {
     menu.indexOf('Tus datos') > menu.indexOf('class="menu__grilla"'),
     '"Tus datos" no quedó debajo de las opciones',
   )
+  afirmar(/<footer class="pie"/.test(menu), '"Tus datos" no es el pie de la página')
+  // Un solo botón para borrar, que se lleva todo; sin el resumen de conteos.
+  afirmar(
+    (menu.match(/Borrar mis datos/g) ?? []).length === 1 &&
+      !menu.includes('Borrar historial') &&
+      !menu.includes('Empezar las guías de cero'),
+    'no hay un único botón "Borrar mis datos"',
+  )
+  afirmar(!menu.includes('intentos registrados'), 'sigue el resumen de intentos registrados')
+  // Los globos reemplazan al `title` del navegador en toda la interfaz.
+  afirmar(!/ title="/.test(menu), 'el menú usa `title` en lugar de `data-tip`')
 
   // --- seguimiento ---
   const seguimiento = render(
@@ -336,11 +347,13 @@ try {
   afirmar(limpio.includes('estado--sin_explorar'), 'sin intentos no se ve ningún sin_explorar')
   // "Tus datos" se mudó al pie del menú principal.
   afirmar(!limpio.includes('Exportar JSON'), 'el panel de skills sigue mostrando "Tus datos"')
-  // Cada skill lleva a su teoría y tiene un botón aparte para el detalle.
+  // Cada skill es un botón que abre su ventana; ya no hay botón de detalle.
   const celdas = (limpio.match(/<li class="celda estado--/g) ?? []).length
-  const detalles = (limpio.match(/class="celda__detalle"/g) ?? []).length
-  afirmar(celdas === contenido.skills.length && detalles === celdas,
-    `hay ${celdas} recuadros y ${detalles} botones de detalle para ${contenido.skills.length} skills`)
+  const abren = (limpio.match(/aria-haspopup="dialog"/g) ?? []).length
+  afirmar(celdas === contenido.skills.length && abren === celdas && !limpio.includes('celda__detalle'),
+    `hay ${celdas} recuadros y ${abren} que abren la ventana para ${contenido.skills.length} skills`)
+  afirmar(!limpio.includes('disminuye si se deja de practicar'),
+    'el panel sigue diciendo que el estado disminuye si se deja de practicar')
   for (const sk of contenido.skills) {
     const d = contenido.destinoDeSkill.get(sk.id)
     afirmar(!!d, `el skill ${sk.id} no tiene adónde llevar`)

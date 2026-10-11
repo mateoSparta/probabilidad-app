@@ -60,14 +60,21 @@ export function VistaGuia({ numero, sesion, onIntento, destino, onDestinoAlcanza
   // Se baja sin animación: viniendo de otra sección, una animación larga
   // desde el principio de la guía no aporta nada. Al llegar, el bloque se
   // resalta un instante para que se vea adónde se llegó.
+  //
+  // Lo que se arma acá no depende de `destino`: avisar que se llegó lo vuelve
+  // null enseguida, y con eso no tiene que cortarse ni el resaltado ni el
+  // seguimiento del ancla. Se corta solo, o al desmontar la guía.
+  const soltarAncla = useRef<(() => void) | null>(null)
+  useEffect(() => () => soltarAncla.current?.(), [])
   useEffect(() => {
     if (!destino) return
     irA(destino, false)
     const el = document.getElementById(destino)
     el?.classList.add('destacado')
-    const t = setTimeout(() => el?.classList.remove('destacado'), 1600)
+    setTimeout(() => el?.classList.remove('destacado'), 1600)
+    soltarAncla.current?.()
+    soltarAncla.current = mantenerEnVista(destino)
     onDestinoAlcanzado?.()
-    return () => clearTimeout(t)
   }, [destino])
 
   if (!guia || guia.secuencia.length === 0) {
@@ -106,6 +113,29 @@ export function VistaGuia({ numero, sesion, onIntento, destino, onDestinoAlcanza
       <FinDeGuia />
     </>
   )
+}
+
+/**
+ * Mantiene un ancla arriba de la pantalla mientras la página termina de
+ * acomodarse. Las tipografías de la guía (las de KaTeX y la monoespaciada de
+ * los campos) pueden cargar después del salto, y al cambiar las alturas el
+ * destino se corre decenas de píxeles. Durante dos segundos se vuelve a saltar
+ * cada vez que la página cambia de tamaño, salvo que el usuario ya se haya
+ * movido por su cuenta. Devuelve la función que lo corta.
+ */
+function mantenerEnVista(ancla: string): () => void {
+  if (typeof ResizeObserver === 'undefined') return () => {}
+  const observador = new ResizeObserver(() => irA(ancla, false))
+  const eventos = ['wheel', 'touchmove', 'keydown', 'pointerdown'] as const
+  const soltar = (): void => {
+    observador.disconnect()
+    clearTimeout(t)
+    for (const ev of eventos) removeEventListener(ev, soltar)
+  }
+  const t = setTimeout(soltar, 2000)
+  observador.observe(document.body)
+  for (const ev of eventos) addEventListener(ev, soltar, { passive: true })
+  return soltar
 }
 
 /**

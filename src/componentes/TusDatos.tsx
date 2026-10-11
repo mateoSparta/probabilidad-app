@@ -1,7 +1,11 @@
 /**
  * "Tus datos": exportar, importar y borrar lo que la app guarda en el
- * navegador. Va al pie del menú principal, porque afecta a toda la app y no a
+ * navegador. Es el pie del menú principal, porque afecta a toda la app y no a
  * una sección en particular.
+ *
+ * Hay un solo botón para borrar, que se lleva todo: el historial de intentos
+ * y el estado de los ejercicios y del simulacro. Antes de hacerlo pide
+ * confirmación en una ventana, porque no se puede deshacer.
  */
 import { useState } from 'preact/hooks'
 
@@ -9,10 +13,12 @@ import { descargar } from '../datos/almacenamiento'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
 import { desdeJson } from '../dominio/progreso'
+import { Modal } from './Modal'
 
 export function TusDatos({ api, sesion }: { api: ApiProgreso; sesion?: ApiSesion }) {
   const { progreso, reemplazar, reiniciar } = api
   const [aviso, setAviso] = useState<string | null>(null)
+  const [confirmando, setConfirmando] = useState(false)
 
   async function importar(e: Event) {
     const input = e.target as HTMLInputElement
@@ -28,16 +34,25 @@ export function TusDatos({ api, sesion }: { api: ApiProgreso; sesion?: ApiSesion
     input.value = ''
   }
 
+  function borrarTodo(): void {
+    reiniciar()
+    sesion?.reiniciar()
+    setConfirmando(false)
+    setAviso('Se borraron todos tus datos.')
+  }
+
   return (
-    <section class="datos" aria-labelledby="titulo-datos">
-      <h3 id="titulo-datos">Tus datos</h3>
-      <p class="guia__descripcion">
-        Todo se guarda en este navegador, sin servidor ni base de datos. Se registran dos cosas
-        por separado: el <strong>historial</strong> de intentos, del que surgen las insignias, y{' '}
+    <footer class="pie" aria-labelledby="titulo-datos">
+      <h3 id="titulo-datos" class="pie__titulo">
+        Tus datos
+      </h3>
+      <p class="pie__descripcion">
+        Todo se guarda en este navegador, sin servidor ni base de datos. Se registran dos cosas:
+        el <strong>historial</strong> de intentos, del que surgen las insignias, y{' '}
         <strong>dónde quedaste</strong> (ítems resueltos, respuestas escritas y el simulacro en
-        curso). Para usar el historial en otra computadora, exportalo e importalo allí.
+        curso). Para pasar el progreso a otra compu, exportalo e importalo allá.
       </p>
-      <div class="item__acciones">
+      <div class="pie__acciones">
         <button class="boton" onClick={() => descargar(progreso)}>
           Exportar JSON
         </button>
@@ -45,42 +60,27 @@ export function TusDatos({ api, sesion }: { api: ApiProgreso; sesion?: ApiSesion
           Importar JSON
           <input type="file" accept="application/json" class="sr-solo" onChange={importar} />
         </label>
-        <button
-          class="boton boton--fantasma"
-          onClick={() => {
-            if (confirm('¿Borrar el historial de intentos? Se pierden las insignias.')) {
-              reiniciar()
-              setAviso('Historial borrado.')
-            }
-          }}
-        >
-          Borrar historial
+        <button class="boton boton--borrar" onClick={() => setConfirmando(true)}>
+          Borrar mis datos
         </button>
-        {sesion && (
-          <button
-            class="boton boton--fantasma"
-            onClick={() => {
-              if (
-                confirm(
-                  'Todos los ejercicios volverán a quedar sin resolver. El historial y las ' +
-                    'insignias no se modifican. ¿Continuar?',
-                )
-              ) {
-                sesion.reiniciar()
-                setAviso('Todos los ejercicios quedaron disponibles para rehacer.')
-              }
-            }}
-          >
-            Empezar las guías de cero
-          </button>
-        )}
       </div>
       {aviso && <p class="feedback feedback--aviso">{aviso}</p>}
-      <p class="dato-chico">
-        {progreso.intentos.length} intentos registrados
-        {sesion && <> · {Object.keys(sesion.sesion.items).length} ítems con estado guardado</>}
-        {sesion?.sesion.simulacro && <> · hay un simulacro en curso</>}
-      </p>
-    </section>
+
+      <Modal
+        abierto={confirmando}
+        titulo="¿Borrar todos tus datos?"
+        confirmar="Borrar todo"
+        cancelar="Cancelar"
+        peligro
+        onConfirmar={borrarTodo}
+        onCancelar={() => setConfirmando(false)}
+      >
+        <p>
+          Se borran el historial de intentos, del que surgen las insignias, y el estado de todos
+          los ejercicios, incluido el simulacro en curso. No se puede deshacer.
+        </p>
+        <p>Si querés conservar una copia del historial, exportalo antes.</p>
+      </Modal>
+    </footer>
   )
 }

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'preact/hooks'
 
 import { Cabecera } from './componentes/Cabecera'
+import { Globo } from './componentes/Globo'
 import {
   config,
   destinoDeSkill,
@@ -63,7 +64,7 @@ export function App() {
         {/* La key hace que cada cambio de sección (o de guía) monte la vista
             de cero, y con eso se repite la animación de entrada. */}
         <div
-          class="vista"
+          class={'vista vista--' + ruta.seccion}
           key={ruta.seccion === 'ejercicios' ? `ejercicios-${ruta.guia}` : ruta.seccion}
         >
           {ruta.seccion === 'menu' && (
@@ -90,6 +91,7 @@ export function App() {
           )}
         </div>
       </main>
+      <Globo />
     </>
   )
 }

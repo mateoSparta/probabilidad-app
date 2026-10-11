@@ -38,6 +38,19 @@ function esLimpio(item: Item, envios: number, revelo: boolean): boolean {
   return item.respuesta.tipo === 'opcion' ? envios <= 1 : envios <= 2
 }
 
+/**
+ * Las opciones en orden al azar (Fisher-Yates). En el contenido la correcta
+ * va primera, y mostrarlas así enseñaría la posición en lugar del tema.
+ */
+function barajar<T>(xs: readonly T[]): T[] {
+  const a = [...xs]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
 type Props = {
   item: Item
   /** Clave global del ítem (`g1-04:b`): es con la que se registra el intento. */
@@ -85,6 +98,11 @@ export function ItemEjercicio({
   const [mensaje, setMensaje] = useState<string | null>(null)
   const [errorTipico, setErrorTipico] = useState<string | null>(null)
   const [detalleCp, setDetalleCp] = useState<boolean[] | null>(null)
+  // El orden se fija al montar el ítem, para que no cambie mientras se
+  // responde. La opción elegida se guarda por id, así que no depende de él.
+  const [opciones] = useState(() =>
+    item.respuesta.tipo === 'opcion' ? barajar(item.respuesta.opciones) : [],
+  )
 
   /** Mezcla el cambio en el estado y lo persiste de una. */
   function actualizar(parcial: Partial<SesionItem>): void {
@@ -186,7 +204,7 @@ export function ItemEjercicio({
       {/* --- entrada según el tipo de respuesta --- */}
       {r.tipo === 'opcion' ? (
         <ul class="opciones">
-          {r.opciones.map((o) => (
+          {opciones.map((o) => (
             <li key={o.id}>
               <label class={'opcion' + (est.opcion === o.id ? ' opcion--elegida' : '')}>
                 <input

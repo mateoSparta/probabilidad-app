@@ -103,6 +103,7 @@ export function MenuNavegacion({ ruta }: { ruta: Ruta }) {
           aria-expanded={abierto}
           aria-controls="menu-navegacion"
           aria-label={abierto ? 'Cerrar el menú' : 'Abrir el menú'}
+          data-tip={abierto || enInicio ? undefined : 'Menú'}
           aria-hidden={enInicio ? 'true' : undefined}
           tabIndex={enInicio ? -1 : 0}
           onClick={() => (abierto ? cerrar() : setFase('abierto'))}
@@ -117,7 +118,7 @@ export function MenuNavegacion({ ruta }: { ruta: Ruta }) {
           href={CAFECITO}
           target="_blank"
           rel="noopener noreferrer"
-          title="Invitame un cafecito"
+          data-tip={enInicio ? 'Invitame un cafecito' : undefined}
           aria-label="Invitame un cafecito (se abre en otra pestaña)"
           aria-hidden={enInicio ? undefined : 'true'}
           tabIndex={enInicio ? 0 : -1}

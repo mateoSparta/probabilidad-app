@@ -219,9 +219,6 @@
 .celda-skill:hover {
   transform: translateY(-2px);
 }
-.detalle-skill {
-  animation: desplegar 280ms ease-out both;
-}
 
 /* ----------------------------------------------------------- simulacro */
 
@@ -276,6 +273,13 @@
 }
 .modal--saliendo[open]::backdrop {
   animation: aparecer 160ms ease-in reverse both;
+}
+
+/* ------------------------------------------------------------- globo */
+
+/* Aparece al instante: la animación es sólo un fundido muy corto, sin demora. */
+.globo {
+  animation: aparecer 90ms ease-out both;
 }
 
 /* ------------------------------------------------ movimiento reducido */

@@ -160,6 +160,3 @@ y por variante, no por archivo. Por eso el esquema tiene `guias` y
   parcial de 2021 duraba 2 h 30 y tiene 3 ejercicios, pero se rinde con la
   duración configurada (4 h por defecto). Si se quiere respetar la del
   examen, el campo `duracion_min` ya está en cada YAML.
-- **Las opciones no se barajan.** En todos los ítems de opción múltiple la
-  correcta es la primera del YAML, y la app las muestra en ese orden. Con
-  varios ítems de ese tipo el patrón se aprende.

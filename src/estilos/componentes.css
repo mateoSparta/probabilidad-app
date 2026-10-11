@@ -52,6 +52,17 @@
 }
 .tabla td:first-child:not(:has(.katex)) { text-align: left; }
 
+/* ----------------------------------------------------- secuencia */
+
+/* En la guía, cada tema empieza con su teoría y sigue con sus ejercicios.
+   Los bloques de un mismo tema van más juntos, y el cambio de tema (una
+   teoría que no es la primera) deja más aire. */
+.secuencia { margin-bottom: var(--e-6); }
+.secuencia > .teoria,
+.secuencia > .tarjeta { margin-block: var(--e-4) 0; }
+.secuencia > :first-child { margin-top: 0; }
+.secuencia > .teoria:not(:first-child) { margin-top: var(--e-6); }
+
 /* ----------------------------------------------------------- tarjeta */
 
 .tarjeta {
@@ -426,15 +437,27 @@
 
 /* ------------------------------------------------- panel de skills (§5) */
 
+/* Cada estado con su cantidad y, debajo, el criterio que lo define. */
 .resumen {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--e-4);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--e-3) var(--e-4);
   list-style: none;
   margin: var(--e-4) 0 0;
   padding: 0;
   font-size: var(--t-sm);
   color: var(--tinta-2);
+}
+.resumen__item {
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--e-3);
+  border-left: 2px solid var(--color-estado);
+}
+.resumen__criterio {
+  font-size: var(--t-xs);
+  color: var(--tinta-3);
+  line-height: 1.35;
 }
 .resumen__item strong {
   font-size: var(--t-md);
@@ -474,8 +497,7 @@
   padding: 0;
 }
 
-/* El recuadro es el botón que lleva a la teoría; el de detalle va encima,
-   en la esquina superior derecha. */
+/* El recuadro entero es el botón que abre la ventana del skill. */
 .celda { position: relative; }
 
 .celda-skill {
@@ -485,7 +507,6 @@
   width: 100%;
   height: 100%;
   min-height: 5.75rem;
-  padding-right: 2.5rem;
   text-align: left;
   appearance: none;
   cursor: pointer;
@@ -498,36 +519,6 @@
   transition: border-color 120ms, background 120ms;
 }
 .celda-skill:hover { border-color: var(--color-estado); }
-.celda-skill:disabled { cursor: default; }
-.celda--abierta .celda-skill { border-color: var(--color-estado); background: var(--superficie-alta); }
-
-.celda__detalle {
-  position: absolute;
-  top: var(--e-2);
-  right: var(--e-2);
-  display: grid;
-  place-items: center;
-  width: 1.6rem;
-  height: 1.6rem;
-  padding: 0;
-  appearance: none;
-  border: 1px solid transparent;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--tinta-3);
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background 150ms, color 150ms, border-color 150ms;
-}
-.celda__detalle svg { transition: transform 220ms ease; }
-.celda__detalle:hover,
-.celda__detalle:focus-visible {
-  color: var(--color-estado);
-  border-color: color-mix(in srgb, var(--color-estado) 45%, transparent);
-  background: var(--superficie-alta);
-}
-.celda--abierta .celda__detalle { color: var(--color-estado); }
-.celda--abierta .celda__detalle svg { transform: rotate(45deg); }
 
 /* Sello circular con la inicial del skill: sobrio, sin animaciones. */
 .sello {
@@ -558,16 +549,20 @@
   line-height: 1.3;
 }
 
-.detalle-skill {
-  background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-left: 2px solid var(--acento);
-  border-radius: var(--radio-lg);
-  padding: var(--e-4) var(--e-5);
-  margin-block: var(--e-5);
+/* Ventana de un skill: más ancha que la de confirmación, con un filete del
+   color de su estado. */
+.modal--skill {
+  width: min(38rem, calc(100vw - 2rem));
+  border-top: 3px solid var(--color-estado);
 }
-.detalle-skill h3 { margin-bottom: var(--e-2); }
-.detalle-skill h4 {
+.modal--skill .modal__titulo { margin-bottom: var(--e-1); }
+.modal--skill .modal__cuerpo { color: var(--tinta); }
+.modal-skill__estado {
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+.modal-skill__etiqueta { color: var(--color-estado); font-weight: 500; }
+.modal--skill h4 {
   font-size: var(--t-xs);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -597,12 +592,52 @@
   cursor: pointer;
 }
 
-.datos {
+/* "Tus datos", el pie del inicio. Va pegado al fondo de la ventana (ver
+   global.css) y es compacto, para que el inicio entero entre sin scroll. */
+.pie {
+  margin-top: auto;
+  padding-top: var(--e-4);
   border-top: 1px solid var(--borde);
-  margin-top: var(--e-7);
-  padding-top: var(--e-5);
 }
-.datos label.boton { cursor: pointer; }
+.pie__titulo {
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tinta-2);
+  font-weight: 600;
+  margin-bottom: var(--e-1);
+}
+.pie__descripcion {
+  font-size: var(--t-sm);
+  line-height: 1.5;
+  color: var(--tinta-2);
+  margin-bottom: var(--e-3);
+}
+.pie__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-2);
+}
+/* El de importar es un `label` (envuelve al campo de archivo): sin esto
+   hereda el interlineado del texto y queda más alto que los otros. */
+.pie__acciones .boton {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.5;
+}
+.pie__acciones label.boton { cursor: pointer; }
+.pie .feedback { margin-top: var(--e-2); }
+
+/* Borrar: se ve como un botón más hasta que el mouse pasa por encima, y ahí
+   se pinta de rojo para avisar que es la acción destructiva. */
+.boton--borrar { margin-left: auto; }
+.boton--borrar:hover,
+.boton--borrar:focus-visible {
+  background: var(--flojo);
+  border-color: var(--flojo);
+  color: #fff;
+}
 
 .dato-chico { font-size: var(--t-xs); color: var(--tinta-3); margin-top: var(--e-2); }
 
@@ -1044,13 +1079,22 @@
   color: var(--tinta);
   box-shadow: 0 4px 12px #2b26201a, 0 24px 60px #2b262033;
   width: min(30rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 3rem);
 }
 .modal::backdrop {
-  background: #2b262059;
-  backdrop-filter: blur(2px);
+  background: #2b262047;
+  backdrop-filter: blur(3px);
 }
 
-.modal__contenido { padding: var(--e-5); }
+/* Si el contenido no entra, se desplaza el cuerpo y el pie queda a la vista. */
+.modal[open] { display: flex; flex-direction: column; }
+.modal__contenido {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: var(--e-5);
+}
+.modal__cuerpo { overflow-y: auto; min-height: 0; }
 .modal__titulo { margin-bottom: var(--e-3); }
 .modal__cuerpo { color: var(--tinta-2); }
 .modal__cuerpo > :last-child { margin-bottom: 0; }
@@ -1071,3 +1115,38 @@
   color: #fff;
 }
 .boton--peligro:hover { background: var(--flojo); filter: brightness(1.08); }
+
+/* --------------------------------------------------------------- globo */
+
+/* La ayuda que aparece al pasar el mouse (ver Globo.tsx). Lo ubica el
+   componente; la flecha apunta al centro del elemento aunque el globo se
+   haya corrido para no salirse de la ventana. */
+.globo {
+  position: fixed;
+  z-index: 100;
+  max-width: 18rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radio-lg);
+  background: var(--tinta);
+  color: var(--fondo);
+  font-family: var(--serif);
+  font-size: var(--t-xs);
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  box-shadow: 0 2px 6px #2b262026, 0 8px 20px #2b26201f;
+  pointer-events: none;
+}
+.globo::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--flecha-x, 50%) - 5px);
+  border: 5px solid transparent;
+}
+.globo[data-lado='abajo']::before {
+  bottom: 100%;
+  border-bottom-color: var(--tinta);
+}
+.globo[data-lado='arriba']::before {
+  top: 100%;
+  border-top-color: var(--tinta);
+}

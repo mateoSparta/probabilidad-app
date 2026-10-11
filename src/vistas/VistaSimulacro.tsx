@@ -466,7 +466,7 @@ function Configuracion({
                         (config.tipo === tipo ? ' segmentado__opcion--activa' : '') +
                         (cantidad === 0 ? ' segmentado__opcion--vacia' : '')
                       }
-                      title={cantidad === 0 ? `${vacio} para rendir` : undefined}
+                      data-tip={cantidad === 0 ? `${vacio} para rendir` : undefined}
                     >
                       <input
                         class="sr-solo"
