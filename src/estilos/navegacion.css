@@ -341,6 +341,10 @@
     color: var(--acento);
   }
   .subir__flecha { display: inline-block; }
+  /* En skills no hay barra fija arriba: "Subir" se pega a la misma distancia
+     del borde superior que de las tarjetas (28,8 px de tinta en los dos
+     lados; la tinta empieza 4,8 px por debajo del borde del botón). */
+  .vista--skills .subir { top: var(--e-5); }
 }
 
 /* -------------------------------------------- aviso del parcial */

@@ -623,8 +623,10 @@
   font-weight: 600;
   margin-bottom: var(--e-1);
 }
+/* Un poco más chica que el texto de la app, para que la descripción entre
+   en un renglón en la columna. */
 .pie__descripcion {
-  font-size: var(--t-sm);
+  font-size: 0.8125rem;
   line-height: 1.5;
   color: var(--tinta-2);
   margin-bottom: var(--e-3);
