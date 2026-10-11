@@ -27,6 +27,8 @@ no se ofrecen en el simulacro: son los pendientes de §1.2.
 | Primer recuperatorio | 24-11-2018 |
 | Evaluación parcial | 01-06-2019 |
 | Evaluación parcial | 27-05-2023 |
+| Parcial, primera fecha | 24-05-2025 |
+| Parcial, segunda fecha | 14-06-2025 |
 
 ### 1.2 Pendientes: no tienen sus cinco ejercicios
 
@@ -36,12 +38,10 @@ no se ofrecen en el simulacro: son los pendientes de §1.2.
 | Primer recuperatorio | 18-11-2017 | 4 de 5 | ej 1 es de simulación, fuera de alcance |
 | Primer recuperatorio | 15-06-2019 | 4 de 5 | ej 2 es de simulación, fuera de alcance |
 | Primer parcial (parte 2) | 13-11-2021 | 3 de 3 | es la segunda mitad de un parcial dividido: tiene 3 ejercicios |
-| Parcial | 24-05-2025 | 1 de 5 | ej 2 a 5 sin cargar (ver §3) |
-| Parcial | 14-06-2025 | 1 de 5 | ej 2 a 5 sin cargar (ver §3) |
 
-Los tres con un ejercicio de simulación no van a entrar nunca, porque ese
-ejercicio queda fuera de alcance por CLAUDE.md. Los dos de 2025 sí pueden
-completarse (ver §3).
+Ninguno de los cuatro puede completarse. Los tres con un ejercicio de
+simulación no van a entrar nunca, porque ese ejercicio queda fuera de alcance
+por CLAUDE.md, y el de 2021 es medio parcial.
 
 Cómo se eligió qué cargar:
 
@@ -116,22 +116,43 @@ son discrepancias:
   distribución exacta de la suma alcanza con 56. El enunciado dice "estimar",
   así que se carga 57.
 
-## 3. Qué falta de los parciales de 2025
+## 3. Los parciales de 2025
 
-Los enunciados de los 10 ejercicios están transcriptos en
-`content/examenes/*.yaml`, así que cargarlos es escribir sus ítems y su modelo
-de verificación, no transcribir.
+Están completos y en el pool. No tienen resuelta, así que cada valor viene
+sólo de su modelo (`tools/verify/ep20250524.py` y `ep20250614.py`), calculado
+por dos caminos independientes:
 
-| Examen | Ej | Guías | Qué hace falta |
+| Examen | Ej | Valor | Segundo camino |
 |---|---|---|---|
-| 24-05 | 2 | 5 | Esperanza condicional. **Tiene variantes por curso**: Curso 4 pide $E(Y\mid X=3)$, los otros $P(E(Y\mid X) < 10)$. Hay que definir el campo `curso` en la configuración (PLAN.md §6) y elegir la variante |
-| 24-05 | 3 | 2, 4 | Conjunta uniforme y distribución de $W = \lvert Y - X\rvert$. Va como `checkpoints` |
-| 24-05 | 4 | 7 | Poisson: superposición y condicionamiento a $N(t)=n$ |
-| 24-05 | 5 | 8 | TCL. **El enunciado quedó cortado** en la transcripción: hay que completarlo del PDF |
-| 14-06 | 2 | 3, 6 | Esperanza de una mezcla de hipergeométrica y binomial |
-| 14-06 | 3 | 2, 4 | Igual que el 3 del 24-05, con otra región |
-| 14-06 | 4 | 7 | Poisson: adelgazamiento |
-| 14-06 | 5 | 8 | TCL, hallar el $n$ mínimo |
+| 24-05 | 1 | $15/61$ | Monte Carlo |
+| 24-05 | 2 | $\sqrt{5}/2 - 1 \approx 0{,}1180$ | regresión por integración numérica y Monte Carlo por rechazo sobre la conjunta |
+| 24-05 | 3 | $F_W(1/2) = 1/3$, $F_W(1) = 2/3$, $F_W(3/2) = 5/6$ | Monte Carlo por rechazo |
+| 24-05 | 4 | $14 \cdot 0{,}1 \cdot 0{,}9^{13} \approx 0{,}3559$ | incrementos independientes y Bayes, sin las uniformes; Monte Carlo |
+| 24-05 | 5 | 5115251,67 | cuantil de la distribución exacta (5114000) |
+| 14-06 | 1 | $6/11$ | Monte Carlo |
+| 14-06 | 2 | $9/5$ | Monte Carlo |
+| 14-06 | 3 | $F_W(1/3) = 1/3$, $F_W(3/4) = 3/4$, $F_W(3/2) = 1$ | Monte Carlo por rechazo |
+| 14-06 | 4 | $1 - \frac{65}{2} e^{-7} \approx 0{,}9704$ | condicionando sobre el total, sin la independencia; Monte Carlo |
+| 14-06 | 5 | 1134 | distribución exacta (convolución), mismo mínimo |
+
+Decisiones:
+
+- **Variante del 24-05 ej 2.** Se cargó la de "Otros cursos",
+  $P(E(Y \mid X) < 10)$, porque `curso` está en `null` en
+  `content/config.yaml` y la del Curso 4 es la excepción. La tarjeta del
+  simulacro muestra la variante. La del Curso 4, $E(Y \mid X = 3) = 18$,
+  queda en el modelo como control, y la app rechaza 18 como respuesta.
+- **"Hallar y graficar".** Los dos ej 3 piden además el gráfico de $F_W$, que
+  no se puede validar. Van como `checkpoints`, igual que los de 2017 y 2023.
+- **El monto del 24-05 ej 5** se informa al centavo, como el umbral en gramos
+  del 13-11-2021, y lleva `tol_rel: 0.002`. Acepta el cuantil de la tabla
+  redondeado (de 1,64 a 1,65) y el de la distribución exacta, pero no un error
+  en la varianza, que corre el resultado en más de un 1 %.
+- **El 14-06 ej 5** da 1134 con cualquier redondeo de $z$ entre 1,64 y 1,65,
+  y la distribución exacta da el mismo mínimo. Va con tolerancia de entero.
+- **El 14-06 ej 2** da $9/5$ independientemente de la moneda, porque la
+  hipergeométrica y la binomial tienen la misma media. Las pistas no lo
+  anticipan.
 
 ## 4. Exámenes que todavía no se cargaron
 
@@ -140,8 +161,9 @@ de verificación, no transcribir.
 `EI_20250710-PyE-B.pdf`, `EI-20250717-PyE-B.pdf`, `EI-20250807-PyE-A-B.pdf`.
 Son de una página y con capa de texto limpia. Según PLAN.md §6 los ejercicios
 1–3 están en alcance y el 4 y el 5 son de estadística (guías 9–12). El toggle
-"Incluir integradoras" ya existe en la app y el pool las va a tomar en cuanto
-tengan un ejercicio verificado.
+"Incluir integradoras" ya existe en la app, pero con la política del pool
+(§1) una integradora entra recién con sus cinco ejercicios cargados, y eso
+requiere el contenido de estadística, que todavía no existe.
 
 ### 4.2 Los dos `*-ProbIND`
 
@@ -164,15 +186,17 @@ y por variante, no por archivo. Por eso el esquema tiene `guias` y
 ## 5. Pendiente de diseño
 
 - **El campo `curso`.** PLAN.md §6 dice que se carga la variante que
-  corresponde al curso de Mateo, definido en la configuración. El esquema ya
-  tiene `variante` por ejercicio, pero la configuración todavía no tiene
-  `curso` ni la app elige por él: hace falta recién cuando se cargue el ej 2
-  del 24-05, que es el único con variantes hasta ahora.
+  corresponde al curso de Mateo. `content/config.yaml` tiene `curso: null`,
+  y con ese valor se cargó la variante general del 24-05 ej 2 (§3). Si el
+  curso resulta ser el 4, alcanza con cambiar el ítem por
+  $E(Y \mid X = 3) = 18$, que ya está verificado en el modelo. La app no
+  elige variantes por curso; hasta ahora no hizo falta, porque es el único
+  ejercicio con dos.
 - **Reintentar un simulacro.** Hoy se puede abandonar y empezar otro, pero el
   intento por ítem por día sigue valiendo, así que rendir el mismo examen dos
   veces en el día no vuelve a contar para las insignias. Es lo que dice §5 y
   probablemente sea lo correcto, pero conviene confirmarlo ahora que el pool
-  tiene 14 exámenes.
+  tiene 10 exámenes.
 - **La duración la elige el alumno**, antes de que se sortee el examen. El
   parcial de 2021 duraba 2 h 30 y tiene 3 ejercicios, pero se rinde con la
   duración configurada (4 h por defecto). Si se quiere respetar la del

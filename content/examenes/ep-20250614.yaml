@@ -48,71 +48,180 @@ ejercicios:
           estado: verificado
           metodo: exacto+montecarlo
           fuentes_valor:
-            - origen: tools/verify/ep20250614_1.py
+            - origen: tools/verify/ep20250614.py
               valor: "6/11"
-            - origen: "tools/verify/ep20250614_1.py (control: P(rechazo))"
+            - origen: "tools/verify/ep20250614.py (control: P(rechazo))"
               valor: "11/45"
 
   - numero: 2
-    guias: [3, 6]
+    guias: [3, 5, 6]
     en_alcance: true
-    cargado: false
-    nota: >-
-      Corresponde a la guía 3 (esperanza) y a la guía 6 (hipergeométrica y
-      binomial). Combina dos mecanismos de extracción según el resultado de la
-      moneda.
+    cargado: true
     enunciado: |
       Se tiene una moneda cargada con probabilidad de cara $0{,}3$, y una caja
-      con 6 bolas rojas y 4 azules. Se arroja la moneda: si sale cara se
-      extraen 3 bolas de la caja sin reposición; si sale ceca se extraen
-      también 3 bolas de la caja pero con reposición. Calcular la esperanza de
-      la cantidad de bolas rojas extraídas.
-    items: []
+      con 6 bolas rojas y 4 azules. [[esperanza-total|Se arroja la moneda]]:
+      si sale cara se extraen [[hipergeometrica|3 bolas de la caja sin
+      reposición]]; si sale ceca se extraen también
+      [[bernoulli-binomial|3 bolas de la caja pero con reposición]].
+    items:
+      - id: a
+        pregunta: >-
+          Calcular la [[esperanza-total|esperanza de la cantidad de bolas
+          rojas extraídas]].
+        skills: [esperanza-total, hipergeometrica, bernoulli-binomial]
+        respuesta:
+          tipo: numerica
+          valor: "9/5"
+        pistas:
+          - >-
+            Condicioná al resultado de la moneda. En cada caso la cantidad de
+            bolas rojas tiene una distribución conocida.
+          - >-
+            Sin reposición la cantidad de rojas es hipergeométrica, y con
+            reposición es binomial. Las dos medias dependen de la cantidad de
+            extracciones y de la proporción de rojas en la caja.
+          - >-
+            Plan: calculá la media de la cantidad de rojas en cada rama con la
+            fórmula de la hipergeométrica y la de la binomial, y promediá las
+            dos con las probabilidades de cara y de ceca.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: tools/verify/ep20250614.py
+              valor: "9/5"
+            - origen: "tools/verify/ep20250614.py (control: media en cada rama)"
+              valor: "9/5 con cara y 9/5 con ceca"
 
   - numero: 3
     guias: [2, 4]
     en_alcance: true
-    cargado: false
-    nota: >-
-      Corresponde a la guía 2 (distribución conjunta) y a la guía 4
-      (transformaciones). Pide hallar y graficar una función de distribución.
+    cargado: true
     enunciado: |
       Se usan dos métodos para medir la humedad de la atmósfera. La
       distribución de probabilidad conjunta de las dos mediciones $(X, Y)$ es
-      una distribución uniforme en la región
+      una [[prob-geometrica|distribución uniforme en la región]]
       $$R = \{(x, y) : 0 < x < 4,\ x - 1 < y < x + 2\}$$
-      Hallar y graficar la función de distribución de $W = (Y - X + 1)/3$.
-    items: []
+    items:
+      - id: a
+        # El examen pide además graficarla, y eso no se puede validar.
+        pregunta: >-
+          Hallar la [[transformacion-F|función de distribución de
+          $W = (Y - X + 1)/3$]] y evaluarla donde se pide.
+        skills: [transformacion-F, prob-geometrica]
+        respuesta:
+          tipo: checkpoints
+          checkpoints:
+            - pregunta: '$F_W(1/3)$'
+              valor: "1/3"
+            - pregunta: '$F_W(3/4)$'
+              valor: "3/4"
+            - pregunta: '$F_W(3/2)$'
+              valor: "1"
+        pistas:
+          - >-
+            Como la distribución es uniforme, $F_W(w)$ es el área de la parte
+            de $R$ donde $(Y - X + 1)/3 \le w$, dividida por el área de $R$.
+          - >-
+            El evento $\{W \le w\}$ equivale a $\{Y \le X + 3w - 1\}$. Para
+            cada $x$ fijo, la región $R$ es un segmento vertical de longitud
+            3.
+          - >-
+            Plan: determiná el rango de $W$ a partir del de $Y - X$, y para
+            cada $w$ pedido calculá el área de $R$ que queda debajo de la
+            recta $y = x + 3w - 1$ y dividila por el área total.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: tools/verify/ep20250614.py
+              valor: "1/3, 3/4, 1"
 
   - numero: 4
     guias: [7]
     en_alcance: true
-    cargado: false
-    nota: >-
-      Corresponde a la guía 7 (proceso de Poisson, adelgazamiento).
+    cargado: true
     enunciado: |
       A una dirección de correo electrónico llegan mensajes de SPAM y NO SPAM.
-      Los tiempos de arribo de los correos siguen un proceso de Poisson de tasa
-      10 por hora. Cada correo, de manera independiente de los otros correos y
-      de la hora de arribo, puede ser SPAM con probabilidad $0{,}7$. Sabiendo
-      que entre las 10:00 y 11:00 se recibieron exactamente 4 mensajes NO SPAM,
-      calcular la probabilidad de que en esa hora se hayan recibido 7 o más
-      correos en total.
-    items: []
+      [[superposicion-adelgazamiento|Los tiempos de arribo de los correos
+      siguen un proceso de Poisson de tasa 10 por hora. Cada correo, de
+      manera independiente de los otros correos y de la hora de arribo, puede
+      ser SPAM con probabilidad $0{,}7$.]]
+    items:
+      - id: a
+        pregunta: >-
+          [[poisson-incrementos|Sabiendo que entre las 10:00 y 11:00 se
+          recibieron exactamente 4 mensajes NO SPAM]], calcular la
+          probabilidad de que en esa hora se hayan recibido 7 o más correos en
+          total.
+        skills: [superposicion-adelgazamiento, poisson-incrementos]
+        respuesta:
+          tipo: numerica
+          valor: "1 - 65/2 * exp(-7)"
+        pistas:
+          - >-
+            Al adelgazar el proceso se obtienen dos procesos de Poisson, uno
+            formado por los SPAM y otro por los NO SPAM.
+          - >-
+            Esos dos procesos son independientes, así que saber cuántos NO
+            SPAM llegaron no cambia la distribución de la cantidad de SPAM.
+            Con 4 NO SPAM, el total es 7 o más cuando llegan al menos 3 SPAM.
+          - >-
+            Plan: identificá la distribución de la cantidad de SPAM en la hora
+            y calculá la probabilidad de que sea al menos 3 por el
+            complemento.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: tools/verify/ep20250614.py
+              valor: "1 - 65/2 e^-7 = 0.9704"
+            - origen: "tools/verify/ep20250614.py (control: condicionando sobre el total, sin usar la independencia)"
+              valor: "0.9704"
 
   - numero: 5
-    guias: [8]
+    guias: [3, 8]
     en_alcance: true
-    cargado: false
-    nota: Corresponde a la guía 8 (teorema central del límite).
+    cargado: true
     enunciado: |
       Un reconocido influencer inicia una campaña solidaria para ayudar con su
       propia carrera futbolística. Sus seguidores pueden elegir ser socio
-      creyente, aportando \$2000, o socio convencido, aportando \$4000. De
-      forma independiente, cada uno elige ser creyente con probabilidad
-      $0{,}3$, convencido con probabilidad $0{,}2$, o guardar su plata para
-      algo mejor con probabilidad $0{,}5$ (las opciones son excluyentes).
-      Hallar, aproximadamente, la cantidad mínima de seguidores necesarios para
-      que la recaudación total sea mayor que \$1.500.000 con probabilidad mayor
-      o igual a $0{,}95$.
-    items: []
+      creyente, aportando \$2000, o socio convencido, aportando \$4000.
+      [[varianza|De forma independiente, cada uno elige ser creyente con
+      probabilidad $0{,}3$, convencido con probabilidad $0{,}2$, o guardar su
+      plata para algo mejor con probabilidad $0{,}5$]] (las opciones son
+      excluyentes).
+    items:
+      - id: a
+        pregunta: >-
+          Hallar, aproximadamente, la [[tcl|cantidad mínima de seguidores
+          necesarios para que la recaudación total sea mayor que \$1.500.000
+          con probabilidad mayor o igual a $0{,}95$]].
+        skills: [tcl, varianza]
+        respuesta:
+          tipo: numerica
+          valor: "1134"
+          # Es un mínimo entero: la tolerancia no puede admitir otro entero.
+          tol_rel: 0.000001
+        pistas:
+          - >-
+            La recaudación con $n$ seguidores es la suma de $n$ aportes
+            independientes con la misma distribución, que toma los valores 0,
+            2000 y 4000.
+          - >-
+            La media de la recaudación crece como $n$ y su desvío como
+            $\sqrt{n}$, así que la condición queda cuadrática en $\sqrt{n}$.
+          - >-
+            Plan: calculá la media y la varianza de un aporte, aproximá la
+            recaudación por una normal, imponé que la probabilidad de superar
+            \$1.500.000 sea al menos $0{,}95$, despejá $n$ con la sustitución
+            $u = \sqrt{n}$ y verificá que con un seguidor menos la condición no
+            se cumpla.
+        verificacion:
+          estado: verificado
+          metodo: exacto+distribucion-exacta
+          fuentes_valor:
+            - origen: tools/verify/ep20250614.py
+              valor: "1134"
+            - origen: "tools/verify/ep20250614.py (control: media y varianza de un aporte)"
+              valor: "1400 y 2440000"

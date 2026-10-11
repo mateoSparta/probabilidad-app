@@ -19,11 +19,11 @@ archivos `guia-N.md` de esta carpeta.
 | 8 | 6 | 7 | 2 | 8.2, 8.5, 8.9, 8.12, 8.15, 8.22 |
 | **Total** | **71** | **163** | **33** | **46 skills** |
 
-Más **14 parciales** cargados, de los cuales **8 están en el simulacro** (los
+Más **14 parciales** cargados, de los cuales **10 están en el simulacro** (los
 completos y de cinco ejercicios; ver [examenes.md](examenes.md)). Los ítems de
-examen son 57.
+examen son 65.
 
-**Los 284 valores del contenido (guías y exámenes, incluidos checkpoints y
+**Los 296 valores del contenido (guías y exámenes, incluidos checkpoints y
 expresiones) están verificados por dos caminos independientes** y el build los
 contrasta en cada corrida. Ninguno se escribió a mano. Tres valores de
 exámenes no coinciden con la resolución y están marcados como discrepancia
@@ -149,7 +149,7 @@ núcleo pero es una aplicación directa de Chebyshev.
 
 ## 4. Los exámenes
 
-Ver [examenes.md](examenes.md). Resumen: hay 14 parciales cargados y 8 en el
+Ver [examenes.md](examenes.md). Resumen: hay 14 parciales cargados y 10 en el
 simulacro, que ofrece sólo exámenes completos y de cinco ejercicios. Los 12
 resueltos de 2017–2023 sirvieron de cruce: coinciden con el cálculo
 independiente en todo salvo tres valores, documentados como discrepancia.

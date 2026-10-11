@@ -803,6 +803,80 @@
       }
     }
   },
+  "ep-20250524-2": {
+    "numero": "2",
+    "items": {
+      "a": {
+        "valor": "-1 + sqrt(5)/2",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.117833,
+        "coincide": true
+      },
+      "e_y_dado_3": {
+        "valor": "18",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 18.0,
+        "coincide": true
+      }
+    }
+  },
+  "ep-20250524-3": {
+    "numero": "3",
+    "items": {
+      "a1": {
+        "valor": "1/3",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.333352,
+        "coincide": true
+      },
+      "a2": {
+        "valor": "2/3",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.66597,
+        "coincide": true
+      },
+      "a3": {
+        "valor": "5/6",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.832832,
+        "coincide": true
+      }
+    }
+  },
+  "ep-20250524-4": {
+    "numero": "4",
+    "items": {
+      "a": {
+        "valor": "17793060798303/50000000000000",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.355688,
+        "coincide": true
+      }
+    }
+  },
+  "ep-20250524-5": {
+    "numero": "5",
+    "items": {
+      "a": {
+        "valor": "511525167/100",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 5114000,
+        "coincide": true
+      },
+      "sin_redondear": {
+        "valor": "5115251.67093",
+        "metodo": "exacto"
+      },
+      "media_aporte": {
+        "valor": "1600",
+        "metodo": "exacto"
+      },
+      "varianza_aporte": {
+        "valor": "3040000",
+        "metodo": "exacto"
+      }
+    }
+  },
   "ep-20250614-1": {
     "numero": "1",
     "items": {
@@ -814,6 +888,82 @@
       },
       "p_rechazo": {
         "valor": "11/45",
+        "metodo": "exacto"
+      }
+    }
+  },
+  "ep-20250614-2": {
+    "numero": "2",
+    "items": {
+      "a": {
+        "valor": "9/5",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 1.799948,
+        "coincide": true
+      },
+      "e_cara": {
+        "valor": "9/5",
+        "metodo": "exacto"
+      },
+      "e_ceca": {
+        "valor": "9/5",
+        "metodo": "exacto"
+      }
+    }
+  },
+  "ep-20250614-3": {
+    "numero": "3",
+    "items": {
+      "a1": {
+        "valor": "1/3",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.333448,
+        "coincide": true
+      },
+      "a2": {
+        "valor": "3/4",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.74931,
+        "coincide": true
+      },
+      "a3": {
+        "valor": "1",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 1.0,
+        "coincide": true
+      }
+    }
+  },
+  "ep-20250614-4": {
+    "numero": "4",
+    "items": {
+      "a": {
+        "valor": "1 - 65*exp(-7)/2",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 0.969757,
+        "coincide": true
+      }
+    }
+  },
+  "ep-20250614-5": {
+    "numero": "5",
+    "items": {
+      "a": {
+        "valor": "1134",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 1134,
+        "coincide": true
+      },
+      "media_aporte": {
+        "valor": "1400",
+        "metodo": "exacto"
+      },
+      "varianza_aporte": {
+        "valor": "2440000",
+        "metodo": "exacto"
+      },
+      "cota_del_despeje": {
+        "valor": "1133.21",
         "metodo": "exacto"
       }
     }

@@ -47,67 +47,180 @@ ejercicios:
           estado: verificado
           metodo: exacto+montecarlo
           fuentes_valor:
-            - origen: tools/verify/ep20250524_1.py
+            - origen: tools/verify/ep20250524.py
               valor: "15/61"
 
   - numero: 2
     guias: [5]
     en_alcance: true
-    cargado: false
-    nota: >-
-      Corresponde a la guía 5 (esperanza condicional). El examen incluye dos
-      variantes; el Curso 4 debe hallar E(Y|X=3) y los demás cursos, calcular
-      P(E(Y|X) < 10).
-    variante: "Curso 4 / Otros cursos"
+    cargado: true
+    # El examen trae dos variantes: el Curso 4 pide E(Y | X = 3) y los demás
+    # cursos, P(E(Y | X) < 10). PLAN.md §6 manda cargar la del curso definido
+    # en content/config.yaml; con `curso: null` corresponde la de los demás
+    # cursos. La del Curso 4 (vale 18) queda en el modelo como control.
+    variante: Otros cursos
     enunciado: |
-      Sea $(X, Y)$ un vector aleatorio continuo con función densidad de
-      probabilidad
+      Sea $(X, Y)$ un vector aleatorio continuo con
+      [[conjunta-marginales|función densidad de probabilidad]]
       $$f_{(X,Y)}(x, y) = \frac{y}{2x^4}\, e^{-y/x^2}\, \mathbf{1}\{2 < x < 4,\ y > 0\}$$
-      **Curso 4:** Hallar $E(Y \mid X = 3)$.
-      **Otros cursos:** Calcular $P(E(Y \mid X) < 10)$.
-    items: []
+    items:
+      - id: a
+        pregunta: >-
+          Calcular [[esperanza-condicional|$P(E(Y \mid X) < 10)$]].
+        skills: [esperanza-condicional, conjunta-marginales]
+        respuesta:
+          tipo: numerica
+          valor: "sqrt(5)/2 - 1"
+        pistas:
+          - >-
+            $E(Y \mid X)$ es una variable aleatoria, función de $X$. Primero
+            hay que hallar la función de regresión $E(Y \mid X = x)$.
+          - >-
+            Para cada $x$ fijo, la densidad conjunta, como función de $y$, es
+            proporcional a una densidad Gamma. Eso resuelve las dos integrales
+            en $y$.
+          - >-
+            Plan: hallá la marginal de $X$ y la densidad condicional de $Y$
+            dado $X = x$, calculá $E(Y \mid X = x)$, determiná para qué
+            valores de $x$ es menor que 10 y calculá la probabilidad de ese
+            conjunto con la marginal de $X$.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: tools/verify/ep20250524.py
+              valor: "sqrt(5)/2 - 1 = 0.1180"
+            - origen: "tools/verify/ep20250524.py (control: variante del Curso 4, E(Y | X = 3))"
+              valor: "18"
 
   - numero: 3
     guias: [2, 4]
     en_alcance: true
-    cargado: false
-    nota: >-
-      Corresponde a la guía 2 (distribución conjunta) y a la guía 4
-      (transformaciones). Pide hallar y graficar una función de distribución.
+    cargado: true
     enunciado: |
       Se usan dos métodos para medir la humedad de la atmósfera. La
       distribución de probabilidad conjunta de las dos mediciones $(X, Y)$ es
-      una distribución uniforme en la región
+      una [[prob-geometrica|distribución uniforme en la región]]
       $$R = \{(x, y) : 0 < x < 3,\ x - 2 < y < x + 1\}$$
-      Hallar y graficar la función de distribución de $W = |Y - X|$.
-    items: []
+    items:
+      - id: a
+        # El examen pide además graficarla, y eso no se puede validar.
+        pregunta: >-
+          Hallar la [[transformacion-F|función de distribución de
+          $W = \lvert Y - X \rvert$]] y evaluarla donde se pide.
+        skills: [transformacion-F, prob-geometrica]
+        respuesta:
+          tipo: checkpoints
+          checkpoints:
+            - pregunta: '$F_W(1/2)$'
+              valor: "1/3"
+            - pregunta: '$F_W(1)$'
+              valor: "2/3"
+            - pregunta: '$F_W(3/2)$'
+              valor: "5/6"
+        pistas:
+          - >-
+            Como la distribución es uniforme, $F_W(w)$ es el área de la parte
+            de $R$ comprendida entre las rectas $y = x - w$ e $y = x + w$,
+            dividida por el área de $R$.
+          - >-
+            La región $R$ no es simétrica respecto de la recta $y = x$, y por
+            eso $F_W$ cambia de expresión en $w = 1$.
+          - >-
+            Plan: determiná el rango de $W$, y para cada $w$ pedido calculá el
+            área de $R$ entre las rectas $y = x - w$ e $y = x + w$ y dividila
+            por el área total.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: tools/verify/ep20250524.py
+              valor: "1/3, 2/3, 5/6"
 
   - numero: 4
     guias: [7]
     en_alcance: true
-    cargado: false
-    nota: >-
-      Corresponde a la guía 7 (proceso de Poisson, superposición y
-      condicionamiento a N(t) = n).
+    cargado: true
     enunciado: |
       A una dirección de correo electrónico llegan mensajes de SPAM y NO SPAM.
-      Los tiempos de arribo de los SPAM siguen un proceso de Poisson de tasa 4
-      por hora, y los de NO SPAM un proceso de Poisson de tasa 6 por hora. Los
-      dos procesos son independientes. Sabiendo que entre las 10:00 y 11:00 se
-      recibieron exactamente 8 mensajes SPAM y 6 mensajes NO SPAM, calcular la
-      probabilidad de que entre 10:00 y 10:06 haya llegado exactamente un
-      mensaje (en total).
-    items: []
+      [[superposicion-adelgazamiento|Los tiempos de arribo de los SPAM siguen
+      un proceso de Poisson de tasa 4 por hora, y los de NO SPAM un proceso de
+      Poisson de tasa 6 por hora. Los dos procesos son independientes.]]
+    items:
+      - id: a
+        pregunta: >-
+          [[condicionar-Nt|Sabiendo que entre las 10:00 y 11:00 se recibieron
+          exactamente 8 mensajes SPAM y 6 mensajes NO SPAM]], calcular la
+          probabilidad de que entre 10:00 y 10:06 haya llegado exactamente un
+          mensaje (en total).
+        skills: [condicionar-Nt, superposicion-adelgazamiento]
+        respuesta:
+          tipo: numerica
+          valor: "14 * 9^13 / 10^14"
+        pistas:
+          - >-
+            Dada la cantidad de arribos de un proceso de Poisson en un
+            intervalo, los tiempos de arribo se distribuyen como uniformes
+            independientes en ese intervalo.
+          - >-
+            Como los dos procesos son independientes, al condicionar a ambos
+            conteos quedan 14 arribos uniformes e independientes en la hora,
+            sin importar de qué tipo es cada uno.
+          - >-
+            Plan: calculá la probabilidad de que un arribo caiga entre las
+            10:00 y las 10:06, y con ella la probabilidad binomial de que
+            caiga exactamente uno de los 14.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: tools/verify/ep20250524.py
+              valor: "14 (1/10) (9/10)^13 = 0.3559"
+            - origen: "tools/verify/ep20250524.py (control: incrementos independientes y Bayes, sin las uniformes)"
+              valor: "0.3559"
 
   - numero: 5
-    guias: [8]
+    guias: [3, 8]
     en_alcance: true
-    cargado: false
-    nota: >-
-      Corresponde a la guía 8 (teorema central del límite). El enunciado quedó
-      incompleto en la transcripción automática y debe completarse a partir
-      del PDF.
+    cargado: true
     enunciado: |
-      Un reconocido influencer inicia una campaña solidaria.
-      *(Enunciado incompleto: completar desde `fuentes/examenes/finales/EP_20250524.pdf`.)*
-    items: []
+      Un reconocido influencer inicia una campaña solidaria para ayudar con su
+      propia carrera futbolística. Sus seguidores pueden elegir ser socio
+      creyente, aportando \$2000, o socio convencido, aportando \$4000.
+      [[varianza|De forma independiente, cada uno elige ser creyente con
+      probabilidad $0{,}2$, convencido con probabilidad $0{,}3$, o guardar su
+      plata para algo mejor con probabilidad $0{,}5$]] (las opciones son
+      excluyentes).
+    items:
+      - id: a
+        pregunta: >-
+          Si tiene 3300 seguidores, hallar aproximadamente el [[tcl|monto tal
+          que la recaudación sea mayor que este con probabilidad $0{,}95$]].
+        skills: [tcl, varianza]
+        respuesta:
+          tipo: numerica
+          valor: "5115251.67"
+          # Acepta el cuantil redondeado de la tabla (de 1,64 a 1,65) y el
+          # cuantil de la distribución exacta (5114000), pero no un error en
+          # la varianza, que corre el resultado en más de un 1 %.
+          tol_rel: 0.002
+        pistas:
+          - >-
+            La recaudación es la suma de 3300 aportes independientes con la
+            misma distribución, que toma los valores 0, 2000 y 4000.
+          - >-
+            El monto buscado es el que la recaudación supera con probabilidad
+            $0{,}95$, es decir, el cuantil $0{,}05$ de su distribución. Queda
+            por debajo de la media.
+          - >-
+            Plan: calculá la media y la varianza de un aporte, obtené las de
+            la recaudación, aproximala por una normal y despejá el monto con el
+            cuantil de la normal estándar.
+        verificacion:
+          estado: verificado
+          metodo: exacto+distribucion-exacta
+          fuentes_valor:
+            - origen: tools/verify/ep20250524.py
+              valor: "5115251.67"
+            - origen: "tools/verify/ep20250524.py (control: cuantil de la distribución exacta)"
+              valor: "5114000"
