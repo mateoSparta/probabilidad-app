@@ -47,7 +47,7 @@ export function TusDatos({ api, sesion }: { api: ApiProgreso; sesion?: ApiSesion
         Tus datos
       </h3>
       <p class="pie__descripcion">
-        Todo se guarda en este navegador, sin servidor ni base de datos. 
+        Todo se guarda en el navegador, sin servidor ni base de datos. 
         Para pasar el progreso a otra compu, exportalo e importalo allá.
       </p>
       <div class="pie__acciones">
