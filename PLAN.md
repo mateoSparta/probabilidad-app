@@ -557,11 +557,11 @@ Propuesta, para recortar o ampliar en la revisión:
 
 | Tabla | Rango | Etapa |
 |---|---|---|
-| Normal $\Phi(z)$ | $z$ de 0,00 a 3,49, como la de la cátedra, más los cuantiles usuales $z_lpha$ | parcial |
+| Normal $\Phi(z)$ | $z$ de 0,00 a 3,49, como la de la cátedra, más los cuantiles usuales $z_\alpha$ | parcial |
 | Poisson acumulada $P(X \le k)$ | $\lambda$ de 0,1 a 1 (paso 0,1), de 1,5 a 10 (paso 0,5) y de 11 a 20 | parcial |
 | Binomial acumulada $P(X \le k)$ | $n$ de 2 a 20, $p$ de 0,05 a 0,5 (para $p > 0{,}5$, por simetría) | parcial |
 | $e^{-x}$ | $x$ de 0 a 10 | parcial |
-| Factoriales y combinatorios | $n!$ hasta 20, $inom{n}{k}$ hasta $n = 20$ | parcial |
+| Factoriales y combinatorios | $n!$ hasta 20, $\binom{n}{k}$ hasta $n = 20$ | parcial |
 | Cuantiles de $t$ y de $\chi^2$ | los de la cátedra | final |
 
 - **Datos generados y verificados:** `tools/verify/tablas.py` las calcula con
