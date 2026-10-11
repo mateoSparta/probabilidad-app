@@ -14,8 +14,11 @@ bien resueltas.
   5. Resistencia N(1200, 120^2); carga 400 + suma de 6 pesos N(80, 16^2).
      P(la carga supera la resistencia).
 
-El ejercicio 2 pide construir una variable aleatoria con ciertas propiedades:
-tiene infinitas respuestas correctas y no se carga.
+El ejercicio 2 pide construir una variable aleatoria con ciertas propiedades.
+Tiene infinitas respuestas correctas, asi que va como opcion multiple: cuatro
+variables candidatas, de las que exactamente una cumple todo. El modelo lo
+verifica para cada candidata (medibilidad respecto de A, valores -2 y 0, media
+0 y varianza 1). La correcta es la del examen de referencia.
 
 **El 4 no coincide con la resuelta.** El alumno obtuvo 0.371 porque redondeo
 4/9 a 0.44 antes de sumar la binomial (con 0.44 da 0.3706). Con 4/9 exacto el
@@ -50,6 +53,73 @@ def exacto_1() -> dict:
 
 def estimado_1() -> dict:
     return {}
+
+
+# ----------------------------------------------------------------- ej 2
+
+OMEGA = range(1, 7)
+# Atomos del algebra A: {1}, {2} y {3, 4, 5, 6}.
+ATOMOS_A = [{1}, {2}, {3, 4, 5, 6}]
+P_ATOMO = {1: Fraction(1, 3), 2: Fraction(1, 2), 3: Fraction(1, 6)}
+
+# Las cuatro candidatas, como valor de X en cada omega.
+CANDIDATAS = {
+    "a1": {1: 1, 2: 0, 3: -2, 4: -2, 5: -2, 6: -2},    # la del examen de referencia
+    "a2": {1: -2, 2: 0, 3: 1, 4: 1, 5: 1, 6: 1},
+    "a3": {1: 1, 2: 0, 3: -2, 4: 0, 5: 0, 6: 0},
+    "a4": {1: 0, 2: -2, 3: 6, 4: 6, 5: 6, 6: 6},
+}
+
+
+def cumple(x: dict) -> dict:
+    medible = all(len({x[w] for w in atomo}) == 1 for atomo in ATOMOS_A)
+    if not medible:
+        return {"medible": False}
+    # P de cada omega no esta definida sola en {3,...,6}; se trabaja por atomos.
+    valores = [(x[min(a)], P_ATOMO[min(a)]) for a in ATOMOS_A]
+    e = sum(v * p for v, p in valores)
+    e2 = sum(v * v * p for v, p in valores)
+    return {
+        "medible": True,
+        "contiene": {-2, 0} <= {x[w] for w in OMEGA},
+        "media": e,
+        "varianza": e2 - e * e,
+    }
+
+
+def exacto_2() -> dict:
+    assert sum(P_ATOMO.values()) == 1
+    salida = {}
+    correctas = []
+    for clave, x in CANDIDATAS.items():
+        c = cumple(x)
+        ok = c["medible"] and c["contiene"] and c["media"] == 0 and c["varianza"] == 1
+        if ok:
+            correctas.append(clave)
+        if c["medible"]:
+            salida[f"{clave}_media"] = c["media"]
+            salida[f"{clave}_varianza"] = c["varianza"]
+    assert correctas == ["a1"], correctas
+    return salida
+
+
+def estimado_2() -> dict:
+    """Sortea omega con las probabilidades de los atomos y mide media y varianza."""
+    rng = random.Random(SEMILLA)
+    n = 400_000
+    salida = {}
+    for clave, x in CANDIDATAS.items():
+        if not cumple(x)["medible"]:
+            continue
+        vs = []
+        for _ in range(n):
+            u = rng.random()
+            w = 1 if u < 1 / 3 else (2 if u < 5 / 6 else rng.randint(3, 6))
+            vs.append(x[w])
+        m = sum(vs) / n
+        salida[f"{clave}_media"] = m
+        salida[f"{clave}_varianza"] = sum(v * v for v in vs) / n - m * m
+    return salida
 
 
 # ----------------------------------------------------------------- ej 3
@@ -141,6 +211,8 @@ def estimado_5() -> dict:
 
 EJERCICIOS = [
     Ejercicio("1", exacto_1, estimado_1),
+    # La varianza de la candidata a4 vale 8 y se estima con error ~0.02.
+    Ejercicio("2", exacto_2, estimado_2, tolerancia=0.15),
     Ejercicio("3", exacto_3, estimado_3),
     Ejercicio("4", exacto_4, estimado_4, tolerancia=1e-9),
     Ejercicio("5", exacto_5, estimado_5),

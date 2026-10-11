@@ -74,19 +74,66 @@ ejercicios:
   - numero: 2
     guias: [2, 3]
     en_alcance: true
-    cargado: false
-    nota: >-
-      Pide construir una variable aleatoria con ciertas propiedades. Admite
-      infinitas respuestas correctas, de modo que no puede validarse con un
-      único valor.
+    cargado: true
+    # El enunciado pide construir una variable: tiene infinitas respuestas
+    # correctas, así que va como opción múltiple con cuatro candidatas. La
+    # correcta es la del examen de referencia.
     enunciado: |
       Sea $(\Omega, \mathcal{A}, P)$ un espacio de probabilidad en el que
       $\Omega = \{1, 2, 3, 4, 5, 6\}$,
-      $\mathcal{A} = \{\emptyset, \{1\}, \{2\}, \{3, 4, 5, 6\}, \{1, 2\}, \{1, 3, 4, 5, 6\}, \{2, 3, 4, 5, 6\}, \Omega\}$,
+      [[variable-aleatoria|$\mathcal{A} = \{\emptyset, \{1\}, \{2\}, \{3, 4, 5, 6\}, \{1, 2\}, \{1, 3, 4, 5, 6\}, \{2, 3, 4, 5, 6\}, \Omega\}$]],
       $P(\{1\}) = \frac{1}{3}$ y $P(\{2\}) = \frac{1}{2}$. Definir una
       variable aleatoria $X : \Omega \to \mathbb{R}$ tal que
-      $\{-2, 0\} \subset X(\Omega)$, $E[X] = 0$ y $\operatorname{var}(X) = 1$.
-    items: []
+      $\{-2, 0\} \subset X(\Omega)$, [[esperanza,varianza|$E[X] = 0$ y
+      $\operatorname{var}(X) = 1$]].
+    items:
+      - id: a
+        pregunta: '¿Cuál de las siguientes variables cumple lo pedido?'
+        skills: [variable-aleatoria, esperanza, varianza]
+        respuesta:
+          tipo: opcion
+          opciones:
+            - id: a1
+              texto: '$X(1) = 1$, $X(2) = 0$ y $X(\omega) = -2$ para $\omega \in \{3, 4, 5, 6\}$.'
+              correcta: true
+            - id: a2
+              texto: '$X(1) = -2$, $X(2) = 0$ y $X(\omega) = 1$ para $\omega \in \{3, 4, 5, 6\}$.'
+              error_tipico: >-
+                Su media es $-2 \cdot \frac{1}{3} + 1 \cdot \frac{1}{6} = -\frac{1}{2}$.
+                Los átomos no pesan lo mismo, y el valor $-2$ tiene que ir en el
+                más liviano, $\{3, 4, 5, 6\}$, para que la media dé 0.
+            - id: a3
+              texto: '$X(1) = 1$, $X(2) = 0$, $X(3) = -2$ y $X(4) = X(5) = X(6) = 0$.'
+              error_tipico: >-
+                No es una variable aleatoria respecto de $\mathcal{A}$, porque
+                $\{X = -2\} = \{3\}$ no pertenece a $\mathcal{A}$. Una variable
+                aleatoria tiene que ser constante en $\{3, 4, 5, 6\}$.
+            - id: a4
+              texto: '$X(1) = 0$, $X(2) = -2$ y $X(\omega) = 6$ para $\omega \in \{3, 4, 5, 6\}$.'
+              error_tipico: >-
+                Su media es 0, pero
+                $\operatorname{var}(X) = E[X^2] = 4 \cdot \frac{1}{2} + 36 \cdot \frac{1}{6} = 8$.
+        pistas:
+          - >-
+            Para que $X$ sea una variable aleatoria, cada conjunto
+            $\{X = x\}$ tiene que pertenecer a $\mathcal{A}$, y eso obliga a
+            que $X$ sea constante en $\{3, 4, 5, 6\}$.
+          - >-
+            El átomo $\{3, 4, 5, 6\}$ tiene probabilidad
+            $1 - \frac{1}{3} - \frac{1}{2} = \frac{1}{6}$. La media y la
+            varianza se calculan sobre los tres átomos.
+          - >-
+            Plan: descartá las candidatas que no son constantes en
+            $\{3, 4, 5, 6\}$, y para las demás calculá $E[X]$ y $E[X^2]$ con
+            las probabilidades de los átomos.
+        verificacion:
+          estado: verificado
+          metodo: exacto+montecarlo
+          fuentes_valor:
+            - origen: "01 Parcial Resuelto - 27_05_2023.pdf#p4"
+              valor: "X(1) = 1, X({3,4,5,6}) = -2, X(2) = 0"
+            - origen: tools/verify/ep20230527.py
+              valor: "sólo la candidata a1 es medible, toma -2 y 0, y tiene media 0 y varianza 1"
 
   - numero: 3
     guias: [4]

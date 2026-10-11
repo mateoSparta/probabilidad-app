@@ -702,6 +702,47 @@
       }
     }
   },
+  "ep-20230527-2": {
+    "numero": "2",
+    "items": {
+      "a1_media": {
+        "valor": "0",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": -0.001165,
+        "coincide": true
+      },
+      "a1_varianza": {
+        "valor": "1",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 1.000279,
+        "coincide": true
+      },
+      "a2_media": {
+        "valor": "-1/2",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": -0.497935,
+        "coincide": true
+      },
+      "a2_varianza": {
+        "valor": "5/4",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 1.248736,
+        "coincide": true
+      },
+      "a4_media": {
+        "valor": "0",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": -0.008425,
+        "coincide": true
+      },
+      "a4_varianza": {
+        "valor": "8",
+        "metodo": "exacto+montecarlo",
+        "montecarlo": 7.963779,
+        "coincide": true
+      }
+    }
+  },
   "ep-20230527-3": {
     "numero": "3",
     "items": {

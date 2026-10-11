@@ -26,6 +26,7 @@ no se ofrecen en el simulacro: son los pendientes de §1.2.
 | Evaluación parcial | 03-11-2018 |
 | Primer recuperatorio | 24-11-2018 |
 | Evaluación parcial | 01-06-2019 |
+| Evaluación parcial | 27-05-2023 |
 
 ### 1.2 Pendientes: no tienen sus cinco ejercicios
 
@@ -35,14 +36,12 @@ no se ofrecen en el simulacro: son los pendientes de §1.2.
 | Primer recuperatorio | 18-11-2017 | 4 de 5 | ej 1 es de simulación, fuera de alcance |
 | Primer recuperatorio | 15-06-2019 | 4 de 5 | ej 2 es de simulación, fuera de alcance |
 | Primer parcial (parte 2) | 13-11-2021 | 3 de 3 | es la segunda mitad de un parcial dividido: tiene 3 ejercicios |
-| Evaluación parcial | 27-05-2023 | 4 de 5 | ej 2 pide construir una variable aleatoria (respuesta abierta) |
 | Parcial | 24-05-2025 | 1 de 5 | ej 2 a 5 sin cargar (ver §3) |
 | Parcial | 14-06-2025 | 1 de 5 | ej 2 a 5 sin cargar (ver §3) |
 
 Los tres con un ejercicio de simulación no van a entrar nunca, porque ese
-ejercicio queda fuera de alcance por CLAUDE.md. Los que sí pueden completarse
-son el de 2023 (cargando el ej 2 como opción múltiple, con cuatro variables
-candidatas) y los dos de 2025.
+ejercicio queda fuera de alcance por CLAUDE.md. Los dos de 2025 sí pueden
+completarse (ver §3).
 
 Cómo se eligió qué cargar:
 
@@ -53,8 +52,11 @@ Cómo se eligió qué cargar:
 - **Los ejercicios de simulación quedan fuera** (CLAUDE.md), listados con
   `en_alcance: false` y una nota que la app muestra al rendir.
 - **El 27-05-2023 ej 2** pide construir una variable aleatoria con ciertas
-  propiedades: tiene infinitas respuestas correctas y no se puede validar con
-  un valor.
+  propiedades. Tiene infinitas respuestas correctas, así que va como opción
+  múltiple con cuatro variables candidatas: la del examen de referencia, una
+  con la media corrida, una que no es medible respecto de $\mathcal{A}$ y una
+  con la varianza equivocada. El modelo comprueba que sólo la primera cumple
+  todo.
 - **Criterio de aprobación.** Los PDF de 2017–2019 no lo enuncian, y el
   escaneo de 2023 tampoco lo muestra; se usa `aprueba_con: 3`, el criterio
   actual para cinco ejercicios, y queda comentado en cada YAML. El de 2021
