@@ -138,31 +138,6 @@
   background: var(--dominado-suave);
 }
 
-/* Globo de ayuda en hover. Se usa un atributo para no necesitar más markup. */
-.punto[data-tip]::after {
-  content: attr(data-tip);
-  position: absolute;
-  bottom: calc(100% + 0.5rem);
-  left: 50%;
-  translate: -50% 0;
-  white-space: nowrap;
-  font-family: var(--serif);
-  font-size: var(--t-xs);
-  line-height: 1.3;
-  color: var(--superficie-alta);
-  background: var(--tinta);
-  padding: 2px var(--e-2);
-  border-radius: var(--radio);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 120ms;
-  z-index: 20;
-}
-.punto[data-tip]:hover::after,
-.punto[data-tip]:focus-visible::after {
-  opacity: 1;
-}
-
 /* --------------------------------------------------- seguimiento */
 
 .seguimiento h3 { margin-bottom: var(--e-2); }
