@@ -47,10 +47,8 @@ export function TusDatos({ api, sesion }: { api: ApiProgreso; sesion?: ApiSesion
         Tus datos
       </h3>
       <p class="pie__descripcion">
-        Todo se guarda en este navegador, sin servidor ni base de datos. Se registran dos cosas:
-        el <strong>historial</strong> de intentos, del que surgen las insignias, y{' '}
-        <strong>dónde quedaste</strong> (ítems resueltos, respuestas escritas y el simulacro en
-        curso). Para pasar el progreso a otra compu, exportalo e importalo allá.
+        Todo se guarda en este navegador, sin servidor ni base de datos. 
+        Para pasar el progreso a otra compu, exportalo e importalo allá.
       </p>
       <div class="pie__acciones">
         <button class="boton" onClick={() => descargar(progreso)}>

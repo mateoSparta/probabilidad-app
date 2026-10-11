@@ -78,7 +78,7 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
     {
       seccion: 'simulacro',
       Icono: IconoSimulacro,
-      descripcion: 'Un examen de cuatrimestres anteriores, con tiempo límite y sin ayudas.',
+      descripcion: 'Un examen de cuatrimestres anteriores con tiempo límite.',
       dato: enCurso
         ? 'Hay un simulacro en curso'
         : `${pool} ${pool === 1 ? 'examen disponible' : 'exámenes disponibles'}`,
