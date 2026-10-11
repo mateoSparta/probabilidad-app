@@ -487,7 +487,7 @@ Cada fase termina con algo usable. La idea es estudiar desde la fase 2.
 | 4. Guías 2–8 | Pipeline §7 guía por guía (una sesión de Claude Code por guía). | Cada guía con su `revision/` cerrado. | **núcleo hecho** en las 8; falta el cruce contra las resueltas |
 | 5. Simulacro | Exámenes cargados y verificados, timer, entrega, nota y veredicto. | Un simulacro completo con nota coherente. | **hecha**: 10 exámenes completos en el pool |
 | 6. Futuro | Guías 9–12, integradoras de PyE B completas (ejercicios 4 y 5), ejercicios parametrizados. | — | pendiente; el panel ya muestra los skills de 9–12 bloqueados |
-| 7. Material para el examen | Hoja de fórmulas, tablas imprimibles y kit para el examen (§12.1 a §12.3). | Impresos, alcanzan para resolver un parcial sin calculadora. | pendiente, **antes del 30/10** |
+| 7. Material para el examen | Hoja de fórmulas, tablas imprimibles y kit para el examen (§12.1 a §12.3). | Impresos, alcanzan para resolver un parcial sin calculadora. | **hecha**: fórmulas de las guías 1 a 8, 7 tablas verificadas y el kit; ver `revision/formulas.md` |
 | 8. Distribuciones | Fichas de cada distribución y calculadora (§12.4). | Cada valor de la calculadora coincide con mpmath y con las tablas. | pendiente |
 
 **Por qué la fase 0.5.** El extractor va antes de la fase 2 porque cambia el

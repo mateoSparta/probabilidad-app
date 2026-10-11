@@ -1,0 +1,31 @@
+# Hoja de fórmulas de la guía 4 (PLAN.md §12.1). Sale de las fórmulas de los
+# skills y de la teoría de la guía; ver revision/formulas.md.
+guia: 4
+bloques:
+  - titulo: Método de la función de distribución
+    formulas:
+      - 'F_Y(t) = P(g(X) \le t)'
+      - 'g \text{ creciente: } F_Y(t) = F_X\!\left(g^{-1}(t)\right)'
+      - 'g \text{ decreciente, } X \text{ continua: } F_Y(t) = 1 - F_X\!\left(g^{-1}(t)\right)'
+      - 'g \text{ monótona: } f_Y(t) = f_X\!\left(g^{-1}(t)\right) \left\lvert \dfrac{d}{dt} g^{-1}(t) \right\rvert'
+
+  - titulo: Cambio de variables
+    formulas:
+      - 'f_{U,V}(u, v) = f_{X,Y}\big(g^{-1}(u, v)\big)\, \lvert J_{g^{-1}}(u, v) \rvert'
+      - 'J_{g^{-1}}(u, v) = \det \begin{pmatrix} \partial x / \partial u & \partial x / \partial v \\ \partial y / \partial u & \partial y / \partial v \end{pmatrix}'
+      - '\operatorname{sop}(U, V) = g\big(\operatorname{sop}(X, Y)\big)'
+
+  - titulo: Mínimo y máximo de independientes
+    formulas:
+      - 'P\big(\min_i X_i > t\big) = \prod_i P(X_i > t)'
+      - 'P\big(\max_i X_i \le t\big) = \prod_i P(X_i \le t)'
+      - 'X_i \sim \text{Exp}(\lambda_i): \ \min(X_1, X_2) \sim \text{Exp}(\lambda_1 + \lambda_2)'
+      - 'P(X_1 < X_2) = \dfrac{\lambda_1}{\lambda_1 + \lambda_2}'
+
+  - titulo: Suma de independientes
+    formulas:
+      - 'f_{X+Y}(z) = \int f_X(x)\, f_Y(z - x)\, dx'
+      - 'p_{X+Y}(z) = \sum_x p_X(x)\, p_Y(z - x)'
+      - '\text{Poisson}(\lambda) + \text{Poisson}(\mu) = \text{Poisson}(\lambda + \mu)'
+      - 'X \mid (X + Y = n) \sim \text{Bin}\!\left(n, \dfrac{\lambda}{\lambda + \mu}\right)'
+    nota: 'También son cerradas bajo la suma las normales independientes, cuyas medias y varianzas se suman, y las exponenciales de igual tasa, cuya suma es Gamma.'

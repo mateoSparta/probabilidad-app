@@ -15,6 +15,7 @@ import { usarRuta } from './datos/usarRuta'
 import { usarSesion } from './datos/usarSesion'
 import { armarPlan } from './dominio/ritmo'
 import { PanelSkills } from './vistas/PanelSkills'
+import { VistaFormulas } from './vistas/VistaFormulas'
 import { VistaGuia } from './vistas/VistaGuia'
 import { VistaMenu } from './vistas/VistaMenu'
 import { VistaSeguimiento } from './vistas/VistaSeguimiento'
@@ -92,6 +93,7 @@ export function App() {
             />
           )}
           {ruta.seccion === 'simulacro' && <VistaSimulacro api={api} sesion={sesion} />}
+          {ruta.seccion === 'formulas' && <VistaFormulas />}
           {ruta.seccion === 'seguimiento' && (
             <VistaSeguimiento plan={plan} sesion={sesion} onIrAEjercicio={irAEjercicio} />
           )}

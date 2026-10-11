@@ -1,0 +1,28 @@
+# Hoja de fórmulas de la guía 3 (PLAN.md §12.1). Sale de las fórmulas de los
+# skills y de la teoría de la guía; ver revision/formulas.md.
+guia: 3
+bloques:
+  - titulo: Esperanza
+    formulas:
+      - 'E[X] = \sum_k x_k\, P(X = x_k), \qquad E[X] = \int_{-\infty}^{\infty} x\, f_X(x)\, dx'
+      - 'E[g(X)] = \int g(x)\, f_X(x)\, dx'
+      - 'E[g(X,Y)] = \iint g(x,y)\, f_{(X,Y)}(x,y)\, dx\, dy'
+      - 'E[aX + bY + c] = a\,E[X] + b\,E[Y] + c'
+      - 'X, Y \text{ independientes} \implies E[XY] = E[X]\,E[Y]'
+      - 'E[X \mid A] = \dfrac{E[X\, \mathbf{1}_A]}{P(A)}'
+    nota: 'Si la variable es mixta, se integra la parte continua y se suman los átomos.'
+
+  - titulo: Varianza y covarianza
+    formulas:
+      - '\operatorname{var}[X] = E\!\left[(X - \mu)^2\right] = E[X^2] - (E[X])^2'
+      - '\operatorname{var}[aX + b] = a^2 \operatorname{var}[X]'
+      - '\operatorname{cov}(X, Y) = E[XY] - E[X]\,E[Y]'
+      - '\operatorname{var}[X + Y] = \operatorname{var}[X] + \operatorname{var}[Y] + 2\operatorname{cov}(X, Y)'
+      - '\operatorname{cov}(aX + bY + c,\ Z) = a\operatorname{cov}(X,Z) + b\operatorname{cov}(Y,Z)'
+      - '\rho(X, Y) = \dfrac{\operatorname{cov}(X, Y)}{\sigma_X\,\sigma_Y}, \qquad -1 \le \rho \le 1'
+    nota: 'Si $X$ e $Y$ son independientes, $\operatorname{cov}(X, Y) = 0$; la recíproca no vale.'
+
+  - titulo: Desigualdades
+    formulas:
+      - '\text{Markov: } P(X \ge a) \le \dfrac{E[X]}{a} \quad (X \ge 0,\ a > 0)'
+      - '\text{Chebyshev: } P(\lvert X - \mu \rvert \ge \varepsilon) \le \dfrac{\operatorname{var}[X]}{\varepsilon^2}'

@@ -185,3 +185,41 @@ export type Intento = {
 }
 
 export type EstadoSkill = 'sin_explorar' | 'en_desarrollo' | 'dominado' | 'flojo'
+
+// ----------------------------------------------- material para el examen
+
+/** Un tema de la hoja de fórmulas: su título, sus fórmulas y una aclaración. */
+export type BloqueFormulas = {
+  titulo: string
+  /** LaTeX, sin los delimitadores. */
+  formulas: string[]
+  /** Texto con `$...$`. */
+  nota?: string
+}
+
+/** Las fórmulas de una guía (content/formulas/guia-N.yaml). */
+export type HojaFormulas = {
+  guia: number
+  bloques: BloqueFormulas[]
+}
+
+/** Un bloque de una tabla: encabezados y filas, con la etiqueta de cada fila primero. */
+export type BloqueTabla = {
+  titulo: string | null
+  /** El rótulo de la esquina, por ejemplo `$k \backslash p$`. */
+  esquina: string
+  columnas: string[]
+  /** Ya formateadas: el primer valor es la etiqueta de la fila. "" es una celda vacía. */
+  filas: string[][]
+}
+
+/** Una tabla imprimible (content/tablas/*.yaml), generada por tools/verify/tablas.py. */
+export type Tabla = {
+  id: string
+  titulo: string
+  /** La guía en la que se usa por primera vez: decide en qué etapa entra. */
+  guia: number
+  orden: number
+  descripcion: string
+  bloques: BloqueTabla[]
+}

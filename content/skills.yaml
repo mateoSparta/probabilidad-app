@@ -278,7 +278,7 @@
     y de su jacobiano.
   formulas:
     - 'f_{U,V}(u, v) = f_{X,Y}\big(g^{-1}(u, v)\big)\, \lvert J_{g^{-1}}(u, v) \rvert'
-    - 'J_{g^{-1}}(u, v) = \det \begin{pmatrix} \partial x / \partial u & \partial x / \partial v \ \partial y / \partial u & \partial y / \partial v \end{pmatrix}'
+    - 'J_{g^{-1}}(u, v) = \det \begin{pmatrix} \partial x / \partial u & \partial x / \partial v \\ \partial y / \partial u & \partial y / \partial v \end{pmatrix}'
     - '\operatorname{sop}(U, V) = g\big(\operatorname{sop}(X, Y)\big)'
 
 - id: min-max

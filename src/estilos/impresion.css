@@ -1,0 +1,157 @@
+/* Impresión (PLAN.md §12). Se imprime sólo el contenedor #impresion que arma
+   componentes/imprimir.ts: la hoja de fórmulas, las tablas o el kit. El resto
+   de la app queda oculto.
+
+   El papel es A4 y en blanco y negro: los colores de la app se reemplazan por
+   negro y grises, que salen bien en cualquier impresora. */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 11mm 10mm 12mm;
+  }
+
+  body.imprimiendo > :not(#impresion) { display: none !important; }
+  body.imprimiendo { background: #fff !important; }
+
+  body.imprimiendo #impresion {
+    display: block;
+    --tinta: #000;
+    --tinta-2: #222;
+    --tinta-3: #444;
+    --borde: #c4c4c4;
+    --borde-fuerte: #6f6f6f;
+    --acento: #000;
+    color: #000;
+    font-size: 8.5pt;
+    line-height: 1.3;
+  }
+
+  #impresion h1,
+  #impresion h2,
+  #impresion h3,
+  #impresion h4 { break-after: avoid; }
+
+  .impreso__titulo {
+    margin: 0 0 3mm;
+    font-size: 13pt;
+  }
+
+  /* --- hoja de fórmulas: dos columnas, cada guía con su título a todo el
+     ancho y ningún tema partido entre columnas o páginas --- */
+
+  /* Cada guía entera en una página: así su título nunca queda solo al pie. */
+  #impresion .hoja__guia {
+    columns: 2;
+    column-gap: 7mm;
+    margin-bottom: 4mm;
+    break-inside: avoid-page;
+  }
+  #impresion .hoja__titulo {
+    column-span: all;
+    margin: 0 0 2mm;
+    padding-bottom: 0.8mm;
+    border-bottom: 0.6pt solid #000;
+    font-size: 10.5pt;
+  }
+  #impresion .hoja__bloque {
+    break-inside: avoid;
+    margin: 0 0 2.5mm;
+  }
+  #impresion .hoja__tema {
+    margin: 0 0 0.6mm;
+    font-size: 8.5pt;
+  }
+  #impresion .hoja__formulas { gap: 0.5mm; }
+  #impresion .hoja__formulas li { overflow: visible; }
+  #impresion .hoja__nota {
+    margin-top: 0.5mm;
+    font-size: 7.5pt;
+  }
+
+  /* --- tablas: cifras chicas pero legibles; cada bloque entero en una
+     página --- */
+
+  #impresion .tabla-num { margin-bottom: 5mm; }
+  /* Las tablas que entran en una página no se parten; la binomial y la
+     Poisson, que ocupan varias, empiezan en una página nueva, para que su
+     título quede arriba de su primer bloque. */
+  #impresion .tabla-num { break-inside: avoid-page; }
+  #impresion .tabla-num--binomial,
+  #impresion .tabla-num--poisson {
+    break-inside: auto;
+    break-before: page;
+  }
+  #impresion .tabla-num__titulo {
+    margin: 0 0 0.8mm;
+    font-size: 10.5pt;
+  }
+  #impresion .tabla-num__descripcion {
+    margin: 0 0 2mm;
+    font-size: 7.5pt;
+  }
+  #impresion .tabla-num__bloques { gap: 3mm; }
+  #impresion .tabla-num__bloque { break-inside: avoid; }
+  #impresion .tabla-num__marco { overflow: visible; }
+  #impresion .tabla-num table { font-size: 7pt; }
+  #impresion .tabla-num th,
+  #impresion .tabla-num td { padding: 0.15mm 1.1mm; }
+
+  /* La binomial (diecinueve tablas chicas) y la Poisson (cuatro bloques de
+     diez columnas) van en dos columnas. */
+  #impresion .tabla-num--binomial .tabla-num__bloques,
+  #impresion .tabla-num--poisson .tabla-num__bloques {
+    display: block;
+    columns: 2;
+    column-gap: 6mm;
+  }
+  #impresion .tabla-num--binomial .tabla-num__bloque,
+  #impresion .tabla-num--poisson .tabla-num__bloque { margin-bottom: 2.5mm; }
+  #impresion .tabla-num--binomial table,
+  #impresion .tabla-num--poisson table { font-size: 6.5pt; }
+  #impresion .tabla-num--binomial th,
+  #impresion .tabla-num--binomial td,
+  #impresion .tabla-num--poisson th,
+  #impresion .tabla-num--poisson td { padding: 0.1mm 0.8mm; }
+
+  /* Los factoriales son una columna angosta: van al lado de los combinatorios. */
+  #impresion .tabla-num--combinatoria .tabla-num__bloques {
+    display: flex;
+    align-items: flex-start;
+    gap: 8mm;
+  }
+
+  /* --- el kit: una carátula, y las tablas desde una página nueva --- */
+
+  #impresion .kit__caratula {
+    margin-bottom: 6mm;
+    padding-bottom: 3mm;
+    border-bottom: 0.8pt solid #000;
+  }
+  #impresion .kit__materia {
+    margin: 0;
+    font-size: 8pt;
+    letter-spacing: 0.04em;
+  }
+  #impresion .kit__titulo {
+    margin: 1mm 0;
+    font-size: 18pt;
+  }
+  #impresion .kit__dato,
+  #impresion .kit__indice {
+    margin: 0;
+    font-size: 9pt;
+  }
+  #impresion .kit__parte-titulo {
+    margin: 0 0 3mm;
+    font-size: 13pt;
+  }
+  #impresion .kit__parte--tablas { break-before: page; }
+
+  #impresion .suerte {
+    margin: 8mm 0 0;
+    break-inside: avoid;
+    font-size: 11pt;
+    color: #000;
+  }
+}

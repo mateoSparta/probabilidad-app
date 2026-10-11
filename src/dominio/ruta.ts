@@ -3,7 +3,7 @@
  *
  *   #/                     menú principal
  *   #/ejercicios/3         guía 3
- *   #/skills, #/simulacro, #/seguimiento
+ *   #/skills, #/simulacro, #/seguimiento, #/formulas
  *
  * Va en el hash y no en el path porque GitHub Pages sirve archivos estáticos:
  * un path inventado devolvería 404 al recargar. Que la ruta viva en la URL es
@@ -13,7 +13,7 @@
  * Este módulo es puro (no toca `window`) para poder probarlo desde node.
  */
 
-export type Seccion = 'menu' | 'ejercicios' | 'skills' | 'simulacro' | 'seguimiento'
+export type Seccion = 'menu' | 'ejercicios' | 'skills' | 'simulacro' | 'seguimiento' | 'formulas'
 
 export type Ruta = {
   seccion: Seccion
@@ -29,6 +29,7 @@ export const NOMBRE_SECCION: Record<Exclude<Seccion, 'menu'>, string> = {
   skills: 'Skills',
   simulacro: 'Simulacro',
   seguimiento: 'Seguimiento',
+  formulas: 'Fórmulas y tablas',
 }
 
 const SECCIONES = new Set<string>(Object.keys(NOMBRE_SECCION))

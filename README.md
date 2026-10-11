@@ -37,6 +37,11 @@ independientes, y el build los contrasta en cada corrida.
 Está cargado el núcleo recomendado por la cátedra (los ejercicios marcados `!`
 en la guía) de las ocho guías.
 
+**Fórmulas y tablas para el examen.** La sección del mismo nombre imprime (o
+guarda en PDF) la hoja de fórmulas, las tablas para resolver sin calculadora y
+un kit con todo junto. Las tablas las genera y verifica
+`tools/verify/tablas.py`; ver [revision/formulas.md](revision/formulas.md).
+
 **Lo que falta y por qué: [revision/00-estado.md](revision/00-estado.md).** Ahí
 está el índice; el detalle por guía está en `revision/guia-N.md`.
 

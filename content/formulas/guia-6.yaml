@@ -1,0 +1,42 @@
+# Hoja de fórmulas de la guía 6 (PLAN.md §12.1). Sale de las fórmulas de los
+# skills, de la teoría de la guía y de la tabla de distribuciones de la
+# cátedra (fuentes/teoria/probabilidad_distribuciones.pdf); ver
+# revision/formulas.md.
+guia: 6
+bloques:
+  - titulo: Bernoulli
+    formulas:
+      - 'X \sim \text{Ber}(p): \ P(X = 1) = p, \quad P(X = 0) = 1 - p'
+      - 'E[X] = p, \qquad \operatorname{var}[X] = p(1-p)'
+
+  - titulo: Binomial
+    formulas:
+      - 'X \sim \text{Bin}(n, p): \ P(X = k) = \dbinom{n}{k} p^k (1-p)^{n-k}, \quad k = 0, \dots, n'
+      - 'E[X] = np, \qquad \operatorname{var}[X] = np(1-p)'
+
+  - titulo: Geométrica
+    formulas:
+      - 'N \sim \mathcal{G}(p): \ P(N = n) = (1-p)^{n-1} p, \quad n \ge 1'
+      - 'P(N > n) = (1-p)^n'
+      - 'E[N] = \dfrac{1}{p}, \qquad \operatorname{var}[N] = \dfrac{1-p}{p^2}'
+
+  - titulo: Pascal
+    formulas:
+      - 'N \sim \text{Pas}(k, p): \ P(N = n) = \dbinom{n-1}{k-1} p^k (1-p)^{n-k}, \quad n \ge k'
+      - 'E[N] = \dfrac{k}{p}, \qquad \operatorname{var}[N] = \dfrac{k(1-p)}{p^2}'
+
+  - titulo: Hipergeométrica
+    formulas:
+      - 'X \sim \mathcal{H}(N, d, n): \ P(X = k) = \dfrac{\dbinom{d}{k}\dbinom{N - d}{n - k}}{\dbinom{N}{n}}'
+      - 'E[X] = \dfrac{nd}{N}, \qquad \operatorname{var}[X] = \dfrac{nd(N-d)(N-n)}{N^2(N-1)}'
+    nota: '$N$ elementos, $d$ de ellos marcados, y se extraen $n$ sin reposición.'
+
+  - titulo: Multinomial
+    formulas:
+      - 'P(X_1 = k_1, \dots, X_r = k_r) = \dfrac{n!}{k_1! \cdots k_r!}\, p_1^{k_1} \cdots p_r^{k_r}'
+      - 'k_1 + \dots + k_r = n, \qquad p_1 + \dots + p_r = 1'
+      - 'X_i \sim \text{Bin}(n, p_i), \qquad \operatorname{cov}(X_i, X_j) = -n p_i p_j \ (i \ne j)'
+
+  - titulo: Pérdida de memoria
+    formulas:
+      - 'P(N > n + m \mid N > n) = P(N > m)'

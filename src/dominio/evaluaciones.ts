@@ -109,3 +109,25 @@ export function rangoGuias(guias: readonly number[]): string {
 export function rotulo(ev: Evaluacion): string {
   return ev.nombre.charAt(0).toUpperCase() + ev.nombre.slice(1)
 }
+
+/** Un alcance del material para imprimir: Parcial, Final o Todas. */
+export type Alcance = {
+  id: string
+  rotulo: string
+  /** Las guías que abarca. */
+  guias: number[]
+}
+
+/**
+ * Los alcances del material para el examen: uno por etapa, con sus guías
+ * propias (Parcial: 1 a 8; Final: 9 a 12), y "Todas". El del final no repite
+ * lo del parcial porque, si ya se imprimió, alcanza con completar.
+ */
+export function alcances(evaluaciones: readonly Evaluacion[]): Alcance[] {
+  const porEtapa = etapas(evaluaciones).map((e) => ({
+    id: e.evaluacion.nombre,
+    rotulo: rotulo(e.evaluacion),
+    guias: e.propias,
+  }))
+  return [...porEtapa, { id: 'todas', rotulo: 'Todas', guias: guiasDeLaMateria(evaluaciones) }]
+}

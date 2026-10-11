@@ -20,6 +20,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 import { load } from 'js-yaml'
+import katex from 'katex'
 import { evaluate } from 'mathjs'
 
 const RAIZ = resolve(import.meta.dirname, '..')
@@ -726,6 +727,88 @@ if (existsSync(VERIFICACION)) {
 } else {
   avisar('no existe content/.verificacion/resultados.json: corré `npm run verificar`')
 }
+
+// ----------------------------------------------- material para el examen
+
+/** Si KaTeX parsea la fórmula; si no, el error. */
+function errorKatex(tex: string): string | null {
+  try {
+    katex.renderToString(tex, { throwOnError: true, displayMode: true })
+    return null
+  } catch (e) {
+    return e instanceof Error ? e.message : String(e)
+  }
+}
+
+type BloqueFormulasCrudo = { titulo?: string; formulas?: unknown[]; nota?: string }
+const hojas = listar(join(CONTENT, 'formulas'), '.yaml').map((r) => ({
+  ruta: r,
+  hoja: leerYaml<{ guia?: number; bloques?: BloqueFormulasCrudo[] }>(r) ?? {},
+}))
+const guiasConHoja = new Set<number>()
+let nFormulas = 0
+for (const { ruta, hoja } of hojas) {
+  const donde = `fórmulas ${ruta.split(/[\\/]/).pop()}`
+  if (typeof hoja.guia !== 'number') {
+    err(`${donde}: falta \`guia\``)
+    continue
+  }
+  if (guiasConHoja.has(hoja.guia)) err(`${donde}: la guía ${hoja.guia} tiene dos hojas`)
+  guiasConHoja.add(hoja.guia)
+  if (guiasEvaluadas.size && !guiasEvaluadas.has(hoja.guia)) {
+    err(`${donde}: la guía ${hoja.guia} no está en ninguna evaluación de config.yaml`)
+  }
+  if (!hoja.bloques?.length) err(`${donde}: no tiene bloques`)
+  for (const b of hoja.bloques ?? []) {
+    const quien = `${donde} "${b.titulo ?? '(sin título)'}"`
+    if (!b.titulo?.trim()) err(`${quien}: un bloque sin título`)
+    revisarEstilo(quien, b.titulo)
+    revisarEstilo(quien, b.nota)
+    if (!b.formulas?.length) err(`${quien}: no tiene fórmulas`)
+    for (const f of b.formulas ?? []) {
+      nFormulas++
+      if (typeof f !== 'string') {
+        err(`${quien}: una fórmula que no es texto`)
+        continue
+      }
+      const e = errorKatex(f)
+      if (e) err(`${quien}: KaTeX no parsea \`${f}\` (${e})`)
+    }
+  }
+}
+
+type TablaCruda = {
+  id?: string
+  titulo?: string
+  guia?: number
+  orden?: number
+  descripcion?: string
+  bloques?: { esquina?: string; columnas?: string[]; filas?: string[][] }[]
+}
+const tablasCrudas = listar(join(CONTENT, 'tablas'), '.yaml').map((r) => leerYaml<TablaCruda>(r) ?? {})
+if (tablasCrudas.length === 0) {
+  avisar('no hay tablas en content/tablas/: corré `.venv/Scripts/python tools/verify/tablas.py`')
+}
+let nCeldas = 0
+for (const t of tablasCrudas) {
+  const donde = `tabla ${t.id ?? '(sin id)'}`
+  if (!t.id || !t.titulo || typeof t.guia !== 'number' || typeof t.orden !== 'number') {
+    err(`${donde}: le falta id, titulo, guia u orden`)
+  }
+  if (t.guia !== undefined && guiasEvaluadas.size && !guiasEvaluadas.has(t.guia)) {
+    err(`${donde}: la guía ${t.guia} no está en ninguna evaluación de config.yaml`)
+  }
+  for (const [i, b] of (t.bloques ?? []).entries()) {
+    const ancho = (b.columnas?.length ?? 0) + 1
+    for (const f of b.filas ?? []) {
+      if (f.length !== ancho) err(`${donde}, bloque ${i + 1}: una fila de ${f.length} celdas en una tabla de ${ancho}`)
+      nCeldas += f.length - 1
+    }
+  }
+}
+console.log(
+  `check: ${nFormulas} fórmulas en ${hojas.length} hojas, ${tablasCrudas.length} tablas con ${nCeldas} valores.`,
+)
 
 // ------------------------------------------------------------------ salida
 

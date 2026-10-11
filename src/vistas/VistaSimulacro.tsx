@@ -20,12 +20,15 @@ import {
   IconoAviso,
   IconoComprobar,
   IconoDesplegar,
+  IconoImprimir,
   IconoLupa,
   IconoReintentar,
   IconoReloj,
   IconoSimulacro,
 } from '../componentes/Iconos'
 import { ItemEjercicio } from '../componentes/ItemEjercicio'
+import { KitExamen } from '../componentes/Material'
+import { imprimir } from '../componentes/imprimir'
 import { Dialogo, Modal } from '../componentes/Modal'
 import { Enunciado, TextoMarcado } from '../componentes/Mate'
 import { Tags, usarResaltado } from '../componentes/Tags'
@@ -657,6 +660,8 @@ function Configuracion({
             </div>
           </section>
 
+          <KitParaElExamen />
+
           {previo && (
             <VistaPrevia
               examen={previo}
@@ -673,6 +678,35 @@ function Configuracion({
         </>
       )}
     </>
+  )
+}
+
+/**
+ * El kit para el examen que toca (PLAN.md §12.3): las fórmulas y las tablas
+ * de sus guías en un solo documento, para imprimir o guardar en PDF.
+ */
+function KitParaElExamen() {
+  const ev = evaluacionActual(configCursada.evaluaciones)
+  if (!ev) return null
+  return (
+    <section class="kit-aviso" aria-label={`Kit para el ${ev.nombre}`}>
+      <p class="kit-aviso__texto">
+        Para llevar al {ev.nombre}, las fórmulas de las {rangoGuias(ev.guias)} y las tablas
+        para resolver sin calculadora, en un solo documento.
+      </p>
+      <button
+        class="boton boton--icono"
+        onClick={() =>
+          void imprimir(
+            <KitExamen evaluacion={ev} />,
+            `Kit para el ${ev.nombre} - Probabilidad y Estadística B`,
+          )
+        }
+      >
+        <IconoImprimir />
+        Kit para el {ev.nombre}
+      </button>
+    </section>
   )
 }
 

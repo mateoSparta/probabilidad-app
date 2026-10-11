@@ -11,12 +11,20 @@ import type { ComponentType } from 'preact'
 
 import {
   IconoEjercicios,
+  IconoFormulas,
   IconoSeguimiento,
   IconoSimulacro,
   IconoSkills,
 } from '../componentes/Iconos'
 import { TusDatos } from '../componentes/TusDatos'
-import { ejercicios, examenes, itemsPorSkill, skillsHabilitados } from '../datos/contenido'
+import {
+  ejercicios,
+  examenes,
+  hojasFormulas,
+  itemsPorSkill,
+  skillsHabilitados,
+  tablas,
+} from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
 import { estadoSkill } from '../dominio/progreso'
@@ -92,6 +100,17 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
     },
   ]
 
+  // Las herramientas van en una fila aparte, más baja, para que el inicio
+  // siga entrando sin desplazarse.
+  const herramientas: Opcion[] = [
+    {
+      seccion: 'formulas',
+      Icono: IconoFormulas,
+      descripcion: 'Las fórmulas de cada guía y las tablas para resolver sin calculadora, para imprimir.',
+      dato: `${hojasFormulas.length} guías · ${tablas.length} tablas`,
+    },
+  ]
+
   return (
     <>
       <section class="menu" aria-labelledby="titulo-menu">
@@ -110,6 +129,20 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
                 <span class={'menu__dato' + (seccion === 'simulacro' && enCurso ? ' menu__dato--alerta' : '')}>
                   {dato}
                 </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <ul class="menu__grilla menu__grilla--herramientas">
+          {herramientas.map(({ seccion, Icono, descripcion, dato }, i) => (
+            <li key={seccion} style={{ '--i': opciones.length + i }}>
+              <a class="menu__opcion menu__opcion--compacta" href={escribirRuta({ seccion, guia })}>
+                <span class="menu__icono">
+                  <Icono />
+                </span>
+                <span class="menu__nombre">{NOMBRE_SECCION[seccion]}</span>
+                <span class="menu__descripcion">{descripcion}</span>
+                <span class="menu__dato">{dato}</span>
               </a>
             </li>
           ))}

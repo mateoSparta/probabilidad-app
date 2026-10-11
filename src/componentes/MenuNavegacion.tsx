@@ -22,6 +22,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks'
 import { escribirRuta, NOMBRE_SECCION, type Ruta, type Seccion } from '../dominio/ruta'
 import {
   IconoEjercicios,
+  IconoFormulas,
   IconoInicio,
   IconoSeguimiento,
   IconoSimulacro,
@@ -42,6 +43,7 @@ const OPCIONES: Opcion[] = [
   { seccion: 'skills', nombre: NOMBRE_SECCION.skills, Icono: IconoSkills },
   { seccion: 'simulacro', nombre: NOMBRE_SECCION.simulacro, Icono: IconoSimulacro },
   { seccion: 'seguimiento', nombre: NOMBRE_SECCION.seguimiento, Icono: IconoSeguimiento },
+  { seccion: 'formulas', nombre: NOMBRE_SECCION.formulas, Icono: IconoFormulas },
 ]
 
 type Fase = 'cerrado' | 'abierto' | 'cerrando'

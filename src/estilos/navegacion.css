@@ -582,3 +582,23 @@
   background: var(--acento-suave);
   color: var(--acento);
 }
+
+/* Las herramientas del inicio (la hoja de fórmulas, y después las
+   distribuciones): una fila aparte, más baja que las cuatro opciones, con el
+   dato a la derecha. */
+.menu__grilla--herramientas {
+  margin-top: var(--e-4);
+  grid-auto-rows: auto;
+}
+.menu__opcion--compacta {
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    'icono nombre dato'
+    'icono descripcion dato';
+  align-items: center;
+  padding-block: var(--e-3);
+}
+.menu__opcion--compacta .menu__dato {
+  margin-top: 0;
+  text-align: right;
+}

@@ -1,0 +1,51 @@
+# Hoja de fórmulas de la guía 1 (PLAN.md §12.1). Sale de las fórmulas de los
+# skills y de la teoría de la guía; ver revision/formulas.md.
+guia: 1
+bloques:
+  - titulo: Axiomas y propiedades
+    formulas:
+      - 'P(\Omega) = 1, \qquad P(A) \ge 0'
+      - 'A \cap B = \emptyset \implies P(A \cup B) = P(A) + P(B)'
+      - 'P(A^c) = 1 - P(A)'
+      - 'A \subset B \implies P(B \setminus A) = P(B) - P(A)'
+      - 'P(A \cup B) = P(A) + P(B) - P(A \cap B)'
+      - 'P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(AB) - P(AC) - P(BC) + P(ABC)'
+
+  - titulo: Álgebras de eventos
+    formulas:
+      - '\Omega \in \mathcal{A}, \qquad A \in \mathcal{A} \implies A^c \in \mathcal{A}'
+      - 'A, B \in \mathcal{A} \implies A \cup B \in \mathcal{A}'
+
+  - titulo: Espacios discretos y equiprobables
+    formulas:
+      - 'P(A) = \sum_{\omega \in A} p(\omega), \qquad \sum_{\omega \in \Omega} p(\omega) = 1'
+      - '\text{Laplace: } P(A) = \dfrac{\#A}{\#\Omega}'
+      - '\text{geométrica: } P(A) = \dfrac{\text{medida}(A)}{\text{medida}(\Omega)}'
+
+  - titulo: Conteo
+    formulas:
+      - '\text{con orden, con reposición: } n^k'
+      - '\text{con orden, sin reposición: } \dfrac{n!}{(n-k)!}'
+      - '\text{sin orden, sin reposición: } \dbinom{n}{k} = \dfrac{n!}{k!\,(n-k)!}'
+      - '\text{permutaciones con repetición: } \dfrac{n!}{n_1! \cdots n_r!}'
+      - '\text{ocupación, } n \text{ bolas distinguibles en } r \text{ cajas: } r^n'
+      - '\text{ocupación, indistinguibles: } \dbinom{n + r - 1}{r - 1}'
+
+  - titulo: Continuidad
+    formulas:
+      - 'A_n \subset A_{n+1} \implies P\!\left(\bigcup_{n \ge 1} A_n\right) = \lim_{n \to \infty} P(A_n)'
+      - 'B_{n+1} \subset B_n \implies P\!\left(\bigcap_{n \ge 1} B_n\right) = \lim_{n \to \infty} P(B_n)'
+
+  - titulo: Probabilidad condicional, total y Bayes
+    formulas:
+      - 'P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}, \qquad P(B) > 0'
+      - 'P(A_1 \cap \cdots \cap A_n) = P(A_1)\,P(A_2 \mid A_1) \cdots P(A_n \mid A_1 \cap \cdots \cap A_{n-1})'
+      - 'P(A) = \sum_i P(A \mid B_i)\,P(B_i)'
+      - 'P(B_j \mid A) = \dfrac{P(A \mid B_j)\,P(B_j)}{\sum_i P(A \mid B_i)\,P(B_i)}'
+    nota: 'En las dos últimas, $B_1, B_2, \dots$ es una partición de $\Omega$.'
+
+  - titulo: Independencia
+    formulas:
+      - 'P(A \cap B) = P(A)\,P(B)'
+      - 'P\!\left(\bigcap_{i \in J} A_i\right) = \prod_{i \in J} P(A_i) \quad \text{para todo } J \subset \{1, \dots, n\}'
+    nota: 'Si $A$ y $B$ son independientes, también lo son $A^c$ y $B$, $A$ y $B^c$, y $A^c$ y $B^c$.'

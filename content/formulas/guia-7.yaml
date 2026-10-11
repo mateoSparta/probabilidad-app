@@ -1,0 +1,42 @@
+# Hoja de fórmulas de la guía 7 (PLAN.md §12.1). Sale de las fórmulas de los
+# skills, de la teoría de la guía y de la tabla de distribuciones de la
+# cátedra (fuentes/teoria/probabilidad_distribuciones.pdf); ver
+# revision/formulas.md.
+guia: 7
+bloques:
+  - titulo: Distribución de Poisson
+    formulas:
+      - 'X \sim \text{Poisson}(\mu): \ P(X = k) = \dfrac{e^{-\mu} \mu^k}{k!}, \quad k = 0, 1, \dots'
+      - 'E[X] = \operatorname{var}[X] = \mu'
+
+  - titulo: Proceso de Poisson de intensidad $\lambda$
+    formulas:
+      - 'N(a, b] \sim \text{Poisson}(\lambda (b-a))'
+      - '\text{intervalos disjuntos} \implies \text{conteos independientes}'
+      - '\operatorname{cov}(N(a,b],\, N(c,d]) = \lambda \cdot \text{longitud de la intersección}'
+
+  - titulo: Tiempos de espera
+    formulas:
+      - 'S_1 \sim \text{Exp}(\lambda): \ f(t) = \lambda e^{-\lambda t}, \quad P(S_1 > t) = e^{-\lambda t}'
+      - 'E[S_1] = \dfrac{1}{\lambda}, \qquad \operatorname{var}[S_1] = \dfrac{1}{\lambda^2}'
+      - 'S_n \sim \text{Gamma}(n, \lambda): \ f(t) = \dfrac{\lambda^n t^{n-1} e^{-\lambda t}}{(n-1)!}, \quad t > 0'
+      - 'E[S_n] = \dfrac{n}{\lambda}, \qquad \operatorname{var}[S_n] = \dfrac{n}{\lambda^2}'
+      - 'S_n > t \iff N(t) \le n - 1, \qquad P(S_n > t) = \sum_{k=0}^{n-1} e^{-\lambda t} \dfrac{(\lambda t)^k}{k!}'
+      - 'P(T > s + t \mid T > s) = P(T > t)'
+
+  - titulo: Condicionamiento a $N(t) = n$
+    formulas:
+      - 'N(t) = n \implies \text{los } n \text{ tiempos son i.i.d. } U(0, t)'
+      - 'P(N(s) = k \mid N(t) = n) = \dbinom{n}{k}\left(\tfrac{s}{t}\right)^{k}\left(1 - \tfrac{s}{t}\right)^{n-k}'
+
+  - titulo: Superposición y adelgazamiento
+    formulas:
+      - '\text{superposición: } \lambda = \lambda_1 + \lambda_2'
+      - '\text{adelgazamiento con probabilidad } p: \ \lambda_p = p\,\lambda'
+      - 'P(\text{el primero es del proceso 1}) = \dfrac{\lambda_1}{\lambda_1 + \lambda_2}'
+    nota: 'Los procesos que resultan de adelgazar son independientes entre sí.'
+
+  - titulo: Poisson compuesto
+    formulas:
+      - 'T = \sum_{i=1}^{N} X_i, \qquad E[T] = E[N]\, E[X]'
+      - '\operatorname{var}[T] = E[N]\operatorname{var}[X] + \operatorname{var}[N]\,(E[X])^2'

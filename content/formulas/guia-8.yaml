@@ -1,0 +1,28 @@
+# Hoja de fórmulas de la guía 8 (PLAN.md §12.1). Sale de las fórmulas de los
+# skills, de la teoría de la guía y de la tabla de distribuciones de la
+# cátedra (fuentes/teoria/probabilidad_distribuciones.pdf); ver
+# revision/formulas.md.
+guia: 8
+bloques:
+  - titulo: Distribución normal
+    formulas:
+      - 'X \sim N(\mu, \sigma^2): \ f_X(x) = \dfrac{1}{\sqrt{2\pi}\,\sigma}\, e^{-(x-\mu)^2/(2\sigma^2)}'
+      - 'Z = \dfrac{X - \mu}{\sigma} \sim N(0, 1), \qquad P(X \le x) = \Phi\!\left(\dfrac{x - \mu}{\sigma}\right)'
+      - '\Phi(-z) = 1 - \Phi(z), \qquad \Phi(z_\alpha) = \alpha'
+
+  - titulo: Combinación lineal de normales independientes
+    formulas:
+      - '\sum_i a_i X_i + b \sim N\!\left(\sum_i a_i \mu_i + b,\ \sum_i a_i^2 \sigma_i^2\right)'
+
+  - titulo: Teorema central del límite
+    formulas:
+      - 'S_n = \sum_{i=1}^{n} X_i \approx N\!\left(n\mu,\ n\sigma^2\right)'
+      - 'P(S_n \le s) \approx \Phi\!\left(\dfrac{s - n\mu}{\sigma\sqrt{n}}\right)'
+      - '\bar{X}_n = \dfrac{S_n}{n} \approx N\!\left(\mu,\ \dfrac{\sigma^2}{n}\right)'
+    nota: 'Las $X_i$ son independientes e idénticamente distribuidas, con media $\mu$ y varianza $\sigma^2$. Si la incógnita es $n$, con $u = \sqrt{n}$ queda una cuadrática.'
+
+  - titulo: Aproximación normal de una discreta
+    formulas:
+      - '\text{Bin}(n, p) \approx N\big(np,\ np(1-p)\big), \qquad \text{Poisson}(\mu) \approx N(\mu, \mu)'
+      - 'P(X \le k) \approx \Phi\!\left(\dfrac{k + 0{,}5 - \mu}{\sigma}\right)'
+      - 'P(X = k) \approx \Phi\!\left(\dfrac{k + 0{,}5 - \mu}{\sigma}\right) - \Phi\!\left(\dfrac{k - 0{,}5 - \mu}{\sigma}\right)'

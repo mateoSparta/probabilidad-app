@@ -1,0 +1,24 @@
+# Hoja de fórmulas de la guía 5 (PLAN.md §12.1). Sale de las fórmulas de los
+# skills y de la teoría de la guía; ver revision/formulas.md.
+guia: 5
+bloques:
+  - titulo: Densidades condicionales
+    formulas:
+      - 'f_{Y \mid X = x}(y) = \dfrac{f_{(X,Y)}(x, y)}{f_X(x)}, \qquad f_X(x) > 0'
+      - 'f_{(X,Y)}(x, y) = f_{Y \mid X = x}(y)\, f_X(x)'
+
+  - titulo: Mezclas y Bayes con datos continuos
+    formulas:
+      - 'f_X(x) = \sum_j f_{X \mid S = s_j}(x)\, P(S = s_j)'
+      - 'P(S = s \mid X = x) = \dfrac{f_{X \mid S = s}(x)\, P(S = s)}{\sum_j f_{X \mid S = s_j}(x)\, P(S = s_j)}'
+
+  - titulo: Esperanza condicional
+    formulas:
+      - '\varphi(x) = E[Y \mid X = x] = \int y\, f_{Y \mid X = x}(y)\, dy'
+      - 'E[Y \mid X] = \varphi(X)'
+      - 'E[Y] = E\big[E[Y \mid X]\big] = \sum_i E[Y \mid X = x_i]\, P(X = x_i)'
+      - '\text{Wald: } E\!\left[\textstyle\sum_{i=1}^{N} L_i\right] = E[N]\, E[L]'
+
+  - titulo: Varianza total
+    formulas:
+      - '\operatorname{var}[Y] = E\big[\operatorname{var}[Y \mid X]\big] + \operatorname{var}\big[E[Y \mid X]\big]'

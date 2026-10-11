@@ -12,7 +12,15 @@ import { load } from 'js-yaml'
 import type { Config } from '../dominio/ritmo'
 import type { Examen } from '../dominio/simulacro'
 import { claveItem } from '../dominio/tipos'
-import type { BloqueTeoria, Ejercicio, Guia, PasoSecuencia, Skill } from '../dominio/tipos'
+import type {
+  BloqueTeoria,
+  Ejercicio,
+  Guia,
+  HojaFormulas,
+  PasoSecuencia,
+  Skill,
+  Tabla,
+} from '../dominio/tipos'
 
 type Crudo = Record<string, string>
 
@@ -49,6 +57,18 @@ const crudoExamenes = import.meta.glob('/content/examenes/*.yaml', {
   eager: true,
 }) as Crudo
 
+const crudoFormulas = import.meta.glob('/content/formulas/*.yaml', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Crudo
+
+const crudoTablas = import.meta.glob('/content/tablas/*.yaml', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Crudo
+
 const crudoConfig = import.meta.glob('/content/config.yaml', {
   query: '?raw',
   import: 'default',
@@ -69,6 +89,18 @@ export const config: Config = (() => {
   const leido = (load(txt) ?? {}) as Partial<Config>
   return { ...CONFIG_POR_DEFECTO, ...leido }
 })()
+
+// ------------------------------------------------- material para el examen
+
+/** Las hojas de fórmulas, una por guía, en orden. */
+export const hojasFormulas: HojaFormulas[] = Object.values(crudoFormulas)
+  .map((txt) => load(txt) as HojaFormulas)
+  .sort((a, b) => a.guia - b.guia)
+
+/** Las tablas imprimibles, en el orden en que se imprimen. */
+export const tablas: Tabla[] = Object.values(crudoTablas)
+  .map((txt) => load(txt) as Tabla)
+  .sort((a, b) => a.orden - b.orden)
 
 // ------------------------------------------------------------------ skills
 

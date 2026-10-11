@@ -109,6 +109,7 @@ try {
     ['skills', 'Skills'],
     ['simulacro', 'Simulacro'],
     ['seguimiento', 'Seguimiento'],
+    ['formulas', 'Fórmulas y tablas'],
   ]) {
     const cab = render(createElement(Cabecera, { ruta: { seccion, guia: 1 } }))
     afirmar(cab.includes('class="hamburguesa"'), `en ${seccion} no está el menú de hamburguesa`)
@@ -116,7 +117,7 @@ try {
     afirmar(lista.includes('>Inicio<'), `en ${seccion} el menú no ofrece volver al inicio`)
     afirmar(!lista.includes(`</svg>${nombre}<`), `en ${seccion} el menú ofrece la sección actual`)
     const opciones = (lista.match(/class="navegacion__opcion"/g) ?? []).length
-    afirmar(opciones === 4, `en ${seccion} el menú tiene ${opciones} opciones en lugar de 4`)
+    afirmar(opciones === 5, `en ${seccion} el menú tiene ${opciones} opciones en lugar de 5`)
   }
 
   // --- la guía 1 ---
@@ -275,6 +276,37 @@ try {
       plan: planMenu,
     }),
   )
+  // La hoja de fórmulas es una herramienta: va en la fila aparte, más baja.
+  afirmar(
+    /class="menu__grilla menu__grilla--herramientas"[\s\S]*href="#\/formulas"[\s\S]*Fórmulas y tablas/.test(menu),
+    'el inicio no tiene la tarjeta de fórmulas y tablas en la fila de herramientas',
+  )
+
+  // --- fórmulas y tablas ---
+  const { VistaFormulas } = await servidor.ssrLoadModule('/src/vistas/VistaFormulas.tsx')
+  const formulas = render(createElement(VistaFormulas, {}))
+  afirmar(formulas.includes('Fórmulas y tablas') && formulas.includes('Imprimir o guardar PDF'),
+    'la sección de fórmulas no se dibuja o no tiene el botón de imprimir')
+  afirmar(!formulas.includes('mate-roto') && formulas.includes('class="katex'),
+    'hay fórmulas de la hoja que KaTeX no pudo parsear')
+  for (let g = 1; g <= 8; g++) {
+    afirmar(formulas.includes(`<span class="hoja__numero">Guía ${g}</span>`), `la hoja del parcial no tiene la guía ${g}`)
+  }
+  afirmar(!formulas.includes('>Guía 9<'), 'la hoja del parcial incluye la guía 9')
+  afirmar(formulas.includes('Suerte en el examen'), 'falta el saludo del final')
+  const etapasMaterial = (formulas.match(/name="alcance-material"/g) ?? []).length
+  afirmar(etapasMaterial === 3, `el filtro tiene ${etapasMaterial} opciones en lugar de Parcial, Final y Todas`)
+  const { TablasDeExamen, KitExamen } = await servidor.ssrLoadModule('/src/componentes/Material.tsx')
+  const tablasParcial = render(createElement(TablasDeExamen, { guias: [1, 2, 3, 4, 5, 6, 7, 8] }))
+  for (const t of ['Factoriales y números combinatorios', 'Binomial acumulada', 'Poisson acumulada', 'Función exponencial', 'Distribución normal estándar']) {
+    afirmar(tablasParcial.includes(t), `las tablas del parcial no incluyen "${t}"`)
+  }
+  afirmar(!tablasParcial.includes('t de Student'), 'las tablas del parcial incluyen la t, que es del final')
+  afirmar(tablasParcial.includes('<td>0,50399</td>') && tablasParcial.includes('<td>0,97500</td>'),
+    'la tabla normal no tiene los valores de la cátedra')
+  const kit = render(createElement(KitExamen, { evaluacion: contenido.config.evaluaciones[0] }))
+  afirmar(kit.includes('Kit para el parcial') && kit.indexOf('Fórmulas') < kit.indexOf('Tablas') && kit.includes('Suerte en el examen'),
+    'el kit no tiene carátula, fórmulas, tablas y saludo')
   for (const [nombre, href] of [
     ['Ejercicios', '#/ejercicios/3'],
     ['Skills', '#/skills'],
@@ -535,6 +567,8 @@ try {
     /class="interruptores"[\s\S]*class="sim-arranque"[\s\S]*<\/section><section class="pool desplegable"/.test(simulacro),
     'el botón de arrancar no quedó dentro del recuadro, debajo de los interruptores, con el pool afuera',
   )
+  afirmar(simulacro.includes('class="kit-aviso"') && simulacro.includes('Kit para el parcial'),
+    'el simulacro no ofrece el kit para el parcial')
   // El pool arranca plegado.
   afirmar(
     simulacro.includes('aria-expanded="false"') &&

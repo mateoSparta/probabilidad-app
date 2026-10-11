@@ -13,6 +13,7 @@ import './estilos/global.css'
 import './estilos/componentes.css'
 import './estilos/navegacion.css'
 import './estilos/animaciones.css'
+import './estilos/impresion.css'
 
 import { App } from './app'
 

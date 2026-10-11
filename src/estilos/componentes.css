@@ -1441,3 +1441,162 @@
   .catedra { right: var(--e-4); bottom: var(--e-4); }
   .catedra__boton { width: 7rem; height: 7rem; }
 }
+
+/* ----------------------------------------------- fórmulas y tablas */
+
+.material-config {
+  display: grid;
+  gap: var(--e-4);
+  margin-bottom: var(--e-6);
+}
+.material-config__fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-3);
+}
+
+/* Pestañas subrayadas: la activa en acento, sobre un filete común. */
+.pestanas {
+  display: inline-flex;
+  gap: var(--e-2);
+  border-bottom: 1px solid var(--borde);
+}
+.pestana {
+  appearance: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: var(--e-2) var(--e-3);
+  background: none;
+  font-family: var(--serif);
+  font-size: var(--t-base);
+  color: var(--tinta-2);
+  cursor: pointer;
+  transition: color 120ms, border-color 120ms;
+}
+.pestana:hover { color: var(--tinta); }
+.pestana--activa,
+.pestana--activa:hover {
+  color: var(--acento);
+  border-bottom-color: var(--acento);
+}
+
+/* La hoja de fórmulas: cada guía con su título y sus temas. */
+.hoja__guia { margin-bottom: var(--e-6); }
+.hoja__titulo {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-2);
+  padding-bottom: var(--e-1);
+  margin-bottom: var(--e-3);
+  border-bottom: 1px solid var(--borde-fuerte);
+  font-size: var(--t-md);
+}
+.hoja__numero {
+  font-size: var(--t-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--acento);
+}
+.hoja__bloque { margin-bottom: var(--e-4); }
+.hoja__tema {
+  margin-bottom: var(--e-1);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+.hoja__formulas {
+  display: grid;
+  gap: var(--e-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hoja__formulas li { overflow-x: auto; overflow-y: hidden; }
+.hoja__nota {
+  margin: var(--e-1) 0 0;
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+
+/* Las tablas: cifras alineadas, filetes finos y un renglón más marcado cada
+   cinco para no perderse al leer. */
+.tabla-num { margin-bottom: var(--e-6); }
+.tabla-num__titulo { font-size: var(--t-md); margin-bottom: var(--e-1); }
+.tabla-num__descripcion {
+  margin-bottom: var(--e-3);
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+.tabla-num__bloques { display: grid; gap: var(--e-4); }
+.tabla-num--binomial .tabla-num__bloques {
+  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+}
+/* Los factoriales son una columna angosta: van al lado de los combinatorios. */
+.tabla-num--combinatoria .tabla-num__bloques {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--e-5);
+}
+.tabla-num__subtitulo {
+  margin-bottom: var(--e-1);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+.tabla-num__marco { overflow-x: auto; }
+.tabla-num table {
+  border-collapse: collapse;
+  font-size: var(--t-xs);
+  font-variant-numeric: tabular-nums;
+}
+.tabla-num th,
+.tabla-num td {
+  padding: 2px 6px;
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--borde);
+}
+.tabla-num thead th {
+  font-weight: 500;
+  color: var(--tinta-2);
+  border-bottom: 1px solid var(--borde-fuerte);
+}
+.tabla-num tbody th {
+  font-weight: 500;
+  color: var(--tinta-2);
+  border-right: 1px solid var(--borde-fuerte);
+}
+.tabla-num tbody tr:nth-child(5n) > * { border-bottom-color: var(--borde-fuerte); }
+.tabla-num__esquina { border-right: 1px solid var(--borde-fuerte); }
+
+/* El saludo del final: un guiño, chico y al centro. */
+.suerte {
+  margin: var(--e-7) 0 var(--e-5);
+  text-align: center;
+  font-style: italic;
+  color: var(--tinta-2);
+}
+
+/* El kit en el simulacro: una línea de texto y el botón. */
+.kit-aviso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-3) var(--e-5);
+  margin-top: var(--e-6);
+  padding-top: var(--e-4);
+  border-top: 1px solid var(--borde);
+}
+.kit-aviso__texto {
+  flex: 1 1 20rem;
+  margin: 0;
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+
+/* El contenedor de impresión no se ve en pantalla (ver impresion.css). */
+#impresion { display: none; }

@@ -1,0 +1,37 @@
+# Hoja de fórmulas de la guía 2 (PLAN.md §12.1). Sale de las fórmulas de los
+# skills y de la teoría de la guía; ver revision/formulas.md.
+guia: 2
+bloques:
+  - titulo: Función de distribución
+    formulas:
+      - 'F_X(x) = P(X \le x)'
+      - 'P(a < X \le b) = F_X(b) - F_X(a)'
+      - 'P(X = a) = F_X(a) - F_X(a^-), \qquad P(X < a) = F_X(a^-)'
+      - 'P(X > a) = 1 - F_X(a)'
+    nota: '$F_X$ es no decreciente y continua a derecha, con límite 0 en $-\infty$ y 1 en $+\infty$.'
+
+  - titulo: Variables discretas y continuas
+    formulas:
+      - 'p_X(x) = P(X = x), \qquad \sum_x p_X(x) = 1'
+      - 'P(a < X < b) = \int_a^b f_X(x)\,dx, \qquad \int_{-\infty}^{\infty} f_X(x)\,dx = 1'
+      - 'F_X(x) = \int_{-\infty}^{x} f_X(u)\,du, \qquad f_X(x) = F_X''(x)'
+      - 'X \sim U(a, b): \ f_X(x) = \dfrac{1}{b - a}\,\mathbf{1}\{a < x < b\}'
+
+  - titulo: Condicionamiento a un evento
+    formulas:
+      - 'F_{X \mid A}(x) = \dfrac{P(X \le x,\ A)}{P(A)}'
+      - 'f_{X \mid A}(x) = \dfrac{f_X(x)\,\mathbf{1}\{x \in A\}}{P(A)}'
+
+  - titulo: Vectores aleatorios
+    formulas:
+      - 'F_{(X,Y)}(x, y) = P(X \le x,\ Y \le y)'
+      - 'f_X(x) = \int_{-\infty}^{\infty} f_{(X,Y)}(x, y)\,dy, \qquad f_Y(y) = \int_{-\infty}^{\infty} f_{(X,Y)}(x, y)\,dx'
+      - 'p_X(x) = \sum_y p_{(X,Y)}(x, y)'
+      - 'P((X,Y) \in A) = \iint_A f_{(X,Y)}(x, y)\,dx\,dy'
+    nota: 'Si $(X, Y)$ es uniforme sobre una región $\Lambda$, la densidad vale $1/\text{área}(\Lambda)$ en $\Lambda$.'
+
+  - titulo: Independencia de variables aleatorias
+    formulas:
+      - 'f_{(X,Y)}(x, y) = f_X(x)\,f_Y(y)'
+      - 'F_{(X,Y)}(x, y) = F_X(x)\,F_Y(y)'
+    nota: 'Si el soporte conjunto no es un producto cartesiano (en los casos usuales, un rectángulo), $X$ e $Y$ no son independientes.'
