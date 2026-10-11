@@ -543,6 +543,48 @@
   color: var(--color-estado);
 }
 
+/* Un skill de una guía todavía sin cargar: el mismo recuadro, en gris, con
+   el borde punteado y un candado en el sello. No abre nada. */
+.celda--bloqueada { --color-estado: var(--tinta-3); }
+.celda--bloqueada .celda-skill {
+  cursor: default;
+  background: transparent;
+  border-style: dashed;
+  color: var(--tinta-3);
+}
+.celda--bloqueada .celda-skill:hover { border-color: var(--borde); }
+.celda--bloqueada .sello {
+  border-style: dashed;
+  background: transparent;
+}
+.grupo-skills__titulo .icono {
+  margin-left: 0.4em;
+  vertical-align: -0.1em;
+}
+
+/* Las etapas del panel (parcial, final): un título con el dato de qué guías
+   suma y cuándo es, sobre un filete que separa una etapa de la otra. */
+.etapa + .etapa { margin-top: var(--e-7); }
+.etapa__cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--e-1) var(--e-3);
+  padding-bottom: var(--e-2);
+  margin-bottom: var(--e-4);
+  border-bottom: 1px solid var(--borde-fuerte);
+}
+.etapa__titulo {
+  margin: 0;
+  font-size: var(--t-md);
+}
+.etapa__dato {
+  margin: 0;
+  font-size: var(--t-sm);
+  font-style: italic;
+  color: var(--tinta-3);
+}
+
 /* Ventana de un skill: más ancha que la de confirmación, con un filete del
    color de su estado. Va con `.modal` delante para ganarle al ancho general
    de las ventanas, que está más abajo en este archivo. */

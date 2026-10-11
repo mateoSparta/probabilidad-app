@@ -1,11 +1,11 @@
 /**
- * Seguimiento: el ritmo respecto del parcial y el estado de cada ejercicio,
+ * Seguimiento: el ritmo respecto del próximo examen y el estado de cada ejercicio,
  * agrupado por unidad.
  *
  * Los círculos son los mismos del mapa de cada guía, pero acá los ejercicios
  * no están en la página: elegir uno lleva a su guía y baja hasta él.
  */
-import { AvisoParcialDetalle } from '../componentes/AvisoParcial'
+import { AvisoExamenDetalle } from '../componentes/AvisoExamen'
 import { MapaEjercicios } from '../componentes/MapaEjercicios'
 import { guias } from '../datos/contenido'
 import type { ApiSesion } from '../datos/usarSesion'
@@ -32,11 +32,11 @@ export function VistaSeguimiento({ plan, sesion, onIrAEjercicio }: Props) {
         <p class="guia__descripcion">
           La meta es dominar todos los temas, y para lograrlo alcanza con un subconjunto de los
           ejercicios. El cálculo siguiente estima cuántos ítems faltan y cuántos conviene
-          resolver por día hasta la fecha del parcial.
+          resolver por día hasta la fecha del {plan.evaluacion?.nombre ?? 'examen'}.
         </p>
       </section>
 
-      <AvisoParcialDetalle plan={plan} />
+      <AvisoExamenDetalle plan={plan} />
 
       <section class="seguimiento" aria-labelledby="titulo-unidades">
         <h3 id="titulo-unidades">Ejercicios por unidad</h3>

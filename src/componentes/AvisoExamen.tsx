@@ -1,16 +1,18 @@
 /**
- * El aviso del parcial, en dos formatos.
+ * El aviso del próximo examen, en dos formatos. El examen es el que toque
+ * según content/config.yaml: el parcial, el final o el que siga (ver
+ * dominio/evaluaciones.ts); el texto lo nombra a partir de ahí.
  *
- * `AvisoParcialCompacto` va en el encabezado, en un recuadro del ancho de la
- * columna: la fecha y los días que faltan, con la fecha teñida según el ritmo.
+ * `AvisoExamenCompacto` va en el encabezado, en un recuadro del ancho de la
+ * columna: el examen, su fecha y los días que faltan, teñidos según el ritmo.
  * Es lo único que se ve siempre, y por eso no dice nada más.
  *
- * `AvisoParcialDetalle` va en Seguimiento, con la cuenta completa: qué falta,
+ * `AvisoExamenDetalle` va en Seguimiento, con la cuenta completa: qué falta,
  * cuántos ítems por día y si el ritmo de los últimos días alcanza.
  */
 import type { ComponentChildren } from 'preact'
 
-import { config } from '../datos/contenido'
+import { rotulo } from '../dominio/evaluaciones'
 import { ETIQUETA_VEREDICTO, fechaCorta, type Plan } from '../dominio/ritmo'
 import type { Seccion } from '../dominio/ruta'
 import { IconoCalendario } from './Iconos'
@@ -27,40 +29,46 @@ function tono(plan: Plan): string {
     case 'apretado':
     case 'vencido':
       return 'ritmo--apretado'
+    // Sin fecha no hay ritmo que juzgar.
     default:
       return 'ritmo--neutro'
   }
 }
 
-export function AvisoParcialCompacto({ plan, seccion }: { plan: Plan; seccion?: Seccion }) {
+export function AvisoExamenCompacto({ plan, seccion }: { plan: Plan; seccion?: Seccion }) {
+  const ev = plan.evaluacion
+  if (!ev) return null
   const dias = plan.diasRestantes
   const texto =
-    dias > 1
-      ? `faltan ${dias} días`
-      : dias === 1
-        ? 'es mañana'
-        : dias === 0
-          ? 'es hoy'
-          : 'ya pasó'
+    dias === null
+      ? 'sin fecha'
+      : dias > 1
+        ? `faltan ${dias} días`
+        : dias === 1
+          ? 'es mañana'
+          : dias === 0
+            ? 'es hoy'
+            : 'ya pasó'
 
   // La fecha lleva al simulacro (practicar el examen) y los días que faltan,
   // al seguimiento (cómo viene el ritmo). En la sección a la que llevarían,
   // son texto: un enlace a la misma página no lleva a ningún lado.
   return (
-    <p class={'aviso-parcial ' + tono(plan)}>
+    <p class={'aviso-examen ' + tono(plan)}>
       <IconoCalendario />
       <Enlace
-        clase="aviso-parcial__fecha"
+        clase="aviso-examen__fecha"
         destino="simulacro"
         actual={seccion}
         ayuda="Practicar con un simulacro"
       >
-        Parcial {fechaCorta(config.parcial)}
+        {rotulo(ev)}
+        {ev.fecha && ` ${fechaCorta(ev.fecha)}`}
       </Enlace>
-      <span class="aviso-parcial__sep" aria-hidden="true">
+      <span class="aviso-examen__sep" aria-hidden="true">
         ·
       </span>
-      <Enlace clase="aviso-parcial__dias" destino="seguimiento" actual={seccion} ayuda="Ver el seguimiento">
+      <Enlace clase="aviso-examen__dias" destino="seguimiento" actual={seccion} ayuda="Ver el seguimiento">
         {texto}
       </Enlace>
     </p>
@@ -80,7 +88,7 @@ function Enlace({
   ayuda: string
   children: ComponentChildren
 }) {
-  if (destino === actual) return <span class={clase + ' aviso-parcial__aca'}>{children}</span>
+  if (destino === actual) return <span class={clase + ' aviso-examen__aca'}>{children}</span>
   return (
     <a class={clase} href={'#/' + destino} data-tip={ayuda}>
       {children}
@@ -88,8 +96,11 @@ function Enlace({
   )
 }
 
-export function AvisoParcialDetalle({ plan }: { plan: Plan }) {
+export function AvisoExamenDetalle({ plan }: { plan: Plan }) {
   const { veredicto } = plan
+  /** "el parcial", "el final": así se lo nombra en el texto. */
+  const nombre = plan.evaluacion?.nombre ?? 'examen'
+  const examen = `el ${nombre}`
 
   return (
     <section class={'ritmo ' + tono(plan)}>
@@ -99,13 +110,22 @@ export function AvisoParcialDetalle({ plan }: { plan: Plan }) {
 
       {veredicto === 'listo' ? (
         <p>
-          Los {plan.skillsTotal} skills están dominados. Hasta el parcial conviene seguir
-          practicando, porque el estado de cada skill se calcula sobre sus últimos 5 intentos y
-          los errores nuevos desplazan a los aciertos anteriores.
+          Los {plan.skillsTotal} skills que entran en {examen} están dominados. Hasta la fecha
+          conviene seguir practicando, porque el estado de cada skill se calcula sobre sus
+          últimos 5 intentos y los errores nuevos desplazan a los aciertos anteriores.
         </p>
       ) : veredicto === 'vencido' ? (
         <p>
-          La fecha del parcial ya pasó. Si cambió, actualizala en <code>content/config.yaml</code>.
+          La fecha del {nombre} ya pasó. Si cambió, actualizala en{' '}
+          <code>content/config.yaml</code>.
+        </p>
+      ) : veredicto === 'sin_fecha' ? (
+        <p>
+          Todavía no hay fecha para {examen}. Faltan <strong>{plan.itemsFaltantes} ítems</strong>,
+          distribuidos en {plan.ejerciciosFaltantes} ejercicios, para dominar los{' '}
+          {plan.skillsTotal - plan.skillsDominados} skills pendientes. Cuando la fecha esté
+          definida, cargala en <code>content/config.yaml</code> para calcular cuántos ítems por
+          día hacen falta.
         </p>
       ) : (
         <>
@@ -119,8 +139,8 @@ export function AvisoParcialDetalle({ plan }: { plan: Plan }) {
           <p>
             Faltan <strong>{plan.itemsFaltantes} ítems</strong>, distribuidos en{' '}
             {plan.ejerciciosFaltantes} ejercicios, para dominar los temas pendientes, y quedan{' '}
-            {plan.diasRestantes} días. No es necesario resolver todos los ejercicios de las
-            guías; esos ítems alcanzan para cubrir los{' '}
+            {plan.diasRestantes} días para {examen}. No es necesario resolver todos los
+            ejercicios de las guías; esos ítems alcanzan para cubrir los{' '}
             {plan.skillsTotal - plan.skillsDominados} skills que faltan.
           </p>
         </>
@@ -133,7 +153,7 @@ export function AvisoParcialDetalle({ plan }: { plan: Plan }) {
           </strong>{' '}
           skills dominados
         </li>
-        {veredicto !== 'sin_arrancar' && veredicto !== 'listo' && (
+        {veredicto !== 'sin_arrancar' && veredicto !== 'listo' && veredicto !== 'sin_fecha' && (
           <li>
             ritmo de los últimos 7 días:{' '}
             <strong>{String(plan.ritmoReciente).replace('.', ',')}</strong>{' '}

@@ -158,6 +158,36 @@ contenido, no del alumno, que no puede hacer nada al respecto. Con un solo
 
 La cuenta incluye los ítems de los parciales, que también evalúan skills.
 
+### 3.5 Skills de las guías 9 a 12, provisorios
+
+El panel de skills ya muestra los temas del final, bloqueados hasta que se
+cargue cada guía. Para eso el catálogo (`content/skills.yaml`) tiene 15 skills
+de las guías 9 a 12, con nombre y descripción pero sin fórmulas. Los nombres
+salen de los enunciados de `fuentes/guias/parte2.pdf` y son **provisorios**:
+conviene revisarlos, y completar sus fórmulas, al cargar cada guía.
+
+| Guía | Skills |
+|---|---|
+| 9 (estimación puntual) | `suficiencia`, `familias-exponenciales`, `maxima-verosimilitud`, `propiedades-estimadores` |
+| 10 (tests de hipótesis) | `nivel-potencia`, `test-normal`, `test-mas-potente`, `test-asintotico`, `p-valor` |
+| 11 (intervalos de confianza) | `intervalo-normal`, `intervalo-pivote`, `intervalo-asintotico` |
+| 12 (estimación bayesiana) | `a-posteriori`, `estimador-bayesiano`, `prediccion-bayesiana` |
+
+Un skill se considera bloqueado mientras su guía no tenga contenido
+(`skillBloqueado` en `src/datos/contenido.ts`); al cargar la guía se
+habilita solo, sin tocar código. Los bloqueados no cuentan en el resumen del
+panel ni en el inicio, y no entran en el plan de ningún examen.
+
+### 3.6 Parcial y final
+
+Las fechas y las guías de cada examen están en `content/config.yaml`, en la
+lista `evaluaciones`. Hoy hay dos: el parcial (30/10, guías 1 a 8) y el final
+(sin fecha, guías 1 a 12). El aviso del encabezado y Seguimiento apuntan a la
+primera que no pasó; después del 30/10 pasan solos al final, y hasta que tenga
+fecha dicen "sin fecha" y no calculan un ritmo por día.
+
+**Pendiente:** cargar la fecha del final cuando esté definida.
+
 ---
 
 ## 4. Los exámenes

@@ -1,5 +1,6 @@
 /**
- * ¿Llego al parcial?
+ * ¿Llego al examen? El que toque: el parcial, el final o la evaluación que
+ * siga en content/config.yaml (ver evaluaciones.ts).
  *
  * La idea no es hacer todos los ejercicios: es hacer **los mínimos necesarios
  * para dominar todos los temas**. Un skill se domina con 3 intentos limpios en
@@ -16,11 +17,14 @@
  */
 // Con extension explicita: tools/smoke.ts importa este modulo directo con
 // node, que no resuelve extensiones. Vite lo acepta igual.
+import { diasHasta, evaluacionActual, type Evaluacion } from './evaluaciones.ts'
 import { avanceSkill, limpiosParaDominar, type Progreso } from './progreso.ts'
 
+export { diasHasta } from './evaluaciones.ts'
+
 export type Config = {
-  /** Fecha del parcial, en ISO (`2026-10-30`). */
-  parcial: string
+  /** Las evaluaciones de la cursada, en orden cronológico. */
+  evaluaciones: Evaluacion[]
   curso: string | null
   ritmo_comodo_por_dia: number
 }
@@ -38,9 +42,14 @@ export type Veredicto =
   | 'apretado'
   /** La fecha ya pasó. */
   | 'vencido'
+  /** La evaluación todavía no tiene fecha: no se puede calcular un ritmo. */
+  | 'sin_fecha'
 
 export type Plan = {
-  diasRestantes: number
+  /** La evaluación a la que apunta el plan; null si no hay ninguna declarada. */
+  evaluacion: Evaluacion | null
+  /** Días hasta esa evaluación; null si no tiene fecha. */
+  diasRestantes: number | null
   /** Skills que se pueden llegar a dominar: los que tienen al menos un ítem. */
   skillsTotal: number
   skillsDominados: number
@@ -54,7 +63,7 @@ export type Plan = {
   itemsFaltantes: number
   /** Ejercicios distintos que tocan esos ítems. */
   ejerciciosFaltantes: number
-  /** Ítems limpios por día que hacen falta de acá al parcial. */
+  /** Ítems limpios por día que hacen falta de acá al examen (0 sin fecha). */
   porDia: number
   /** Ítems limpios por día de los últimos 7 días. */
   ritmoReciente: number
@@ -63,8 +72,11 @@ export type Plan = {
   veredicto: Veredicto
 }
 
-/** Un skill con los ítems que lo evalúan. */
-export type SkillConItems = { id: string; items: ReadonlySet<string> }
+/**
+ * Un skill con los ítems que lo evalúan, y la guía en la que se introduce:
+ * el plan de una evaluación cuenta sólo los skills de sus guías.
+ */
+export type SkillConItems = { id: string; items: ReadonlySet<string>; guia?: number }
 
 /**
  * Los skills que se pueden llegar a dominar: todos los que tienen algún ítem,
@@ -79,18 +91,6 @@ export function alcanzables(skills: readonly SkillConItems[]): SkillConItems[] {
 const MS_POR_DIA = 86_400_000
 const VENTANA_RITMO_DIAS = 7
 
-/**
- * Días de calendario hasta la fecha. Se normalizan las dos puntas a
- * medianoche local, así el resultado no depende de la hora del día: a las 9 de
- * la mañana y a las 11 de la noche falta lo mismo. Devuelve 0 el mismo día y
- * negativo si ya pasó.
- */
-export function diasHasta(fechaIso: string, ahora = new Date()): number {
-  const desde = new Date(ahora)
-  desde.setHours(0, 0, 0, 0)
-  const hasta = new Date(`${fechaIso}T00:00:00`)
-  return Math.round((hasta.getTime() - desde.getTime()) / MS_POR_DIA)
-}
 
 /**
  * Cuántos intentos limpios le faltan a cada skill para quedar dominado.
@@ -185,10 +185,15 @@ export function armarPlan(
   config: Config,
   ahora = new Date(),
 ): Plan {
-  const diasRestantes = diasHasta(config.parcial, ahora)
+  const evaluacion = evaluacionActual(config.evaluaciones, ahora)
+  const diasRestantes = evaluacion?.fecha ? diasHasta(evaluacion.fecha, ahora) : null
 
-  // La meta se arma sólo sobre los skills alcanzables.
-  const meta = alcanzables(skills)
+  // Entran los skills de las guías que evalúa (los que no dicen su guía,
+  // también), y de ellos la meta toma sólo los alcanzables.
+  const evaluados = evaluacion
+    ? skills.filter((s) => s.guia === undefined || evaluacion.guias.includes(s.guia))
+    : skills
+  const meta = alcanzables(evaluados)
   const faltantes = itemsRecomendados(progreso, meta, skillsDeItem)
   const itemsFaltantes = faltantes.length
 
@@ -199,24 +204,27 @@ export function armarPlan(
     (s) => avanceSkill(progreso, s.items).limpios >= limpiosParaDominar(s.items),
   ).length
 
-  const diasUtiles = Math.max(1, diasRestantes)
-  const porDia = Math.ceil(itemsFaltantes / diasUtiles)
+  const porDia =
+    diasRestantes === null ? 0 : Math.ceil(itemsFaltantes / Math.max(1, diasRestantes))
   const reciente = ritmoReciente(progreso, VENTANA_RITMO_DIAS, ahora)
 
   const comodo = config.ritmo_comodo_por_dia
   let veredicto: Veredicto
   if (itemsFaltantes === 0) veredicto = 'listo'
-  else if (diasRestantes <= 0) veredicto = 'vencido'
+  else if (diasRestantes === null) veredicto = 'sin_fecha'
+  // El mismo día todavía no pasó: el aviso dice "es hoy".
+  else if (diasRestantes < 0) veredicto = 'vencido'
   else if (progreso.intentos.length === 0) veredicto = 'sin_arrancar'
   else if (porDia <= comodo) veredicto = 'holgado'
   else if (porDia <= comodo * 2) veredicto = 'justo'
   else veredicto = 'apretado'
 
   return {
+    evaluacion,
     diasRestantes,
     skillsTotal: meta.length,
     skillsDominados: dominados,
-    skillsSinCobertura: skills.length - meta.length,
+    skillsSinCobertura: evaluados.length - meta.length,
     itemsFaltantes,
     ejerciciosFaltantes: ejercicios.size,
     porDia,
@@ -233,6 +241,7 @@ export const ETIQUETA_VEREDICTO: Record<Veredicto, string> = {
   justo: 'Vas justo',
   apretado: 'El ritmo que hace falta es alto',
   vencido: 'La fecha ya pasó',
+  sin_fecha: 'Fecha a definir',
 }
 
 /** Formato corto para el encabezado: `30/10`. */

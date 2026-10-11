@@ -51,7 +51,7 @@ Hay cinco principios que guían las decisiones:
 | Insignias | Por skill, globales (un skill puede aparecer en varias guías). Hay un panel general de skills. |
 | Simulacro | Botón (no tab). Elige al azar un examen de PyE B, con timer configurable (por defecto 4 h), toggle de tags y botón "Entregar" que calcula la nota. |
 | Persistencia | `localStorage` + exportar/importar JSON. Se guardan dos cosas separadas: el **historial** de intentos (de donde salen las insignias) y la **sesión** (dónde quedaste: ítems resueltos, lo tipeado, el simulacro a medio rendir). |
-| Fecha del parcial | En `content/config.yaml`. El encabezado muestra los días que faltan y el panel de skills calcula cuántos ítems por día hacen falta para dominar los temas que quedan. |
+| Fechas de los exámenes | En `content/config.yaml`, como una lista de evaluaciones (parcial, final y las que se agreguen), cada una con su fecha y sus guías. El encabezado muestra los días que faltan para la próxima y Seguimiento calcula cuántos ítems por día hacen falta para dominar los temas que entran en ella. |
 | Stack | Vite + TypeScript + Preact, KaTeX, math.js. Sin backend. |
 
 **Sobre el filtro por skills.** La primera versión de este plan proponía chips
@@ -324,7 +324,7 @@ Los enunciados se transcriben de la guía y no se reescriben.
 | Dominado (insignia) | ≥ 3 intentos limpios en los últimos 5. Si el skill tiene menos de 3 ítems, un limpio por ítem. |
 | Flojo | ≥ 3 intentos y ≤ 1 limpio en los últimos 5. |
 
-**Panel de skills:** una grilla agrupada por guía, con el estado de cada skill. Al hacer clic en un skill se ven los ítems que lo evalúan, con un tilde en los ya resueltos, y los distractores en los que más caíste (los errores típicos).
+**Panel de skills:** una grilla agrupada por guía, con el estado de cada skill, y las guías agrupadas por etapa (las del parcial y los temas del final). Los skills de las guías todavía sin cargar se ven bloqueados. Al hacer clic en un skill se ven los ítems que lo evalúan, con un tilde en los ya resueltos, y los distractores en los que más caíste (los errores típicos).
 
 **Datos guardados:** un log de eventos en `localStorage` (`{item, ts, envios, correcto, pistas, revelo}`), de donde se derivan los estados. Hay un botón para exportar e importar el JSON.
 
@@ -374,7 +374,7 @@ Algunos parciales traen variantes por curso (por ejemplo, el ej. 2 del 24/05 tie
 **Al entregar:**
 
 - Cada ejercicio vale lo mismo y sus ítems se reparten ese peso en partes iguales. El resultado es una nota de 0 a 10.
-- Se muestra también el veredicto con el criterio de la cátedra: "aprobaría" si hay ≥ 3 ejercicios con todos sus ítems correctos (en integradoras, además, al menos uno de ellos debe ser el 4 o el 5).
+- Se muestra también el veredicto con el criterio de la cátedra: "aprobaría" si hay ≥ 3 ejercicios con todos sus ítems correctos (en integradoras, además, al menos uno de ellos debe ser el 4 o el 5; el YAML del examen lo declara con `requiere_alguno_de: [4, 5]`).
 
 **Después:** se revelan las respuestas, los tags y las pistas, y los ítems del simulacro cuentan como intentos para las insignias. Son los intentos más valiosos, porque son mezclados y sin aviso del tema.
 

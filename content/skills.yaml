@@ -503,3 +503,118 @@
     - '\text{Bin}(n, p) \approx N\big(np,\ np(1-p)\big)'
     - 'P(X = k) \approx \Phi\!\left(\dfrac{k + 0{,}5 - \mu}{\sigma}\right) - \Phi\!\left(\dfrac{k - 0{,}5 - \mu}{\sigma}\right)'
     - 'P(X > k) = P(X \ge k+1) \approx 1 - \Phi\!\left(\dfrac{k + 0{,}5 - \mu}{\sigma}\right)'
+
+# ------------------------------------------------------------------------
+# Guías 9 a 12, temas del final. Todavía no tienen contenido cargado: el
+# panel los muestra bloqueados. Los nombres salen de los enunciados de
+# fuentes/guias/parte2.pdf y son provisorios: se revisan, y se les agregan
+# las fórmulas, al cargar cada guía (ver revision/00-estado.md).
+# ------------------------------------------------------------------------
+
+- id: suficiencia
+  nombre: Estadísticos suficientes
+  guia: 9
+  descripcion: >-
+    Reconocer un estadístico suficiente con el criterio de factorización, o
+    mostrando que la distribución de la muestra dado el estadístico no
+    depende del parámetro.
+
+- id: familias-exponenciales
+  nombre: Familias exponenciales
+  guia: 9
+  descripcion: >-
+    Escribir una densidad en la forma de una familia exponencial y leer en
+    ella un estadístico suficiente.
+
+- id: maxima-verosimilitud
+  nombre: Estimación por máxima verosimilitud
+  guia: 9
+  descripcion: >-
+    Hallar el estimador que maximiza la verosimilitud de la muestra, y estimar
+    una función del parámetro evaluándola en ese estimador.
+
+- id: propiedades-estimadores
+  nombre: Sesgo y error cuadrático medio
+  guia: 9
+  descripcion: >-
+    Calcular el sesgo y el error cuadrático medio de un estimador, y estudiar
+    su comportamiento cuando crece el tamaño de la muestra.
+
+- id: nivel-potencia
+  nombre: Nivel y potencia de un test
+  guia: 10
+  descripcion: >-
+    Plantear las hipótesis de un problema y calcular el nivel de
+    significación y la función de potencia de una regla de decisión.
+
+- id: test-normal
+  nombre: Tests para una población normal
+  guia: 10
+  descripcion: >-
+    Testear la media de una normal, con el desvío conocido o desconocido, y
+    su varianza.
+
+- id: test-mas-potente
+  nombre: Test más potente
+  guia: 10
+  descripcion: >-
+    Construir el test de nivel dado con mayor potencia, ordenando los
+    resultados según el cociente de verosimilitudes.
+
+- id: test-asintotico
+  nombre: Tests de nivel asintótico
+  guia: 10
+  descripcion: >-
+    Testear proporciones e intensidades de Poisson con la aproximación
+    normal, cuando la muestra es grande.
+
+- id: p-valor
+  nombre: p-valor
+  guia: 10
+  descripcion: >-
+    Calcular la probabilidad, bajo la hipótesis nula, de observar un
+    resultado al menos tan extremo como el obtenido, y decidir con ella.
+
+- id: intervalo-normal
+  nombre: Intervalos para una población normal
+  guia: 11
+  descripcion: >-
+    Construir intervalos y cotas de confianza para la media de una normal,
+    con el desvío conocido o desconocido, y elegir el tamaño de la muestra
+    que asegura una precisión dada.
+
+- id: intervalo-pivote
+  nombre: Intervalos por pivote
+  guia: 11
+  descripcion: >-
+    Construir un intervalo de confianza a partir de una cantidad pivotal cuya
+    distribución no depende del parámetro, como en la exponencial o la
+    uniforme.
+
+- id: intervalo-asintotico
+  nombre: Intervalos de nivel asintótico
+  guia: 11
+  descripcion: >-
+    Construir intervalos de confianza para proporciones e intensidades de
+    Poisson con la aproximación normal.
+
+- id: a-posteriori
+  nombre: Distribución a posteriori
+  guia: 12
+  descripcion: >-
+    Actualizar la distribución a priori de un parámetro con la información
+    de la muestra para obtener su distribución a posteriori.
+
+- id: estimador-bayesiano
+  nombre: Estimadores bayesianos
+  guia: 12
+  descripcion: >-
+    Estimar un parámetro con la media a posteriori o con el máximo a
+    posteriori, y comparar el resultado con el de la estimación clásica.
+
+- id: prediccion-bayesiana
+  nombre: Distribución predictiva
+  guia: 12
+  descripcion: >-
+    Calcular la distribución de una observación futura promediando sobre la
+    distribución a posteriori del parámetro.

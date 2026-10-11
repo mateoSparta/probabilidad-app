@@ -230,39 +230,78 @@ for (const s of skills) {
 
 // ----------------------------------------------------------------- config
 
+type EvaluacionCruda = {
+  nombre?: string
+  fecha?: string | null
+  guias?: number[]
+  simulacro?: string
+}
 type ConfigCruda = {
-  parcial?: string
+  evaluaciones?: EvaluacionCruda[]
   curso?: string | null
   ritmo_comodo_por_dia?: number
 }
+
+/** Las guías que evalúa alguna evaluación; las usa también el chequeo de skills. */
+const guiasEvaluadas = new Set<number>()
 
 const rutaConfig = join(CONTENT, 'config.yaml')
 if (existsSync(rutaConfig)) {
   const cfg = (leerYaml<ConfigCruda>(rutaConfig) ?? {}) as ConfigCruda
 
-  if (!cfg.parcial) {
-    err('config.yaml: falta `parcial`, la fecha del examen')
-  } else if (!/^\d{4}-\d{2}-\d{2}$/.test(cfg.parcial)) {
-    err(`config.yaml: \`parcial\` tiene que ser una fecha ISO (2026-10-30), no \`${cfg.parcial}\``)
-  } else if (Number.isNaN(new Date(`${cfg.parcial}T00:00:00`).getTime())) {
-    err(`config.yaml: \`parcial\` no es una fecha válida: \`${cfg.parcial}\``)
-  } else {
-    // Una fecha ya pasada no es un error (el repo puede quedar viejo), pero
-    // deja la cuenta de dias en negativo y conviene avisarlo.
-    const dias = Math.round(
-      (new Date(`${cfg.parcial}T00:00:00`).getTime() - Date.now()) / 86_400_000,
-    )
-    if (dias < 0) {
-      avisar(
-        `config.yaml: la fecha del parcial (${cfg.parcial}) ya pasó hace ${-dias} días. ` +
-          'El panel lo va a mostrar como vencido.',
-      )
+  if ('parcial' in cfg) {
+    err('config.yaml: `parcial` ya no se usa; la fecha va en `evaluaciones` (ver el comentario del archivo)')
+  }
+  if (!Array.isArray(cfg.evaluaciones) || cfg.evaluaciones.length === 0) {
+    err('config.yaml: falta `evaluaciones`, la lista de exámenes con sus fechas y guías')
+  }
+  let fechaAnterior: string | null = null
+  for (const [i, ev] of (cfg.evaluaciones ?? []).entries()) {
+    const quien = `config.yaml: evaluación ${i + 1}${ev.nombre ? ` (${ev.nombre})` : ''}`
+    if (!ev.nombre?.trim()) err(`${quien}: falta \`nombre\``)
+    if (!Array.isArray(ev.guias) || ev.guias.length === 0) {
+      err(`${quien}: falta \`guias\`, la lista de guías que evalúa`)
+    } else if (!ev.guias.every((g) => Number.isInteger(g) && g > 0)) {
+      err(`${quien}: \`guias\` tiene que ser una lista de números de guía`)
+    } else {
+      for (const g of ev.guias) guiasEvaluadas.add(g)
+    }
+    if (ev.simulacro !== undefined && ev.simulacro !== 'parcial' && ev.simulacro !== 'integradora') {
+      err(`${quien}: \`simulacro\` tiene que ser parcial o integradora`)
+    }
+    if (ev.fecha === undefined) {
+      err(`${quien}: falta \`fecha\` (puede ser null si todavía no está definida)`)
+    } else if (ev.fecha !== null) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(ev.fecha)) {
+        err(`${quien}: la fecha tiene que ser ISO (2026-10-30), no \`${ev.fecha}\``)
+      } else if (Number.isNaN(new Date(`${ev.fecha}T00:00:00`).getTime())) {
+        err(`${quien}: \`${ev.fecha}\` no es una fecha válida`)
+      } else {
+        if (fechaAnterior && ev.fecha < fechaAnterior) {
+          err(`${quien}: las evaluaciones tienen que ir en orden cronológico`)
+        }
+        fechaAnterior = ev.fecha
+        // Una fecha ya pasada no es un error (el repo puede quedar viejo), y
+        // el aviso pasa a la evaluación siguiente; sólo se informa.
+        const dias = Math.round(
+          (new Date(`${ev.fecha}T00:00:00`).getTime() - Date.now()) / 86_400_000,
+        )
+        if (dias < 0) avisar(`${quien}: la fecha (${ev.fecha}) ya pasó hace ${-dias} días`)
+      }
     }
   }
 
   const ritmo = cfg.ritmo_comodo_por_dia
   if (ritmo !== undefined && (typeof ritmo !== 'number' || ritmo <= 0)) {
     err('config.yaml: `ritmo_comodo_por_dia` tiene que ser un número positivo')
+  }
+
+  // Un skill de una guía que ninguna evaluación incluye no entra en ningún
+  // plan ni en ninguna etapa del panel.
+  for (const sk of skills) {
+    if (guiasEvaluadas.size && !guiasEvaluadas.has(sk.guia)) {
+      err(`skill ${sk.id}: la guía ${sk.guia} no está en ninguna evaluación de config.yaml`)
+    }
   }
 } else {
   avisar('no existe content/config.yaml: se usan los valores por defecto')
@@ -364,6 +403,7 @@ type Examen = {
   fecha?: string
   duracion_min?: number
   aprueba_con?: number
+  requiere_alguno_de?: number[]
   ejercicios?: EjercicioExamen[]
 }
 
@@ -379,6 +419,11 @@ for (const ex of examenes) {
   }
   if (typeof ex.duracion_min !== 'number') err(`${donde}: falta \`duracion_min\``)
   if (typeof ex.aprueba_con !== 'number') err(`${donde}: falta \`aprueba_con\``)
+  for (const n of ex.requiere_alguno_de ?? []) {
+    if (!(ex.ejercicios ?? []).some((e) => e.numero === n)) {
+      err(`${donde}: \`requiere_alguno_de\` nombra el ejercicio ${n}, que no existe`)
+    }
+  }
   if (!ex.ejercicios?.length) err(`${donde}: no tiene ejercicios`)
 
   const vistos = new Set<number>()

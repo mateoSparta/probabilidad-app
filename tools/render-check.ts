@@ -61,7 +61,7 @@ try {
       .map((t: string) => t.slice(0, t.indexOf('</span>')))
     afirmar(
       bloqueadas.some(
-        (t: string) => t.endsWith(`Guía ${n}`) && t.includes('data-tip="Se desbloquean después del parcial"'),
+        (t: string) => t.endsWith(`Guía ${n}`) && t.includes('data-tip="Tema del final, todavía sin cargar"'),
       ),
       `la guía ${n} no aparece bloqueada`,
     )
@@ -355,14 +355,31 @@ try {
   // Cada skill es un botón que abre su ventana; ya no hay botón de detalle.
   const celdas = (limpio.match(/<li class="celda estado--/g) ?? []).length
   const abren = (limpio.match(/aria-haspopup="dialog"/g) ?? []).length
-  afirmar(celdas === contenido.skills.length && abren === celdas && !limpio.includes('celda__detalle'),
-    `hay ${celdas} recuadros y ${abren} que abren la ventana para ${contenido.skills.length} skills`)
+  const habilitados = contenido.skillsHabilitados.length
+  afirmar(celdas === habilitados && abren === celdas && !limpio.includes('celda__detalle'),
+    `hay ${celdas} recuadros y ${abren} que abren la ventana para ${habilitados} skills habilitados`)
+  // Los de guías sin cargar se ven, bloqueados y sin abrir nada.
+  const bloqueadosPanel = (limpio.match(/<li class="celda celda--bloqueada">/g) ?? []).length
+  afirmar(
+    bloqueadosPanel === contenido.skills.length - habilitados && bloqueadosPanel > 0,
+    `hay ${bloqueadosPanel} skills bloqueados para ${contenido.skills.length - habilitados} de guías sin cargar`,
+  )
+  // El panel agrupa las guías por etapa: primero el parcial, después el final.
+  const posParcial = limpio.indexOf('id="etapa-parcial"')
+  const posFinal = limpio.indexOf('id="etapa-final"')
+  afirmar(
+    posParcial > 0 && posFinal > posParcial &&
+      limpio.indexOf('Guía 8') < posFinal && limpio.indexOf('Guía 9') > posFinal,
+    'el panel no separa las guías del parcial (1 a 8) de los temas del final (9 a 12)',
+  )
+  afirmar(/guías 1 a 8 · 30\/10/.test(limpio) && /guías 9 a 12, más lo del parcial · sin fecha/.test(limpio),
+    'las etapas no dicen qué guías suman ni cuándo son')
   afirmar(!limpio.includes('disminuye si se deja de practicar'),
     'el panel sigue diciendo que el estado disminuye si se deja de practicar')
   afirmar(!limpio.includes('faltan ejercicios') && !limpio.includes('celda-skill__nota'),
     'el panel sigue avisando que faltan ejercicios para dominar un skill')
   afirmar(limpio.includes('class="subir-lateral"') && limpio.includes('Subir'), 'el panel de skills no tiene "Subir"')
-  for (const sk of contenido.skills) {
+  for (const sk of contenido.skillsHabilitados) {
     const d = contenido.destinoDeSkill.get(sk.id)
     afirmar(!!d, `el skill ${sk.id} no tiene adónde llevar`)
     if (!d) continue
@@ -595,8 +612,8 @@ try {
 
   // --- aviso del parcial y ritmo ---
   const ritmoMod = await servidor.ssrLoadModule('/src/dominio/ritmo.ts')
-  const { AvisoParcialCompacto, AvisoParcialDetalle } = await servidor.ssrLoadModule(
-    '/src/componentes/AvisoParcial.tsx',
+  const { AvisoExamenCompacto, AvisoExamenDetalle } = await servidor.ssrLoadModule(
+    '/src/componentes/AvisoExamen.tsx',
   )
 
   const skillsReales = contenido.skillsConItems()
@@ -612,13 +629,13 @@ try {
 
   // El aviso compacto dice la fecha y los días, y nada más: es lo que se ve
   // siempre, así que tiene que ser corto.
-  const avisoCompacto = render(createElement(AvisoParcialCompacto, { plan: planVacio }))
+  const avisoCompacto = render(createElement(AvisoExamenCompacto, { plan: planVacio }))
   afirmar(avisoCompacto.includes('Parcial 30/10'), 'el aviso compacto no dice la fecha')
   afirmar(avisoCompacto.includes('faltan 22 días'), `el aviso compacto dice: ${avisoCompacto}`)
   afirmar(avisoCompacto.includes('ritmo--'), 'el aviso compacto no lleva el tono del ritmo')
 
   // El detalle da la cuenta completa.
-  const detalleRitmo = render(createElement(AvisoParcialDetalle, { plan: planVacio }))
+  const detalleRitmo = render(createElement(AvisoExamenDetalle, { plan: planVacio }))
   afirmar(detalleRitmo.includes('Todavía no empezaste'), 'el detalle no avisa que no se empezó')
   afirmar(detalleRitmo.includes('skills dominados'), 'el detalle no muestra los skills dominados')
   afirmar(
@@ -641,21 +658,40 @@ try {
   )
 
   // Con la fecha pasada avisa, no explota.
+  const soloParcial = {
+    ...contenido.config,
+    evaluaciones: [{ nombre: 'parcial', fecha: '2026-10-30', guias: [1, 2, 3, 4, 5, 6, 7, 8] }],
+  }
   const planVencido = ritmoMod.armarPlan(
     progresoMod.PROGRESO_VACIO,
     skillsReales,
     contenido.skillsDeItem,
-    contenido.config,
+    soloParcial,
     new Date('2026-12-01'),
   )
-  const vistaVencida = render(createElement(AvisoParcialDetalle, { plan: planVencido }))
-  afirmar(vistaVencida.includes('ya pasó'), 'con la fecha pasada el detalle no avisa')
+  const vistaVencida = render(createElement(AvisoExamenDetalle, { plan: planVencido }))
+  afirmar(vistaVencida.includes('La fecha del parcial ya pasó'), 'con la fecha pasada el detalle no avisa')
+
+  // Pasado el parcial, el aviso apunta al final, que todavía no tiene fecha.
+  const planFinal = ritmoMod.armarPlan(
+    progresoMod.PROGRESO_VACIO,
+    skillsReales,
+    contenido.skillsDeItem,
+    contenido.config,
+    new Date('2026-11-05'),
+  )
+  const avisoFinal = render(createElement(AvisoExamenCompacto, { plan: planFinal }))
+  afirmar(/Final<\/a>/.test(avisoFinal) && avisoFinal.includes('sin fecha'), `el aviso del final dice: ${avisoFinal}`)
+  const detalleFinal = render(createElement(AvisoExamenDetalle, { plan: planFinal }))
+  afirmar(detalleFinal.includes('Todavía no hay fecha para el final'), 'el detalle no avisa que el final no tiene fecha')
+  // Con fecha, el detalle nombra el examen al contar los días.
+  afirmar(/\d+ días para el parcial\./.test(detalleRitmo), 'el detalle no dice "quedan N días para el parcial"')
 
   // El encabezado lleva el aviso, entre las migas y las pestañas.
   const cabeceraConPlan = render(
     createElement(Cabecera, { ruta: { seccion: 'ejercicios', guia: 1 }, plan: planVacio }),
   )
-  const posAviso = cabeceraConPlan.indexOf('class="aviso-parcial')
+  const posAviso = cabeceraConPlan.indexOf('class="aviso-examen')
   afirmar(posAviso >= 0, 'el encabezado no muestra el aviso del parcial')
   afirmar(
     cabeceraConPlan.indexOf('class="migas"') < posAviso &&
@@ -672,14 +708,14 @@ try {
     '"faltan N días" no lleva al seguimiento',
   )
   // En la sección a la que llevaría, cada parte es texto, sin enlace ni globo.
-  const enSeguimiento = render(createElement(AvisoParcialCompacto, { plan: planVacio, seccion: 'seguimiento' }))
+  const enSeguimiento = render(createElement(AvisoExamenCompacto, { plan: planVacio, seccion: 'seguimiento' }))
   afirmar(
     !enSeguimiento.includes('href="#/seguimiento"') &&
       !enSeguimiento.includes('Ver el seguimiento') &&
       enSeguimiento.includes('href="#/simulacro"'),
     'en el seguimiento, "faltan N días" sigue siendo un enlace',
   )
-  const enSimulacro = render(createElement(AvisoParcialCompacto, { plan: planVacio, seccion: 'simulacro' }))
+  const enSimulacro = render(createElement(AvisoExamenCompacto, { plan: planVacio, seccion: 'simulacro' }))
   afirmar(
     !enSimulacro.includes('href="#/simulacro"') &&
       !enSimulacro.includes('Practicar con un simulacro') &&
@@ -697,7 +733,7 @@ try {
     )
   }
   const planRitmo = ritmoMod.armarPlan(conRitmo, skillsReales, contenido.skillsDeItem, contenido.config, hoy)
-  const detalleConRitmo = render(createElement(AvisoParcialDetalle, { plan: planRitmo }))
+  const detalleConRitmo = render(createElement(AvisoExamenDetalle, { plan: planRitmo }))
   afirmar(
     /ritmo de los últimos 7 días: <strong>0,3<\/strong> ítems resueltos en limpio por día/.test(detalleConRitmo),
     'la leyenda del ritmo no dice "N ítems resueltos en limpio por día"',

@@ -40,11 +40,18 @@ en la guía) de las ocho guías.
 **Lo que falta y por qué: [revision/00-estado.md](revision/00-estado.md).** Ahí
 está el índice; el detalle por guía está en `revision/guia-N.md`.
 
-## La fecha del parcial
+## Las fechas del parcial y del final
 
-Está en [content/config.yaml](content/config.yaml), junto con el curso y qué
-ritmo se considera cómodo. Cambiar la fecha ahí alcanza: el encabezado y el
-panel de skills se actualizan solos.
+Están en [content/config.yaml](content/config.yaml), en la lista
+`evaluaciones`: cada una con su nombre, su fecha (o `null` si todavía no está
+definida) y las guías que evalúa. El encabezado y Seguimiento apuntan a la
+primera que no pasó, así que después del parcial pasan solos al final. Un
+recuperatorio u otra fecha de final se agregan como otra entrada de la lista.
+Ahí también están el curso y qué ritmo se considera cómodo.
+
+Las guías que entran por primera vez en cada evaluación son sus temas: el
+panel de skills las agrupa así, y los skills de las guías todavía sin cargar
+(las 9 a 12) se ven bloqueados.
 
 El panel no mide cuántos ejercicios hiciste sino **cuánto falta para dominar
 todos los temas**, que es otra cosa: como un mismo ítem aporta a varios skills,

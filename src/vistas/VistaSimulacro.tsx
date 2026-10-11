@@ -29,7 +29,8 @@ import { ItemEjercicio } from '../componentes/ItemEjercicio'
 import { Dialogo, Modal } from '../componentes/Modal'
 import { Enunciado, TextoMarcado } from '../componentes/Mate'
 import { Tags, usarResaltado } from '../componentes/Tags'
-import { claveItemExamen, examenes, examenPorId } from '../datos/contenido'
+// `config` es la de la cursada (content/config.yaml); la del simulacro es estado local.
+import { claveItemExamen, config as configCursada, examenes, examenPorId } from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
 import {
@@ -41,6 +42,7 @@ import {
 } from '../dominio/sesion'
 import {
   calificar,
+  criterioDeAprobacion,
   ejerciciosJugables,
   elegirExamen,
   esCompleto,
@@ -50,6 +52,7 @@ import {
   type Examen,
   type TipoExamen,
 } from '../dominio/simulacro'
+import { evaluacionActual, guiasDeLaMateria, rangoGuias } from '../dominio/evaluaciones'
 import type { Intento } from '../dominio/tipos'
 
 const CLAVE_CONFIG = 'probabilidad-app:simulacro-config:v1'
@@ -63,9 +66,20 @@ type Config = {
   mostrarFormulas: boolean
 }
 
+/**
+ * El tipo de examen con el que se practica la evaluación que toca (el parcial
+ * antes de su fecha, el final después), si ya hay alguno para rendir; si no,
+ * el otro.
+ */
+function tipoPorDefecto(): TipoExamen {
+  const preferido = evaluacionActual(configCursada.evaluaciones)?.simulacro ?? 'parcial'
+  if (poolDe(examenes, preferido).length > 0) return preferido
+  return preferido === 'parcial' ? 'integradora' : 'parcial'
+}
+
 const CONFIG_POR_DEFECTO: Config = {
   duracionMin: 240,
-  tipo: 'parcial',
+  tipo: tipoPorDefecto(),
   mostrarTags: false,
   mostrarFormulas: false,
 }
@@ -80,7 +94,8 @@ function cargarConfig(): Config {
     const crudo = localStorage.getItem(CLAVE_CONFIG)
     if (!crudo) return CONFIG_POR_DEFECTO
     const leida = { ...CONFIG_POR_DEFECTO, ...JSON.parse(crudo) }
-    const tipo: TipoExamen = leida.tipo === 'integradora' ? 'integradora' : 'parcial'
+    const tipo: TipoExamen =
+      leida.tipo === 'integradora' || leida.tipo === 'parcial' ? leida.tipo : CONFIG_POR_DEFECTO.tipo
     return {
       duracionMin: Number(leida.duracionMin) || CONFIG_POR_DEFECTO.duracionMin,
       tipo,
@@ -181,7 +196,7 @@ export function VistaSimulacro({ api, sesion }: Props) {
           </p>
           <h2 class="sim-barra__titulo">{examen.titulo}</h2>
           <p class="sim-barra__dato">
-            {examen.ejercicios.length} ejercicios · se aprueba con {examen.aprueba_con}
+            {examen.ejercicios.length} ejercicios · {criterioDeAprobacion(examen)}
           </p>
         </div>
 
@@ -381,17 +396,29 @@ function TarjetaExamen({
 /** Los atajos de duración, en minutos. */
 const DURACIONES = [60, 120, 180, 240]
 
+/**
+ * Qué evalúa un tipo de examen, según la evaluación de content/config.yaml
+ * que se practica con él: "guías 1 a 8", o "toda la materia" si las evalúa
+ * todas.
+ */
+function alcanceDe(tipo: TipoExamen): string {
+  const ev = configCursada.evaluaciones.find((e) => e.simulacro === tipo)
+  if (!ev) return ''
+  const todas = guiasDeLaMateria(configCursada.evaluaciones)
+  return ev.guias.length === todas.length ? 'toda la materia' : rangoGuias(ev.guias)
+}
+
 const TIPOS: { tipo: TipoExamen; nombre: string; descripcion: string; vacio: string }[] = [
   {
     tipo: 'parcial',
     nombre: 'Parciales',
-    descripcion: 'guías 1 a 8',
+    descripcion: alcanceDe('parcial'),
     vacio: 'Todavía no hay ninguno',
   },
   {
     tipo: 'integradora',
     nombre: 'Integradoras',
-    descripcion: 'toda la materia',
+    descripcion: alcanceDe('integradora'),
     vacio: 'Todavía no hay ninguna',
   },
 ]
@@ -688,7 +715,7 @@ function VistaPrevia({
     >
       <p class="modal-examen__dato">
         {NOMBRE_TIPO[examen.tipo]} · {fechaLarga(examen.fecha)} · {examen.ejercicios.length}{' '}
-        ejercicios · se aprueba con {examen.aprueba_con}
+        ejercicios · {criterioDeAprobacion(examen)}
       </p>
       {examen.ejercicios.map((ej) => (
         <EjercicioPrevio key={ej.numero} ejercicio={ej} mostrarTags={mostrarTags} />
@@ -786,7 +813,11 @@ function Devolucion({
         <p>
           {resultado.ejerciciosEnteros} de {resultado.presentados} ejercicios presentados se
           resolvieron por completo. La cátedra exige al menos {examen.aprueba_con} ejercicios
-          correctamente resueltos y justificados.
+          correctamente resueltos y justificados
+          {examen.requiere_alguno_de?.length
+            ? `, y que entre ellos esté ${examen.requiere_alguno_de.length === 1 ? 'el' : 'alguno de los ejercicios'} ${examen.requiere_alguno_de.join(' o ')}`
+            : ''}
+          .
         </p>
 
         {resultado.veredictoParcial && (

@@ -16,7 +16,7 @@ import {
   IconoSkills,
 } from '../componentes/Iconos'
 import { TusDatos } from '../componentes/TusDatos'
-import { ejercicios, examenes, itemsPorSkill, skills } from '../datos/contenido'
+import { ejercicios, examenes, itemsPorSkill, skillsHabilitados } from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
 import { estadoSkill } from '../dominio/progreso'
@@ -52,7 +52,8 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
       ) === 'resuelto',
   ).length
 
-  const dominados = skills.filter(
+  // Los skills de guías todavía sin cargar no cuentan: no se pueden practicar.
+  const dominados = skillsHabilitados.filter(
     (s) => estadoSkill(api.progreso, itemsPorSkill.get(s.id) ?? VACIO) === 'dominado',
   ).length
 
@@ -73,7 +74,7 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
       seccion: 'skills',
       Icono: IconoSkills,
       descripcion: 'El grado de dominio de cada tema, calculado sobre los intentos más recientes.',
-      dato: `${dominados} de ${skills.length} skills dominados`,
+      dato: `${dominados} de ${skillsHabilitados.length} skills dominados`,
     },
     {
       seccion: 'simulacro',
@@ -86,7 +87,7 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
     {
       seccion: 'seguimiento',
       Icono: IconoSeguimiento,
-      descripcion: 'El avance respecto de la fecha del parcial y el estado de cada ejercicio.',
+      descripcion: 'El avance respecto de la fecha del próximo examen y el estado de cada ejercicio.',
       dato: ETIQUETA_VEREDICTO[plan.veredicto],
     },
   ]

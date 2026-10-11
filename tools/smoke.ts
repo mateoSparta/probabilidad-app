@@ -34,6 +34,7 @@ import {
 } from '../src/dominio/progreso.ts'
 import {
   calificar,
+  criterioDeAprobacion,
   ejerciciosJugables,
   elegirExamen,
   esCompleto,
@@ -59,6 +60,14 @@ import {
   seVencio,
   simulacroRetomable,
 } from '../src/dominio/sesion.ts'
+import {
+  etapas,
+  evaluacionActual,
+  guiasDeLaMateria,
+  rangoGuias,
+  temaDe,
+  type Evaluacion,
+} from '../src/dominio/evaluaciones.ts'
 import {
   armarPlan,
   deficitPorSkill,
@@ -453,6 +462,20 @@ for (const [valor, alternativa] of equivalentes) {
   afirmar(!mitad.veredictoParcial, 'marcó parcial un examen completo')
   afirmar(mitad.aprobaria, 'con 1 ejercicio entero y aprueba_con 1 tendría que aprobar')
 
+  // Integradoras: además de la cantidad, uno de los enteros tiene que ser de
+  // los que pide la cátedra (el 4 o el 5).
+  const conRequisito: Examen = { ...falso, requiere_alguno_de: [1] }
+  afirmar(!calificar(conRequisito, new Map([[1, [true, false]], [2, [true]]])).aprobaria,
+    'aprobó sin el ejercicio requerido entero')
+  afirmar(calificar(conRequisito, new Map([[1, [true, true]], [2, [false]]])).aprobaria,
+    'con el ejercicio requerido entero no aprobó')
+  afirmar(criterioDeAprobacion(falso) === 'se aprueba con 1', `criterio: ${criterioDeAprobacion(falso)}`)
+  afirmar(
+    criterioDeAprobacion({ ...falso, aprueba_con: 3, requiere_alguno_de: [4, 5] }) ===
+      'se aprueba con 3, uno de ellos el 4 o el 5',
+    `criterio de integradora: ${criterioDeAprobacion({ ...falso, aprueba_con: 3, requiere_alguno_de: [4, 5] })}`,
+  )
+
   // El pool: sólo exámenes completos y de cinco ejercicios.
   const cinco: Examen = {
     ...falso,
@@ -749,7 +772,11 @@ for (const [valor, alternativa] of equivalentes) {
   )
 
   // --- el plan ---
-  const config: Config = { parcial: '2026-10-30', curso: null, ritmo_comodo_por_dia: 2 }
+  const config: Config = {
+    evaluaciones: [{ nombre: 'parcial', fecha: '2026-10-30', guias: [1] }],
+    curso: null,
+    ritmo_comodo_por_dia: 2,
+  }
 
   const planVacio = armarPlan(PROGRESO_VACIO, skills, skillsDeItem, config, hoy)
   afirmar(
@@ -757,6 +784,7 @@ for (const [valor, alternativa] of equivalentes) {
     `sin intentos el veredicto es ${planVacio.veredicto}`,
   )
   afirmar(planVacio.diasRestantes === 22, 'el plan no cuenta bien los días')
+  afirmar(planVacio.evaluacion?.nombre === 'parcial', 'el plan no apunta al parcial')
   afirmar(planVacio.itemsFaltantes === 5, 'el plan no cuenta bien los ítems faltantes')
   afirmar(planVacio.ejerciciosFaltantes === 3, 'el plan no agrupa los ítems por ejercicio')
   afirmar(planVacio.skillsDominados === 0, 'sin intentos hay skills dominados')
@@ -935,6 +963,57 @@ for (const [valor, alternativa] of equivalentes) {
   afirmar(
     skillsMarcados(t).join(',') === 'prob-total,condicional',
     'skillsMarcados no separa los skills de una marca',
+  )
+}
+
+// ------------------------------------------------- parcial y final
+
+{
+  const parcial: Evaluacion = { nombre: 'parcial', fecha: '2026-10-30', guias: [1, 2, 3, 4, 5, 6, 7, 8], simulacro: 'parcial' }
+  const final: Evaluacion = { nombre: 'final', fecha: null, guias: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], simulacro: 'integradora' }
+  const evs = [parcial, final]
+
+  afirmar(evaluacionActual(evs, new Date('2026-10-20T10:00:00')) === parcial, 'antes del parcial no apunta al parcial')
+  afirmar(evaluacionActual(evs, new Date('2026-10-30T22:00:00')) === parcial, 'el día del parcial ya apunta al final')
+  afirmar(evaluacionActual(evs, new Date('2026-11-02T10:00:00')) === final, 'después del parcial no pasa al final sin fecha')
+  const finalConFecha = { ...final, fecha: '2026-12-10' }
+  afirmar(
+    evaluacionActual([parcial, finalConFecha], new Date('2027-01-01T10:00:00')) === finalConFecha,
+    'con todo vencido no se queda con la última',
+  )
+  afirmar(evaluacionActual([], new Date()) === null, 'sin evaluaciones no devuelve null')
+
+  const [e1, e2] = etapas(evs)
+  afirmar(
+    e1.evaluacion === parcial && e1.propias.join() === '1,2,3,4,5,6,7,8' && !e1.acumula,
+    'la etapa del parcial no son las guías 1 a 8',
+  )
+  afirmar(e2.evaluacion === final && e2.propias.join() === '9,10,11,12' && e2.acumula, 'los temas del final no son 9 a 12')
+  // Un recuperatorio no suma guías: no forma una etapa.
+  const recu: Evaluacion = { nombre: 'recuperatorio', fecha: '2026-11-20', guias: parcial.guias }
+  afirmar(etapas([parcial, recu, final]).length === 2, 'el recuperatorio formó una etapa')
+  afirmar(temaDe(10, evs) === final && temaDe(3, evs) === parcial, 'temaDe no encuentra la primera evaluación')
+  afirmar(guiasDeLaMateria(evs).length === 12, 'las guías de la materia no son 12')
+  afirmar(rangoGuias([1, 2, 3]) === 'guías 1 a 3', rangoGuias([1, 2, 3]))
+  afirmar(rangoGuias([9]) === 'guía 9', rangoGuias([9]))
+  afirmar(rangoGuias([1, 3, 5]) === 'guías 1, 3 y 5', rangoGuias([1, 3, 5]))
+
+  // El plan cuenta sólo los skills de las guías de la evaluación.
+  const sk: SkillConItems[] = [
+    { id: 'p', items: new Set(['a:1']), guia: 2 },
+    { id: 'f', items: new Set(['b:1']), guia: 10 },
+    { id: 'vacio', items: new Set(), guia: 11 },
+  ]
+  const deItem = new Map([['a:1', ['p']], ['b:1', ['f']]])
+  const cfg: Config = { evaluaciones: evs, curso: null, ritmo_comodo_por_dia: 2 }
+  const enParcial = armarPlan(PROGRESO_VACIO, sk, deItem, cfg, new Date('2026-10-20T10:00:00'))
+  afirmar(enParcial.skillsTotal === 1 && enParcial.itemsFaltantes === 1, 'el plan del parcial contó skills del final')
+  const enFinal = armarPlan(PROGRESO_VACIO, sk, deItem, cfg, new Date('2026-11-02T10:00:00'))
+  afirmar(enFinal.evaluacion === final, 'después del parcial el plan no apunta al final')
+  afirmar(enFinal.skillsTotal === 2 && enFinal.skillsSinCobertura === 1, 'el plan del final no suma los skills de las guías 9 a 12')
+  afirmar(
+    enFinal.diasRestantes === null && enFinal.veredicto === 'sin_fecha' && enFinal.porDia === 0,
+    `sin fecha el plan da ${enFinal.veredicto}, ${enFinal.diasRestantes} días y ${enFinal.porDia} por día`,
   )
 }
 

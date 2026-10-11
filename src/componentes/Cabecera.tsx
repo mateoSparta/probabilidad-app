@@ -1,6 +1,6 @@
 /**
- * Encabezado: migas, aviso del parcial y, en Ejercicios, las pestañas de las
- * guías.
+ * Encabezado: migas, aviso del próximo examen y, en Ejercicios, las pestañas
+ * de las guías.
  *
  * Las migas son la navegación principal: "Probabilidad y Estadística B" lleva
  * al menú y la sección actual se muestra a continuación. Todo son enlaces
@@ -15,22 +15,32 @@
  */
 import { useEffect, useState } from 'preact/hooks'
 
-import { guiaTieneContenido } from '../datos/contenido'
+import { config, guiaTieneContenido } from '../datos/contenido'
+import { guiasDeLaMateria, temaDe } from '../dominio/evaluaciones'
 import type { Plan } from '../dominio/ritmo'
 import { NOMBRE_SECCION, type Ruta, type Seccion } from '../dominio/ruta'
-import { AvisoParcialCompacto } from './AvisoParcial'
+import { AvisoExamenCompacto } from './AvisoExamen'
 import { IconoCandado } from './Iconos'
 import { MenuNavegacion } from './MenuNavegacion'
 
-/** Todas las guías de la materia; las que no tienen contenido se ven bloqueadas. */
-const GUIAS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+/**
+ * Todas las guías de la materia, las que evalúa alguna evaluación de
+ * content/config.yaml; las que no tienen contenido se ven bloqueadas.
+ */
+const GUIAS = guiasDeLaMateria(config.evaluaciones)
+
+/** La ayuda de una pestaña bloqueada: de qué examen es tema la guía. */
+function ayudaBloqueada(guia: number): string {
+  const ev = temaDe(guia, config.evaluaciones)
+  return ev ? `Tema del ${ev.nombre}, todavía sin cargar` : 'Todavía sin cargar'
+}
 
 /** Lo que dura la salida de la miga de la sección; tiene que coincidir con el CSS. */
 const SALIDA_MIGA_MS = 180
 
 type Props = {
   ruta: Ruta
-  /** Si está, se muestra el aviso del parcial. */
+  /** Si está, se muestra el aviso del próximo examen. */
   plan?: Plan
 }
 
@@ -102,7 +112,7 @@ export function Cabecera({ ruta, plan }: Props) {
             <MenuNavegacion ruta={ruta} />
           </div>
 
-          {plan && <AvisoParcialCompacto plan={plan} seccion={seccion} />}
+          {plan && <AvisoExamenCompacto plan={plan} seccion={seccion} />}
         </div>
       </header>
 
@@ -162,7 +172,7 @@ function PestanasGuias({ activa }: { activa: number }) {
               key={n}
               class="tab tab--bloqueada"
               aria-disabled="true"
-              data-tip="Se desbloquean después del parcial"
+              data-tip={ayudaBloqueada(n)}
             >
               <IconoCandado />
               Guía {n}

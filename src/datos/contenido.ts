@@ -58,7 +58,7 @@ const crudoConfig = import.meta.glob('/content/config.yaml', {
 // ------------------------------------------------------------- config
 
 const CONFIG_POR_DEFECTO: Config = {
-  parcial: '2026-10-30',
+  evaluaciones: [],
   curso: null,
   ritmo_comodo_por_dia: 2,
 }
@@ -217,8 +217,12 @@ export const skillsDeItem: Map<string, string[]> = (() => {
 })()
 
 /** Los skills con sus ítems, como los espera el plan de ritmo. */
-export function skillsConItems(): { id: string; items: ReadonlySet<string> }[] {
-  return skills.map((s) => ({ id: s.id, items: itemsPorSkill.get(s.id) ?? new Set() }))
+export function skillsConItems(): { id: string; items: ReadonlySet<string>; guia: number }[] {
+  return skills.map((s) => ({
+    id: s.id,
+    items: itemsPorSkill.get(s.id) ?? new Set(),
+    guia: s.guia,
+  }))
 }
 
 /** Todas las claves de ítem vigentes: guías y exámenes. */
@@ -284,6 +288,18 @@ export function guiaTieneContenido(numero: number): boolean {
   const g = guiaPorNumero.get(numero)
   return !!g && g.secuencia.length > 0
 }
+
+/**
+ * Un skill está bloqueado mientras su guía no tenga contenido cargado: se ve
+ * en el panel, para que la segunda etapa de la materia ya tenga su lugar,
+ * pero no se puede practicar ni cuenta para el estado general.
+ */
+export function skillBloqueado(skill: Skill): boolean {
+  return !guiaTieneContenido(skill.guia)
+}
+
+/** Los skills que ya se pueden practicar. */
+export const skillsHabilitados: Skill[] = skills.filter((s) => !skillBloqueado(s))
 
 /**
  * Adónde llevar desde un skill: al primer bloque de teoría que lo explica,

@@ -4,24 +4,32 @@
  * trata (descripción y fórmulas), con los ítems que lo evalúan y un enlace a
  * su teoría.
  *
+ * Las guías se agrupan por etapa, según las evaluaciones de
+ * content/config.yaml: primero las que entran en el parcial y después los
+ * temas del final. Los skills de una guía todavía sin cargar se ven
+ * bloqueados, para que la segunda etapa ya tenga su lugar en el panel.
+ *
  * Es la vista que contesta "¿dónde estoy flojo?" de un vistazo, que es el
  * punto de medir el dominio sobre intentos recientes y no acumulados.
  */
 import { useRef, useState } from 'preact/hooks'
 
-import { IconoComprobar } from '../componentes/Iconos'
+import { IconoCandado, IconoComprobar } from '../componentes/Iconos'
 import { Formula, Mate } from '../componentes/Mate'
 import { Dialogo } from '../componentes/Modal'
 import { SubirLateral, usarQuedoArriba } from '../componentes/SubirLateral'
 import {
   claveItemExamen,
+  config,
   destinoDeSkill,
   examenes,
   itemsPorSkill,
+  skillBloqueado,
   skillPorId,
   skillsPorGuia,
   ubicacionDeItem,
 } from '../datos/contenido'
+import { etapas, rangoGuias, rotulo, type Etapa } from '../dominio/evaluaciones'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
 import {
@@ -33,7 +41,8 @@ import {
   LIMPIOS_PARA_DOMINAR,
   VENTANA,
 } from '../dominio/progreso'
-import type { EstadoSkill, Item } from '../dominio/tipos'
+import { fechaCorta } from '../dominio/ritmo'
+import type { EstadoSkill, Item, Skill } from '../dominio/tipos'
 
 const VACIO: ReadonlySet<string> = new Set()
 
@@ -45,7 +54,7 @@ const CRITERIO: Record<EstadoSkill, string> = {
   sin_explorar: 'ningún intento todavía',
 }
 
-/** Ítems de parciales, por clave: no están en ninguna guía. */
+/** Ítems de exámenes, por clave: no están en ninguna guía. */
 const ITEMS_EXAMEN: Map<string, { examen: string; numero: number; item: Item }> = (() => {
   const m = new Map<string, { examen: string; numero: number; item: Item }>()
   for (const ex of examenes) {
@@ -54,7 +63,7 @@ const ITEMS_EXAMEN: Map<string, { examen: string; numero: number; item: Item }> 
     for (const ej of ex.ejercicios) {
       for (const item of ej.items ?? []) {
         m.set(claveItemExamen(ex.id, ej.numero, item.id), {
-          examen: `parcial del ${fecha}`,
+          examen: `${ex.tipo} del ${fecha}`,
           numero: ej.numero,
           item,
         })
@@ -68,6 +77,17 @@ const ITEMS_EXAMEN: Map<string, { examen: string; numero: number; item: Item }> 
 function avanceEnPalabras(limpios: number, total: number): string {
   if (total === 1) return limpios === 1 ? 'el único intento fue limpio' : 'el único intento no fue limpio'
   return `${limpios} de los últimos ${total} intentos ${limpios === 1 ? 'fue limpio' : 'fueron limpios'}`
+}
+
+/**
+ * El dato de una etapa: qué guías suma y cuándo es. "guías 1 a 8 · 30/10",
+ * "guías 9 a 12, más lo del parcial · sin fecha".
+ */
+function datoEtapa(etapa: Etapa, anterior: Etapa | undefined): string {
+  const { evaluacion, propias, acumula } = etapa
+  const suma = acumula ? (anterior ? `, más lo del ${anterior.evaluacion.nombre}` : ', más lo anterior') : ''
+  const cuando = evaluacion.fecha ? fechaCorta(evaluacion.fecha) : 'sin fecha'
+  return `${rangoGuias(propias)}${suma} · ${cuando}`
 }
 
 /** La inicial del skill, para el sello de la insignia. */
@@ -98,9 +118,13 @@ export function PanelSkills({
   const filaArriba = usarQuedoArriba(() => primeraGrilla.current?.firstElementChild, 0, [])
 
   const grupos = skillsPorGuia()
-  const todos = grupos.flatMap((g) => g.skills)
-  const estados = todos.map((s) => estadoSkill(progreso, itemsPorSkill.get(s.id) ?? VACIO))
+  // El resumen cuenta sólo los que se pueden practicar.
+  const habilitados = grupos.flatMap((g) => g.skills).filter((s) => !skillBloqueado(s))
+  const estados = habilitados.map((s) => estadoSkill(progreso, itemsPorSkill.get(s.id) ?? VACIO))
   const resumen = contarPorEstado(estados)
+  const etapasMateria = etapas(config.evaluaciones)
+  // La primera grilla del panel: la de la guía más baja.
+  const primeraGuia = grupos[0]?.guia
 
   /** Cierra la ventana y después navega: así no queda abierta sobre otra sección. */
   function cerrarE(ir?: () => void): void {
@@ -136,41 +160,46 @@ export function PanelSkills({
         </ul>
       </section>
 
-      {grupos.map(({ guia, skills }, i) => (
-        <section key={guia} class="grupo-skills">
-          <h3 class="grupo-skills__titulo">Guía {guia}</h3>
-          <ul class="grilla-skills" ref={i === 0 ? primeraGrilla : undefined}>
-            {skills.map((s) => {
-              const items = itemsPorSkill.get(s.id) ?? VACIO
-              const estado = estadoSkill(progreso, items)
-              const { limpios, total } = avanceSkill(progreso, items)
-              return (
-                <li key={s.id} class={'celda estado--' + estado}>
-                  <button
-                    class="celda-skill"
-                    aria-haspopup="dialog"
-                    onClick={() => {
-                      setElegido(s.id)
-                      setAbierto(true)
-                    }}
-                  >
-                    <span class="sello" aria-hidden="true">
-                      {inicial(s.nombre)}
-                    </span>
-                    <span class="celda-skill__texto">
-                      <span class="celda-skill__nombre">{s.nombre}</span>
-                      <span class="celda-skill__estado">
-                        {ETIQUETA_ESTADO[estado]}
-                        {total > 0 && ` · ${limpios}/${total} limpios`}
-                      </span>
-                    </span>
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
-        </section>
-      ))}
+      {etapasMateria.map((etapa, k) => {
+        const deEtapa = grupos.filter((g) => etapa.propias.includes(g.guia))
+        if (deEtapa.length === 0) return null
+        const id = `etapa-${etapa.evaluacion.nombre}`
+        return (
+          <section key={id} class="etapa" aria-labelledby={id}>
+            <header class="etapa__cabeza">
+              <h3 id={id} class="etapa__titulo">
+                {rotulo(etapa.evaluacion)}
+              </h3>
+              <p class="etapa__dato">{datoEtapa(etapa, etapasMateria[k - 1])}</p>
+            </header>
+            {deEtapa.map(({ guia, skills }) => (
+              <section key={guia} class="grupo-skills">
+                <h4 class="grupo-skills__titulo">
+                  Guía {guia}
+                  {skills.every(skillBloqueado) && <IconoCandado />}
+                </h4>
+                <ul class="grilla-skills" ref={guia === primeraGuia ? primeraGrilla : undefined}>
+                  {skills.map((s) =>
+                    skillBloqueado(s) ? (
+                      <CeldaBloqueada key={s.id} skill={s} />
+                    ) : (
+                      <CeldaSkill
+                        key={s.id}
+                        skill={s}
+                        api={api}
+                        onAbrir={() => {
+                          setElegido(s.id)
+                          setAbierto(true)
+                        }}
+                      />
+                    ),
+                  )}
+                </ul>
+              </section>
+            ))}
+          </section>
+        )
+      })}
 
       {elegido && (
         <VentanaSkill
@@ -184,6 +213,49 @@ export function PanelSkills({
         />
       )}
     </>
+  )
+}
+
+/** Un skill que se puede practicar: el recuadro entero abre su ventana. */
+function CeldaSkill({ skill, api, onAbrir }: { skill: Skill; api: ApiProgreso; onAbrir: () => void }) {
+  const items = itemsPorSkill.get(skill.id) ?? VACIO
+  const estado = estadoSkill(api.progreso, items)
+  const { limpios, total } = avanceSkill(api.progreso, items)
+  return (
+    <li class={'celda estado--' + estado}>
+      <button class="celda-skill" aria-haspopup="dialog" onClick={onAbrir}>
+        <span class="sello" aria-hidden="true">
+          {inicial(skill.nombre)}
+        </span>
+        <span class="celda-skill__texto">
+          <span class="celda-skill__nombre">{skill.nombre}</span>
+          <span class="celda-skill__estado">
+            {ETIQUETA_ESTADO[estado]}
+            {total > 0 && ` · ${limpios}/${total} limpios`}
+          </span>
+        </span>
+      </button>
+    </li>
+  )
+}
+
+/**
+ * Un skill de una guía que todavía no se cargó: se ve, con un candado en el
+ * sello, pero no abre nada.
+ */
+function CeldaBloqueada({ skill }: { skill: Skill }) {
+  return (
+    <li class="celda celda--bloqueada">
+      <div class="celda-skill" data-tip={`Se habilita cuando se cargue la guía ${skill.guia}`}>
+        <span class="sello" aria-hidden="true">
+          <IconoCandado />
+        </span>
+        <span class="celda-skill__texto">
+          <span class="celda-skill__nombre">{skill.nombre}</span>
+          <span class="celda-skill__estado">Bloqueado</span>
+        </span>
+      </div>
+    </li>
   )
 }
 
@@ -285,8 +357,8 @@ function VentanaSkill({
         <p class="dato-chico">
           {deGuias.length > 0 ? 'Además lo ' : 'Lo '}
           {deExamenes.length === 1
-            ? 'evalúa 1 ítem de parcial, que se practica'
-            : `evalúan ${deExamenes.length} ítems de parciales, que se practican`}{' '}
+            ? 'evalúa 1 ítem de examen, que se practica'
+            : `evalúan ${deExamenes.length} ítems de exámenes, que se practican`}{' '}
           en el simulacro.
         </p>
       )}

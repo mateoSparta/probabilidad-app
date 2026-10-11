@@ -12,7 +12,11 @@ export type EjercicioExamen = {
   numero: number
   /** Guías de las que sale. Sirve para saber si está en alcance. */
   guias: number[]
-  /** Si cae dentro de las guías 1–8, que es el alcance de v1. */
+  /**
+   * Si se puede practicar. Es falso para los de simulación, que no son de
+   * PyE B, y para los de guías que todavía no están cargadas (como los de
+   * estadística de las integradoras).
+   */
   en_alcance: boolean
   /**
    * Si tiene ítems validables cargados. Un ejercicio puede estar en alcance
@@ -36,7 +40,25 @@ export type Examen = {
   fuente?: string
   /** Ejercicios correctos que pide la cátedra para aprobar. */
   aprueba_con: number
+  /**
+   * Ejercicios de los que al menos uno tiene que estar entre los correctos.
+   * En las integradoras la cátedra pide el 4 o el 5, los de estadística.
+   */
+  requiere_alguno_de?: number[]
   ejercicios: EjercicioExamen[]
+}
+
+/**
+ * El criterio de aprobación, para mostrar: "se aprueba con 3", o "se aprueba
+ * con 3, uno de ellos el 4 o el 5".
+ */
+export function criterioDeAprobacion(examen: Examen): string {
+  const base = `se aprueba con ${examen.aprueba_con}`
+  const req = examen.requiere_alguno_de ?? []
+  if (req.length === 0) return base
+  const lista =
+    req.length === 1 ? `el ${req[0]}` : `el ${req.slice(0, -1).join(', el ')} o el ${req.at(-1)}`
+  return `${base}, uno de ellos ${lista}`
 }
 
 export const NOTA_MAXIMA = 10
@@ -143,6 +165,7 @@ export function calificar(examen: Examen, respuestas: Respuestas): Resultado {
   const pesoPorEjercicio = NOTA_MAXIMA / presentados
   let nota = 0
   let ejerciciosEnteros = 0
+  const enteros = new Set<number>()
   const detalle: Resultado['detalle'] = []
 
   for (const ej of jugables) {
@@ -150,13 +173,18 @@ export function calificar(examen: Examen, respuestas: Respuestas): Resultado {
     const correctos = ej.items.reduce((n, _, i) => n + (marcas[i] ? 1 : 0), 0)
     const total = ej.items.length
     nota += pesoPorEjercicio * (correctos / total)
-    if (correctos === total) ejerciciosEnteros++
+    if (correctos === total) {
+      ejerciciosEnteros++
+      enteros.add(ej.numero)
+    }
     detalle.push({ numero: ej.numero, correctos, total })
   }
 
   // El criterio de la cátedra se evalúa sobre el examen real, así que con un
   // examen recortado se informa pero se marca parcial.
-  const aprobaria = ejerciciosEnteros >= examen.aprueba_con
+  const req = examen.requiere_alguno_de ?? []
+  const aprobaria =
+    ejerciciosEnteros >= examen.aprueba_con && (req.length === 0 || req.some((n) => enteros.has(n)))
 
   return {
     nota: Math.round(nota * 100) / 100,
