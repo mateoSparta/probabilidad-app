@@ -485,8 +485,10 @@ Cada fase termina con algo usable. La idea es estudiar desde la fase 2.
 | 2. Guía 1 | Pipeline §7 sobre el núcleo recomendado de la Guía 1, con teoría, secuencia y filtro de skills. | `revision/guia-1.md` revisado por Mateo. | **hecha**, falta cruzar contra las resueltas |
 | 3. Progreso | Log de intentos, estados de skill, panel de insignias, export/import. | El panel refleja correctamente una sesión real de estudio. | **hecha** |
 | 4. Guías 2–8 | Pipeline §7 guía por guía (una sesión de Claude Code por guía). | Cada guía con su `revision/` cerrado. | **núcleo hecho** en las 8; falta el cruce contra las resueltas |
-| 5. Simulacro | Exámenes cargados y verificados, timer, entrega, nota y veredicto. | Un simulacro completo con nota coherente. | **motor hecho**, falta contenido (depende de la 4) |
-| 6. Futuro | Guías 9–12, integradoras de PyE B completas (ejercicios 4 y 5), ejercicios parametrizados. | — | pendiente |
+| 5. Simulacro | Exámenes cargados y verificados, timer, entrega, nota y veredicto. | Un simulacro completo con nota coherente. | **hecha**: 10 exámenes completos en el pool |
+| 6. Futuro | Guías 9–12, integradoras de PyE B completas (ejercicios 4 y 5), ejercicios parametrizados. | — | pendiente; el panel ya muestra los skills de 9–12 bloqueados |
+| 7. Material para el examen | Hoja de fórmulas, tablas imprimibles y kit para el examen (§12.1 a §12.3). | Impresos, alcanzan para resolver un parcial sin calculadora. | pendiente, **antes del 30/10** |
+| 8. Distribuciones | Fichas de cada distribución y calculadora (§12.4). | Cada valor de la calculadora coincide con mpmath y con las tablas. | pendiente |
 
 **Por qué la fase 0.5.** El extractor va antes de la fase 2 porque cambia el
 costo de todo el contenido que viene después: con él, cargar una guía es
@@ -510,3 +512,102 @@ revisar y verificar en vez de transcribir. Son 219 ejercicios en alcance.
 - **Ítems con gráfico:** su traducción a `checkpoints` requiere criterio. Claude Code propone los checkpoints y Mateo los aprueba en la revisión.
 - **Respuestas que dependen de la tabla normal:** tolerancia del 1% para absorber el redondeo de `Tablas.pdf`.
 - **Guías 9–12 y resueltas faltantes:** se suman cuando lleguen, sin cambios de formato.
+
+---
+
+## 12. Material para el examen y distribuciones
+
+Lo que se lleva al examen son hojas impresas: no se pueden usar dispositivos
+electrónicos, ni siquiera calculadora, y la cátedra no limita la cantidad de
+hojas. De ahí salen las tres decisiones de fondo:
+
+- **Exportar es imprimir.** Un solo botón, "Imprimir o guardar PDF", que abre
+  el diálogo del navegador (ofrece "Guardar como PDF") con una hoja de estilos
+  de impresión. Las fórmulas salen vectoriales, sin dependencias nuevas.
+  Generar el PDF dentro de la app exigiría una librería pesada y KaTeX saldría
+  como imagen.
+- **Las tablas tienen que reemplazar a la calculadora,** así que no alcanza
+  con las de la cátedra.
+- **Todo se filtra por etapa** (`etapas()` de `src/dominio/evaluaciones.ts`):
+  Parcial (guías 1 a 8), Final (los temas propios, 9 a 12) y Todas. Si ya se
+  imprimió lo del parcial, para el final alcanza con completar.
+
+### 12.1 Hoja de fórmulas (fase 7)
+
+- Sección nueva `#/formulas`, con su tarjeta en el inicio y su entrada en el
+  menú.
+- **Contenido como datos:** `content/formulas/guia-N.yaml`, con bloques
+  titulados por tema y, en cada uno, fórmulas en LaTeX y a lo sumo una línea
+  de aclaración. Se arma a partir de las fórmulas de `skills.yaml` y de la
+  teoría cargada, y se contrasta con `fuentes/teoria/Grynberg_Notas.pdf` y
+  `probabilidad_distribuciones.pdf`. No se genera automáticamente desde los
+  skills: ahí las fórmulas se repiten y están pensadas para el panel de cada
+  ítem, no para un machete.
+- El validador parsea cada fórmula con KaTeX y aplica el registro de §4.9.
+- **Filtro:** Parcial, Final y Todas. Una opción sin contenido (hoy, Final) se
+  ve deshabilitada.
+- **Impresión:** A4, márgenes chicos, dos columnas, letra de unos 9 pt, sin
+  la interfaz de la app; cada guía con su encabezado y ningún bloque partido
+  entre columnas (`break-inside: avoid`). Al pie, "Suerte en el examen 🖒".
+  El 🖒 (U+1F592) falta en muchas fuentes: si al imprimir no se ve, va 👍.
+
+### 12.2 Tablas imprimibles (fase 7)
+
+Propuesta, para recortar o ampliar en la revisión:
+
+| Tabla | Rango | Etapa |
+|---|---|---|
+| Normal $\Phi(z)$ | $z$ de 0,00 a 3,49, como la de la cátedra, más los cuantiles usuales $z_lpha$ | parcial |
+| Poisson acumulada $P(X \le k)$ | $\lambda$ de 0,1 a 1 (paso 0,1), de 1,5 a 10 (paso 0,5) y de 11 a 20 | parcial |
+| Binomial acumulada $P(X \le k)$ | $n$ de 2 a 20, $p$ de 0,05 a 0,5 (para $p > 0{,}5$, por simetría) | parcial |
+| $e^{-x}$ | $x$ de 0 a 10 | parcial |
+| Factoriales y combinatorios | $n!$ hasta 20, $inom{n}{k}$ hasta $n = 20$ | parcial |
+| Cuantiles de $t$ y de $\chi^2$ | los de la cátedra | final |
+
+- **Datos generados y verificados:** `tools/verify/tablas.py` las calcula con
+  aritmética exacta o mpmath y las escribe en `content/tablas/`. $\Phi$, $t$ y
+  $\chi^2$ se contrastan además número a número con
+  `fuentes/teoria/Tablas.pdf`; un valor que no coincida queda como
+  discrepancia, como pide CLAUDE.md. La app sólo las muestra.
+- Generarlas, en lugar de publicar `Tablas.pdf`, evita redistribuir material
+  de la cátedra en el sitio público (ver DEPLOY.md).
+- Van en la misma sección que la hoja de fórmulas ("Fórmulas y tablas"), con
+  su propio botón de imprimir.
+
+### 12.3 Kit para el examen (fase 7)
+
+- Botón en el simulacro: "Kit para el parcial", o "para el final", según la
+  evaluación que toque.
+- Abre una vista de impresión con una carátula (examen y fecha), la hoja de
+  fórmulas de la etapa, sus tablas y el saludo, y lanza el diálogo de
+  impresión: un clic, un único PDF.
+- Reutiliza los componentes de §12.1 y §12.2. Descargar archivos sueltos
+  obligaría a generar los PDF en el build con un navegador, y eso complica el
+  deploy en GitHub Pages.
+
+### 12.4 Distribuciones (fase 8)
+
+- Sección nueva `#/distribuciones`, con una ficha por distribución, agrupadas
+  por etapa: Bernoulli, binomial, geométrica, Pascal, hipergeométrica, Poisson
+  y multinomial; uniforme, exponencial, Gamma, normal y normal bivariada; para
+  el final, $\chi^2$, $t$ y Beta.
+- **Ficha:** notación, soporte, parámetros, $p_X$ o $f_X$, $F_X$ cuando es
+  cerrada, esperanza y varianza, cuándo se usa y cómo se relaciona con las
+  otras (Poisson, exponencial y Gamma; binomial, Poisson y normal). La fuente
+  es `probabilidad_distribuciones.pdf`, que ya trae los comentarios de
+  modelado ("Algunos modelos"). Contenido en `content/distribuciones.yaml`.
+- **Calculadora:** $P(X = k)$, $P(X \le x)$, $P(a < X \le b)$ y cuantiles, con
+  un gráfico SVG que sombrea el área. Las funciones numéricas (gamma y beta
+  incompletas regularizadas, para Gamma, $\chi^2$, $t$ y Beta) van en
+  `src/dominio/distribuciones.ts`, y `tools/verify/distribuciones.py` las
+  contrasta con mpmath en una grilla de parámetros y con las tablas de §12.2.
+- Desde cada ficha, un enlace a la tabla que le corresponde.
+
+### 12.5 Riesgos
+
+- **Las fórmulas son contenido sin script que las verifique:** cada una se
+  contrasta con la teoría y entra en la revisión de Mateo.
+- **La impresión depende del navegador:** se prueba en Edge con `page.pdf` de
+  Playwright (paginación, columnas, que ningún bloque se parta).
+- **La lista de tablas es una propuesta:** conviene confirmarla con un parcial
+  resuelto a mano, sin calculadora, antes de cerrarla.
