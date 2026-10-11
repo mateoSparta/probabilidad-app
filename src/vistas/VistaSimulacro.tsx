@@ -14,7 +14,7 @@
  * Lo que se guarda es el **vencimiento**, no los segundos que faltan: si no,
  * recargar regalaría tiempo, que es lo contrario de lo que haría un examen.
  */
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
+import { useEffect, useMemo, useState } from 'preact/hooks'
 
 import {
   IconoAviso,
@@ -417,12 +417,8 @@ function Configuracion({
   /** El examen de la vista previa. Se conserva al cerrarla, para que salga con su contenido. */
   const [previo, setPrevio] = useState<Examen | null>(null)
   const [previoAbierto, setPrevioAbierto] = useState(false)
-  /**
-   * El pool arranca plegado: así se puede rendir uno al azar sin recorrer la
-   * lista. Al desplegarlo, la página baja hasta que se ve el botón.
-   */
+  /** El pool arranca plegado: así se puede rendir uno al azar sin recorrer la lista. */
   const [poolAbierto, setPoolAbierto] = useState(false)
-  const arranque = useRef<HTMLDivElement>(null)
 
   // Al cambiar de tipo, una elección del otro tipo deja de valer.
   const actual = disponibles.some((e) => e.id === elegido) ? elegido : null
@@ -433,20 +429,6 @@ function Configuracion({
   function alternar(id: string): void {
     setElegido(actual === id ? null : id)
   }
-
-  /** Al terminar de desplegarse el pool, lleva el botón de arrancar a la vista. */
-  function mostrarArranque(): void {
-    const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches
-    arranque.current?.scrollIntoView({ block: 'nearest', behavior: quieto ? 'auto' : 'smooth' })
-  }
-
-  useEffect(() => {
-    if (!poolAbierto) return
-    // Se espera a que termine el despliegue (280 ms en CSS), para que el
-    // botón ya esté en su lugar definitivo.
-    const t = setTimeout(mostrarArranque, 300)
-    return () => clearTimeout(t)
-  }, [poolAbierto])
 
   return (
     <>
@@ -548,6 +530,34 @@ function Configuracion({
                 onCambiar={(v) => onCambiar({ mostrarFormulas: v })}
               />
             </ul>
+
+            <div class="sim-arranque">
+              <button
+                class="boton boton--acento boton--icono boton--grande"
+                disabled={disponibles.length === 0}
+                aria-label={`Simular ${nombre} ${actual ? seleccionado : 'al azar'}`}
+                onClick={() => onArrancar(actual)}
+              >
+                <IconoSimulacro />
+                {/* Sólo cambia la última palabra, que rueda como el tambor de
+                    un cronómetro: baja para mostrar "seleccionado" y sube para
+                    volver a "al azar". El tambor mide lo que la palabra más
+                    larga, así que el botón no cambia de ancho. */}
+                <span class="sim-arranque__texto" aria-hidden="true">
+                  Simular {nombre}{' '}
+                  <span class={'rodillo' + (actual ? ' rodillo--abajo' : '')}>
+                    <span class="rodillo__cinta">
+                      <span class="rodillo__palabra">{seleccionado}</span>
+                      <span class="rodillo__palabra">al azar</span>
+                    </span>
+                  </span>
+                </span>
+              </button>
+              <p class="dato-chico">
+                El tiempo se mide con el reloj del sistema, de modo que sigue corriendo aunque se
+                cierre la página. Las respuestas no se pierden.
+              </p>
+            </div>
           </section>
 
           <section
@@ -569,8 +579,7 @@ function Configuracion({
             <div id="pool-contenido" class="desplegable__contenido" inert={!poolAbierto}>
               <div class="desplegable__interior">
                 <p class="pool__ayuda">
-                  Elegí uno para rendirlo, o ninguno para que se sortee. La lupa muestra sus
-                  ejercicios.
+                  Elegí uno para rendirlo, o ninguno para que se sortee.
                 </p>
                 <ul class="pool__grilla">
                   {disponibles.map((e, i) => {
@@ -588,17 +597,18 @@ function Configuracion({
                         >
                           <span class="examen__tipo">{NOMBRE_TIPO[e.tipo]}</span>
                           <span class="examen__titulo">{e.titulo}</span>
-                          {/* La marca va en el renglón de la fecha, así elegir un
-                              examen no cambia el alto de la tarjeta. */}
-                          <span class="examen__pie">
-                            <span class="examen__fecha">{fechaLarga(e.fecha)}</span>
-                            {esElegido && (
-                              <span class="examen__marca">
+                          <span class="examen__fecha">{fechaLarga(e.fecha)}</span>
+                          {/* La marca va fija en la esquina inferior derecha, fuera
+                              del flujo: no depende de cuántos renglones ocupe el
+                              título ni cambia el alto de la tarjeta. */}
+                          {esElegido && (
+                            <span class="examen__marca">
+                              <span class="examen__marca-texto">
                                 <IconoComprobar />
                                 {seleccionado[0].toUpperCase() + seleccionado.slice(1)}
                               </span>
-                            )}
-                          </span>
+                            </span>
+                          )}
                         </button>
                         <button
                           class="examen__ver"
@@ -619,34 +629,6 @@ function Configuracion({
               </div>
             </div>
           </section>
-
-          <div class="sim-arranque" ref={arranque}>
-            <button
-              class="boton boton--acento boton--icono boton--grande"
-              disabled={disponibles.length === 0}
-              aria-label={`Simular ${nombre} ${actual ? seleccionado : 'al azar'}`}
-              onClick={() => onArrancar(actual)}
-            >
-              <IconoSimulacro />
-              {/* Sólo cambia la última palabra, que rueda como el tambor de
-                  un cronómetro: baja para mostrar "seleccionado" y sube para
-                  volver a "al azar". El tambor mide lo que la palabra más
-                  larga, así que el botón no cambia de ancho. */}
-              <span class="sim-arranque__texto" aria-hidden="true">
-                Simular {nombre}{' '}
-                <span class={'rodillo' + (actual ? ' rodillo--abajo' : '')}>
-                  <span class="rodillo__cinta">
-                    <span class="rodillo__palabra">{seleccionado}</span>
-                    <span class="rodillo__palabra">al azar</span>
-                  </span>
-                </span>
-              </span>
-            </button>
-            <p class="dato-chico">
-              El tiempo se mide con el reloj del sistema, de modo que sigue corriendo aunque se
-              cierre la página. Las respuestas no se pierden.
-            </p>
-          </div>
 
           {previo && (
             <VistaPrevia

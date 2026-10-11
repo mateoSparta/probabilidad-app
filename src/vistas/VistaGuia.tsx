@@ -10,10 +10,11 @@
  * "↑ Subir" del costado derecho, que aparece cuando la fila de círculos sale
  * de la vista. Por eso el pie ya no es un enlace sino un cierre.
  */
-import { useEffect, useRef, useState } from 'preact/hooks'
+import { useEffect, useRef } from 'preact/hooks'
 
 import { IndiceGuia } from '../componentes/IndiceGuia'
 import { irA, MapaEjercicios } from '../componentes/MapaEjercicios'
+import { SubirLateral, usarQuedoArriba } from '../componentes/SubirLateral'
 import { TarjetaEjercicio } from '../componentes/TarjetaEjercicio'
 import { Teoria } from '../componentes/Teoria'
 import { ejercicioPorId, guiaPorNumero, teoriaPorId } from '../datos/contenido'
@@ -32,30 +33,9 @@ type Props = {
 export function VistaGuia({ numero, sesion, onIntento, destino, onDestinoAlcanzado }: Props) {
   const guia = guiaPorNumero.get(numero)
   const intro = useRef<HTMLElement>(null)
-  /** Si la fila de círculos ya quedó arriba, fuera de la vista. */
-  const [mapaArriba, setMapaArriba] = useState(false)
-
   // Se mira la fila de círculos y no el título: es lo que dice "estás arriba
   // de la guía". El margen superior descuenta la barra fija de las pestañas.
-  //
-  // Cuando deja de verse, hay que distinguir si quedó arriba o abajo de la
-  // zona visible, y la comparación tiene que ser contra el borde de esa zona
-  // (`rootBounds`) y no contra el borde de la ventana: al bajar con la rueda
-  // del mouse, el observador avisa cuando la fila ya pasó debajo de la barra
-  // pero todavía no salió de la ventana, y no vuelve a avisar después.
-  useEffect(() => {
-    const mapa = intro.current?.querySelector('.mapa')
-    if (!mapa || typeof IntersectionObserver === 'undefined') return
-    const observador = new IntersectionObserver(
-      ([e]) => {
-        const borde = e.rootBounds?.top ?? 0
-        setMapaArriba(!e.isIntersecting && e.boundingClientRect.bottom <= borde + 1)
-      },
-      { rootMargin: '-56px 0px 0px 0px' },
-    )
-    observador.observe(mapa)
-    return () => observador.disconnect()
-  }, [numero])
+  const mapaArriba = usarQuedoArriba(() => intro.current?.querySelector('.mapa'), 56, [numero])
 
   // Se baja sin animación: viniendo de otra sección, una animación larga
   // desde el principio de la guía no aporta nada. Al llegar, el bloque se
@@ -136,29 +116,6 @@ function mantenerEnVista(ancla: string): () => void {
   observador.observe(document.body)
   for (const ev of eventos) addEventListener(ev, soltar, { passive: true })
   return soltar
-}
-
-/**
- * "↑ Subir", al costado derecho de la columna y a la altura de lo que se está
- * leyendo. Se ve sólo cuando la fila de círculos ya quedó arriba; mientras
- * tanto está oculto, sin foco y sin ocupar lugar en la lectura.
- */
-function SubirLateral({ visible }: { visible: boolean }) {
-  return (
-    <aside class={'subir-lateral' + (visible ? ' subir-lateral--visible' : '')}>
-      <button
-        class="subir"
-        tabIndex={visible ? 0 : -1}
-        aria-hidden={visible ? undefined : 'true'}
-        onClick={() => scrollTo({ top: 0, behavior: 'smooth' })}
-      >
-        <span class="subir__flecha" aria-hidden="true">
-          ↑
-        </span>
-        Subir
-      </button>
-    </aside>
-  )
 }
 
 /** El cierre de la guía: no es un enlace, sólo marca el final. */

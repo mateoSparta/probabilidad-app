@@ -69,6 +69,11 @@ export function TusDatos({ api, sesion }: { api: ApiProgreso; sesion?: ApiSesion
         titulo="¿Borrar todos tus datos?"
         confirmar="Borrar todo"
         cancelar="Cancelar"
+        intermedia={
+          <button class="boton" onClick={() => descargar(progreso)}>
+            Exportar JSON
+          </button>
+        }
         peligro
         onConfirmar={borrarTodo}
         onCancelar={() => setConfirmando(false)}

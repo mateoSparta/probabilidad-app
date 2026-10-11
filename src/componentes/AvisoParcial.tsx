@@ -8,8 +8,11 @@
  * `AvisoParcialDetalle` va en Seguimiento, con la cuenta completa: qué falta,
  * cuántos ítems por día y si el ritmo de los últimos días alcanza.
  */
+import type { ComponentChildren } from 'preact'
+
 import { config } from '../datos/contenido'
 import { ETIQUETA_VEREDICTO, fechaCorta, type Plan } from '../dominio/ritmo'
+import type { Seccion } from '../dominio/ruta'
 import { IconoCalendario } from './Iconos'
 
 /** La clase de color que corresponde a cada veredicto. */
@@ -29,7 +32,7 @@ function tono(plan: Plan): string {
   }
 }
 
-export function AvisoParcialCompacto({ plan }: { plan: Plan }) {
+export function AvisoParcialCompacto({ plan, seccion }: { plan: Plan; seccion?: Seccion }) {
   const dias = plan.diasRestantes
   const texto =
     dias > 1
@@ -41,20 +44,47 @@ export function AvisoParcialCompacto({ plan }: { plan: Plan }) {
           : 'ya pasó'
 
   // La fecha lleva al simulacro (practicar el examen) y los días que faltan,
-  // al seguimiento (cómo viene el ritmo).
+  // al seguimiento (cómo viene el ritmo). En la sección a la que llevarían,
+  // son texto: un enlace a la misma página no lleva a ningún lado.
   return (
     <p class={'aviso-parcial ' + tono(plan)}>
       <IconoCalendario />
-      <a class="aviso-parcial__fecha" href="#/simulacro" data-tip="Practicar con un simulacro">
+      <Enlace
+        clase="aviso-parcial__fecha"
+        destino="simulacro"
+        actual={seccion}
+        ayuda="Practicar con un simulacro"
+      >
         Parcial {fechaCorta(config.parcial)}
-      </a>
+      </Enlace>
       <span class="aviso-parcial__sep" aria-hidden="true">
         ·
       </span>
-      <a class="aviso-parcial__dias" href="#/seguimiento" data-tip="Ver el seguimiento">
+      <Enlace clase="aviso-parcial__dias" destino="seguimiento" actual={seccion} ayuda="Ver el seguimiento">
         {texto}
-      </a>
+      </Enlace>
     </p>
+  )
+}
+
+function Enlace({
+  clase,
+  destino,
+  actual,
+  ayuda,
+  children,
+}: {
+  clase: string
+  destino: Seccion
+  actual?: Seccion
+  ayuda: string
+  children: ComponentChildren
+}) {
+  if (destino === actual) return <span class={clase + ' aviso-parcial__aca'}>{children}</span>
+  return (
+    <a class={clase} href={'#/' + destino} data-tip={ayuda}>
+      {children}
+    </a>
   )
 }
 
@@ -105,7 +135,9 @@ export function AvisoParcialDetalle({ plan }: { plan: Plan }) {
         </li>
         {veredicto !== 'sin_arrancar' && veredicto !== 'listo' && (
           <li>
-            ritmo de los últimos 7 días: <strong>{plan.ritmoReciente}</strong> por día
+            ritmo de los últimos 7 días:{' '}
+            <strong>{String(plan.ritmoReciente).replace('.', ',')}</strong>{' '}
+            {plan.ritmoReciente === 1 ? 'ítem resuelto' : 'ítems resueltos'} en limpio por día
             {plan.alDia ? ' (suficiente)' : ' (inferior al necesario)'}
           </li>
         )}

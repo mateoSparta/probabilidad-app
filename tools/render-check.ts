@@ -305,6 +305,11 @@ try {
     'no hay un único botón "Borrar mis datos"',
   )
   afirmar(!menu.includes('intentos registrados'), 'sigue el resumen de intentos registrados')
+  // La ventana de borrar ofrece exportar antes, entre cancelar y borrar.
+  afirmar(
+    /Cancelar<\/button><button class="boton">Exportar JSON<\/button><button class="boton boton--peligro">Borrar todo/.test(menu),
+    'la ventana de borrar no tiene "Exportar JSON" entre sus dos botones',
+  )
   // Los globos reemplazan al `title` del navegador en toda la interfaz.
   afirmar(!/ title="/.test(menu), 'el menú usa `title` en lugar de `data-tip`')
 
@@ -356,6 +361,7 @@ try {
     'el panel sigue diciendo que el estado disminuye si se deja de practicar')
   afirmar(!limpio.includes('faltan ejercicios') && !limpio.includes('celda-skill__nota'),
     'el panel sigue avisando que faltan ejercicios para dominar un skill')
+  afirmar(limpio.includes('class="subir-lateral"') && limpio.includes('Subir'), 'el panel de skills no tiene "Subir"')
   for (const sk of contenido.skills) {
     const d = contenido.destinoDeSkill.get(sk.id)
     afirmar(!!d, `el skill ${sk.id} no tiene adónde llevar`)
@@ -506,6 +512,11 @@ try {
   afirmar(
     /class="rodillo"><span class="rodillo__cinta"><span class="rodillo__palabra">seleccionado<\/span><span class="rodillo__palabra">al azar<\/span>/.test(simulacro),
     'el botón no tiene el tambor con "seleccionado" y "al azar"',
+  )
+  // El botón cierra el recuadro de la configuración, y el pool va debajo.
+  afirmar(
+    /class="interruptores"[\s\S]*class="sim-arranque"[\s\S]*<\/section><section class="pool desplegable"/.test(simulacro),
+    'el botón de arrancar no quedó dentro del recuadro, debajo de los interruptores, con el pool afuera',
   )
   // El pool arranca plegado.
   afirmar(
@@ -660,6 +671,49 @@ try {
     /<a[^>]*href="#\/seguimiento"[^>]*>\s*faltan \d+ días/.test(cabeceraConPlan),
     '"faltan N días" no lleva al seguimiento',
   )
+  // En la sección a la que llevaría, cada parte es texto, sin enlace ni globo.
+  const enSeguimiento = render(createElement(AvisoParcialCompacto, { plan: planVacio, seccion: 'seguimiento' }))
+  afirmar(
+    !enSeguimiento.includes('href="#/seguimiento"') &&
+      !enSeguimiento.includes('Ver el seguimiento') &&
+      enSeguimiento.includes('href="#/simulacro"'),
+    'en el seguimiento, "faltan N días" sigue siendo un enlace',
+  )
+  const enSimulacro = render(createElement(AvisoParcialCompacto, { plan: planVacio, seccion: 'simulacro' }))
+  afirmar(
+    !enSimulacro.includes('href="#/simulacro"') &&
+      !enSimulacro.includes('Practicar con un simulacro') &&
+      enSimulacro.includes('href="#/seguimiento"'),
+    'en el simulacro, la fecha del parcial sigue siendo un enlace',
+  )
+
+  // La leyenda del ritmo dice en qué unidad está.
+  let conRitmo = progresoMod.PROGRESO_VACIO
+  for (const [i, item] of ['g1-04:a', 'g1-04:b'].entries()) {
+    conRitmo = progresoMod.agregar(
+      conRitmo,
+      { item, ts: `2026-10-0${i + 5}T12:00:00.000Z`, envios: 1, correcto: true, pistas: 0, revelo: false },
+      true,
+    )
+  }
+  const planRitmo = ritmoMod.armarPlan(conRitmo, skillsReales, contenido.skillsDeItem, contenido.config, hoy)
+  const detalleConRitmo = render(createElement(AvisoParcialDetalle, { plan: planRitmo }))
+  afirmar(
+    /ritmo de los últimos 7 días: <strong>0,3<\/strong> ítems resueltos en limpio por día/.test(detalleConRitmo),
+    'la leyenda del ritmo no dice "N ítems resueltos en limpio por día"',
+  )
+
+  // El sello de la cátedra lleva al campus, en otra pestaña, con su globo.
+  const { LogoCatedra } = await servidor.ssrLoadModule('/src/componentes/LogoCatedra.tsx')
+  const sello = render(createElement(LogoCatedra, { visible: true }))
+  afirmar(
+    sello.includes('href="https://campusgrado.fi.uba.ar/course/view.php?id=46"') &&
+      sello.includes('target="_blank"') &&
+      sello.includes('data-tip="Página de cátedra"') &&
+      sello.includes('catedra--entrando'),
+    'el sello de la cátedra no lleva al campus o no tiene su globo',
+  )
+  afirmar(render(createElement(LogoCatedra, { visible: false })) === '', 'el sello se dibuja fuera del inicio')
 
   // --- los círculos cambian de color según el estado ---
   const primerEjercicio = contenido.ejercicioPorId.get('g1-04')

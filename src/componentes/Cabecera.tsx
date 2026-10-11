@@ -102,7 +102,7 @@ export function Cabecera({ ruta, plan }: Props) {
             <MenuNavegacion ruta={ruta} />
           </div>
 
-          {plan && <AvisoParcialCompacto plan={plan} />}
+          {plan && <AvisoParcialCompacto plan={plan} seccion={seccion} />}
         </div>
       </header>
 

@@ -762,9 +762,8 @@
 .interruptor__etiqueta { font-size: var(--t-base); }
 .interruptor__descripcion { font-size: var(--t-xs); color: var(--tinta-3); }
 
-/* En pantallas anchas la configuración va en dos columnas (duración y tipo
-   de examen, y abajo los dos interruptores): así el botón de arrancar entra
-   en la pantalla sin desplazarse, con el pool plegado. */
+/* En pantallas anchas la duración y el tipo de examen comparten renglón;
+   debajo van los interruptores y el botón de arrancar, a todo el ancho. */
 @media (min-width: 46rem) {
   .sim-config {
     display: grid;
@@ -772,12 +771,8 @@
     column-gap: var(--e-6);
   }
   .sim-config .tipo-examen { margin-top: 0; }
-  .sim-config .interruptores {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: var(--e-6);
-  }
+  .sim-config .interruptores,
+  .sim-config .sim-arranque { grid-column: 1 / -1; }
 }
 
 /* El interruptor es un checkbox real (accesible y con teclado), dibujado
@@ -809,8 +804,7 @@
 .interruptor__control:checked { background: var(--acento); }
 .interruptor__control:checked::before { transform: translateX(1.1rem); }
 
-/* El botón para empezar va después del pool: primero se elige (o no) el
-   examen y después se arranca. */
+/* El botón para empezar cierra el recuadro de la configuración. */
 .sim-arranque {
   display: flex;
   flex-wrap: wrap;
@@ -819,7 +813,6 @@
   margin-top: var(--e-5);
 }
 .sim-arranque .dato-chico { flex: 1 1 16rem; margin: 0; }
-.sim-arranque { scroll-margin-bottom: var(--e-5); }
 .sim-arranque__texto { white-space: nowrap; }
 
 /* El tambor del botón: una ventana de un renglón sobre una cinta con las dos
@@ -965,21 +958,22 @@
   color: var(--acento);
 }
 .examen__titulo { font-weight: 600; line-height: 1.35; }
-/* La fecha y la marca de elegido comparten renglón, y la marca es más baja
-   que la fecha: elegir un examen no cambia el alto de la tarjeta. El renglón
-   toma también el margen que la lupa reserva a la derecha, que está libre
-   abajo. */
-.examen__pie {
+.examen__fecha { font-size: var(--t-sm); color: var(--tinta-2); }
+/* La marca de elegido va en la esquina inferior derecha de la tarjeta, fuera
+   del flujo. Mide un renglón de la fecha, así en la tarjeta más alta de cada
+   fila queda a la altura de la fecha. */
+.examen__marca {
+  position: absolute;
+  right: var(--e-4);
+  bottom: var(--e-4);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--e-2);
-  margin-right: calc(var(--e-4) - 3rem);
+  height: 1lh;
+  font-size: var(--t-sm);
+  pointer-events: none;
 }
-.examen__fecha { font-size: var(--t-sm); color: var(--tinta-2); }
-.examen__marca {
+.examen__marca-texto {
   display: inline-flex;
-  flex: none;
   align-items: center;
   gap: var(--e-1);
   font-size: var(--t-xs);
@@ -1364,4 +1358,40 @@
 .globo[data-lado='arriba']::before {
   top: 100%;
   border-top-color: var(--tinta);
+}
+
+/* ------------------------------------------------ sello de la cátedra */
+
+/* Flota en la esquina inferior derecha del inicio, fuera de la columna en
+   pantallas anchas. Al pasar el mouse crece un poco y la sombra se hace más
+   honda, como si se levantara de la página. */
+.catedra {
+  position: fixed;
+  right: var(--e-6);
+  bottom: var(--e-6);
+  z-index: 20;
+}
+.catedra__boton {
+  display: block;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 1px 3px #2b262026, 0 4px 12px #2b26201f;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.catedra__boton img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.catedra__boton:hover,
+.catedra__boton:focus-visible {
+  transform: scale(1.06);
+  box-shadow: 0 6px 14px #2b262030, 0 16px 34px #2b262038;
+}
+@media (max-width: 40rem) {
+  .catedra { right: var(--e-4); bottom: var(--e-4); }
+  .catedra__boton { width: 3.5rem; height: 3.5rem; }
 }

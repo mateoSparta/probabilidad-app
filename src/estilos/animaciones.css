@@ -283,6 +283,38 @@
   animation: aparecer 90ms ease-out both;
 }
 
+/* ------------------------------------------------ sello de la cátedra */
+
+/* Sube desde abajo del borde de la ventana, se pasa 10 px de su lugar y se
+   acomoda. La salida es la misma animación invertida en el tiempo: los
+   tramos van en orden inverso y cada curva es la simétrica de la de entrada
+   (cubic-bezier(a, b, c, d) invertida es cubic-bezier(1-c, 1-d, 1-a, 1-b)). */
+.catedra--entrando { animation: catedra-entrar 650ms both; }
+.catedra--saliendo { animation: catedra-salir 650ms both; }
+
+@keyframes catedra-entrar {
+  0% {
+    transform: translateY(calc(100% + var(--e-6) + 1rem));
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.4, 1);
+  }
+  70% {
+    transform: translateY(-10px);
+    animation-timing-function: ease-in-out;
+  }
+  100% { transform: translateY(0); }
+}
+@keyframes catedra-salir {
+  0% {
+    transform: translateY(0);
+    animation-timing-function: ease-in-out;
+  }
+  30% {
+    transform: translateY(-10px);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.3);
+  }
+  100% { transform: translateY(calc(100% + var(--e-6) + 1rem)); }
+}
+
 /* ------------------------------------------------ movimiento reducido */
 
 @media (prefers-reduced-motion: reduce) {

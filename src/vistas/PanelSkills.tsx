@@ -7,11 +7,12 @@
  * Es la vista que contesta "¿dónde estoy flojo?" de un vistazo, que es el
  * punto de medir el dominio sobre intentos recientes y no acumulados.
  */
-import { useState } from 'preact/hooks'
+import { useRef, useState } from 'preact/hooks'
 
 import { IconoComprobar } from '../componentes/Iconos'
 import { Formula, Mate } from '../componentes/Mate'
 import { Dialogo } from '../componentes/Modal'
+import { SubirLateral, usarQuedoArriba } from '../componentes/SubirLateral'
 import {
   claveItemExamen,
   destinoDeSkill,
@@ -92,6 +93,9 @@ export function PanelSkills({
   /** El skill de la ventana. Se conserva al cerrarla para que salga con su contenido. */
   const [elegido, setElegido] = useState<string | null>(null)
   const [abierto, setAbierto] = useState(false)
+  /** La grilla de la guía 1: "Subir" aparece cuando su primera fila quedó arriba. */
+  const primeraGrilla = useRef<HTMLUListElement>(null)
+  const filaArriba = usarQuedoArriba(() => primeraGrilla.current?.firstElementChild, 0, [])
 
   const grupos = skillsPorGuia()
   const todos = grupos.flatMap((g) => g.skills)
@@ -106,6 +110,8 @@ export function PanelSkills({
 
   return (
     <>
+      <SubirLateral visible={filaArriba} />
+
       <section class="guia__intro">
         <h2>Panel de skills</h2>
         <p class="guia__descripcion">
@@ -130,10 +136,10 @@ export function PanelSkills({
         </ul>
       </section>
 
-      {grupos.map(({ guia, skills }) => (
+      {grupos.map(({ guia, skills }, i) => (
         <section key={guia} class="grupo-skills">
           <h3 class="grupo-skills__titulo">Guía {guia}</h3>
-          <ul class="grilla-skills">
+          <ul class="grilla-skills" ref={i === 0 ? primeraGrilla : undefined}>
             {skills.map((s) => {
               const items = itemsPorSkill.get(s.id) ?? VACIO
               const estado = estadoSkill(progreso, items)

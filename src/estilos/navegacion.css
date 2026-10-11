@@ -382,6 +382,11 @@
   font-weight: 500;
   color: var(--color-ritmo, var(--tinta-2));
 }
+/* En su propia sección no es enlace, pero se ve igual que en reposo. */
+.aviso-parcial .aviso-parcial__aca {
+  color: inherit;
+  border-bottom: 1px solid transparent;
+}
 .aviso-parcial__sep {
   color: var(--tinta-3);
 }

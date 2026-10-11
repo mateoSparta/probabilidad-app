@@ -7,6 +7,9 @@
  * clic en el fondo no lo cierran directamente sino que avisan con
  * `onCerrar`, y quien lo usa decide.
  *
+ * Mientras hay una abierta, la página de fondo no se desplaza: la rueda del
+ * mouse sólo mueve el cuerpo de la ventana.
+ *
  * `Dialogo` es la base, con cualquier contenido y sus propias acciones.
  * `Modal` es el caso de confirmación: un texto, cancelar y confirmar.
  */
@@ -15,6 +18,34 @@ import { useEffect, useId, useRef, useState } from 'preact/hooks'
 
 /** Lo que dura la salida; tiene que coincidir con el CSS. */
 const SALIDA_MS = 160
+
+/** Cuántas ventanas tienen bloqueado el fondo; se libera con la última. */
+let bloqueos = 0
+
+/**
+ * Bloquea el desplazamiento de la página. Si la barra de desplazamiento
+ * ocupaba lugar, ese lugar queda reservado, para que esconderla no corra el
+ * contenido; si no ocupaba (no había barra, o es de las que se superponen),
+ * no se reserva nada, por la misma razón. Devuelve la función que lo
+ * deshace, que sólo tiene efecto la primera vez.
+ */
+function bloquearFondo(): () => void {
+  const html = document.documentElement
+  if (bloqueos++ === 0) {
+    const anchoBarra = innerWidth - html.clientWidth
+    html.style.overflow = 'hidden'
+    if (anchoBarra > 0) html.style.scrollbarGutter = 'stable'
+  }
+  let liberado = false
+  return () => {
+    if (liberado) return
+    liberado = true
+    if (--bloqueos === 0) {
+      html.style.overflow = ''
+      html.style.scrollbarGutter = ''
+    }
+  }
+}
 
 type PropsDialogo = {
   abierto: boolean
@@ -31,6 +62,10 @@ export function Dialogo({ abierto, titulo, children, acciones, clase, onCerrar }
   const ref = useRef<HTMLDialogElement>(null)
   const [saliendo, setSaliendo] = useState(false)
   const idTitulo = useId()
+  const liberarFondo = useRef<(() => void) | null>(null)
+
+  // Si la ventana se desmonta abierta, el fondo no puede quedar bloqueado.
+  useEffect(() => () => liberarFondo.current?.(), [])
 
   useEffect(() => {
     const d = ref.current
@@ -38,6 +73,7 @@ export function Dialogo({ abierto, titulo, children, acciones, clase, onCerrar }
     if (abierto && !d.open) {
       setSaliendo(false)
       d.showModal()
+      liberarFondo.current = bloquearFondo()
       return
     }
     if (!abierto && d.open) {
@@ -45,6 +81,8 @@ export function Dialogo({ abierto, titulo, children, acciones, clase, onCerrar }
       const t = setTimeout(() => {
         d.close()
         setSaliendo(false)
+        liberarFondo.current?.()
+        liberarFondo.current = null
       }, SALIDA_MS)
       return () => clearTimeout(t)
     }
@@ -80,6 +118,8 @@ type PropsModal = {
   children: ComponentChildren
   confirmar: string
   cancelar: string
+  /** Una acción más, entre cancelar y confirmar. */
+  intermedia?: ComponentChildren
   /** La acción de confirmar no se puede deshacer: el botón se pinta en rojo. */
   peligro?: boolean
   onConfirmar: () => void
@@ -92,6 +132,7 @@ export function Modal({
   children,
   confirmar,
   cancelar,
+  intermedia,
   peligro,
   onConfirmar,
   onCancelar,
@@ -106,6 +147,7 @@ export function Modal({
           <button class="boton" onClick={onCancelar} autoFocus>
             {cancelar}
           </button>
+          {intermedia}
           <button
             class={'boton ' + (peligro ? 'boton--peligro' : 'boton--acento')}
             onClick={onConfirmar}

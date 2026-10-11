@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks'
 
 import { Cabecera } from './componentes/Cabecera'
 import { Globo } from './componentes/Globo'
+import { LogoCatedra } from './componentes/LogoCatedra'
 import {
   config,
   destinoDeSkill,
@@ -96,6 +97,7 @@ export function App() {
           )}
         </div>
       </main>
+      <LogoCatedra visible={ruta.seccion === 'menu'} />
       <Globo />
     </>
   )
