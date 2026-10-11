@@ -34,6 +34,12 @@ más cuesta de la guía, y las pistas de los dos ítems lo señalan.
 
 ## 2. Lo que falta del núcleo
 
+> **Actualizado:** de lo que sigue, ya están cargados el 7.12: la resuelta confirma la lectura literal, $e^{-80}$. El núcleo de la guía 7 está completo. Ver
+> [00-estado.md §3](00-estado.md). Lo de abajo queda como registro de por qué
+> no se habían cargado; varias de esas razones resultaron ser problemas del
+> extractor y no del ejercicio, porque en el PDF los enunciados están
+> completos.
+
 ### Ejercicio 7.12 — duda de interpretación, no de extracción
 
 El enunciado salió limpio: Lucas emite señales Poisson de intensidad 3 por

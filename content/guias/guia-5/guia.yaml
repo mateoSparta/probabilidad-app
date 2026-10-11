@@ -12,10 +12,15 @@ secuencia:
   - ejercicio: g5-09
 
   - teoria: t-esperanza-condicional-va
+  - ejercicio: g5-04
+  - ejercicio: g5-10
+  - ejercicio: g5-11
   - ejercicio: g5-12
   - ejercicio: g5-13
+  - ejercicio: g5-15
   - ejercicio: g5-21
   - ejercicio: g5-23
 
   - teoria: t-varianza-total
   - ejercicio: g5-16
+  - ejercicio: g5-18

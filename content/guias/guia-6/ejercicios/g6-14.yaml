@@ -1,0 +1,59 @@
+id: g6-14
+guia: 6
+numero: "6.14"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p40
+
+enunciado: |
+  [[multinomial|En una fábrica hay cuatro máquinas $A$, $B$, $C$ y $D$ que
+  producen el 40 %, 30 %, 20 % y 10 % de la producción total,
+  respectivamente.]]
+
+items:
+  - id: a
+    pregunta: >-
+      Se eligen al azar 14 artículos de la producción. Calcular la
+      probabilidad de que exactamente 5 provengan de la máquina $A$, 4 de la
+      máquina $B$, 3 de la máquina $C$ y 2 de la máquina $D$.
+    skills: [multinomial]
+    respuesta:
+      tipo: numerica
+      valor: "14! / (5! * 4! * 3! * 2!) * 0.4^5 * 0.3^4 * 0.2^3 * 0.1^2"
+    pistas:
+      - Cada artículo cae en una de cuatro categorías, con probabilidades fijas e independientemente de los demás.
+      - 'Las cantidades por máquina tienen distribución multinomial con $n = 14$.'
+      - >-
+        Plan: aplicá la fórmula multinomial, con el coeficiente que cuenta
+        las formas de repartir los 14 artículos entre las cuatro máquinas.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g6_14.py
+          valor: "20432412/1220703125 = 0.01674"
+
+  - id: b
+    pregunta: >-
+      [[condicional|Si se sabe que en 14 artículos tomados al azar de la
+      producción exactamente 5 provienen de la máquina $A$]], ¿cuál es la
+      probabilidad de que haya exactamente tres provenientes de la máquina
+      $C$?
+    skills: [multinomial, condicional]
+    respuesta:
+      tipo: numerica
+      valor: "1792/6561"
+    pistas:
+      - Conocer cuántos provienen de $A$ deja 9 artículos que provienen de $B$, $C$ o $D$.
+      - >-
+        Cada uno de esos 9 proviene de $C$ con la probabilidad condicional
+        de $C$ dado que no es de $A$.
+      - >-
+        Plan: calculá $0{,}2/(1 - 0{,}4)$ y usá una binomial con 9 ensayos
+        para la cantidad de artículos de $C$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: "tools/verify/g6_14.py (por la binomial condicional y por la definición sobre la multinomial)"
+          valor: "1792/6561 = 0.2731"

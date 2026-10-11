@@ -1,0 +1,131 @@
+id: g2-13
+guia: 2
+numero: "2.13"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p15
+
+enunciado: |
+  Sea $X$ una variable aleatoria continua con [[funcion-distribucion|función
+  de distribución $F_X(x) = P(X \le x)$ estrictamente creciente en el soporte
+  de $X$]]. Hallar expresiones para las funciones de distribución de las
+  siguientes variables aleatorias.
+
+items:
+  - id: a
+    pregunta: >-
+      [[transformacion-F|$T = G(X)$, donde $G : \mathbb{R} \to \mathbb{R}$ es
+      una función continua estrictamente creciente.]]
+    skills: [transformacion-F, funcion-distribucion]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: a1
+          texto: '$F_T(t) = F_X\big(G^{-1}(t)\big)$'
+          correcta: true
+        - id: a2
+          texto: '$F_T(t) = F_X\big(G(t)\big)$'
+          error_tipico: >-
+            El evento $\{G(X) \le t\}$ se traduce a uno sobre $X$ despejando,
+            y para despejar hay que aplicar $G^{-1}$, no $G$.
+        - id: a3
+          texto: '$F_T(t) = G\big(F_X(t)\big)$'
+          error_tipico: >-
+            Esa composición no es una probabilidad sobre $T$. Hay que partir
+            de $F_T(t) = P(G(X) \le t)$ y expresar el evento en términos de
+            $X$.
+        - id: a4
+          texto: '$F_T(t) = 1 - F_X\big(G^{-1}(t)\big)$'
+          error_tipico: >-
+            Así quedaría si $G$ fuera decreciente, porque la desigualdad se
+            invertiría. Con $G$ creciente se conserva el sentido.
+    pistas:
+      - Partí de la definición, $F_T(t) = P(G(X) \le t)$.
+      - >-
+        Como $G$ es continua y estrictamente creciente, tiene inversa y
+        aplicarla conserva el sentido de la desigualdad.
+      - 'Plan: despejá $X$ en el evento $\{G(X) \le t\}$ y usá $F_X$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: "tools/verify/g2_13.py (con X ~ Exp(1) y G(x) = x^3 + x)"
+          valor: "F_T(t) = F_X(G^-1(t))"
+
+  - id: b
+    pregunta: '[[transformacion-F|$U = F_X(X)$.]]'
+    skills: [transformacion-F, funcion-distribucion]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: b1
+          texto: '$U$ es uniforme en $(0, 1)$, es decir, $F_U(u) = u$ para $0 < u < 1$.'
+          correcta: true
+        - id: b2
+          texto: '$U$ tiene la misma distribución que $X$.'
+          error_tipico: >-
+            $U$ toma valores en $(0, 1)$ cualquiera sea $X$, así que en
+            general no puede tener la distribución de $X$.
+        - id: b3
+          texto: '$U$ es exponencial de media 1.'
+          error_tipico: >-
+            Exponencial de media 1 es $-\ln U$, con $U$ uniforme. La
+            distribución de $F_X(X)$ es la uniforme.
+        - id: b4
+          texto: 'Depende de la distribución de $X$.'
+          error_tipico: >-
+            Como $F_X$ es continua y estrictamente creciente,
+            $P(F_X(X) \le u) = P(X \le F_X^{-1}(u)) = u$, sin importar cuál
+            sea $F_X$.
+    pistas:
+      - '$U$ toma valores en $(0, 1)$. Calculá $P(U \le u)$ para $u$ en ese intervalo.'
+      - '$F_X$ tiene inversa en el soporte de $X$, porque es continua y estrictamente creciente.'
+      - 'Plan: escribí $\{F_X(X) \le u\}$ como $\{X \le F_X^{-1}(u)\}$ y aplicá $F_X$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: "tools/verify/g2_13.py (con X ~ Exp(1))"
+          valor: "U uniforme en (0, 1)"
+
+  - id: c
+    pregunta: >-
+      [[transformacion-F|$V = G^{-1}(F_X(X))$, donde
+      $G : \mathbb{R} \to (0, 1)$ es una función continua estrictamente
+      creciente.]]
+    skills: [transformacion-F, funcion-distribucion]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: c1
+          texto: '$F_V(v) = G(v)$'
+          correcta: true
+        - id: c2
+          texto: '$F_V(v) = G^{-1}(v)$'
+          error_tipico: >-
+            El evento $\{G^{-1}(U) \le v\}$ equivale a $\{U \le G(v)\}$,
+            porque al despejar se aplica $G$, y la probabilidad de ese evento
+            es $G(v)$.
+        - id: c3
+          texto: '$V$ es uniforme en $(0, 1)$.'
+          error_tipico: >-
+            La uniforme es $F_X(X)$. $V$ es una transformación de esa
+            uniforme, y su distribución es la que fija $G$.
+        - id: c4
+          texto: '$F_V(v) = F_X\big(G^{-1}(v)\big)$'
+          error_tipico: >-
+            Eso confunde $V$ con $G(X)$. Primero hay que usar que $F_X(X)$ es
+            uniforme y después transformar esa uniforme.
+    pistas:
+      - Por el ítem anterior, $F_X(X)$ es uniforme en $(0, 1)$.
+      - 'Escribí $F_V(v) = P(G^{-1}(U) \le v)$, con $U$ uniforme, y despejá $U$.'
+      - >-
+        Plan: aplicá $G$ a los dos lados de la desigualdad, que conserva el
+        sentido porque $G$ es creciente, y usá la función de distribución de
+        la uniforme. Este es el principio de la simulación por inversión.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: "tools/verify/g2_13.py (con X ~ Exp(1) y G logística)"
+          valor: "F_V = G"

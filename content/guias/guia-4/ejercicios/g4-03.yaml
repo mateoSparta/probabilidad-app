@@ -1,0 +1,120 @@
+id: g4-03
+guia: 4
+numero: "4.3"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p27
+
+enunciado: |
+  Sea $X$ una variable aleatoria continua con [[densidad|función densidad
+  $f_X(x) = \dfrac{12x}{\pi^2(e^x + 1)}\,\mathbf{1}\{x > 0\}$]]. Hallar y
+  graficar las siguientes densidades, y evaluarlas donde se pide.
+
+items:
+  - id: a
+    pregunta: >-
+      La [[transformacion-F|densidad de $Y = aX + b$]]
+      ($a \ne 0$, $b \in \mathbb{R}$).
+    skills: [transformacion-F, densidad]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: 'Con $a = -2$, $b = 1$: $f_Y(-1)$'
+          valor: "6 / (pi^2 * (e + 1))"
+        - pregunta: 'Con $a = -2$, $b = 1$: $f_Y(2)$'
+          valor: "0"
+        - pregunta: 'Con $a = 3$, $b = 0$: $f_Y(3)$'
+          valor: "4 / (pi^2 * (e + 1))"
+    pistas:
+      - 'Escribí $F_Y(y) = P(aX + b \le y)$ y despejá $X$. Si $a < 0$ la desigualdad se invierte.'
+      - 'En los dos casos resulta $f_Y(y) = f_X\big((y - b)/a\big) / \lvert a \rvert$.'
+      - >-
+        Plan: para cada punto, calculá $(y - b)/a$; si es negativo, la
+        densidad vale 0, y si no, evaluá $f_X$ ahí y dividí por $\lvert a \rvert$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_03.py
+          valor: "f_X(1)/2, 0, f_X(1)/3"
+
+  - id: b
+    pregunta: 'La [[transformacion-F|densidad de $Y = -X^3$]].'
+    skills: [transformacion-F, densidad]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$f_Y(-1)$'
+          valor: "4 / (pi^2 * (e + 1))"
+        - pregunta: '$f_Y(-8)$'
+          valor: "2 / (pi^2 * (e^2 + 1))"
+        - pregunta: '$f_Y(1)$'
+          valor: "0"
+    pistas:
+      - '$Y$ toma sólo valores negativos, porque $X > 0$.'
+      - 'La transformación es decreciente, con inversa $x = (-y)^{1/3}$.'
+      - >-
+        Plan: aplicá la fórmula del cambio de variable,
+        $f_Y(y) = f_X(x)\,\lvert dx/dy \rvert$ con $x = (-y)^{1/3}$, y evaluá.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_03.py
+          valor: "f_X(1)/3, f_X(2)/12, 0"
+
+  - id: c
+    pregunta: 'La [[transformacion-F|densidad de $Y = X + X^{-1}$]].'
+    skills: [transformacion-F, densidad]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$f_Y(5/2)$'
+          valor: "2 / (pi^2 * (sqrt(e) + 1)) + 32 / (pi^2 * (e^2 + 1))"
+        - pregunta: '$f_Y(10/3)$'
+          valor: "1 / (2 * pi^2 * (e^(1/3) + 1)) + 81 / (2 * pi^2 * (e^3 + 1))"
+        - pregunta: '$f_Y(1)$'
+          valor: "0"
+    pistas:
+      - '$x + 1/x \ge 2$ para $x > 0$, así que $Y$ toma valores en $[2, \infty)$.'
+      - >-
+        La transformación no es monótona. Cada $y > 2$ tiene dos
+        preimágenes, $x$ y $1/x$, y la densidad suma las contribuciones de
+        las dos.
+      - >-
+        Plan: para cada $y$, resolvé $x + 1/x = y$, evaluá
+        $f_X(x)/\lvert 1 - 1/x^2 \rvert$ en cada una de las dos raíces y
+        sumá.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_03.py
+          valor: "0.4630, 0.2158, 0"
+
+  - id: d
+    pregunta: 'La [[transformacion-F|densidad de $Y = X^2 - 3X$]].'
+    skills: [transformacion-F, densidad]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$f_Y(-2)$'
+          valor: "12 / (pi^2 * (e + 1)) + 24 / (pi^2 * (e^2 + 1))"
+        - pregunta: '$f_Y(4)$'
+          valor: "48 / (5 * pi^2 * (e^4 + 1))"
+        - pregunta: '$f_Y(-3)$'
+          valor: "0"
+    pistas:
+      - 'Para $x > 0$, $x^2 - 3x$ tiene un mínimo de $-9/4$ en $x = 3/2$.'
+      - >-
+        Si $-9/4 < y < 0$ hay dos preimágenes en $(0, 3)$; si $y \ge 0$ hay
+        una sola con $x > 0$, porque la otra raíz es negativa.
+      - >-
+        Plan: para cada $y$, buscá las raíces positivas de $x^2 - 3x = y$ y
+        sumá $f_X(x)/\lvert 2x - 3 \rvert$ sobre ellas.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_03.py
+          valor: "f_X(1) + f_X(2), f_X(4)/5, 0"

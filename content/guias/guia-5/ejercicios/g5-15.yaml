@@ -1,0 +1,53 @@
+id: g5-15
+guia: 5
+numero: "5.15"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p35
+
+# La respuesta numérica es 0 y se adivina, así que el ítem es de opción
+# múltiple: lo que importa es qué significa ese 0.
+enunciado: |
+  Sea $X$ una variable aleatoria con distribución normal estándar y sea $Y$
+  una variable aleatoria tal que [[esperanza-condicional|$E[Y \mid X] = X^2$]].
+
+items:
+  - id: a
+    pregunta: 'Calcular [[covarianza|$\operatorname{cov}(X, Y)$]]. ¿Qué indica el resultado?'
+    skills: [covarianza, esperanza-condicional]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: a1
+          texto: >-
+            Vale 0, aunque $Y$ depende de $X$, porque la covarianza sólo
+            detecta la parte lineal de la dependencia.
+          correcta: true
+        - id: a2
+          texto: 'Vale 1, porque $E[Y \mid X] = X^2$ y $E[X^2] = 1$.'
+          error_tipico: >-
+            $E[X^2] = 1$ es $E[Y]$. La covarianza necesita $E[XY]$, que es
+            $E[X\, E[Y \mid X]] = E[X^3] = 0$.
+        - id: a3
+          texto: 'Vale 0, de modo que $X$ e $Y$ son independientes.'
+          error_tipico: >-
+            Covarianza nula no implica independencia. En este caso la media
+            condicional de $Y$ es $X^2$, que cambia con $X$.
+        - id: a4
+          texto: 'No se puede calcular sin conocer la distribución de $Y \mid X$.'
+          error_tipico: >-
+            Alcanza con la esperanza condicional, porque
+            $E[XY] = E[X\, E[Y \mid X]]$ y $E[Y] = E[E[Y \mid X]]$.
+    pistas:
+      - '$\operatorname{cov}(X, Y) = E[XY] - E[X]\,E[Y]$, y $E[X] = 0$.'
+      - 'Condicionando a $X$, $E[XY] = E[X\, E[Y \mid X]]$.'
+      - >-
+        Plan: reducí la covarianza a un momento de la normal estándar,
+        calculalo por simetría y pensá qué dice ese valor sobre la relación
+        entre $X$ e $Y$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: "tools/verify/g5_15.py (con dos Y distintas que cumplen E[Y|X] = X^2)"
+          valor: "0"

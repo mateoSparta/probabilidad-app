@@ -3,7 +3,7 @@ guia: 6
 numero: "6.24"
 prioridad: recomendado
 fuente:
-  enunciado: fuentes/guias/parte1.pdf#p41
+  enunciado: fuentes/guias/parte1.pdf#p42
 
 enunciado: |
   [[laplace|En una urna hay $k$ bolas blancas y 5 bolas negras]], donde

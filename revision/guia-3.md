@@ -42,6 +42,12 @@ chico para confirmar que efectivamente se cumple.
 
 ## 2. Lo que falta del núcleo
 
+> **Actualizado:** de lo que sigue, ya están cargados el 3.8 (a, c, d), el 3.22 y el 3.32 (a, b). Siguen afuera el 3.4 (respuesta abierta), el 3.23 (demostración) y el 3.35 (simulación). Ver
+> [00-estado.md §3](00-estado.md). Lo de abajo queda como registro de por qué
+> no se habían cargado; varias de esas razones resultaron ser problemas del
+> extractor y no del ejercicio, porque en el PDF los enunciados están
+> completos.
+
 ### 2.1 Ejercicio 3.8 — depende de la tabla normal (guía 8)
 
 Pide $E[Z \mid Z > z_0]$ para $Z$ normal estándar, deducir la cota

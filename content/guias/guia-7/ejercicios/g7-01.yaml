@@ -3,7 +3,7 @@ guia: 7
 numero: "7.1"
 prioridad: recomendado
 fuente:
-  enunciado: fuentes/guias/parte1.pdf#p42
+  enunciado: fuentes/guias/parte1.pdf#p43
 
 enunciado: |
   Sea $\{N(t),\ t \ge 0\}$ el proceso de conteo asociado a un

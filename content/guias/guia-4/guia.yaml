@@ -10,10 +10,13 @@ descripcion: >-
 
 secuencia:
   - teoria: t-metodo-F
+  - ejercicio: g4-01
+  - ejercicio: g4-03
   - ejercicio: g4-06
   - ejercicio: g4-24
 
   - teoria: t-cambio-variable
+  - ejercicio: g4-10
 
   - teoria: t-min-max
   - ejercicio: g4-14

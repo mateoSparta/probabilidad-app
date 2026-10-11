@@ -1,0 +1,82 @@
+id: g7-12
+guia: 7
+numero: "7.12"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p45
+
+enunciado: |
+  [[superposicion-adelgazamiento|Lucas emite señales de acuerdo con un
+  proceso de Poisson de intensidad 3 por minuto, mientras que Monk las emite
+  de acuerdo con un proceso de Poisson de intensidad 5 por minuto. Los dos
+  procesos de Poisson son independientes.]]
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar la probabilidad de que [[tiempos-espera|la primera señal emitida
+      después de las 0:00 haya sido emitida después de las 0:10]].
+    skills: [superposicion-adelgazamiento, tiempos-espera]
+    respuesta:
+      tipo: numerica
+      valor: "exp(-80)"
+    pistas:
+      - La superposición de los dos procesos es un proceso de Poisson. Su intensidad es la suma.
+      - El tiempo hasta la primera señal del proceso superpuesto es exponencial.
+      - >-
+        Plan: calculá la probabilidad de que una exponencial con la
+        intensidad total supere los 10 minutos. El número es minúsculo, y es
+        el que corresponde a 80 señales esperadas en ese lapso.
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: "GUIA 7 RES 3.pdf#p11"
+          valor: "e^-80"
+        - origen: tools/verify/g7_12.py
+          valor: "exp(-80)"
+
+  - id: b
+    pregunta: >-
+      Hallar la probabilidad de que [[min-max|la primera señal emitida haya
+      sido emitida por Lucas]].
+    skills: [min-max, superposicion-adelgazamiento]
+    respuesta:
+      tipo: numerica
+      valor: "3/8"
+    pistas:
+      - La primera señal de Lucas y la primera de Monk son exponenciales independientes.
+      - La primera señal es de Lucas si la exponencial de Lucas es la menor de las dos.
+      - 'Plan: usá la fórmula de competencia de exponenciales, $\lambda_1/(\lambda_1 + \lambda_2)$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: "GUIA 7 RES 3.pdf#p11"
+          valor: "3/8"
+        - origen: tools/verify/g7_12.py
+          valor: "3/8"
+
+  - id: c
+    pregunta: >-
+      Hallar la probabilidad de que [[tiempos-espera|la primera señal emitida
+      después de las 0:00 haya sido emitida después de las 0:10]]
+      [[min-max|y que haya sido emitida por Lucas]].
+    skills: [min-max, tiempos-espera]
+    respuesta:
+      tipo: numerica
+      valor: "3/8 * exp(-80)"
+    pistas:
+      - >-
+        En la competencia de exponenciales, el momento del primer evento y
+        quién lo produce son independientes.
+      - La probabilidad pedida es, entonces, un producto.
+      - 'Plan: multiplicá los resultados de los dos ítems anteriores.'
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: "GUIA 7 RES 3.pdf#p11"
+          valor: "e^-80 3/8"
+        - origen: "tools/verify/g7_12.py (y la factorización, simulada con 0.1 minutos)"
+          valor: "3*exp(-80)/8"

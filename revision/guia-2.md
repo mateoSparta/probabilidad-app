@@ -36,6 +36,12 @@ helper ahora acepta una ventana de un solo lado.
 
 ## 2. Lo que falta del núcleo
 
+> **Actualizado:** de lo que sigue, ya están cargados el 2.2, el 2.13, el 2.16 y el 2.17. El 2.11 sigue afuera por ser de simulación. Ver
+> [00-estado.md §3](00-estado.md). Lo de abajo queda como registro de por qué
+> no se habían cargado; varias de esas razones resultaron ser problemas del
+> extractor y no del ejercicio, porque en el PDF los enunciados están
+> completos.
+
 ### 2.1 Ejercicio 2.2 — depende de un gráfico
 
 El enunciado dice "la función de distribución $F_X$ **tiene gráfico de forma**

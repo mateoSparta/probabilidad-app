@@ -98,6 +98,12 @@ cruzar.
 
 ## 3. Lo que falta del núcleo
 
+> **Actualizado:** de lo que sigue, ya están cargados ninguno nuevo. Siguen afuera el 8.14 (demostración) y el 8.21 (respuesta que se adivina). Ver
+> [00-estado.md §3](00-estado.md). Lo de abajo queda como registro de por qué
+> no se habían cargado; varias de esas razones resultaron ser problemas del
+> extractor y no del ejercicio, porque en el PDF los enunciados están
+> completos.
+
 ### 3.1 Ejercicio 8.14 — demostración
 
 "Usando el Teorema Central del Límite demostrar que

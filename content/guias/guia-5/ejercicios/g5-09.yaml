@@ -3,7 +3,7 @@ guia: 5
 numero: "5.9"
 prioridad: recomendado
 fuente:
-  enunciado: fuentes/guias/parte1.pdf#p30
+  enunciado: fuentes/guias/parte1.pdf#p34
 
 enunciado: |
   Un receptor recibe una señal de amplitud aleatoria $X = S + N$, donde $S$ es

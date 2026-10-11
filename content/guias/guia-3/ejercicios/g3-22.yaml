@@ -1,0 +1,42 @@
+id: g3-22
+guia: 3
+numero: "3.22"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p24
+
+enunciado: |
+  Sean $X$ e $Y$ dos variables aleatorias con [[conjunta-marginales|densidad
+  conjunta
+  $f_{X,Y}(x, y) = \frac{5}{8\pi}\, e^{-\frac{25}{32}\left(x^2 - \frac{6}{5}xy + y^2\right)}$]].
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar la ecuación de la [[covarianza|recta de regresión de $Y$ dada
+      $X$]].
+    skills: [covarianza, conjunta-marginales]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: 'Pendiente'
+          valor: "3/5"
+        - pregunta: 'Ordenada al origen'
+          valor: "0"
+    pistas:
+      - >-
+        La recta de regresión es
+        $y = \dfrac{\operatorname{cov}(X, Y)}{\operatorname{var}(X)}\,(x - E[X]) + E[Y]$.
+      - >-
+        La densidad es una normal bivariada. El exponente se puede escribir
+        como $-\tfrac12\,(x, y)\, A\, (x, y)^t$ con una matriz $A$ simétrica.
+      - >-
+        Plan: leé la matriz $A$ del exponente, invertila para obtener la
+        matriz de covarianza (y controlá que la constante $\frac{5}{8\pi}$
+        coincida), y reemplazá en la ecuación de la recta.
+    verificacion:
+      estado: verificado
+      metodo: exacto+cuadratura
+      fuentes_valor:
+        - origen: tools/verify/g3_22.py
+          valor: "y = 3x/5 (Sigma = [[1, 3/5], [3/5, 1]])"

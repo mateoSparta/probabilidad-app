@@ -1,0 +1,114 @@
+id: g5-18
+guia: 5
+numero: "5.18"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p35
+
+# Se carga el inciso (a), con el vector del 5.2(b) copiado al enunciado. El
+# inciso (b) pide repetir todo para los otros vectores del 5.2 y no se carga.
+enunciado: |
+  Sea $(X, Y)$ el vector aleatorio considerado en el inciso (b) del
+  Ejercicio 5.2, es decir, [[conjunta-marginales|con densidad conjunta
+  $f_{X,Y}(x, y) = \frac{1}{2x + 1}\, e^{-\left(2x + \frac{y}{4x + 2}\right)}\,\mathbf{1}\{x > 0, y > 0\}$]].
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar la distribución de las variables condicionales $Y \mid X = x$ y
+      la [[esperanza-condicional|esperanza condicional de $Y$ dada $X$]].
+      Escribir $E[Y \mid X]$ en función de `X`.
+    skills: [esperanza-condicional, conjunta-marginales]
+    respuesta:
+      tipo: expresion
+      valor: "4*X + 2"
+      vars:
+        X: [0, 3]
+    pistas:
+      - 'Integrando la conjunta en $y$ se obtiene $f_X$. El cociente $f_{X,Y}/f_X$ es la densidad de $Y \mid X = x$.'
+      - '$Y \mid X = x$ resulta exponencial. Identificá su media.'
+      - >-
+        Plan: calculá $f_X$, dividí la conjunta por ella, reconocé la
+        distribución de $Y \mid X = x$, escribí su media $\varphi(x)$ y
+        reemplazá $x$ por $X$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+cuadratura
+      fuentes_valor:
+        - origen: tools/verify/g5_18.py
+          valor: "Y | X = x ~ Exp de media 4x + 2; E[Y | X] = 4X + 2"
+
+  - id: b
+    pregunta: >-
+      Hallar la [[varianza-total|varianza condicional de $Y$ dada $X$]].
+      Escribir $\operatorname{var}(Y \mid X)$ en función de `X`.
+    skills: [varianza-total]
+    respuesta:
+      tipo: expresion
+      valor: "(4*X + 2)^2"
+      vars:
+        X: [0, 3]
+    pistas:
+      - La varianza de una exponencial es el cuadrado de su media.
+      - '$\psi(x) = \operatorname{var}(Y \mid X = x)$ sale de la distribución hallada en el ítem anterior.'
+      - 'Plan: escribí $\psi(x)$ y reemplazá $x$ por $X$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+cuadratura
+      fuentes_valor:
+        - origen: tools/verify/g5_18.py
+          valor: "(4X + 2)^2"
+
+  - id: c
+    pregunta: >-
+      Hallar las funciones de distribución de la [[transformacion-F|esperanza
+      condicional y de la varianza condicional de $Y$ dada $X$]], y calcular
+      lo que se pide.
+    skills: [transformacion-F]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$P(E[Y \mid X] \le 3)$'
+          valor: "1 - exp(-1/2)"
+        - pregunta: '$P(1 < E[Y \mid X] < 2)$'
+          valor: "0"
+        - pregunta: '$P(\operatorname{var}(Y \mid X) \le 16)$'
+          valor: "1 - exp(-1)"
+        - pregunta: '$P(\operatorname{var}(Y \mid X) > 1)$'
+          valor: "1"
+    pistas:
+      - '$E[Y \mid X]$ y $\operatorname{var}(Y \mid X)$ son funciones crecientes de $X$, que es exponencial.'
+      - >-
+        Como $X > 0$, $E[Y \mid X] = 4X + 2$ es siempre mayor que 2, y
+        $\operatorname{var}(Y \mid X)$ es siempre mayor que 4.
+      - >-
+        Plan: traducí cada evento a un evento sobre $X$ despejando, y usá la
+        función de distribución de $X$. Prestá atención a los eventos que
+        quedan fuera del rango de valores posibles.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_18.py
+          valor: "1 - exp(-1/2), 0, 1 - exp(-1), 1"
+
+  - id: d
+    pregunta: 'Calcular [[varianza-total|$\operatorname{var}(Y)$]].'
+    skills: [varianza-total]
+    respuesta:
+      tipo: numerica
+      valor: "24"
+      # Es un valor exacto entero: la tolerancia no admite otro entero.
+      tol_rel: 0.000001
+    pistas:
+      - 'Usá la descomposición $\operatorname{var}(Y) = E[\operatorname{var}(Y \mid X)] + \operatorname{var}(E[Y \mid X])$.'
+      - '$X$ es exponencial de intensidad 2, así que $E[X] = 1/2$ y $E[X^2] = 1/2$.'
+      - >-
+        Plan: calculá $E[(4X + 2)^2]$ y $\operatorname{var}(4X + 2)$ con los
+        momentos de $X$, y sumalos.
+    verificacion:
+      estado: verificado
+      metodo: exacto+cuadratura
+      fuentes_valor:
+        - origen: "tools/verify/g5_18.py (por varianza total y por integración directa de la conjunta)"
+          valor: "24"

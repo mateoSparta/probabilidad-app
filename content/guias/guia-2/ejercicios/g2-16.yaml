@@ -1,0 +1,48 @@
+id: g2-16
+guia: 2
+numero: "2.16"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p15
+
+enunciado: |
+  Sea $X$ una variable aleatoria con distribución exponencial de intensidad
+  $1/2$. Hallar una función $h$ tal que [[transformacion-F|la variable
+  aleatoria $h(X)$ tenga la función de distribución de la variable aleatoria
+  $T^*$]] definida en el Ejercicio 2.12.
+  En el Ejercicio 2.12, [[funcion-distribucion|$T^* = \min(T, 1)$, donde $T$
+  tiene función de distribución $F_T(t) = (1 - e^{-t})\,\mathbf{1}\{t > 0\}$]].
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar la función $h$ no decreciente que cumple lo pedido y evaluar lo
+      que se indica.
+    skills: [transformacion-F, funcion-distribucion]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$h(1)$'
+          valor: "1/2"
+        - pregunta: '$h(3)$'
+          valor: "1"
+        - pregunta: '$P(h(X) = 1)$'
+          valor: "exp(-1)"
+    pistas:
+      - >-
+        Primero hay que conocer la distribución de $T^*$. Es mixta, con un
+        átomo en 1, porque toda la probabilidad de $\{T \ge 1\}$ se concentra
+        en ese punto.
+      - >-
+        $F_X(X)$ es uniforme en $(0, 1)$, y aplicarle la inversa generalizada
+        de $F_{T^*}$ produce una variable con distribución $F_{T^*}$.
+      - >-
+        Plan: tomá $h = F_{T^*}^{-1} \circ F_X$, con la inversa generalizada,
+        simplificá la expresión y evaluala. Como control, $P(h(X) = 1)$ tiene
+        que coincidir con el átomo de $T^*$ en 1.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g2_16.py
+          valor: "h(x) = min(x/2, 1): 1/2, 1, exp(-1)"

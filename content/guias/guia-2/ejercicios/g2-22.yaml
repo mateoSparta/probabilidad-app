@@ -3,7 +3,7 @@ guia: 2
 numero: "2.22"
 prioridad: recomendado
 fuente:
-  enunciado: fuentes/guias/parte1.pdf#p15
+  enunciado: fuentes/guias/parte1.pdf#p17
 
 enunciado: |
   Sea $(X, Y)$ un punto con

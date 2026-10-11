@@ -40,6 +40,12 @@ aceptarlas todas.
 
 ## 2. Lo que falta del núcleo
 
+> **Actualizado:** de lo que sigue, ya están cargados el 4.1, el 4.3 y el 4.10. El núcleo de la guía 4 está completo, y `cambio-variable` tiene ahora ejercicios propios. Ver
+> [00-estado.md §3](00-estado.md). Lo de abajo queda como registro de por qué
+> no se habían cargado; varias de esas razones resultaron ser problemas del
+> extractor y no del ejercicio, porque en el PDF los enunciados están
+> completos.
+
 ### 2.1 Ejercicio 4.3 — la densidad salió corrupta
 
 El extractor emitió:

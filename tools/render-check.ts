@@ -605,11 +605,13 @@ try {
     'el ritmo no dice "Necesitás resolver N ítems por día"',
   )
   afirmar(
-    planVacio.itemsFaltantes > 0 && planVacio.itemsFaltantes < 113,
+    planVacio.itemsFaltantes > 0 &&
+      planVacio.itemsFaltantes <
+        contenido.ejercicios.reduce((n: number, e: { items: unknown[] }) => n + e.items.length, 0),
     `los ítems faltantes dieron ${planVacio.itemsFaltantes}: tendrían que ser menos que el total`,
   )
   afirmar(
-    planVacio.ejerciciosFaltantes <= 53,
+    planVacio.ejerciciosFaltantes <= contenido.ejercicios.length,
     'los ejercicios faltantes superan el total cargado',
   )
 

@@ -1,0 +1,166 @@
+id: g2-02
+guia: 2
+numero: "2.2"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p13
+
+enunciado: |
+  Sea $X$ una variable aleatoria cuya [[funcion-distribucion|función de
+  distribución $F_X(x) = P(X \le x)$]] es
+  $$F_X(x) = \begin{cases} 0 & x < -2 \\ 1/3 & -2 \le x < -1 \\ 1/3 + (x + 1)/6 & -1 \le x < 1 \\ 2/3 & 1 \le x < 2 \\ 1 & x \ge 2 \end{cases}$$
+  En la guía, la función de distribución se da mediante su gráfico.
+
+items:
+  - id: a
+    pregunta: '¿En qué puntos de $\mathbb{R}$ la variable $X$ concentra masa positiva?'
+    skills: [funcion-distribucion]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: a1
+          texto: 'En $-2$ y en $2$, cada uno con probabilidad $1/3$.'
+          correcta: true
+        - id: a2
+          texto: 'En $-2$, $-1$, $1$ y $2$.'
+          error_tipico: >-
+            En $-1$ y en $1$ la función cambia de pendiente pero es continua.
+            Un punto tiene masa positiva sólo donde $F_X$ salta, y la masa es
+            el tamaño del salto.
+        - id: a3
+          texto: 'En todo el intervalo $(-1, 1)$, porque ahí $F_X$ crece.'
+          error_tipico: >-
+            En el tramo creciente hay densidad, y cada punto de $(-1, 1)$ tiene
+            probabilidad 0, aunque el intervalo entero tenga probabilidad
+            $1/3$.
+        - id: a4
+          texto: 'Sólo en $2$, donde $F_X$ llega a 1.'
+          error_tipico: >-
+            También hay un salto en $-2$, de 0 a $1/3$. La masa la indica cada
+            salto de $F_X$, y que la función llegue a 1 no agrega nada.
+    pistas:
+      - Un punto tiene probabilidad positiva si y sólo si $F_X$ es discontinua en él.
+      - >-
+        La probabilidad de un punto es el tamaño del salto,
+        $P(X = x) = F_X(x) - F_X(x^-)$.
+      - >-
+        Plan: recorré la fórmula de izquierda a derecha y, en cada borde
+        entre tramos, compará el valor del tramo de la derecha con el límite
+        del tramo de la izquierda.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g2_02.py
+          valor: "atomos de 1/3 en -2 y en 2; continua en -1 y en 1"
+
+  - id: b
+    pregunta: >-
+      Calcular $P(-2 < X \le 2)$, $P(-2 \le X \le 2)$, $P(-2 \le X < 2)$ y
+      $P(-2 < X < 2)$.
+    skills: [funcion-distribucion]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$P(-2 < X \le 2)$'
+          valor: "2/3"
+        - pregunta: '$P(-2 \le X \le 2)$'
+          valor: "1"
+        - pregunta: '$P(-2 \le X < 2)$'
+          valor: "2/3"
+        - pregunta: '$P(-2 < X < 2)$'
+          valor: "1/3"
+    pistas:
+      - >-
+        Las cuatro probabilidades difieren sólo en si incluyen o no los
+        extremos, y los dos extremos son puntos con masa.
+      - >-
+        $P(a < X \le b) = F_X(b) - F_X(a)$. Para un extremo cerrado a la
+        izquierda o abierto a la derecha hace falta el límite por izquierda
+        $F_X(x^-)$.
+      - >-
+        Plan: escribí cada probabilidad como diferencia de valores de $F_X$ o
+        de sus límites por izquierda en $-2$ y en $2$, y controlá que las
+        diferencias entre las cuatro sean exactamente las masas de los
+        extremos.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g2_02.py
+          valor: "2/3, 1, 2/3, 1/3"
+
+  - id: c
+    pregunta: >-
+      Calcular $P(X \in (-2, -1))$, $P(\lvert X \rvert \le 1)$ y
+      $P(X \in (1, 2))$.
+    skills: [funcion-distribucion]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$P(X \in (-2, -1))$'
+          valor: "0"
+        - pregunta: '$P(\lvert X \rvert \le 1)$'
+          valor: "1/3"
+        - pregunta: '$P(X \in (1, 2))$'
+          valor: "0"
+    pistas:
+      - En los tramos donde $F_X$ es constante no hay probabilidad.
+      - >-
+        $\lvert X \rvert \le 1$ es $-1 \le X \le 1$. Los extremos $\pm 1$ no
+        tienen masa.
+      - >-
+        Plan: para cada intervalo, restá el valor de $F_X$ (o su límite por
+        izquierda, según el extremo) en los dos bordes.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g2_02.py
+          valor: "0, 1/3, 0"
+
+  - id: d
+    pregunta: >-
+      Calcular [[truncamiento|$P(X \le 1{,}5 \mid X < 2)$ y
+      $P(X \le 1{,}5 \mid X \le 2)$]].
+    skills: [truncamiento, funcion-distribucion]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$P(X \le 1{,}5 \mid X < 2)$'
+          valor: "1"
+        - pregunta: '$P(X \le 1{,}5 \mid X \le 2)$'
+          valor: "2/3"
+    pistas:
+      - Las dos son probabilidades condicionales, cociente de una intersección y del evento condicionante.
+      - >-
+        Los dos eventos condicionantes difieren sólo en el punto $2$, que
+        tiene masa $1/3$.
+      - >-
+        Plan: en ambos casos la intersección es $\{X \le 1{,}5\}$. Calculala
+        con $F_X$ y dividila por $P(X < 2)$ y por $P(X \le 2)$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g2_02.py
+          valor: "1, 2/3"
+
+  - id: e
+    pregunta: 'Calcular [[condicional|$P(X = -2 \mid \lvert X \rvert = 2)$]].'
+    skills: [condicional, funcion-distribucion]
+    respuesta:
+      tipo: numerica
+      valor: "1/2"
+    pistas:
+      - '$\lvert X \rvert = 2$ es la unión de $\{X = -2\}$ y $\{X = 2\}$.'
+      - Las dos masas se leen de los saltos de $F_X$.
+      - >-
+        Plan: dividí la masa en $-2$ por la suma de las masas en $-2$ y en
+        $2$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g2_02.py
+          valor: "1/2"

@@ -1,0 +1,125 @@
+id: g4-01
+guia: 4
+numero: "4.1"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p27
+
+enunciado: |
+  Sea $X$ una variable aleatoria discreta a valores
+  $\left\{\frac{k}{8} : k = 0, 1, \dots, 8\right\}$ con función de
+  probabilidad $p_X(x) = \frac{2}{9}\,x$. Hallar y graficar las siguientes
+  funciones de probabilidad, y evaluarlas donde se pide.
+
+items:
+  - id: a
+    pregunta: 'La [[transformacion-F|función de probabilidad de $Y = 2X - 1$]].'
+    skills: [transformacion-F]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$p_Y(-1/2)$'
+          valor: "1/18"
+        - pregunta: '$p_Y(1)$'
+          valor: "2/9"
+        - pregunta: '$P(Y \le 0)$'
+          valor: "5/18"
+    pistas:
+      - 'Cada valor $x = k/8$ tiene probabilidad $\frac{2}{9}\cdot\frac{k}{8} = \frac{k}{36}$.'
+      - '$Y = 2X - 1$ es inyectiva, así que cada valor de $Y$ viene de un único valor de $X$.'
+      - >-
+        Plan: para cada valor pedido de $Y$, despejá el $x$ que lo produce y
+        tomá su probabilidad; para $P(Y \le 0)$, sumá las de los $x$ con
+        $2x - 1 \le 0$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_01.py
+          valor: "1/18, 2/9, 5/18"
+
+  - id: b
+    pregunta: 'La [[transformacion-F|función de probabilidad de $Y = 128X^2$]].'
+    skills: [transformacion-F]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$p_Y(18)$'
+          valor: "1/12"
+        - pregunta: '$p_Y(128)$'
+          valor: "2/9"
+        - pregunta: '$P(Y > 50)$'
+          valor: "7/12"
+    pistas:
+      - 'En $x = k/8$, $Y = 128 \cdot k^2/64 = 2k^2$.'
+      - Como $X \ge 0$, la transformación es inyectiva sobre el soporte.
+      - >-
+        Plan: identificá qué $k$ produce cada valor pedido, y para
+        $P(Y > 50)$ sumá las probabilidades de los $k$ con $2k^2 > 50$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_01.py
+          valor: "1/12, 2/9, 7/12"
+
+  - id: c
+    pregunta: >-
+      La [[transformacion-F|función de probabilidad de
+      $Y = -64X^2 + 64X + 2$]].
+    skills: [transformacion-F]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$p_Y(2)$'
+          valor: "2/9"
+        - pregunta: '$p_Y(17)$'
+          valor: "2/9"
+        - pregunta: '$p_Y(18)$'
+          valor: "1/9"
+    pistas:
+      - 'En $x = k/8$, $Y = 2 + k(8 - k)$.'
+      - >-
+        La transformación no es inyectiva: $k$ y $8 - k$ dan el mismo valor
+        de $Y$, y en ese caso las probabilidades se suman.
+      - >-
+        Plan: tabulá $Y$ para $k = 0, \dots, 8$, agrupá los $k$ que dan el
+        mismo valor y sumá sus probabilidades $k/36$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_01.py
+          valor: "2/9, 2/9, 1/9"
+
+  - id: d
+    pregunta: >-
+      La [[transformacion-F|función de probabilidad de
+      $Y = 64X^2 - 96X + 128$]].
+    skills: [transformacion-F]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$p_Y(92)$'
+          valor: "1/6"
+        - pregunta: '$p_Y(93)$'
+          valor: "1/3"
+        - pregunta: '$p_Y(96)$'
+          valor: "1/3"
+        - pregunta: '$p_Y(128)$'
+          valor: "0"
+    pistas:
+      - 'En $x = k/8$, $Y = k^2 - 12k + 128$, que alcanza su mínimo en $k = 6$.'
+      - >-
+        Los valores de $k$ simétricos respecto de 6 dan el mismo $Y$, siempre
+        que los dos estén entre 0 y 8.
+      - >-
+        Plan: tabulá $Y$ para $k = 0, \dots, 8$, agrupá los $k$ con el mismo
+        valor y sumá sus probabilidades. Tené en cuenta que $k = 0$ tiene
+        probabilidad 0.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_01.py
+          valor: "1/6, 1/3, 1/3, 0"

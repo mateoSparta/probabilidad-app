@@ -1,0 +1,62 @@
+id: g5-10
+guia: 5
+numero: "5.10"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p34
+
+enunciado: |
+  La corporación Cobani Products produjo 6 RoboCops,
+  [[bernoulli-binomial|cada uno de los cuales está fallado con probabilidad
+  $1/4$]]. Cada RoboCop es sometido a una prueba tal que si el RoboCop está
+  fallado se detecta la falla con probabilidad $4/5$. Sea $X$ la cantidad de
+  RoboCops fallados y sea $Y$ la cantidad detectada de RoboCops fallados.
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar una expresión de la [[esperanza-condicional|función de regresión
+      $\varphi(x) = E[Y \mid X = x]$]].
+    skills: [esperanza-condicional, bernoulli-binomial]
+    respuesta:
+      tipo: expresion
+      valor: "4*x/5"
+      vars:
+        x: [0, 6]
+    pistas:
+      - 'Dado $X = x$, cada uno de los $x$ RoboCops fallados se detecta con probabilidad $4/5$, independientemente.'
+      - 'Entonces $Y \mid X = x$ tiene una distribución conocida.'
+      - 'Plan: identificá $Y \mid X = x$ como binomial y escribí su media.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_10.py
+          valor: "4x/5"
+
+  - id: b
+    pregunta: >-
+      Hallar una expresión de la [[esperanza-condicional,bayes|función de
+      regresión $\varphi(y) = E[X \mid Y = y]$]].
+    skills: [esperanza-condicional, bayes, bernoulli-binomial]
+    respuesta:
+      tipo: expresion
+      valor: "y + (6 - y)/16"
+      vars:
+        y: [0, 6]
+    pistas:
+      - 'Los $y$ RoboCops detectados están fallados seguro. La pregunta es cuántos de los otros $6 - y$ también lo están.'
+      - >-
+        Un RoboCop no detectado puede estar sano o estar fallado y haber
+        pasado la prueba. Calculá por Bayes la probabilidad de que esté
+        fallado sabiendo que no se detectó.
+      - >-
+        Plan: con esa probabilidad $q$, la cantidad de fallados entre los no
+        detectados es binomial de parámetros $6 - y$ y $q$. Sumale los $y$
+        detectados.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_10.py
+          valor: "y + (6 - y)/16"

@@ -15,9 +15,12 @@ secuencia:
   - ejercicio: g3-12
 
   - teoria: t-esperanza-condicional
+  - ejercicio: g3-08
 
   - teoria: t-varianza-covarianza
   - ejercicio: g3-20
+  - ejercicio: g3-22
+  - ejercicio: g3-32
 
   - teoria: t-desigualdades
   - ejercicio: g3-26

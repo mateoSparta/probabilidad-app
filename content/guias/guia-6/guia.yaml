@@ -14,6 +14,7 @@ secuencia:
   - ejercicio: g6-24
 
   - teoria: t-multinomial
+  - ejercicio: g6-14
 
   - teoria: t-geometrica-pascal
   - ejercicio: g6-06

@@ -1,0 +1,64 @@
+id: g5-11
+guia: 5
+numero: "5.11"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p34
+
+enunciado: |
+  Sea $(\Omega, \mathcal{A}, P)$ un espacio de probabilidad en el que
+  [[laplace|$\Omega = \{1, 2, \dots, 11, 12\}$, $\mathcal{A} = 2^{\Omega}$ y
+  $P(\{\omega\}) = 1/12$ para todo $\omega \in \Omega$]]. Sea
+  $X : \Omega \to \mathbb{R}$ la variable aleatoria definida por
+  $$X(\omega) = \mathbf{1}\{\omega \in \{1, 2\}\} + 2\,\mathbf{1}\{\omega \in \{3, 4, 5, 6\}\} + 3\,\mathbf{1}\{\omega \in \{7, 8, 9, 10, 11, 12\}\}$$
+  Hallar la expresión de $E[Y \mid X]$ para las variables aleatorias
+  $Y : \Omega \to \mathbb{R}$ definidas a continuación.
+
+items:
+  - id: a
+    pregunta: '[[esperanza-condicional|$Y(\omega) = \omega$.]] Evaluar $\varphi(x) = E[Y \mid X = x]$.'
+    skills: [esperanza-condicional, laplace]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$\varphi(1)$'
+          valor: "3/2"
+        - pregunta: '$\varphi(2)$'
+          valor: "9/2"
+        - pregunta: '$\varphi(3)$'
+          valor: "19/2"
+    pistas:
+      - '$X$ toma tres valores, y cada uno corresponde a un bloque de $\Omega$.'
+      - Dado $X = x$, $\omega$ es equiprobable sobre el bloque correspondiente.
+      - 'Plan: en cada bloque, promediá los valores de $Y$. Ese promedio es $\varphi(x)$, y $E[Y \mid X] = \varphi(X)$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_11.py
+          valor: "3/2, 9/2, 19/2"
+
+  - id: b
+    pregunta: >-
+      [[esperanza-condicional|$Y(\omega) = \operatorname{sen}\left(\frac{\pi}{2}\omega - \frac{\pi}{4}\right)$.]]
+      Evaluar $\varphi(x) = E[Y \mid X = x]$.
+    skills: [esperanza-condicional, laplace]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$\varphi(1)$'
+          valor: "sqrt(2)/2"
+        - pregunta: '$\varphi(2)$'
+          valor: "0"
+        - pregunta: '$\varphi(3)$'
+          valor: "-sqrt(2)/6"
+    pistas:
+      - '$Y$ toma sólo los valores $\pm\sqrt{2}/2$, y se repite cada 4 valores de $\omega$.'
+      - 'Tabulá $Y(\omega)$ para $\omega = 1, \dots, 12$.'
+      - 'Plan: en cada bloque de $X$, promediá los valores tabulados de $Y$.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g5_11.py
+          valor: "sqrt(2)/2, 0, -sqrt(2)/6"

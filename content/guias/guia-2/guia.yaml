@@ -13,9 +13,13 @@ secuencia:
   - ejercicio: g2-01
 
   - teoria: t-distribucion
+  - ejercicio: g2-02
   - ejercicio: g2-08
+  - ejercicio: g2-13
+  - ejercicio: g2-16
 
   - teoria: t-truncamiento
+  - ejercicio: g2-17
   - ejercicio: g2-19
 
   - teoria: t-conjunta

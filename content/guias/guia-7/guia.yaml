@@ -19,6 +19,7 @@ secuencia:
 
   - teoria: t-adelgazamiento
   - ejercicio: g7-10
+  - ejercicio: g7-12
 
   - teoria: t-poisson-compuesto
   - ejercicio: g7-15

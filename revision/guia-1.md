@@ -59,6 +59,12 @@ errores conocidos (el 2.3(a) y el 6.1(b) que figuran en el plan).
 
 ### 2.2 Dos ejercicios del núcleo que quedaron afuera
 
+> **Actualizado:** de lo que sigue, ya están cargados el 1.9 (incisos b, c y d; los incisos (c) y (d) no valen 0, valen 2/9 y 1/3). El 1.20 sigue afuera por ser demostración. Ver
+> [00-estado.md §3](00-estado.md). Lo de abajo queda como registro de por qué
+> no se habían cargado; varias de esas razones resultaron ser problemas del
+> extractor y no del ejercicio, porque en el PDF los enunciados están
+> completos.
+
 **1.9 (Feller, ping-pong).** No se cargó. Dos razones:
 
 - El extractor dejó la fórmula del enunciado corrupta:

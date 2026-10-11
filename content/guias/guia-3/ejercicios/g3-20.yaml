@@ -3,7 +3,7 @@ guia: 3
 numero: "3.20"
 prioridad: recomendado
 fuente:
-  enunciado: fuentes/guias/parte1.pdf#p20
+  enunciado: fuentes/guias/parte1.pdf#p23
 
 enunciado: |
   Sea $(X, Y)$ un vector aleatorio con

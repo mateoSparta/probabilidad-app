@@ -1,0 +1,104 @@
+id: g1-09
+guia: 1
+numero: "1.9"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p4
+
+# Se cargan (b), (c) y (d). El (a) pide describir un espacio muestral, que no
+# tiene una respuesta validable.
+enunciado: |
+  [Feller, pág. 18 y 24] Juan, Pedro y María juegan al ping-pong. El que gana
+  un partido sigue jugando, mientras que el que lo pierde es reemplazado por
+  el que no jugaba. Se gana una cerveza el primero que gana dos partidos
+  seguidos, completando así un juego. El primer partido es entre Juan y
+  Pedro. La probabilidad de que Juan gane el primer partido es $5/9$.
+  [[prob-discreta|Para cada $k$, asignamos a cada juego posible que dura
+  exactamente $k$ partidos la probabilidad $\frac{1}{3 \cdot 2^{k-1}}$.]] Si
+  describimos un juego indicando la secuencia de ganadores mediante la de sus
+  iniciales, el juego $JMPP$ tendrá probabilidad $1/24$, el juego
+  $(PMJ)^6PMM$ (dejamos a cargo del lector la interpretación de la notación)
+  probabilidad $\frac{1}{3 \cdot 2^{20}}$.
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar las probabilidades de que cada uno de los jugadores Juan, Pedro o
+      María [[prob-discreta|se tome la cerveza]].
+    skills: [prob-discreta]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: 'Juan'
+          valor: "5/21"
+        - pregunta: 'Pedro'
+          valor: "5/21"
+        - pregunta: 'María'
+          valor: "4/21"
+    pistas:
+      - >-
+        Hay exactamente dos juegos de cada longitud $k \ge 2$, uno por cada
+        ganador del primer partido. Escribí los primeros de cada uno.
+      - >-
+        En los juegos que empiezan con Juan, el que se toma la cerveza rota
+        entre Juan, María y Pedro a medida que $k$ crece de a uno.
+      - >-
+        Plan: para cada jugador, sumá las probabilidades de los juegos que
+        gana. Cada suma es una serie geométrica de razón $1/8$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+enumeracion
+      fuentes_valor:
+        - origen: "GUIA 1 RES 2.pdf#p4"
+          valor: "5/21, 5/21, 4/21"
+        - origen: tools/verify/g1_09.py
+          valor: "5/21, 5/21, 4/21"
+
+  - id: b
+    pregunta: >-
+      Hallar la probabilidad de que Juan gane el primer partido y
+      [[continuidad-P|el juego dure para siempre sin que nadie se gane la
+      cerveza]].
+    skills: [continuidad-P, prob-discreta]
+    respuesta:
+      tipo: numerica
+      valor: "2/9"
+    pistas:
+      - >-
+        Los juegos que terminan no tienen probabilidad total 1. Sumá las
+        probabilidades de todos los juegos finitos y mirá cuánto falta.
+      - >-
+        El evento "Juan gana el primer partido" se parte en los juegos
+        finitos que empiezan con Juan y en el juego que no termina nunca.
+      - >-
+        Plan: a la probabilidad de que Juan gane el primer partido, restale la
+        suma de las probabilidades de los juegos finitos que empiezan con Juan.
+    verificacion:
+      estado: verificado
+      metodo: exacto+enumeracion
+      fuentes_valor:
+        - origen: "GUIA 1 RES 2.pdf#p5"
+          valor: "2/9"
+        - origen: tools/verify/g1_09.py
+          valor: "2/9"
+
+  - id: c
+    pregunta: >-
+      Hallar la probabilidad de que [[continuidad-P|el juego dure para siempre
+      sin que nadie se gane la cerveza]].
+    skills: [continuidad-P, prob-discreta]
+    respuesta:
+      tipo: numerica
+      valor: "1/3"
+    pistas:
+      - El juego dura para siempre exactamente cuando nadie se toma la cerveza.
+      - Los tres eventos del ítem (a) son disjuntos y cubren todos los juegos que terminan.
+      - 'Plan: restá de 1 la suma de las tres probabilidades del ítem (a).'
+    verificacion:
+      estado: verificado
+      metodo: exacto+enumeracion
+      fuentes_valor:
+        - origen: "GUIA 1 RES 2.pdf#p5"
+          valor: "1/3"
+        - origen: tools/verify/g1_09.py
+          valor: "1/3"

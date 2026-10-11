@@ -47,6 +47,12 @@ pero la explicación que la acompañaba estaba mal.
 
 ## 3. Lo que falta del núcleo
 
+> **Actualizado:** de lo que sigue, ya están cargados el 5.4, el 5.10, el 5.11, el 5.15 (como opción múltiple) y el 5.18 (a). El núcleo de la guía 5 está completo. Ver
+> [00-estado.md §3](00-estado.md). Lo de abajo queda como registro de por qué
+> no se habían cargado; varias de esas razones resultaron ser problemas del
+> extractor y no del ejercicio, porque en el PDF los enunciados están
+> completos.
+
 ### 3.1 Tres que dependen de ejercicios no cargados
 
 | Ejercicio | Depende de |

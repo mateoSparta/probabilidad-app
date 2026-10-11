@@ -3,7 +3,7 @@ guia: 1
 numero: "1.10"
 prioridad: recomendado
 fuente:
-  enunciado: fuentes/guias/parte1.pdf#p5
+  enunciado: fuentes/guias/parte1.pdf#p4
 
 enunciado: |
   [[prob-geometrica|Se sortea un número al azar dentro del intervalo $[0, 1]$.]]

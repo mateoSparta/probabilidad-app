@@ -1,0 +1,63 @@
+id: g3-32
+guia: 3
+numero: "3.32"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p25
+
+# Se cargan (a) y (b). Los incisos (c) y (d) dicen "mostrar que": son
+# demostraciones.
+enunciado: |
+  Sea $X$ una variable aleatoria, $\mu_X = \mu$, $\sigma_X^2 = \sigma^2$. Sea
+  $X_1, X_2, \dots$ [[varianza|una secuencia independiente de réplicas de
+  $X$]], y se definen
+  $$\bar X = \frac{\sum_{m=1}^{n} X_m}{n}, \qquad W^2 = \frac{\sum_{m=1}^{n} (X_m - \mu)^2}{n}, \qquad T^2 = \frac{\sum_{m=1}^{n} (X_m - \bar X)^2}{n}$$
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar [[esperanza|$E[\bar X]$]] y [[varianza|$\operatorname{var}[\bar X]$]], en
+      función de $\mu$ y $\sigma^2$. Escribir $\operatorname{var}[\bar X]$
+      usando `sigma` y `n`.
+    skills: [varianza, esperanza]
+    respuesta:
+      tipo: expresion
+      valor: "sigma^2 / n"
+      vars:
+        sigma: [0.5, 3]
+        n: [1, 30]
+    pistas:
+      - 'Por la linealidad de la esperanza, $E[\bar X]$ es el promedio de las medias.'
+      - >-
+        La varianza de una suma de variables independientes es la suma de las
+        varianzas, y una constante sale de la varianza al cuadrado.
+      - >-
+        Plan: escribí $\bar X = \frac{1}{n}\sum X_m$, calculá la varianza de
+        la suma por independencia y multiplicala por $1/n^2$.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g3_32.py
+          valor: "E[Xbar] = mu, var[Xbar] = sigma^2/n"
+
+  - id: b
+    pregunta: >-
+      Hallar [[esperanza|$E[W^2]$]], en función de $\mu$ y $\sigma^2$.
+      Escribirla usando `sigma`.
+    skills: [esperanza, varianza]
+    respuesta:
+      tipo: expresion
+      valor: "sigma^2"
+      vars:
+        sigma: [0.5, 3]
+    pistas:
+      - '$W^2$ es un promedio de $n$ términos, y la esperanza de un promedio es el promedio de las esperanzas.'
+      - 'Cada término es $(X_m - \mu)^2$, y su esperanza es una cantidad conocida.'
+      - 'Plan: usá que $E[(X_m - \mu)^2] = \operatorname{var}(X_m)$ para cada $m$ y promediá.'
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g3_32.py
+          valor: "sigma^2"

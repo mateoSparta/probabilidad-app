@@ -1,0 +1,170 @@
+id: g4-10
+guia: 4
+numero: "4.10"
+prioridad: recomendado
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p28
+
+enunciado: |
+  Sean $Z_1$ y $Z_2$ dos [[normal|variables aleatorias normales estándar
+  independientes]]. Hallar la densidad conjunta y las densidades marginales de
+  $U$ y $V$ en cada uno de los casos siguientes.
+
+items:
+  - id: a
+    pregunta: '[[cambio-variable|$U = Z_1 + Z_2$ y $V = Z_1 - Z_2$.]]'
+    skills: [cambio-variable]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$f_{U,V}(0, 0)$'
+          valor: "1 / (4 * pi)"
+        - pregunta: '$f_{U,V}(1, 1)$'
+          valor: "exp(-1/2) / (4 * pi)"
+        - pregunta: '$f_U(0)$'
+          valor: "1 / (2 * sqrt(pi))"
+    pistas:
+      - 'La inversa es $z_1 = (u + v)/2$, $z_2 = (u - v)/2$.'
+      - >-
+        El valor absoluto del jacobiano de la inversa es $1/2$, y
+        $z_1^2 + z_2^2 = (u^2 + v^2)/2$.
+      - >-
+        Plan: reemplazá la inversa en la densidad conjunta de $(Z_1, Z_2)$,
+        multiplicá por el jacobiano y factorizá. Cada marginal sale de
+        reconocer una normal.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_10.py
+          valor: "1/(4 pi), exp(-1/2)/(4 pi), 1/(2 sqrt(pi))"
+
+  - id: b
+    pregunta: >-
+      [[cambio-variable|$U = Z_1 \cos\theta - Z_2 \operatorname{sen}\theta$ y
+      $V = Z_1 \operatorname{sen}\theta + Z_2 \cos\theta$, con
+      $\theta \in (0, 2\pi)$]], es decir, $(Z_1, Z_2)$ rotado un ángulo
+      $\theta$.
+    skills: [cambio-variable]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$f_{U,V}(1, 0)$'
+          valor: "exp(-1/2) / (2 * pi)"
+        - pregunta: '$f_U(0)$'
+          valor: "1 / sqrt(2 * pi)"
+    pistas:
+      - La rotación es lineal e inversible, y su inversa es la rotación por $-\theta$.
+      - >-
+        Una rotación conserva las distancias al origen, así que
+        $z_1^2 + z_2^2 = u^2 + v^2$, y su jacobiano vale 1.
+      - >-
+        Plan: reemplazá la inversa en la densidad conjunta, que sólo depende
+        de $z_1^2 + z_2^2$, y compará el resultado con la densidad original.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_10.py
+          valor: "exp(-1/2)/(2 pi), 1/sqrt(2 pi)"
+
+  - id: c
+    pregunta: '[[cambio-variable|$U = Z_1^2 + Z_2^2$ y $V = Z_2/Z_1$.]]'
+    skills: [cambio-variable]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$f_{U,V}(2, 1)$'
+          valor: "exp(-1) / (4 * pi)"
+        - pregunta: '$f_U(2)$'
+          valor: "exp(-1) / 2"
+        - pregunta: '$f_V(1)$'
+          valor: "1 / (2 * pi)"
+    pistas:
+      - >-
+        Cada $(u, v)$ con $u > 0$ tiene dos preimágenes, $(z_1, z_2)$ y
+        $(-z_1, -z_2)$, y las dos contribuyen a la densidad.
+      - >-
+        Despejando, $z_1^2 = u/(1 + v^2)$ y $z_2 = v z_1$. El valor absoluto
+        del jacobiano de cada rama es $\dfrac{1}{2(1 + v^2)}$.
+      - >-
+        Plan: sumá las dos ramas en la fórmula del cambio de variables y
+        factorizá el resultado en una función de $u$ por una de $v$, que son
+        las marginales.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_10.py
+          valor: "exp(-1)/(4 pi), exp(-1)/2, 1/(2 pi)"
+
+  - id: d
+    pregunta: >-
+      En cada uno de los casos anteriores, ¿$U$ y $V$ son
+      [[independencia-va|independientes]]?
+    skills: [independencia-va]
+    respuesta:
+      tipo: opcion
+      opciones:
+        - id: d1
+          texto: 'Sí, en los tres casos.'
+          correcta: true
+        - id: d2
+          texto: 'Sólo en el caso de la rotación.'
+          error_tipico: >-
+            En el primer caso $U$ y $V$ son una rotación de $(Z_1, Z_2)$
+            seguida de un cambio de escala, y la conjunta también factoriza.
+            En el tercero la conjunta es una función de $u$ por una de $v$.
+        - id: d3
+          texto: 'En los dos primeros, pero no en el tercero, porque $U$ y $V$ dependen de las mismas variables.'
+          error_tipico: >-
+            Que $U$ y $V$ sean funciones de las mismas variables no impide que
+            sean independientes. Hay que mirar si la densidad conjunta
+            factoriza, y en el tercer caso lo hace.
+        - id: d4
+          texto: 'En ninguno, porque $U$ y $V$ se construyen a partir de $Z_1$ y $Z_2$.'
+          error_tipico: >-
+            La independencia se decide con la densidad conjunta: si se escribe
+            como producto de una función de $u$ por una de $v$, con soporte
+            rectangular, $U$ y $V$ son independientes.
+    pistas:
+      - Usá las densidades conjuntas halladas en los ítems anteriores.
+      - Dos variables son independientes si y sólo si la densidad conjunta es el producto de las marginales.
+      - >-
+        Plan: en cada caso, multiplicá las dos marginales y compará con la
+        conjunta, mirando también que el soporte sea un rectángulo.
+    verificacion:
+      estado: verificado
+      metodo: exacto
+      fuentes_valor:
+        - origen: tools/verify/g4_10.py
+          valor: "la conjunta factoriza en los tres casos"
+
+  - id: e
+    pregunta: >-
+      Calcular [[cambio-variable|$P(Z_1^2 + Z_2^2 > 4)$ y
+      $P(Z_2 > \sqrt{3}\, Z_1)$]].
+    skills: [cambio-variable, normal]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        - pregunta: '$P(Z_1^2 + Z_2^2 > 4)$'
+          valor: "exp(-2)"
+        - pregunta: '$P(Z_2 > \sqrt{3}\, Z_1)$'
+          valor: "1/2"
+    pistas:
+      - Las dos probabilidades se pueden leer de las distribuciones halladas en el tercer caso o en la rotación.
+      - >-
+        $Z_1^2 + Z_2^2$ es exponencial. El evento $Z_2 > \sqrt{3}\, Z_1$ es un
+        semiplano cuyo borde pasa por el origen.
+      - >-
+        Plan: usá la marginal de $U$ del tercer caso para la primera
+        probabilidad. Para la segunda, usá que la densidad conjunta de
+        $(Z_1, Z_2)$ no cambia al rotar, de modo que todo semiplano por el
+        origen tiene la misma probabilidad.
+    verificacion:
+      estado: verificado
+      metodo: exacto+montecarlo
+      fuentes_valor:
+        - origen: tools/verify/g4_10.py
+          valor: "exp(-2), 1/2"

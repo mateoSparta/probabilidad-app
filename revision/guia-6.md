@@ -67,6 +67,12 @@ probabilidad sume 1 (serie geométrica).
 
 ## 4. Lo que falta del núcleo
 
+> **Actualizado:** de lo que sigue, ya están cargados el 6.14, que en el PDF está completo. El núcleo de la guía 6 está completo, y `multinomial` existe con su teoría. Ver
+> [00-estado.md §3](00-estado.md). Lo de abajo queda como registro de por qué
+> no se habían cargado; varias de esas razones resultaron ser problemas del
+> extractor y no del ejercicio, porque en el PDF los enunciados están
+> completos.
+
 ### Ejercicio 6.14 — enunciado cortado
 
 Es el único que falta, y es el de la **multinomial**, que es un hueco real en
