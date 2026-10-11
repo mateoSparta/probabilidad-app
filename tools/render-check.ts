@@ -354,6 +354,8 @@ try {
     `hay ${celdas} recuadros y ${abren} que abren la ventana para ${contenido.skills.length} skills`)
   afirmar(!limpio.includes('disminuye si se deja de practicar'),
     'el panel sigue diciendo que el estado disminuye si se deja de practicar')
+  afirmar(!limpio.includes('faltan ejercicios') && !limpio.includes('celda-skill__nota'),
+    'el panel sigue avisando que faltan ejercicios para dominar un skill')
   for (const sk of contenido.skills) {
     const d = contenido.destinoDeSkill.get(sk.id)
     afirmar(!!d, `el skill ${sk.id} no tiene adónde llevar`)
@@ -499,7 +501,19 @@ try {
     }),
   )
   afirmar(simulacro.includes('Simulacro'), 'la pantalla de simulacro no se dibuja')
-  afirmar(simulacro.includes('Simular parcial al azar'), 'sin elegir examen, el botón no dice "Simular parcial al azar"')
+  afirmar(simulacro.includes('aria-label="Simular parcial al azar"'), 'sin elegir examen, el botón no dice "Simular parcial al azar"')
+  // Sólo rueda la última palabra: el tambor tiene las dos y muestra "al azar".
+  afirmar(
+    /class="rodillo"><span class="rodillo__cinta"><span class="rodillo__palabra">seleccionado<\/span><span class="rodillo__palabra">al azar<\/span>/.test(simulacro),
+    'el botón no tiene el tambor con "seleccionado" y "al azar"',
+  )
+  // El pool arranca plegado.
+  afirmar(
+    simulacro.includes('aria-expanded="false"') &&
+      /class="pool desplegable"/.test(simulacro) &&
+      /id="pool-contenido" class="desplegable__contenido" inert/.test(simulacro),
+    'el pool no arranca plegado',
+  )
   afirmar(!simulacro.includes('rendibles'), 'sigue el indicador de ejercicios rendibles')
   afirmar(simulacro.includes('Mostrar tags de skills'), 'falta el interruptor de tags de skills')
   afirmar(!simulacro.includes('Mostrar tags al entregar'), 'sigue el interruptor viejo de tags')

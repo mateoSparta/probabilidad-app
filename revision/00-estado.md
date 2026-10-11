@@ -138,12 +138,25 @@ borrador del extractor.
 |---|---|
 | `espacio-muestral` | algún ítem descriptivo, como `opcion` |
 
-### 3.4 Skills con un solo ítem
+### 3.4 Skills con menos de tres ítems
 
-Un skill evaluado por un único ítem **nunca puede llegar a "dominado"**, porque
-hace falta 3 intentos limpios en los últimos 5 y cuenta uno por día. Queda uno
-solo: `desigualdades` (el 3.26). Se arregla cargando el 3.24, que no es del
-núcleo pero es una aplicación directa de Chebyshev.
+Dominar un skill pide 3 intentos limpios entre los últimos 5. Si el contenido
+tiene menos de 3 ítems que lo evalúan, alcanza con un limpio por ítem
+(`limpiosParaDominar` en `src/dominio/progreso.ts`), y el panel ya no muestra
+la leyenda "faltan ejercicios para poder dominarlo": la falta es del
+contenido, no del alumno, que no puede hacer nada al respecto. Con un solo
+ítem, entonces, un intento limpio domina el skill, y eso es fácil de más.
+
+**Pendiente:** cargar ítems hasta que cada uno tenga al menos 3.
+
+| Skill | Ítems | Cuáles | Cómo completarlo |
+|---|---|---|---|
+| `desigualdades` | 1 | 3.26 (a) | el 3.24, aplicación directa de Chebyshev |
+| `algebras` | 2 | 1.1 (a) y (b) | otro ejercicio de álgebra generada de la guía 1 |
+| `poisson-compuesto` | 2 | 7.15 (a) y el ej 4 del 26-05-2018 | otro ejercicio de Poisson compuesto de la guía 7 |
+| `combinacion-normales` | 2 | 8.5 (a) y el ej 5 del 27-05-2023 | varios de la guía 8 fuera del núcleo |
+
+La cuenta incluye los ítems de los parciales, que también evalúan skills.
 
 ---
 

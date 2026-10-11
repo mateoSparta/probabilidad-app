@@ -102,6 +102,10 @@ Marcado con `Ï`.
 | `esperanza-total` | 5.13 a, 5.21 a, b, c, 5.23 a |
 | `varianza-total` | 5.16 a |
 
+> **Actualizado:** un skill con menos de 3 ítems ahora se domina con un
+> limpio por ítem. La lista de los que siguen por debajo de 3 está en
+> [00-estado.md §3.4](00-estado.md).
+
 `mezclas` y `varianza-total` tienen un solo ítem cada uno, así que no pueden
 llegar a "dominado" (hacen falta 3 intentos limpios en los últimos 5, y cuenta
 uno por día). Se arregla cargando más ejercicios: el 5.10 aporta a

@@ -158,3 +158,10 @@ export const IconoLupa = () => (
     <path d="m20 20-3.8-3.8" />
   </Svg>
 )
+
+/** El triángulo de un desplegable: apunta a la derecha y gira al abrirse. */
+export const IconoDesplegar = () => (
+  <Svg>
+    <path d="M9 6.5v11l8-5.5z" fill="currentColor" />
+  </Svg>
+)

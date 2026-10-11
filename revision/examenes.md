@@ -21,23 +21,23 @@ no se ofrecen en el simulacro: son los pendientes de §1.2.
 |---|---|
 | Segundo recuperatorio | 07-12-2017 |
 | Segundo recuperatorio | 14-12-2017 |
-| Primer parcial | 26-05-2018 |
+| Parcial | 26-05-2018 |
 | Primer recuperatorio | 16-06-2018 |
-| Evaluación parcial | 03-11-2018 |
+| Parcial | 03-11-2018 |
 | Primer recuperatorio | 24-11-2018 |
-| Evaluación parcial | 01-06-2019 |
-| Evaluación parcial | 27-05-2023 |
-| Parcial, primera fecha | 24-05-2025 |
-| Parcial, segunda fecha | 14-06-2025 |
+| Parcial | 01-06-2019 |
+| Parcial | 27-05-2023 |
+| Parcial (primera fecha) | 24-05-2025 |
+| Parcial (segunda fecha) | 14-06-2025 |
 
 ### 1.2 Pendientes: no tienen sus cinco ejercicios
 
 | Examen | Fecha | Cargados | Qué falta |
 |---|---|---|---|
-| Primer parcial | 28-10-2017 | 4 de 5 | ej 1 es de simulación, fuera de alcance |
+| Parcial | 28-10-2017 | 4 de 5 | ej 1 es de simulación, fuera de alcance |
 | Primer recuperatorio | 18-11-2017 | 4 de 5 | ej 1 es de simulación, fuera de alcance |
 | Primer recuperatorio | 15-06-2019 | 4 de 5 | ej 2 es de simulación, fuera de alcance |
-| Primer parcial (parte 2) | 13-11-2021 | 3 de 3 | es la segunda mitad de un parcial dividido: tiene 3 ejercicios |
+| Parcial (parte 2) | 13-11-2021 | 3 de 3 | es la segunda mitad de un parcial dividido: tiene 3 ejercicios |
 
 Ninguno de los cuatro puede completarse. Los tres con un ejercicio de
 simulación no van a entrar nunca, porque ese ejercicio queda fuera de alcance

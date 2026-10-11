@@ -28,6 +28,7 @@ import {
   aJson,
   desdeJson,
   estadoSkill,
+  limpiosParaDominar,
   PROGRESO_VACIO,
   type Progreso,
 } from '../src/dominio/progreso.ts'
@@ -257,6 +258,37 @@ for (const [valor, alternativa] of equivalentes) {
       items,
     ) === 'flojo',
     '3 intentos con 1 limpio no dan flojo',
+  )
+
+  // Un skill con menos de 3 ítems se domina con un limpio por ítem: la falta
+  // de ejercicios es del contenido, no del alumno.
+  const uno = new Set(['g3-26:a'])
+  const dos = new Set(['g3-26:a', 'g3-26:b'])
+  afirmar(
+    limpiosParaDominar(uno) === 1 && limpiosParaDominar(dos) === 2 && limpiosParaDominar(items) === 3,
+    'los limpios necesarios no se ajustan a la cantidad de ítems',
+  )
+  afirmar(
+    estadoSkill(conIntentos([['g3-26:a', 1, true]]), uno) === 'dominado',
+    'un skill de un solo ítem no se domina con ese ítem limpio',
+  )
+  afirmar(
+    estadoSkill(conIntentos([['g3-26:a', 1, true]]), dos) === 'en_desarrollo',
+    'un skill de dos ítems se dominó con uno solo',
+  )
+  afirmar(
+    estadoSkill(
+      conIntentos([
+        ['g3-26:a', 1, true],
+        ['g3-26:b', 2, true],
+      ]),
+      dos,
+    ) === 'dominado',
+    'un skill de dos ítems no se domina con los dos limpios',
+  )
+  afirmar(
+    estadoSkill(conIntentos([['g3-26:a', 1, false]]), uno) === 'en_desarrollo',
+    'un intento no limpio dominó un skill de un ítem',
   )
 
   // El dominio se mide sobre los últimos 5: tres limpios viejos tapados por
@@ -771,9 +803,8 @@ for (const [valor, alternativa] of equivalentes) {
     `con 5 ítems y un día el veredicto es ${ultimoDia.veredicto}`,
   )
 
-  // --- skills que no se pueden dominar ---
-  // Un skill con 2 ítems no llega nunca a 3 limpios, así que queda afuera de
-  // la meta: si contara, el veredicto `listo` sería inalcanzable para siempre.
+  // --- skills cortos y skills sin ítems ---
+  // Un skill con 2 ítems entra en la meta y se domina con los dos limpios.
   const conUnoCorto: SkillConItems[] = [
     ...skills,
     { id: 's3', items: new Set(['e4:a', 'e4:b']) },
@@ -783,18 +814,29 @@ for (const [valor, alternativa] of equivalentes) {
   deItemAmpliado.set('e4:b', ['s3'])
 
   const planCorto = armarPlan(todo, conUnoCorto, deItemAmpliado, config, hoy)
-  afirmar(planCorto.skillsSinCobertura === 1, 'no se contó el skill sin cobertura')
-  afirmar(planCorto.skillsTotal === 2, 'el skill corto entró en la meta')
+  afirmar(planCorto.skillsTotal === 3, 'el skill corto quedó afuera de la meta')
+  afirmar(planCorto.skillsSinCobertura === 0, 'el skill corto se contó como sin cobertura')
+  afirmar(planCorto.itemsFaltantes === 2, `el skill corto suma ${planCorto.itemsFaltantes} ítems faltantes, no 2`)
+  afirmar(planCorto.veredicto !== 'listo', 'con el skill corto sin hacer el veredicto es listo')
+
+  let todoYCorto = todo
+  for (const [i, item] of ['e4:a', 'e4:b'].entries()) {
+    todoYCorto = agregar(todoYCorto, mkIntento(item, `2026-10-0${i + 6}T12:00:00.000Z`), true)
+  }
+  const planCortoHecho = armarPlan(todoYCorto, conUnoCorto, deItemAmpliado, config, hoy)
   afirmar(
-    planCorto.veredicto === 'listo',
-    `con la meta cumplida y un skill corto el veredicto es ${planCorto.veredicto}`,
+    planCortoHecho.veredicto === 'listo' && planCortoHecho.skillsDominados === 3,
+    `con el skill corto hecho el veredicto es ${planCortoHecho.veredicto}`,
   )
-  afirmar(planCorto.itemsFaltantes === 0, 'el skill corto sumó ítems faltantes')
-  // Y sin el skill corto el resultado es el mismo: no cambia nada.
+
+  // Un skill sin ítems no se puede dominar: queda afuera de la meta.
+  const conUnoVacio: SkillConItems[] = [...skills, { id: 's4', items: new Set() }]
+  const planVacioDeItems = armarPlan(todo, conUnoVacio, skillsDeItem, config, hoy)
+  afirmar(planVacioDeItems.skillsSinCobertura === 1, 'no se contó el skill sin ítems')
+  afirmar(planVacioDeItems.skillsTotal === 2, 'el skill sin ítems entró en la meta')
   afirmar(
-    armarPlan(todo, skills, skillsDeItem, config, hoy).itemsFaltantes ===
-      planCorto.itemsFaltantes,
-    'agregar un skill sin cobertura cambió los ítems faltantes',
+    planVacioDeItems.veredicto === 'listo',
+    `con la meta cumplida y un skill sin ítems el veredicto es ${planVacioDeItems.veredicto}`,
   )
 }
 

@@ -16,6 +16,16 @@ export const VENTANA = 5
 /** Cuántos limpios en la ventana hacen falta para la insignia. */
 export const LIMPIOS_PARA_DOMINAR = 3
 
+/**
+ * Cuántos limpios hacen falta para dominar un skill evaluado por estos ítems.
+ * Si el contenido tiene menos ítems que `LIMPIOS_PARA_DOMINAR`, alcanza con
+ * tantos limpios como ítems hay: la falta de ejercicios es del contenido y no
+ * se le cobra al alumno (ver revision/00-estado.md).
+ */
+export function limpiosParaDominar(items: ReadonlySet<string>): number {
+  return Math.min(LIMPIOS_PARA_DOMINAR, items.size)
+}
+
 /** Un intento, más si fue limpio. Lo guardado es esto. */
 export type RegistroIntento = Intento & { limpio: boolean }
 
@@ -64,7 +74,8 @@ export function recientes(
  * Estado de un skill sobre los últimos 5 intentos de ítems que lo incluyen.
  *
  *   sin explorar   0 intentos
- *   dominado       >= 3 intentos limpios en los últimos 5
+ *   dominado       >= 3 intentos limpios en los últimos 5 (o tantos como
+ *                  ítems tenga el skill, si son menos de 3)
  *   flojo          >= 3 intentos y <= 1 limpio en los últimos 5
  *   en desarrollo  cualquier otro caso
  *
@@ -75,7 +86,7 @@ export function estadoSkill(p: Progreso, items: ReadonlySet<string>): EstadoSkil
   if (ventana.length === 0) return 'sin_explorar'
 
   const limpios = ventana.filter((i) => i.limpio).length
-  if (limpios >= LIMPIOS_PARA_DOMINAR) return 'dominado'
+  if (limpios >= limpiosParaDominar(items)) return 'dominado'
   if (ventana.length >= 3 && limpios <= 1) return 'flojo'
   return 'en_desarrollo'
 }

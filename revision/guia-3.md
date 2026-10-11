@@ -145,6 +145,10 @@ orden de 1, no para cualquier escala.
 | `covarianza` | 3.20 a, b, c |
 | `desigualdades` | 3.26 a |
 
+> **Actualizado:** un skill con menos de 3 ítems ahora se domina con un
+> limpio por ítem. La lista de los que siguen por debajo de 3 está en
+> [00-estado.md §3.4](00-estado.md).
+
 `esperanza-condicional-evento` lo evalúa un solo ítem, que es poco: con un
 único ítem el skill nunca puede llegar a "dominado", porque el estado se mide
 sobre los últimos 5 intentos y el máximo es uno por día. Cuando se carguen más

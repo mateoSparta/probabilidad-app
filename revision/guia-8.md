@@ -146,6 +146,10 @@ Los dos marcados con `Ï`: requieren simulación.
 Los cuatro cubren los tres temas que PLAN.md §4.2 lista para la guía 8 (normal,
 TCL, aproximaciones), más la combinación lineal como skill aparte.
 
+> **Actualizado:** un skill con menos de 3 ítems ahora se domina con un
+> limpio por ítem. La lista de los que siguen por debajo de 3 está en
+> [00-estado.md §3.4](00-estado.md).
+
 `combinacion-normales` tiene un solo ítem, así que no puede llegar a
 "dominado". Se arregla cargando más ejercicios de la guía 8, que tiene varios
 del mismo tipo entre los no recomendados.

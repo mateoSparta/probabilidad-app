@@ -321,10 +321,10 @@ Los enunciados se transcriben de la guía y no se reescriben.
 |---|---|
 | Sin explorar | 0 intentos. |
 | En desarrollo | No cumple ninguno de los otros estados. |
-| Dominado (insignia) | ≥ 3 intentos limpios en los últimos 5. |
+| Dominado (insignia) | ≥ 3 intentos limpios en los últimos 5. Si el skill tiene menos de 3 ítems, un limpio por ítem. |
 | Flojo | ≥ 3 intentos y ≤ 1 limpio en los últimos 5. |
 
-**Panel de skills:** una grilla agrupada por guía, con el estado de cada skill. Al hacer clic en un skill se ven sus ítems pendientes y los distractores en los que más caíste (los errores típicos).
+**Panel de skills:** una grilla agrupada por guía, con el estado de cada skill. Al hacer clic en un skill se ven los ítems que lo evalúan, con un tilde en los ya resueltos, y los distractores en los que más caíste (los errores típicos).
 
 **Datos guardados:** un log de eventos en `localStorage` (`{item, ts, envios, correcto, pistas, revelo}`), de donde se derivan los estados. Hay un botón para exportar e importar el JSON.
 

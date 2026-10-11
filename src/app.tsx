@@ -83,7 +83,12 @@ export function App() {
             />
           )}
           {ruta.seccion === 'skills' && (
-            <PanelSkills api={api} onIrAEjercicio={irAEjercicio} onIrASkill={irASkill} />
+            <PanelSkills
+              api={api}
+              sesion={sesion}
+              onIrAEjercicio={irAEjercicio}
+              onIrASkill={irASkill}
+            />
           )}
           {ruta.seccion === 'simulacro' && <VistaSimulacro api={api} sesion={sesion} />}
           {ruta.seccion === 'seguimiento' && (

@@ -225,7 +225,8 @@
 .reloj--poco {
   animation: latir 1.6s ease-in-out infinite;
 }
-.pool__grilla > li {
+/* Las tarjetas entran escalonadas cada vez que se despliega el pool. */
+.desplegable--abierto .pool__grilla > li {
   animation: entrar 380ms ease-out both;
   animation-delay: calc(var(--i, 0) * 60ms);
 }

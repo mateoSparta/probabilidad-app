@@ -1,14 +1,15 @@
 /**
  * Panel de skills (PLAN.md §5): una grilla agrupada por guía con el estado de
  * cada skill. Al hacer clic en un skill se abre una ventana que explica de qué
- * trata (descripción y fórmulas), con lo que falta para dominarlo y un enlace
- * a su teoría.
+ * trata (descripción y fórmulas), con los ítems que lo evalúan y un enlace a
+ * su teoría.
  *
  * Es la vista que contesta "¿dónde estoy flojo?" de un vistazo, que es el
  * punto de medir el dominio sobre intentos recientes y no acumulados.
  */
 import { useState } from 'preact/hooks'
 
+import { IconoComprobar } from '../componentes/Iconos'
 import { Formula, Mate } from '../componentes/Mate'
 import { Dialogo } from '../componentes/Modal'
 import {
@@ -21,6 +22,7 @@ import {
   ubicacionDeItem,
 } from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
+import type { ApiSesion } from '../datos/usarSesion'
 import {
   avanceSkill,
   contarPorEstado,
@@ -28,7 +30,6 @@ import {
   ETIQUETA_ESTADO,
   estadoSkill,
   LIMPIOS_PARA_DOMINAR,
-  pendientes,
   VENTANA,
 } from '../dominio/progreso'
 import type { EstadoSkill, Item } from '../dominio/tipos'
@@ -62,6 +63,12 @@ const ITEMS_EXAMEN: Map<string, { examen: string; numero: number; item: Item }> 
   return m
 })()
 
+/** "2 de los últimos 4 intentos fueron limpios", con la concordancia de cada caso. */
+function avanceEnPalabras(limpios: number, total: number): string {
+  if (total === 1) return limpios === 1 ? 'el único intento fue limpio' : 'el único intento no fue limpio'
+  return `${limpios} de los últimos ${total} intentos ${limpios === 1 ? 'fue limpio' : 'fueron limpios'}`
+}
+
 /** La inicial del skill, para el sello de la insignia. */
 function inicial(nombre: string): string {
   return nombre.trim().charAt(0).toUpperCase()
@@ -69,10 +76,13 @@ function inicial(nombre: string): string {
 
 export function PanelSkills({
   api,
+  sesion,
   onIrAEjercicio,
   onIrASkill,
 }: {
   api: ApiProgreso
+  /** Para marcar en la ventana de un skill los ítems ya resueltos. */
+  sesion?: ApiSesion
   /** Lleva a un ejercicio, que está en otra sección. */
   onIrAEjercicio?: (idEjercicio: string) => void
   /** Lleva a la teoría del skill (o a su primer ejercicio, si no tiene). */
@@ -128,9 +138,6 @@ export function PanelSkills({
               const items = itemsPorSkill.get(s.id) ?? VACIO
               const estado = estadoSkill(progreso, items)
               const { limpios, total } = avanceSkill(progreso, items)
-              // Con menos de 3 ítems el skill no puede llegar a dominado:
-              // conviene decirlo para no confundirlo con ir flojo.
-              const sinCobertura = items.size < LIMPIOS_PARA_DOMINAR
               return (
                 <li key={s.id} class={'celda estado--' + estado}>
                   <button
@@ -150,11 +157,6 @@ export function PanelSkills({
                         {ETIQUETA_ESTADO[estado]}
                         {total > 0 && ` · ${limpios}/${total} limpios`}
                       </span>
-                      {sinCobertura && (
-                        <span class="celda-skill__nota">
-                          faltan ejercicios para poder dominarlo
-                        </span>
-                      )}
                     </span>
                   </button>
                 </li>
@@ -169,6 +171,7 @@ export function PanelSkills({
           id={elegido}
           abierto={abierto}
           api={api}
+          sesion={sesion}
           onCerrar={() => cerrarE()}
           onIrAEjercicio={(ej) => cerrarE(() => onIrAEjercicio?.(ej))}
           onIrATeoria={() => cerrarE(() => onIrASkill?.(elegido))}
@@ -179,13 +182,14 @@ export function PanelSkills({
 }
 
 /**
- * La ventana de un skill: de qué trata, sus fórmulas y lo que falta para
- * dominarlo (ítems sin un intento limpio y errores típicos repetidos).
+ * La ventana de un skill: de qué trata, sus fórmulas, los ítems que lo
+ * evalúan (con un tilde en los ya resueltos) y los errores típicos repetidos.
  */
 function VentanaSkill({
   id,
   abierto,
   api,
+  sesion,
   onCerrar,
   onIrAEjercicio,
   onIrATeoria,
@@ -193,6 +197,7 @@ function VentanaSkill({
   id: string
   abierto: boolean
   api: ApiProgreso
+  sesion?: ApiSesion
   onCerrar: () => void
   onIrAEjercicio: (idEjercicio: string) => void
   onIrATeoria: () => void
@@ -203,9 +208,9 @@ function VentanaSkill({
   const items = itemsPorSkill.get(id) ?? VACIO
   const estado = estadoSkill(api.progreso, items)
   const { limpios, total } = avanceSkill(api.progreso, items)
-  const falta = pendientes(api.progreso, items)
-  const faltaGuias = falta.filter((c) => ubicacionDeItem.has(c))
-  const faltaExamenes = falta.filter((c) => ITEMS_EXAMEN.has(c))
+  // Las claves de las guías ordenan bien como texto: g1-09:a va antes que g1-10:a.
+  const deGuias = [...items].filter((c) => ubicacionDeItem.has(c)).sort()
+  const deExamenes = [...items].filter((c) => ITEMS_EXAMEN.has(c))
   const caidas = distractoresFrecuentes(api.progreso, items)
   const destino = destinoDeSkill.get(id)
 
@@ -230,7 +235,7 @@ function VentanaSkill({
     >
       <p class="modal-skill__estado">
         Guía {skill.guia} · <span class="modal-skill__etiqueta">{ETIQUETA_ESTADO[estado]}</span>
-        {total > 0 && ` · ${limpios} de los últimos ${total} intentos fueron limpios`}
+        {total > 0 && ` · ${avanceEnPalabras(limpios, total)}`}
       </p>
 
       {skill.descripcion && (
@@ -249,34 +254,35 @@ function VentanaSkill({
         </div>
       ) : null}
 
-      <h4>Ítems sin un intento limpio</h4>
-      {falta.length === 0 ? (
-        <p class="dato-chico">Ninguno. Todos tuvieron al menos un intento limpio.</p>
-      ) : (
-        <>
-          {faltaGuias.length > 0 && (
-            <ul class="lista-items">
-              {faltaGuias.map((clave) => {
-                const u = ubicacionDeItem.get(clave)!
-                return (
-                  <li key={clave}>
-                    <button class="enlace" onClick={() => onIrAEjercicio(u.ejercicio.id)}>
-                      Ejercicio {u.ejercicio.numero} ({u.item})
-                    </button>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
-          {faltaExamenes.length > 0 && (
-            <p class="dato-chico">
-              {faltaGuias.length > 0 ? 'Además, ' : ''}
-              {faltaExamenes.length}{' '}
-              {faltaExamenes.length === 1 ? 'ítem de parcial' : 'ítems de parciales'}, que se
-              practican en el simulacro.
-            </p>
-          )}
-        </>
+      <h4>Ítems que lo evalúan</h4>
+      {deGuias.length > 0 && (
+        <ul class="lista-items lista-items--columnas">
+          {deGuias.map((clave) => {
+            const u = ubicacionDeItem.get(clave)!
+            const resuelto = sesion?.item(clave).estado === 'correcto'
+            return (
+              <li key={clave}>
+                <button class="enlace" onClick={() => onIrAEjercicio(u.ejercicio.id)}>
+                  Ejercicio {u.ejercicio.numero} ({u.item})
+                </button>
+                {resuelto && (
+                  <span class="lista-items__resuelto" role="img" aria-label="Resuelto" data-tip="Resuelto">
+                    <IconoComprobar />
+                  </span>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+      )}
+      {deExamenes.length > 0 && (
+        <p class="dato-chico">
+          {deGuias.length > 0 ? 'Además lo ' : 'Lo '}
+          {deExamenes.length === 1
+            ? 'evalúa 1 ítem de parcial, que se practica'
+            : `evalúan ${deExamenes.length} ítems de parciales, que se practican`}{' '}
+          en el simulacro.
+        </p>
       )}
 
       {caidas.length > 0 && (

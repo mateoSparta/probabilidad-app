@@ -3,7 +3,8 @@
  *
  * La idea no es hacer todos los ejercicios: es hacer **los mínimos necesarios
  * para dominar todos los temas**. Un skill se domina con 3 intentos limpios en
- * los últimos 5 (PLAN.md §5), y un mismo ítem puede aportar a varios skills a
+ * los últimos 5 (PLAN.md §5), o con tantos como ítems tenga si son menos de 3,
+ * y un mismo ítem puede aportar a varios skills a
  * la vez, así que la cuenta no es "cuántos ejercicios faltan" sino "cuál es el
  * conjunto más chico de ítems que cubre lo que falta".
  *
@@ -15,7 +16,7 @@
  */
 // Con extension explicita: tools/smoke.ts importa este modulo directo con
 // node, que no resuelve extensiones. Vite lo acepta igual.
-import { avanceSkill, LIMPIOS_PARA_DOMINAR, type Progreso } from './progreso.ts'
+import { avanceSkill, limpiosParaDominar, type Progreso } from './progreso.ts'
 
 export type Config = {
   /** Fecha del parcial, en ISO (`2026-10-30`). */
@@ -40,13 +41,13 @@ export type Veredicto =
 
 export type Plan = {
   diasRestantes: number
-  /** Skills que se pueden llegar a dominar: los que tienen 3 ítems o más. */
+  /** Skills que se pueden llegar a dominar: los que tienen al menos un ítem. */
   skillsTotal: number
   skillsDominados: number
   /**
-   * Skills que todavía **no se pueden** dominar porque no hay suficientes
-   * ítems cargados. Es un hueco de contenido, no del alumno, y por eso no
-   * entran en la meta: si entraran, la meta nunca se alcanzaría.
+   * Skills que **no se pueden** dominar porque no tienen ningún ítem cargado.
+   * Es un hueco de contenido, no del alumno, y por eso no entran en la meta:
+   * si entraran, la meta nunca se alcanzaría.
    */
   skillsSinCobertura: number
   /** Ítems que hace falta resolver limpio para dominar todo lo que falta. */
@@ -66,14 +67,13 @@ export type Plan = {
 export type SkillConItems = { id: string; items: ReadonlySet<string> }
 
 /**
- * Los skills que se pueden llegar a dominar.
- *
- * Dominar un skill pide 3 intentos limpios, y como cada ítem cuenta una sola
- * vez por día, un skill con menos de 3 ítems **nunca** llega. Dejarlos en la
- * meta haría que no se pueda terminar nunca, así que se separan.
+ * Los skills que se pueden llegar a dominar: todos los que tienen algún ítem,
+ * porque a los que tienen menos de 3 se les pide un limpio por ítem (ver
+ * `limpiosParaDominar`). Uno sin ítems no llegaría nunca, y dejarlo en la
+ * meta haría que no se pueda terminar, así que se separa.
  */
 export function alcanzables(skills: readonly SkillConItems[]): SkillConItems[] {
-  return skills.filter((s) => s.items.size >= LIMPIOS_PARA_DOMINAR)
+  return skills.filter((s) => s.items.size > 0)
 }
 
 const MS_POR_DIA = 86_400_000
@@ -103,7 +103,7 @@ export function deficitPorSkill(
   const deficit = new Map<string, number>()
   for (const s of skills) {
     const { limpios } = avanceSkill(progreso, s.items)
-    const falta = LIMPIOS_PARA_DOMINAR - limpios
+    const falta = limpiosParaDominar(s.items) - limpios
     if (falta > 0) deficit.set(s.id, falta)
   }
   return deficit
@@ -196,7 +196,7 @@ export function armarPlan(
   const ejercicios = new Set(faltantes.map((c) => c.split(':')[0]))
 
   const dominados = meta.filter(
-    (s) => avanceSkill(progreso, s.items).limpios >= LIMPIOS_PARA_DOMINAR,
+    (s) => avanceSkill(progreso, s.items).limpios >= limpiosParaDominar(s.items),
   ).length
 
   const diasUtiles = Math.max(1, diasRestantes)
