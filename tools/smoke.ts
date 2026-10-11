@@ -36,6 +36,8 @@ import {
   ejerciciosJugables,
   elegirExamen,
   esCompleto,
+  esRendible,
+  poolDe,
   formatearTiempo,
   type Examen,
   type Respuestas,
@@ -419,22 +421,64 @@ for (const [valor, alternativa] of equivalentes) {
   afirmar(!mitad.veredictoParcial, 'marcó parcial un examen completo')
   afirmar(mitad.aprobaria, 'con 1 ejercicio entero y aprueba_con 1 tendría que aprobar')
 
+  // El pool: sólo exámenes completos y de cinco ejercicios.
+  const cinco: Examen = {
+    ...falso,
+    id: 'cinco',
+    ejercicios: [1, 2, 3, 4, 5].map((numero) => ({
+      numero,
+      guias: [1],
+      en_alcance: true,
+      cargado: true,
+      enunciado: 'x',
+      items: [unItem('a')],
+    })),
+  }
+  const recortado: Examen = {
+    ...cinco,
+    id: 'recortado',
+    ejercicios: cinco.ejercicios.map((e, i) => (i === 0 ? { ...e, cargado: false, items: [] } : e)),
+  }
+  afirmar(esRendible(cinco), 'un examen completo de cinco ejercicios no es rendible')
+  afirmar(!esRendible(recortado), 'un examen con un ejercicio sin cargar entró al pool')
+  afirmar(!esRendible(falso), 'un examen de dos ejercicios entró al pool')
+  afirmar(
+    poolDe([cinco, recortado, falso], 'parcial').map((e) => e.id).join() === 'cinco',
+    'el pool no se queda sólo con los exámenes completos de cinco ejercicios',
+  )
+  for (const ex of examenes.filter((e) => esRendible(e))) {
+    afirmar(
+      ex.ejercicios.length === 5 && ejerciciosJugables(ex).length === 5,
+      `${ex.id}: está en el pool sin sus cinco ejercicios`,
+    )
+  }
+
   // elegirExamen: por defecto parciales; integradoras sólo si se eligen, y
   // los dos tipos no se mezclan.
-  const integradora: Examen = { ...falso, id: 'int', tipo: 'integradora' }
+  const integradora: Examen = { ...cinco, id: 'int', tipo: 'integradora' }
   afirmar(
     elegirExamen([integradora], { azar: () => 0 }) === null,
     'eligió una integradora sin que se pidiera',
   )
   afirmar(
-    elegirExamen([integradora, falso], { tipo: 'integradora', azar: () => 0 })?.id === 'int',
+    elegirExamen([integradora, cinco], { tipo: 'integradora', azar: () => 0 })?.id === 'int',
     'no eligió la integradora al pedir integradoras',
   )
   afirmar(
-    elegirExamen([integradora, falso], { tipo: 'integradora', azar: () => 0.99 })?.id === 'int',
+    elegirExamen([integradora, cinco], { tipo: 'integradora', azar: () => 0.99 })?.id === 'int',
     'al pedir integradoras eligió un parcial',
   )
   afirmar(elegirExamen([], { azar: () => 0 }) === null, 'eligió algo de un pool vacío')
+  // Con un examen elegido, ése; si no está en el pool, ninguno.
+  const otro: Examen = { ...cinco, id: 'otro' }
+  afirmar(
+    elegirExamen([cinco, otro], { id: 'otro', azar: () => 0 })?.id === 'otro',
+    'no respetó el examen elegido',
+  )
+  afirmar(
+    elegirExamen([cinco, recortado], { id: 'recortado' }) === null,
+    'eligió un examen que no está en el pool',
+  )
 
   // El reloj.
   afirmar(formatearTiempo(240 * 60) === '4:00:00', 'el reloj no formatea 4 horas')

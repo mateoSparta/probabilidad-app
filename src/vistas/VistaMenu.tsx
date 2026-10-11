@@ -23,7 +23,7 @@ import { estadoSkill } from '../dominio/progreso'
 import { ETIQUETA_VEREDICTO, type Plan } from '../dominio/ritmo'
 import { escribirRuta, NOMBRE_SECCION, type Seccion } from '../dominio/ruta'
 import { estadoEjercicio, simulacroRetomable } from '../dominio/sesion'
-import { ejerciciosJugables } from '../dominio/simulacro'
+import { poolDe } from '../dominio/simulacro'
 import { claveItem } from '../dominio/tipos'
 
 type Opcion = {
@@ -58,7 +58,8 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
 
   const simulacro = simulacroRetomable(sesion.sesion)
   const enCurso = !!simulacro && !simulacro.entregado
-  const pool = examenes.filter((e) => ejerciciosJugables(e).length > 0).length
+  // Los que pueden rendirse: completos y de cinco ejercicios.
+  const pool = poolDe(examenes, 'parcial').length + poolDe(examenes, 'integradora').length
 
   const opciones: Opcion[] = [
     {

@@ -10,6 +10,11 @@
  * volver al ejercicio más tarde aparecería un resaltado que nadie recuerda
  * haber pedido. Cambiar de guía o de sección desmonta la tarjeta, así que en
  * ese caso se suelta sin hacer nada.
+ *
+ * En toda la página hay a lo sumo un tag fijo: fijar uno en una tarjeta
+ * suelta el que hubiera en cualquier otra, de modo que queda el último que
+ * se eligió. Cada tarjeta tiene su propio estado, así que se avisan por un
+ * canal compartido.
  */
 import type { RefObject } from 'preact'
 import { useEffect, useRef, useState } from 'preact/hooks'
@@ -25,10 +30,24 @@ export type Resaltado = {
   alternar: (skill: string) => void
 }
 
+/** Por acá se avisa qué tarjeta acaba de fijar un tag, para que las demás suelten el suyo. */
+const canal: EventTarget | null = typeof EventTarget === 'undefined' ? null : new EventTarget()
+
 export function usarResaltado(): Resaltado {
   const [encima, setEncima] = useState<string | null>(null)
   const [fijado, setFijado] = useState<string | null>(null)
   const refFila = useRef<HTMLUListElement>(null)
+  /** Identifica a esta tarjeta en el canal. */
+  const yo = useRef({})
+
+  useEffect(() => {
+    if (!canal) return
+    const otra = (e: Event) => {
+      if ((e as CustomEvent).detail !== yo.current) setFijado(null)
+    }
+    canal.addEventListener('fijar', otra)
+    return () => canal.removeEventListener('fijar', otra)
+  }, [])
 
   useEffect(() => {
     const fila = refFila.current
@@ -49,6 +68,7 @@ export function usarResaltado(): Resaltado {
       // Al soltar se borra también el hover: en pantallas táctiles no hay
       // `pointerleave` y el resaltado quedaría prendido.
       if (fijado === skill) setEncima(null)
+      else canal?.dispatchEvent(new CustomEvent('fijar', { detail: yo.current }))
       setFijado(fijado === skill ? null : skill)
     },
   }

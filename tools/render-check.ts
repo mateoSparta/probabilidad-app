@@ -499,14 +499,23 @@ try {
     }),
   )
   afirmar(simulacro.includes('Simulacro'), 'la pantalla de simulacro no se dibuja')
-  afirmar(simulacro.includes('Empezar simulacro'), 'no se ve el botón de empezar')
+  afirmar(simulacro.includes('Simular parcial al azar'), 'sin elegir examen, el botón no dice "Simular parcial al azar"')
+  afirmar(!simulacro.includes('rendibles'), 'sigue el indicador de ejercicios rendibles')
+  afirmar(simulacro.includes('Mostrar tags de skills'), 'falta el interruptor de tags de skills')
+  afirmar(!simulacro.includes('Mostrar tags al entregar'), 'sigue el interruptor viejo de tags')
+  afirmar(
+    (simulacro.match(/class="examen__ver"/g) ?? []).length ===
+      (simulacro.match(/class="examen__elegir"/g) ?? []).length &&
+      simulacro.includes('class="examen__elegir"'),
+    'cada examen del pool tiene que poder elegirse y tener su lupa',
+  )
   afirmar(simulacro.includes('240'), 'la duración por defecto no es 240 minutos')
   afirmar(
     (simulacro.match(/name="tipo-examen"/g) ?? []).length === 2,
     'no se puede elegir entre parciales e integradoras',
   )
   afirmar(!simulacro.includes('Incluir integradoras'), 'volvió el toggle de integradoras')
-  afirmar(simulacro.includes('Exámenes en el pool'), 'no se lista el pool')
+  afirmar(simulacro.includes('Parciales disponibles'), 'no se lista el pool')
   afirmar((simulacro.match(/role="switch"/g) ?? []).length === 2, 'faltan los interruptores')
   afirmar(simulacro.includes('class="examen"'), 'el pool no se dibuja como tarjetas')
   // Arranca en la pantalla de configuración: no puede haber un enunciado

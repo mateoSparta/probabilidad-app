@@ -3,31 +3,46 @@
 Estado del modo simulacro (PLAN.md §6).
 
 El motor está completo: pool, timer configurable, toggles, entrega, nota de
-0 a 10 y veredicto con el criterio de la cátedra. El pool de parciales tiene
-**14 exámenes**: los dos de 2025, con un ejercicio cargado cada uno, y los 12
-parciales resueltos de `fuentes/examenes/parciales/`, con 54 de sus 58
-ejercicios cargados.
+0 a 10 y veredicto con el criterio de la cátedra.
+
+**El pool tiene sólo exámenes completos y de cinco ejercicios** (`esRendible`
+en `src/dominio/simulacro.ts`). Un examen recortado, o más corto que uno real,
+no reproduce el que se va a tomar y no sirve para practicar. Los demás quedan
+cargados (sus ejercicios cuentan para los skills a través del contenido) pero
+no se ofrecen en el simulacro: son los pendientes de §1.2.
 
 ---
 
-## 1. Qué se puede rendir hoy
+## 1. Exámenes
 
-| Examen | Fecha | Ejercicios | Rendibles | Fuera |
-|---|---|---|---|---|
-| Primer parcial | 28-10-2017 | 5 | 4 | ej 1 (simulación) |
-| Primer recuperatorio | 18-11-2017 | 5 | 4 | ej 1 (simulación) |
-| Segundo recuperatorio | 07-12-2017 | 5 | 5 | |
-| Segundo recuperatorio | 14-12-2017 | 5 | 5 | |
-| Primer parcial | 26-05-2018 | 5 | 5 | |
-| Primer recuperatorio | 16-06-2018 | 5 | 5 | |
-| Evaluación parcial | 03-11-2018 | 5 | 5 | |
-| Primer recuperatorio | 24-11-2018 | 5 | 5 | |
-| Evaluación parcial | 01-06-2019 | 5 | 5 | |
-| Primer recuperatorio | 15-06-2019 | 5 | 4 | ej 2 (simulación) |
-| Primer parcial (parte 2) | 13-11-2021 | 3 | 3 | |
-| Evaluación parcial | 27-05-2023 | 5 | 4 | ej 2 (respuesta abierta) |
-| Parcial | 24-05-2025 | 5 | 1 | ver §3 |
-| Parcial | 14-06-2025 | 5 | 1 | ver §3 |
+### 1.1 En el pool
+
+| Examen | Fecha |
+|---|---|
+| Segundo recuperatorio | 07-12-2017 |
+| Segundo recuperatorio | 14-12-2017 |
+| Primer parcial | 26-05-2018 |
+| Primer recuperatorio | 16-06-2018 |
+| Evaluación parcial | 03-11-2018 |
+| Primer recuperatorio | 24-11-2018 |
+| Evaluación parcial | 01-06-2019 |
+
+### 1.2 Pendientes: no tienen sus cinco ejercicios
+
+| Examen | Fecha | Cargados | Qué falta |
+|---|---|---|---|
+| Primer parcial | 28-10-2017 | 4 de 5 | ej 1 es de simulación, fuera de alcance |
+| Primer recuperatorio | 18-11-2017 | 4 de 5 | ej 1 es de simulación, fuera de alcance |
+| Primer recuperatorio | 15-06-2019 | 4 de 5 | ej 2 es de simulación, fuera de alcance |
+| Primer parcial (parte 2) | 13-11-2021 | 3 de 3 | es la segunda mitad de un parcial dividido: tiene 3 ejercicios |
+| Evaluación parcial | 27-05-2023 | 4 de 5 | ej 2 pide construir una variable aleatoria (respuesta abierta) |
+| Parcial | 24-05-2025 | 1 de 5 | ej 2 a 5 sin cargar (ver §3) |
+| Parcial | 14-06-2025 | 1 de 5 | ej 2 a 5 sin cargar (ver §3) |
+
+Los tres con un ejercicio de simulación no van a entrar nunca, porque ese
+ejercicio queda fuera de alcance por CLAUDE.md. Los que sí pueden completarse
+son el de 2023 (cargando el ej 2 como opción múltiple, con cuatro variables
+candidatas) y los dos de 2025.
 
 Cómo se eligió qué cargar:
 
@@ -58,10 +73,10 @@ resolución. Los de TCL usan como segundo camino la distribución exacta de la
 suma cuando se puede calcular (binomial, Gamma, convolución discreta), y los
 de "$n$ mínimo" verifican además el despeje y la minimalidad.
 
-Cuando un examen va recortado, **la nota se reescala sobre los ejercicios
-presentados y el veredicto se marca parcial**, y la app lo dice en pantalla.
-La decisión de fondo sigue siendo la misma: antes un examen corto que un valor
-inventado.
+El motor todavía sabe calificar un examen recortado (reescala la nota y marca
+el veredicto como parcial), pero ya no se ofrece ninguno: la decisión de fondo
+pasó a ser que un examen que no está completo no entra al pool, en lugar de
+presentarlo corto.
 
 ## 2. Discrepancias con las resoluciones
 

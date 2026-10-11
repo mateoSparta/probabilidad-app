@@ -1,10 +1,14 @@
 /**
  * Modo simulacro (PLAN.md §6).
  *
- * Elige al azar un examen del pool, lo presenta con un timer, y al entregar
- * calcula la nota y el veredicto. Sin pistas y sin ver la respuesta: eso es
- * lo que lo distingue de estudiar una guía. Después de entregar se revela
- * todo y los ítems cuentan como intentos para las insignias.
+ * Presenta un examen del pool, el que se eligió o uno al azar, con un timer,
+ * y al entregar calcula la nota y el veredicto. Sin pistas y sin ver la
+ * respuesta: eso es lo que lo distingue de estudiar una guía. Después de
+ * entregar se revela todo, con los tags de cada ejercicio, y los ítems
+ * cuentan como intentos para las insignias.
+ *
+ * El pool tiene sólo exámenes completos y de cinco ejercicios (ver
+ * `esRendible`): uno recortado no reproduce el que se va a tomar.
  *
  * El simulacro en curso se guarda, así que recargar la página no lo pierde.
  * Lo que se guarda es el **vencimiento**, no los segundos que faltan: si no,
@@ -15,13 +19,14 @@ import { useEffect, useMemo, useState } from 'preact/hooks'
 import {
   IconoAviso,
   IconoComprobar,
+  IconoLupa,
   IconoReintentar,
   IconoReloj,
   IconoSimulacro,
 } from '../componentes/Iconos'
 import { ItemEjercicio } from '../componentes/ItemEjercicio'
-import { Modal } from '../componentes/Modal'
-import { Enunciado } from '../componentes/Mate'
+import { Dialogo, Modal } from '../componentes/Modal'
+import { Enunciado, TextoMarcado } from '../componentes/Mate'
 import { Tags, usarResaltado } from '../componentes/Tags'
 import { claveItemExamen, examenes, examenPorId } from '../datos/contenido'
 import type { ApiProgreso } from '../datos/usarProgreso'
@@ -52,6 +57,7 @@ type Config = {
   duracionMin: number
   /** Qué se rinde: un parcial o una integradora. No se mezclan. */
   tipo: TipoExamen
+  /** Mostrar los tags de skills mientras se rinde. Al entregar se ven siempre. */
   mostrarTags: boolean
   mostrarFormulas: boolean
 }
@@ -133,8 +139,9 @@ export function VistaSimulacro({ api, sesion }: Props) {
     }
   }
 
-  function arrancar() {
-    const elegido = elegirExamen(examenes, { tipo: config.tipo })
+  /** Arranca el examen elegido o, sin `id`, uno al azar del pool. */
+  function arrancar(id: string | null) {
+    const elegido = elegirExamen(examenes, { tipo: config.tipo, id })
     if (!elegido) return
     limpiarItems(elegido)
     sesion.anotarSimulacro({
@@ -173,7 +180,7 @@ export function VistaSimulacro({ api, sesion }: Props) {
           </p>
           <h2 class="sim-barra__titulo">{examen.titulo}</h2>
           <p class="sim-barra__dato">
-            {jugables.length} de {examen.ejercicios.length} ejercicios presentados
+            {examen.ejercicios.length} ejercicios · se aprueba con {examen.aprueba_con}
           </p>
         </div>
 
@@ -328,9 +335,10 @@ function TarjetaExamen({
   onIntento: (indiceItem: number, intento: Intento, limpio: boolean) => void
 }) {
   const resaltado = usarResaltado()
-  // Los tags sólo después de entregar, y sólo si se pidieron: mientras se
-  // rinde, saber el tema sería una ayuda que el examen real no da.
-  const conTags = entregado && mostrarTags
+  // Al entregar se ven siempre. Mientras se rinde, sólo si se pidieron: el
+  // examen real no los da, pero a quien recién empieza le sirven para ver
+  // cómo se combinan los skills en un mismo ejercicio.
+  const conTags = entregado || mostrarTags
   const items = ej.items ?? []
   const tags = conTags ? [...new Set(items.flatMap((item) => item.skills))] : []
 
@@ -394,7 +402,7 @@ function Configuracion({
 }: {
   config: Config
   onCambiar: (c: Partial<Config>) => void
-  onArrancar: () => void
+  onArrancar: (id: string | null) => void
 }) {
   const pools = useMemo(
     () => ({ parcial: poolDe(examenes, 'parcial'), integradora: poolDe(examenes, 'integradora') }),
@@ -403,19 +411,36 @@ function Configuracion({
   const disponibles = pools[config.tipo]
   const hayAlguno = pools.parcial.length + pools.integradora.length > 0
 
+  /** El examen elegido para rendir. Sin elegir, se sortea uno. */
+  const [elegido, setElegido] = useState<string | null>(null)
+  /** El examen de la vista previa. Se conserva al cerrarla, para que salga con su contenido. */
+  const [previo, setPrevio] = useState<Examen | null>(null)
+  const [previoAbierto, setPrevioAbierto] = useState(false)
+
+  // Al cambiar de tipo, una elección del otro tipo deja de valer.
+  const actual = disponibles.some((e) => e.id === elegido) ? elegido : null
+  const nombre = config.tipo === 'parcial' ? 'parcial' : 'integradora'
+  const seleccionado = config.tipo === 'parcial' ? 'seleccionado' : 'seleccionada'
+
+  /** Un clic elige el examen; otro clic sobre el elegido lo suelta. */
+  function alternar(id: string): void {
+    setElegido(actual === id ? null : id)
+  }
+
   return (
     <>
       <section class="guia__intro">
         <h2>Simulacro</h2>
         <p class="guia__descripcion">
-          Un examen elegido al azar, con tiempo límite y sin ayudas. Sus intentos son los más
-          valiosos para las insignias, porque los ejercicios aparecen mezclados y sin indicación
-          del tema.
+          Un examen de cuatrimestres anteriores, con tiempo límite y sin ayudas. Se puede elegir
+          uno o dejar que se sortee. Sus intentos son los más valiosos para las insignias, porque
+          los ejercicios aparecen mezclados y sin indicación del tema, salvo que se pidan los
+          tags.
         </p>
       </section>
 
       {!hayAlguno ? (
-        <p class="vacio">Todavía no hay ningún examen con ejercicios verificados para rendir.</p>
+        <p class="vacio">Todavía no hay ningún examen completo para rendir.</p>
       ) : (
         <>
           <section class="sim-config" aria-label="Configuración del simulacro">
@@ -466,7 +491,7 @@ function Configuracion({
                         (config.tipo === tipo ? ' segmentado__opcion--activa' : '') +
                         (cantidad === 0 ? ' segmentado__opcion--vacia' : '')
                       }
-                      data-tip={cantidad === 0 ? `${vacio} para rendir` : undefined}
+                      data-tip={cantidad === 0 ? `${vacio} completa para rendir` : undefined}
                     >
                       <input
                         class="sr-solo"
@@ -491,8 +516,8 @@ function Configuracion({
 
             <ul class="interruptores">
               <Interruptor
-                etiqueta="Mostrar tags al entregar"
-                descripcion="Al terminar, indica qué temas evaluaba cada ejercicio."
+                etiqueta="Mostrar tags de skills"
+                descripcion="Indica desde el comienzo qué skills combina cada ejercicio. Al entregar, los tags se muestran siempre."
                 activo={config.mostrarTags}
                 onCambiar={(v) => onCambiar({ mostrarTags: v })}
               />
@@ -503,51 +528,172 @@ function Configuracion({
                 onCambiar={(v) => onCambiar({ mostrarFormulas: v })}
               />
             </ul>
-
-            <div class="sim-config__pie">
-              <button
-                class="boton boton--acento boton--icono boton--grande"
-                disabled={disponibles.length === 0}
-                onClick={onArrancar}
-              >
-                <IconoSimulacro />
-                Empezar simulacro
-              </button>
-              <p class="dato-chico">
-                El tiempo se mide con el reloj del sistema, de modo que sigue corriendo aunque se
-                cierre la página. Las respuestas no se pierden.
-              </p>
-            </div>
           </section>
 
-          <section class="pool">
-            <h3 class="pool__titulo">Exámenes en el pool</h3>
+          <section class="pool" aria-labelledby="titulo-pool">
+            <h3 id="titulo-pool" class="pool__titulo">
+              {config.tipo === 'parcial' ? 'Parciales' : 'Integradoras'} disponibles
+            </h3>
+            <p class="pool__ayuda">
+              Elegí uno para rendirlo, o ninguno para que se sortee. La lupa muestra sus
+              ejercicios.
+            </p>
             <ul class="pool__grilla">
               {disponibles.map((e, i) => {
-                const rendibles = ejerciciosJugables(e).length
-                const total = e.ejercicios.length
+                const esElegido = actual === e.id
                 return (
-                  <li key={e.id} class="examen" style={{ '--i': i }}>
-                    <span class="examen__tipo">{NOMBRE_TIPO[e.tipo]}</span>
-                    <span class="examen__titulo">{e.titulo}</span>
-                    <span class="examen__fecha">{fechaLarga(e.fecha)}</span>
-                    <span class="barra" aria-hidden="true">
-                      <span
-                        class="barra__relleno"
-                        style={{ width: `${(100 * rendibles) / total}%` }}
-                      />
-                    </span>
-                    <span class="examen__avance">
-                      {rendibles} de {total} ejercicios rendibles
-                    </span>
+                  <li
+                    key={e.id}
+                    class={'examen' + (esElegido ? ' examen--elegido' : '')}
+                    style={{ '--i': i }}
+                  >
+                    <button
+                      class="examen__elegir"
+                      aria-pressed={esElegido}
+                      onClick={() => alternar(e.id)}
+                    >
+                      <span class="examen__tipo">{NOMBRE_TIPO[e.tipo]}</span>
+                      <span class="examen__titulo">{e.titulo}</span>
+                      <span class="examen__fecha">{fechaLarga(e.fecha)}</span>
+                      {esElegido && (
+                        <span class="examen__marca">
+                          <IconoComprobar />
+                          {seleccionado[0].toUpperCase() + seleccionado.slice(1)}
+                        </span>
+                      )}
+                    </button>
+                    <button
+                      class="examen__ver"
+                      aria-label={`Ver los ejercicios del ${nombre} del ${fechaLarga(e.fecha)}`}
+                      aria-haspopup="dialog"
+                      data-tip="Ver los ejercicios"
+                      onClick={() => {
+                        setPrevio(e)
+                        setPrevioAbierto(true)
+                      }}
+                    >
+                      <IconoLupa />
+                    </button>
                   </li>
                 )
               })}
             </ul>
           </section>
+
+          <div class="sim-arranque">
+            <button
+              class="boton boton--acento boton--icono boton--grande"
+              disabled={disponibles.length === 0}
+              onClick={() => onArrancar(actual)}
+            >
+              <IconoSimulacro />
+              {actual ? `Simular ${nombre} ${seleccionado}` : `Simular ${nombre} al azar`}
+            </button>
+            <p class="dato-chico">
+              El tiempo se mide con el reloj del sistema, de modo que sigue corriendo aunque se
+              cierre la página. Las respuestas no se pierden.
+            </p>
+          </div>
+
+          {previo && (
+            <VistaPrevia
+              examen={previo}
+              abierto={previoAbierto}
+              elegido={actual === previo.id}
+              mostrarTags={config.mostrarTags}
+              onCerrar={() => setPrevioAbierto(false)}
+              onAlternar={() => {
+                alternar(previo.id)
+                setPrevioAbierto(false)
+              }}
+            />
+          )}
         </>
       )}
     </>
+  )
+}
+
+/**
+ * La vista previa de un examen: sus ejercicios, sin respuestas, para saber en
+ * qué consiste antes de elegirlo. Con los tags pedidos, muestra también los
+ * skills de cada ejercicio, que se resaltan en el texto como en las guías.
+ */
+function VistaPrevia({
+  examen,
+  abierto,
+  elegido,
+  mostrarTags,
+  onCerrar,
+  onAlternar,
+}: {
+  examen: Examen
+  abierto: boolean
+  elegido: boolean
+  mostrarTags: boolean
+  onCerrar: () => void
+  onAlternar: () => void
+}) {
+  return (
+    <Dialogo
+      abierto={abierto}
+      clase="modal--examen"
+      titulo={examen.titulo}
+      onCerrar={onCerrar}
+      acciones={
+        <>
+          <button class="boton" onClick={onCerrar} autoFocus>
+            Cerrar
+          </button>
+          <button class="boton boton--acento" onClick={onAlternar}>
+            {elegido ? 'Quitar la selección' : 'Elegir este examen'}
+          </button>
+        </>
+      }
+    >
+      <p class="modal-examen__dato">
+        {NOMBRE_TIPO[examen.tipo]} · {fechaLarga(examen.fecha)} · {examen.ejercicios.length}{' '}
+        ejercicios · se aprueba con {examen.aprueba_con}
+      </p>
+      {examen.ejercicios.map((ej) => (
+        <EjercicioPrevio key={ej.numero} ejercicio={ej} mostrarTags={mostrarTags} />
+      ))}
+    </Dialogo>
+  )
+}
+
+/** Un ejercicio de la vista previa. Va aparte porque el resaltado es un hook. */
+function EjercicioPrevio({
+  ejercicio: ej,
+  mostrarTags,
+}: {
+  ejercicio: EjercicioExamen
+  mostrarTags: boolean
+}) {
+  const resaltado = usarResaltado()
+  const items = ej.items ?? []
+  const tags = mostrarTags ? [...new Set(items.flatMap((item) => item.skills))] : []
+
+  return (
+    <section class="previo">
+      <h4 class="previo__numero">Ejercicio {ej.numero}</h4>
+      <Enunciado texto={ej.enunciado} resaltado={resaltado.activo} mostrarMarcas={mostrarTags} />
+      <Tags skills={tags} resaltado={resaltado} />
+      {items.length > 0 && (
+        <ol class="previo__items">
+          {items.map((item) => (
+            <li key={item.id}>
+              <span class="item__id">({item.id})</span>{' '}
+              <TextoMarcado
+                texto={item.pregunta}
+                resaltado={resaltado.activo}
+                mostrarMarcas={mostrarTags}
+              />
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
   )
 }
 

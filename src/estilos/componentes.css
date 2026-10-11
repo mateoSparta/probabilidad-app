@@ -775,14 +775,16 @@
 .interruptor__control:checked { background: var(--acento); }
 .interruptor__control:checked::before { transform: translateX(1.1rem); }
 
-.sim-config__pie {
+/* El botón para empezar va después del pool: primero se elige (o no) el
+   examen y después se arranca. */
+.sim-arranque {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--e-3) var(--e-5);
   margin-top: var(--e-5);
 }
-.sim-config__pie .dato-chico { flex: 1 1 16rem; margin: 0; }
+.sim-arranque .dato-chico { flex: 1 1 16rem; margin: 0; }
 
 .boton--grande {
   font-size: var(--t-base);
@@ -801,23 +803,55 @@
   margin-bottom: var(--e-3);
 }
 
+.pool__titulo { margin-bottom: var(--e-1); }
+.pool__ayuda {
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+  margin-bottom: var(--e-3);
+}
+
 .pool__grilla {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  grid-auto-rows: 1fr;
   gap: var(--e-3);
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
+/* Cada examen es un botón que lo elige (un segundo clic lo suelta), con la
+   lupa de la vista previa encima, en la esquina superior derecha. */
 .examen {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: var(--e-4);
+  position: relative;
   background: var(--superficie);
   border: 1px solid var(--borde);
   border-radius: var(--radio-lg);
+  transition: border-color 150ms, background 150ms, box-shadow 150ms;
+}
+.examen:hover { border-color: color-mix(in srgb, var(--acento) 60%, transparent); }
+.examen--elegido,
+.examen--elegido:hover {
+  border-color: var(--acento);
+  background: var(--acento-suave);
+  box-shadow: 0 0 0 1px var(--acento);
+}
+
+.examen__elegir {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+  padding: var(--e-4) 3rem var(--e-4) var(--e-4);
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--tinta);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 .examen__tipo {
   font-size: var(--t-xs);
@@ -825,10 +859,72 @@
   letter-spacing: 0.08em;
   color: var(--acento);
 }
-.examen__titulo { font-weight: 600; }
+.examen__titulo { font-weight: 600; line-height: 1.35; }
 .examen__fecha { font-size: var(--t-sm); color: var(--tinta-2); }
-.examen .barra { margin-top: var(--e-3); }
-.examen__avance { font-size: var(--t-xs); color: var(--tinta-3); }
+.examen__marca {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-1);
+  margin-top: var(--e-2);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  color: var(--acento);
+}
+
+.examen__ver {
+  position: absolute;
+  top: var(--e-2);
+  right: var(--e-2);
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--tinta-2);
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background 150ms, color 150ms, border-color 150ms;
+}
+.examen__ver:hover,
+.examen__ver:focus-visible {
+  color: var(--acento);
+  border-color: color-mix(in srgb, var(--acento) 45%, transparent);
+  background: var(--superficie-alta);
+}
+
+/* Vista previa de un examen: ancha, porque muestra los enunciados. */
+.modal--examen { width: min(46rem, calc(100vw - 2rem)); }
+.modal--examen .modal__cuerpo { color: var(--tinta); }
+.modal--examen .modal__titulo { margin-bottom: var(--e-1); }
+.modal-examen__dato {
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+  margin-bottom: var(--e-2);
+}
+.previo {
+  border-top: 1px solid var(--borde);
+  padding-top: var(--e-3);
+  margin-top: var(--e-3);
+}
+.previo__numero {
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--acento);
+  font-weight: 500;
+  margin-bottom: var(--e-1);
+}
+.previo .enunciado { margin-bottom: var(--e-2); }
+.previo__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.previo__items li { margin-bottom: var(--e-1); }
 
 /* Barra de avance: la usan el pool y la devolución. */
 .barra {

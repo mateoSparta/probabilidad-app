@@ -57,22 +57,39 @@ export function esCompleto(examen: Examen): boolean {
   return ejerciciosJugables(examen).length === examen.ejercicios.length
 }
 
-/** Los exámenes de un tipo que tienen al menos un ejercicio para rendir. */
+/** Cuántos ejercicios tiene un examen de la materia. */
+export const EJERCICIOS_POR_EXAMEN = 5
+
+/**
+ * Si un examen puede rendirse como simulacro: completo y con los cinco
+ * ejercicios de un examen real. Uno recortado (porque algún ejercicio queda
+ * fuera de alcance o todavía no se verificó) o más corto, como la "parte 2"
+ * de un parcial dividido, no reproduce el examen que se va a tomar, y para
+ * practicar no sirve. Esos quedan anotados como pendientes en
+ * revision/examenes.md.
+ */
+export function esRendible(examen: Examen): boolean {
+  return esCompleto(examen) && examen.ejercicios.length === EJERCICIOS_POR_EXAMEN
+}
+
+/** Los exámenes de un tipo que pueden rendirse. */
 export function poolDe(examenes: Examen[], tipo: TipoExamen): Examen[] {
-  return examenes.filter((e) => e.tipo === tipo && ejerciciosJugables(e).length > 0)
+  return examenes.filter((e) => e.tipo === tipo && esRendible(e))
 }
 
 /**
- * Elige al azar un examen del tipo pedido: parcial (por defecto) o
- * integradora. Los dos tipos no se mezclan, porque evalúan cosas distintas
- * y tienen criterios de aprobación distintos.
+ * Elige un examen del tipo pedido: parcial (por defecto) o integradora. Los
+ * dos tipos no se mezclan, porque evalúan cosas distintas y tienen criterios
+ * de aprobación distintos. Con `id` devuelve ese examen, si está en el pool;
+ * sin `id`, uno al azar.
  */
 export function elegirExamen(
   examenes: Examen[],
-  opciones: { tipo?: TipoExamen; azar?: () => number } = {},
+  opciones: { tipo?: TipoExamen; azar?: () => number; id?: string | null } = {},
 ): Examen | null {
   const azar = opciones.azar ?? Math.random
   const pool = poolDe(examenes, opciones.tipo ?? 'parcial')
+  if (opciones.id) return pool.find((e) => e.id === opciones.id) ?? null
   if (pool.length === 0) return null
   return pool[Math.floor(azar() * pool.length)]
 }
