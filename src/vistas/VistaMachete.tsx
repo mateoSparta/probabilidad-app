@@ -105,7 +105,7 @@ export function VistaMachete() {
       <section class="material-config" aria-label="Qué mostrar">
         <div class="material-config__fila">
           <div
-            class="segmentado segmentado--linea"
+            class="segmentado segmentado--linea segmentado--revelar"
             role="radiogroup"
             aria-label="Etapa"
             style={{ '--n': opciones.length, '--activa': indiceAlcance }}

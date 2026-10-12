@@ -544,9 +544,11 @@ cantidad de hojas. De ahí salen las tres decisiones de fondo:
   titulados por tema y, en cada uno, fichas con el nombre de la fórmula, una
   descripción breve de para qué sirve y la expresión en LaTeX, que se ve
   centrada. A la izquierda, un índice con las guías y sus temas, en
-  acordeón: a lo sumo una guía desplegada, la que se está leyendo (la última
-  cuyo título pasó la mitad de la pantalla). Al elegir un tema, además de
-  bajar, sus fichas se pintan un momento de naranja claro. Se arma a partir de las fórmulas de `skills.yaml` y de la
+  acordeón: la guía desplegada es siempre la que se está leyendo (la última
+  cuyo título pasó la mitad de la pantalla), y elegir una guía baja hasta su
+  comienzo. Al elegir un tema, además de bajar, sus fichas se pintan de
+  naranja muy claro, con un fundido de entrada y otro de salida del doble de
+  largo. En los índices nada va en negro. Se arma a partir de las fórmulas de `skills.yaml` y de la
   teoría cargada, y se contrasta con `fuentes/teoria/Grynberg_Notas.pdf` y
   `probabilidad_distribuciones.pdf`. No se genera automáticamente desde los
   skills: ahí las fórmulas se repiten y están pensadas para el panel de cada

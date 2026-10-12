@@ -173,9 +173,8 @@ export function VistaDistribuciones() {
 /** Las distribuciones, agrupadas como en la tabla de la cátedra, en la columna de la izquierda. */
 function IndiceDistribuciones({ actual, onElegir }: { actual: string; onElegir: (id: string) => void }) {
   return (
-    <aside class="indice" aria-label="Distribuciones">
+    <aside class="indice indice--grupos" aria-label="Distribuciones">
       <div class="indice__contenido">
-        <p class="indice__titulo">Distribuciones</p>
         <ol class="indice__lista">
           {GRUPOS.map(({ grupo, nombre }, i) => (
             <li key={grupo} class="indice__grupo" style={{ '--i': i }}>
