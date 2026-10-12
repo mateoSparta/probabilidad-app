@@ -149,6 +149,35 @@ export function TablasDeExamen({ guias, anclas }: PropsHoja) {
   )
 }
 
+/**
+ * La cruz de una tabla: con el puntero sobre una cifra se marcan su fila y su
+ * columna, hasta los rótulos, para ver a qué par de valores (ν y α, o las dos
+ * partes de z) corresponde. Se tocan las clases a mano, sin estado, para no
+ * volver a pasar por KaTeX los rótulos de toda la tabla en cada movimiento.
+ */
+const CRUZ = 'tabla-num__cruz'
+const CENTRO = 'tabla-num__centro'
+
+function borrarCruz(e: Event): void {
+  const tabla = e.currentTarget as HTMLTableElement
+  tabla.querySelectorAll(`.${CRUZ}, .${CENTRO}`).forEach((c) => c.classList.remove(CRUZ, CENTRO))
+}
+
+function marcarCruz(e: Event): void {
+  const tabla = e.currentTarget as HTMLTableElement
+  const celda = (e.target as Element).closest('td')
+  if (!celda) {
+    borrarCruz(e)
+    return
+  }
+  if (celda.classList.contains(CENTRO)) return
+  borrarCruz(e)
+  const columna = celda.cellIndex
+  for (const fila of Array.from(tabla.rows)) fila.cells[columna]?.classList.add(CRUZ)
+  for (const c of Array.from((celda.parentElement as HTMLTableRowElement).cells)) c.classList.add(CRUZ)
+  celda.classList.add(CENTRO)
+}
+
 function TablaNumerica({ tabla, ancla }: { tabla: Tabla; ancla?: string }) {
   return (
     <section class={'tabla-num tabla-num--' + tabla.id} id={ancla}>
@@ -174,7 +203,7 @@ function TablaNumerica({ tabla, ancla }: { tabla: Tabla; ancla?: string }) {
               </h4>
             )}
             <div class="tabla-num__marco">
-              <table>
+              <table onPointerOver={marcarCruz} onPointerLeave={borrarCruz}>
                 <thead>
                   <tr>
                     <th scope="col" class="tabla-num__esquina">

@@ -53,6 +53,40 @@ type Props = {
 
 const VACIO: ReadonlySet<string> = new Set()
 
+/*
+ * El ícono de Seguimiento anima en bucle mientras el puntero está sobre la
+ * opción (la clase `--viva`). Al salir no se corta: se espera al final de la
+ * vuelta en curso, que se ve igual que el ícono quieto. Se toca la clase a
+ * mano, sin estado, porque no cambia nada más del menú.
+ */
+const VIVA = 'menu__opcion--viva'
+
+function avivar(e: Event): void {
+  const a = e.currentTarget as HTMLElement
+  delete a.dataset.saliendo
+  a.classList.add(VIVA)
+}
+
+function aquietar(e: Event): void {
+  const a = e.currentTarget as HTMLElement
+  if (a.classList.contains(VIVA)) a.dataset.saliendo = ''
+}
+
+function terminarVuelta(e: Event): void {
+  const a = e.currentTarget as HTMLElement
+  if (!('saliendo' in a.dataset)) return
+  delete a.dataset.saliendo
+  a.classList.remove(VIVA)
+}
+
+const BUCLE = {
+  onPointerEnter: avivar,
+  onPointerLeave: aquietar,
+  onFocus: avivar,
+  onBlur: aquietar,
+  onAnimationIteration: terminarVuelta,
+}
+
 export function VistaMenu({ guia, api, sesion, plan }: Props) {
   const resueltos = ejercicios.filter(
     (ej) =>
@@ -123,7 +157,11 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
         <ul class="menu__grilla">
           {opciones.map(({ seccion, Icono, descripcion, dato }, i) => (
             <li key={seccion} style={{ '--i': i }}>
-              <a class="menu__opcion" href={escribirRuta({ seccion, guia })}>
+              <a
+                class="menu__opcion"
+                href={escribirRuta({ seccion, guia })}
+                {...(seccion === 'seguimiento' ? BUCLE : {})}
+              >
                 <span class="menu__icono">
                   <Icono />
                 </span>

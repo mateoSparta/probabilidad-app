@@ -6,11 +6,12 @@
  * los lectores de pantalla porque el rótulo ya dice lo mismo.
  */
 import type { ComponentChildren } from 'preact'
+import { useId } from 'preact/hooks'
 
-function Svg({ children }: { children: ComponentChildren }) {
+function Svg({ children, clase }: { children: ComponentChildren; clase?: string }) {
   return (
     <svg
-      class="icono"
+      class={'icono' + (clase ? ' ' + clase : '')}
       viewBox="0 0 24 24"
       width="1em"
       height="1em"
@@ -36,7 +37,7 @@ export const IconoComprobar = () => (
 )
 
 export const IconoFormulas = () => (
-  <Svg>
+  <Svg clase="icono--formulas">
     <path d="M18 7V5a1 1 0 0 0-1-1H6.5a.5.5 0 0 0-.4.8l4.5 6a2 2 0 0 1 0 2.4l-4.5 6a.5.5 0 0 0 .4.8H17a1 1 0 0 0 1-1v-2" />
   </Svg>
 )
@@ -72,32 +73,59 @@ export const IconoInicio = () => (
   </Svg>
 )
 
+/*
+ * Los íconos del menú principal tienen sus piezas con clase para animarlas al
+ * pasar el puntero por la opción (estilos/animaciones.css). En el menú de
+ * navegación se ven quietos.
+ */
+
+/** Una mancuerna, de frente. No es un trazado de Lucide. */
 export const IconoEjercicios = () => (
   <Svg>
-    <path d="M12 7v14" />
-    <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" />
+    <g class="icono__pesa">
+      <path d="M8 12h8" />
+      <rect x="5" y="6.5" width="3" height="11" rx="1" />
+      <rect x="16" y="6.5" width="3" height="11" rx="1" />
+      <path d="M3.25 9v6" />
+      <path d="M20.75 9v6" />
+    </g>
   </Svg>
 )
 
+/** La medalla, y un destello de cuatro puntas que aparece al pasar el puntero. */
 export const IconoSkills = () => (
   <Svg>
     <path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526" />
     <circle cx="12" cy="8" r="6" />
+    <path
+      class="icono__destello"
+      d="M18.5 0.5Q19 3 21.5 3.5 19 4 18.5 6.5 18 4 15.5 3.5 18 3 18.5 0.5Z"
+      fill="currentColor"
+      stroke="none"
+    />
   </Svg>
 )
 
 export const IconoSimulacro = () => (
   <Svg>
     <line x1="10" x2="14" y1="2" y2="2" />
-    <line x1="12" x2="15" y1="14" y2="11" />
+    <line class="icono__aguja" x1="12" x2="15" y1="14" y2="11" />
     <circle cx="12" cy="14" r="8" />
   </Svg>
 )
 
+/**
+ * Un círculo con un tilde (el de Lucide) y, fuera de la vista a la derecha,
+ * otro sin tilde: al animarse, el segundo reemplaza al primero y se tilda.
+ */
 export const IconoSeguimiento = () => (
   <Svg>
-    <path d="M3 3v16a2 2 0 0 0 2 2h16" />
-    <path d="m19 9-5 5-4-4-3 3" />
+    <g class="icono__carril">
+      <circle cx="12" cy="12" r="10" />
+      <path d="m9 12 2 2 4-4" />
+      <circle cx="50" cy="12" r="10" />
+      <path class="icono__tilde" d="m47 12 2 2 4-4" pathLength={1} />
+    </g>
   </Svg>
 )
 
@@ -225,10 +253,26 @@ export const IconoImprimir = () => (
   </Svg>
 )
 
-/** Distribuciones: una campana sobre un eje (de la calculadora). */
-export const IconoDistribuciones = () => (
-  <Svg>
-    <path d="M3 19h18" />
-    <path d="M2 17c4 0 5.5-10 10-10s6 10 10 10" />
-  </Svg>
-)
+/**
+ * Distribuciones: una campana sobre un eje (de la calculadora). Debajo, oculto
+ * hasta que se anima, un barrido que pinta el área: una línea vertical y el
+ * sombreado a su izquierda, recortados a la región bajo la curva.
+ */
+export function IconoDistribuciones() {
+  const id = useId()
+  return (
+    <Svg>
+      <clipPath id={id}>
+        <path d="M2 17c4 0 5.5-10 10-10s6 10 10 10V19H2Z" />
+      </clipPath>
+      <g clip-path={`url(#${id})`}>
+        <g class="icono__barrido">
+          <rect x="-22" y="0" width="24" height="24" fill="currentColor" fill-opacity="0.24" stroke="none" />
+          <path class="icono__corte" d="M2 0v24" stroke-width="1.5" />
+        </g>
+      </g>
+      <path d="M3 19h18" />
+      <path d="M2 17c4 0 5.5-10 10-10s6 10 10 10" />
+    </Svg>
+  )
+}

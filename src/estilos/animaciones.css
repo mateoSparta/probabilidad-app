@@ -3,7 +3,8 @@
    Criterio: cortas (entre 150 y 450 ms), con salida suave, y siempre al
    servicio de algo: que se note qué cambió, de dónde salió un elemento o que
    una acción tuvo efecto. Nada se anima en bucle salvo el reloj del
-   simulacro cuando quedan menos de cinco minutos.
+   simulacro cuando quedan menos de cinco minutos y el ícono de Seguimiento
+   del menú mientras el puntero está encima.
 
    Los escalonados usan `--i`, el índice del elemento, que pone cada
    componente en su `style`.
@@ -165,12 +166,97 @@
   transform: translateY(-3px);
   box-shadow: 0 2px 4px #2b262010, 0 12px 28px #2b262016;
 }
-.menu__icono {
-  transition: transform 260ms cubic-bezier(0.3, 1.4, 0.5, 1);
+
+/* Cada ícono tiene su propia animación al pasar el puntero (o al llegar con
+   el teclado). El círculo de fondo recorta lo que sale del ícono, para que
+   el carril de Seguimiento entre y salga por su borde. Las piezas en
+   `transform` usan coordenadas del ícono (de 0 a 24). */
+.menu__icono { overflow: hidden; }
+.menu__icono .icono { overflow: visible; }
+.menu__icono .icono * { transform-box: view-box; }
+
+/* Ejercicios: la mancuerna sube y baja dos veces. */
+@keyframes levantar {
+  0%, 50%, 100% { transform: none; animation-timing-function: cubic-bezier(0.3, 0, 0.4, 1); }
+  25%, 75% { transform: translateY(-3.5px); animation-timing-function: cubic-bezier(0.5, 0, 0.7, 1); }
 }
-.menu__opcion:hover .menu__icono {
-  transform: scale(1.1) rotate(-6deg);
+.menu__opcion:is(:hover, :focus-visible) .icono__pesa {
+  animation: levantar 1s both;
 }
+
+/* Skills: un destello de cuatro puntas aparece sobre la medalla, gira un
+   cuarto de vuelta (y queda igual, por la simetría) y resplandece. */
+@keyframes destellar {
+  0% { opacity: 0; transform: scale(0.2) rotate(-90deg); filter: none; }
+  45% { opacity: 1; transform: scale(1.3) rotate(0deg); filter: drop-shadow(0 0 2.5px currentColor); }
+  70% { transform: scale(0.9); filter: drop-shadow(0 0 1px currentColor); }
+  85% { transform: scale(1.1); filter: drop-shadow(0 0 2px currentColor); }
+  100% { opacity: 1; transform: none; filter: drop-shadow(0 0 0.8px currentColor); }
+}
+.icono__destello {
+  opacity: 0;
+  transform: scale(0.2);
+  transform-origin: 18.5px 3.5px;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+.menu__opcion:is(:hover, :focus-visible) .icono__destello {
+  opacity: 1;
+  transform: none;
+  animation: destellar 900ms ease-out both;
+}
+
+/* Simulacro: la aguja avanza dos tics, de golpe, como la de un cronómetro
+   (`steps`). Al salir vuelve al lugar de un solo movimiento, con la
+   transición de la regla sin hover. */
+.icono__aguja {
+  transform-origin: 12px 14px;
+  transition: transform 420ms cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+.menu__opcion:is(:hover, :focus-visible) .icono__aguja {
+  transform: rotate(60deg);
+  transition: transform 1s steps(2, end);
+}
+
+/* Seguimiento: el círculo tildado sale por la izquierda, entra otro sin
+   tilde por la derecha y, ya centrado, se tilda. El final de una vuelta se
+   ve igual que el principio, así que el bucle no tiene costura. Corre
+   mientras la opción tiene `--viva`: VistaMenu la saca al terminar la
+   vuelta en curso, para que no se corte a mitad de camino. */
+@keyframes correr-carril {
+  0%, 12% { transform: none; animation-timing-function: cubic-bezier(0.6, 0, 0.3, 1); }
+  45%, 100% { transform: translateX(-38px); }
+}
+@keyframes tildar {
+  0%, 50% { stroke-dashoffset: 1; animation-timing-function: ease-out; }
+  70%, 100% { stroke-dashoffset: 0; }
+}
+.icono__tilde { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.menu__opcion--viva .icono__carril { animation: correr-carril 1.8s infinite; }
+.menu__opcion--viva .icono__tilde { animation: tildar 1.8s infinite; }
+
+/* Fórmulas: la sumatoria gira apenas. */
+.menu__icono .icono--formulas {
+  transition: transform 300ms cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.menu__opcion:is(:hover, :focus-visible) .icono--formulas {
+  transform: rotate(-14deg);
+}
+
+/* Distribuciones: una línea vertical recorre la campana desde la izquierda
+   pintando el área bajo la curva hasta tres cuartos del ancho, y vuelve
+   borrándola, hasta dejar el ícono como estaba. */
+@keyframes barrer {
+  0% { transform: none; animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }
+  55%, 65% { transform: translateX(15px); animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1); }
+  100% { transform: none; }
+}
+@keyframes mostrar-corte {
+  0%, 100% { opacity: 0; }
+  8%, 92% { opacity: 1; }
+}
+.icono__corte { opacity: 0; }
+.menu__opcion:is(:hover, :focus-visible) .icono__barrido { animation: barrer 1.7s both; }
+.menu__opcion:is(:hover, :focus-visible) .icono__corte { animation: mostrar-corte 1.7s both; }
 
 /* --------------------------------------------------- menú hamburguesa */
 

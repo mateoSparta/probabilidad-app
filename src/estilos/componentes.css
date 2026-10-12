@@ -1794,6 +1794,18 @@
 }
 .tabla-num tbody tr:nth-child(5n) > * { border-bottom-color: var(--borde-fuerte); }
 .tabla-num__esquina { border-right: 1px solid var(--borde-fuerte); }
+/* La cruz: la fila y la columna de la cifra bajo el puntero, con sus
+   rótulos en el color de acento, y la cifra misma más marcada. Sin cambiar
+   el peso de la letra: las cifras en negrita son más anchas y las columnas
+   saltarían. */
+.tabla-num td,
+.tabla-num th { transition: background 90ms, color 90ms; }
+.tabla-num .tabla-num__cruz { background: var(--acento-suave); }
+.tabla-num th.tabla-num__cruz { color: var(--acento); }
+.tabla-num td.tabla-num__centro {
+  background: color-mix(in srgb, var(--acento) 28%, transparent);
+  color: var(--tinta);
+}
 
 /* El gráfico de una tabla: el SVG y, encima, los rótulos en KaTeX. */
 .grafico-tabla {
