@@ -14,7 +14,7 @@ import { useEffect, useRef } from 'preact/hooks'
 
 import { IndiceGuia } from '../componentes/IndiceGuia'
 import { irA, MapaEjercicios } from '../componentes/MapaEjercicios'
-import { SubirLateral, usarQuedoArriba } from '../componentes/SubirLateral'
+import { SubirLateral, usarSubir } from '../componentes/SubirLateral'
 import { TarjetaEjercicio } from '../componentes/TarjetaEjercicio'
 import { Teoria } from '../componentes/Teoria'
 import { ejercicioPorId, guiaPorNumero, teoriaPorId } from '../datos/contenido'
@@ -33,9 +33,7 @@ type Props = {
 export function VistaGuia({ numero, sesion, onIntento, destino, onDestinoAlcanzado }: Props) {
   const guia = guiaPorNumero.get(numero)
   const intro = useRef<HTMLElement>(null)
-  // Se mira la fila de círculos y no el título: es lo que dice "estás arriba
-  // de la guía". El margen superior descuenta la barra fija de las pestañas.
-  const mapaArriba = usarQuedoArriba(() => intro.current?.querySelector('.mapa'), 56, [numero])
+  const subir = usarSubir()
 
   // Se baja sin animación: viniendo de otra sección, una animación larga
   // desde el principio de la guía no aporta nada. Al llegar, el bloque se
@@ -69,7 +67,7 @@ export function VistaGuia({ numero, sesion, onIntento, destino, onDestinoAlcanza
     <>
       <IndiceGuia guia={guia} sesion={sesion} />
 
-      <SubirLateral visible={mapaArriba} />
+      <SubirLateral visible={subir} />
 
       <section class="guia__intro" ref={intro}>
         <h2>{guia.titulo}</h2>

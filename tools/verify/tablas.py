@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Las tablas imprimibles (PLAN.md §12.2): las que reemplazan a la calculadora,
-que no se puede usar en el examen.
+Las tablas imprimibles (PLAN.md §12.2): las mismas tres de la cátedra
+(fuentes/teoria/Tablas.pdf), con su formato.
 
-  combinatoria  factoriales y números combinatorios            guía 1
-  binomial      P(X <= k), X ~ Bin(n, p), n hasta 20          guía 6
-  poisson       P(X <= k), X ~ Poisson(lambda), lambda <= 20  guía 7
-  exponencial   e^(-x), x de 0 a 20                           guía 7
-  normal        Phi(z) y cuantiles habituales                 guía 8
-  t             cuantiles de la t de Student                  guía 10
-  chi2          cuantiles de la chi cuadrado                  guía 10
+  normal   Phi(z) y cuantiles habituales      guía 8
+  t        cuantiles de la t de Student       guía 10
+  chi2     cuantiles de la chi cuadrado       guía 10
 
-Cada valor se calcula por dos caminos independientes (una suma exacta contra
-una función incompleta, una integral numérica contra una función especial) y
-se exige que coincidan al redondeo que se imprime. La normal, la t y la chi
-cuadrado se contrastan además número a número con las tablas de la cátedra,
-fuentes/teoria/Tablas.pdf. Si algo no coincide, el script falla y no escribe.
+Cada valor se calcula por dos caminos independientes (una función especial
+contra una integral numérica) y se exige que coincidan al redondeo que se
+imprime. Además se contrastan número a número con las tablas de la cátedra.
+Si algo no coincide, el script falla y no escribe.
 
 Escribe content/tablas/*.yaml, que no se editan a mano. Se regeneran con
 
@@ -24,11 +19,9 @@ Escribe content/tablas/*.yaml, que no se editan a mano. Se regeneran con
 from __future__ import annotations
 
 import json
-import math
 import re
 import sys
 from decimal import ROUND_HALF_UP, Decimal
-from fractions import Fraction
 from pathlib import Path
 
 import mpmath as mp
@@ -64,25 +57,6 @@ def con_coma(d: Decimal | str) -> str:
 def fijo(x, decimales: int) -> str:
     """'0,50399': el valor con una cantidad fija de decimales y coma."""
     return con_coma(redondear(x, decimales))
-
-
-SUPERINDICES = str.maketrans("-0123456789", "⁻⁰¹²³⁴⁵⁶⁷⁸⁹")
-
-
-def cientifica(x, n: int) -> str:
-    """'4,540·10⁻⁵': n cifras significativas en notación científica."""
-    x = mp.mpf(x)
-    exponente = int(mp.floor(mp.log10(abs(x))))
-    mantisa = redondear(x / mp.mpf(10) ** exponente, n - 1)
-    if mantisa >= 10:  # el redondeo pasó a la década siguiente
-        mantisa = redondear(mantisa / 10, n - 1)
-        exponente += 1
-    return f"{con_coma(mantisa)}·10{str(exponente).translate(SUPERINDICES)}"
-
-
-def miles(n: int) -> str:
-    """'3.628.800': un entero con separador de miles."""
-    return f"{n:,}".replace(",", ".")
 
 
 def coincidir(donde: str, a: str, b: str) -> str:
@@ -150,7 +124,7 @@ def tabla_normal(catedra, cuantiles_catedra):
         filas.append(fila)
 
     alfas = ["0.8", "0.85", "0.9", "0.95", "0.975", "0.99", "0.995"]
-    fila_q = ["$z_\\alpha$"]
+    fila_q = ["$z$"]
     for alfa in alfas:
         a = fijo(mp.findroot(lambda z: mp.ncdf(z) - mp.mpf(alfa), 1), 5)
         b = fijo(mp.sqrt(2) * mp.erfinv(2 * mp.mpf(alfa) - 1), 5)
@@ -162,17 +136,15 @@ def tabla_normal(catedra, cuantiles_catedra):
 
     return {
         "id": "normal",
-        "titulo": "Distribución normal estándar",
+        "titulo": "Tabla de distribución normal",
         "guia": 8,
-        "descripcion": (
-            "$\\Phi(z) = P(Z \\le z)$, con $Z \\sim N(0, 1)$. Para argumentos negativos, "
-            "$\\Phi(-z) = 1 - \\Phi(z)$. Los cuantiles cumplen $\\Phi(z_\\alpha) = \\alpha$."
-        ),
+        "grafico": "normal",
+        "recuerda": "$\\Phi(-z) = 1 - \\Phi(z)$",
         "bloques": [
             {"esquina": "$z$", "columnas": columnas, "filas": filas},
             {
-                "titulo": "Cuantiles habituales",
-                "esquina": "$\\alpha$",
+                "titulo": "Algunos cuantiles habituales",
+                "esquina": "$\\Phi(z)$",
                 "columnas": [con_coma(a) for a in alfas],
                 "filas": [fila_q],
             },
@@ -212,12 +184,10 @@ def tabla_t(catedra):
     mp.mp.dps = 40
     return {
         "id": "t",
-        "titulo": "Cuantiles de la t de Student",
+        "titulo": "Cuantiles de la distribución $t$ de Student",
         "guia": 10,
-        "descripcion": (
-            "$P(T \\le k_\\alpha) = \\alpha$, con $T \\sim t_\\nu$. Por simetría, "
-            "$k_{1-\\alpha} = -k_\\alpha$."
-        ),
+        "grafico": "t",
+        "recuerda": "$k_{1-\\alpha} = -k_\\alpha$",
         "bloques": [
             {"esquina": "$\\nu \\backslash \\alpha$", "columnas": [con_coma(a) for a in alfas], "filas": filas},
         ],
@@ -255,169 +225,11 @@ def tabla_chi2(catedra):
     mp.mp.dps = 40
     return {
         "id": "chi2",
-        "titulo": "Cuantiles de la chi cuadrado",
+        "titulo": "Cuantiles de la distribución $\\chi^2$",
         "guia": 10,
-        "descripcion": "$P(X \\le k_\\alpha) = \\alpha$, con $X \\sim \\chi^2_\\nu$.",
+        "grafico": "chi2",
         "bloques": [
             {"esquina": "$\\nu \\backslash \\alpha$", "columnas": [con_coma(a) for a in alfas], "filas": filas},
-        ],
-    }
-
-
-def tabla_poisson():
-    grupos = [
-        [f"0.{i}" for i in range(1, 10)] + ["1"],
-        ["1.5", "2", "2.5", "3", "3.5", "4", "4.5", "5"],
-        ["5.5", "6", "6.5", "7", "7.5", "8", "8.5", "9", "9.5", "10"],
-        [str(n) for n in range(11, 21)],
-    ]
-    bloques = []
-    for lambdas in grupos:
-        columnas = {}
-        for lam in lambdas:
-            l = mp.mpf(lam)
-            valores = []
-            acumulada = mp.mpf(0)
-            k = 0
-            while True:
-                acumulada += mp.exp(-l) * l**k / mp.factorial(k)
-                a = fijo(acumulada, 4)
-                b = fijo(mp.gammainc(k + 1, l, mp.inf, regularized=True), 4)
-                valores.append(coincidir(f"poisson lambda={lam} k={k}", a, b))
-                if a == "1,0000":
-                    break
-                k += 1
-            columnas[lam] = valores
-        largo = max(len(v) for v in columnas.values())
-        filas = [
-            [str(k)] + [columnas[lam][k] if k < len(columnas[lam]) else "" for lam in lambdas]
-            for k in range(largo)
-        ]
-        bloques.append({
-            "esquina": "$k \\backslash \\lambda$",
-            "columnas": [con_coma(lam) for lam in lambdas],
-            "filas": filas,
-        })
-    return {
-        "id": "poisson",
-        "titulo": "Poisson acumulada",
-        "guia": 7,
-        "descripcion": (
-            "$P(X \\le k)$, con $X \\sim \\text{Poisson}(\\lambda)$. Para un proceso de intensidad "
-            "$\\lambda$, $N(t) \\sim \\text{Poisson}(\\lambda t)$ y $P(S_n > t) = P(N(t) \\le n - 1)$. "
-            "Las celdas vacías valen 1,0000."
-        ),
-        "bloques": bloques,
-    }
-
-
-def tabla_binomial():
-    ps = ["0.05", "0.10", "0.15", "0.20", "0.25", "0.30", "0.35", "0.40", "0.45", "0.50"]
-    bloques = []
-    for n in range(2, 21):
-        filas = []
-        for k in range(n):
-            fila = [str(k)]
-            for p in ps:
-                pf = Fraction(p)
-                exacta = sum(
-                    Fraction(math.comb(n, j)) * pf**j * (1 - pf) ** (n - j) for j in range(k + 1)
-                )
-                a = fijo(mp.mpf(exacta.numerator) / exacta.denominator, 4)
-                b = fijo(mp.betainc(n - k, k + 1, 0, 1 - mp.mpf(p), regularized=True), 4)
-                fila.append(coincidir(f"binomial n={n} k={k} p={p}", a, b))
-            filas.append(fila)
-        bloques.append({
-            "titulo": f"$n = {n}$",
-            "esquina": "$k \\backslash p$",
-            "columnas": [con_coma(p) for p in ps],
-            "filas": filas,
-        })
-    return {
-        "id": "binomial",
-        "titulo": "Binomial acumulada",
-        "guia": 6,
-        "descripcion": (
-            "$P(X \\le k)$, con $X \\sim \\text{Bin}(n, p)$. Para $p > 0{,}5$, "
-            "$P(X \\le k) = 1 - P(Y \\le n - k - 1)$ con $Y \\sim \\text{Bin}(n, 1 - p)$. "
-            "Y $P(X = k) = P(X \\le k) - P(X \\le k - 1)$."
-        ),
-        "bloques": bloques,
-    }
-
-
-def tabla_exponencial():
-    # x de 0,00 a 2,99, con cuatro decimales.
-    filas1 = []
-    for decimo in range(30):
-        fila = [con_coma(f"{decimo / 10:.1f}")]
-        for c in range(10):
-            x = mp.mpf(decimo) / 10 + mp.mpf(c) / 100
-            a = fijo(mp.exp(-x), 4)
-            b = fijo(math.exp(-float(x)), 4)
-            fila.append(coincidir(f"exp x={x}", a, b))
-        filas1.append(fila)
-    # x de 3,0 a 9,9, con cinco decimales: todas las celdas del mismo ancho.
-    filas2 = []
-    for entero in range(3, 10):
-        fila = [str(entero)]
-        for d in range(10):
-            x = mp.mpf(entero) + mp.mpf(d) / 10
-            a = fijo(mp.exp(-x), 5)
-            b = fijo(1 / mp.e**x, 5)
-            fila.append(coincidir(f"exp x={x}", a, b))
-        filas2.append(fila)
-    # x entero de 10 a 20, en notación científica.
-    filas3 = []
-    for x in range(10, 21):
-        a = cientifica(mp.exp(-x), 4)
-        b = cientifica(mp.mpf(1) / mp.e**x, 4)
-        filas3.append([str(x), coincidir(f"exp x={x}", a, b)])
-    return {
-        "id": "exponencial",
-        "titulo": "Función exponencial",
-        "guia": 7,
-        "descripcion": (
-            "$e^{-x}$, por ejemplo para $P(T > t) = e^{-\\lambda t}$ con $T \\sim \\text{Exp}(\\lambda)$. "
-            "Para sumar exponentes, $e^{-(a+b)} = e^{-a}\\,e^{-b}$."
-        ),
-        "bloques": [
-            {"esquina": "$x$", "columnas": [f"0,0{c}" for c in range(10)], "filas": filas1},
-            {"esquina": "$x$", "columnas": [f"0,{d}" for d in range(10)], "filas": filas2},
-            {"esquina": "$x$", "columnas": ["$e^{-x}$"], "filas": filas3},
-        ],
-    }
-
-
-def tabla_combinatoria():
-    factoriales = []
-    for n in range(21):
-        a = miles(math.factorial(n))
-        b = miles(int(mp.nint(mp.gamma(n + 1))))
-        factoriales.append([str(n), coincidir(f"factorial {n}", a, b)])
-    combinatorios = []
-    for n in range(1, 21):
-        fila = [str(n)]
-        for k in range(11):
-            if k > n:
-                fila.append("")
-                continue
-            a = miles(math.comb(n, k))
-            b = miles(int(Fraction(math.factorial(n), math.factorial(k) * math.factorial(n - k))))
-            fila.append(coincidir(f"combinatorio {n} {k}", a, b))
-        combinatorios.append(fila)
-    return {
-        "id": "combinatoria",
-        "titulo": "Factoriales y números combinatorios",
-        "guia": 1,
-        "descripcion": (
-            "$\\binom{n}{k} = \\dfrac{n!}{k!\\,(n-k)!}$. Para $k > n/2$, "
-            "$\\binom{n}{k} = \\binom{n}{n-k}$."
-        ),
-        "bloques": [
-            {"esquina": "$n$", "columnas": ["$n!$"], "filas": factoriales},
-            {"titulo": "Números combinatorios", "esquina": "$n \\backslash k$",
-             "columnas": [str(k) for k in range(11)], "filas": combinatorios},
         ],
     }
 
@@ -430,8 +242,10 @@ def escribir(tabla: dict, orden: int) -> None:
         return "'" + s.replace("'", "''") + "'" if s is not None else "null"
 
     lineas = [ENCABEZADO, f"id: {tabla['id']}", f"titulo: {q(tabla['titulo'])}",
-              f"guia: {tabla['guia']}", f"orden: {orden}", f"descripcion: {q(tabla['descripcion'])}",
-              "bloques:"]
+              f"guia: {tabla['guia']}", f"orden: {orden}", f"grafico: {tabla['grafico']}"]
+    if tabla.get("recuerda"):
+        lineas.append(f"recuerda: {q(tabla['recuerda'])}")
+    lineas.append("bloques:")
     for b in tabla["bloques"]:
         lineas.append(f"  - titulo: {q(b.get('titulo'))}")
         lineas.append(f"    esquina: {q(b['esquina'])}")
@@ -444,15 +258,7 @@ def escribir(tabla: dict, orden: int) -> None:
 
 def main() -> int:
     normal, cuantiles, t, chi2 = leer_catedra()
-    tablas = [
-        tabla_combinatoria(),
-        tabla_binomial(),
-        tabla_poisson(),
-        tabla_exponencial(),
-        tabla_normal(normal, cuantiles),
-        tabla_t(t),
-        tabla_chi2(chi2),
-    ]
+    tablas = [tabla_normal(normal, cuantiles), tabla_t(t), tabla_chi2(chi2)]
     if fallas:
         print(f"{len(fallas)} valor(es) no coinciden:")
         for f in fallas[:40]:
@@ -463,7 +269,7 @@ def main() -> int:
         escribir(tabla, orden)
     celdas = sum(len(f) - 1 for t in tablas for b in t["bloques"] for f in b["filas"])
     print(f"tablas: {len(tablas)} tablas, {celdas} valores, todos por dos caminos;")
-    print("        normal, t y chi cuadrado iguales a las de la cátedra.")
+    print("        iguales número a número a las de la cátedra.")
     return 0
 
 

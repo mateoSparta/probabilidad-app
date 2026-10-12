@@ -1,51 +1,100 @@
 # Hoja de fórmulas de la guía 1 (PLAN.md §12.1). Sale de las fórmulas de los
 # skills y de la teoría de la guía; ver revision/formulas.md.
+#
+# Cada fórmula tiene un nombre, una descripción breve de para qué sirve y la
+# expresión (LaTeX, sin delimitadores), que se muestra centrada.
 guia: 1
 bloques:
   - titulo: Axiomas y propiedades
     formulas:
-      - 'P(\Omega) = 1, \qquad P(A) \ge 0'
-      - 'A \cap B = \emptyset \implies P(A \cup B) = P(A) + P(B)'
-      - 'P(A^c) = 1 - P(A)'
-      - 'A \subset B \implies P(B \setminus A) = P(B) - P(A)'
-      - 'P(A \cup B) = P(A) + P(B) - P(A \cap B)'
-      - 'P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(AB) - P(AC) - P(BC) + P(ABC)'
+      - nombre: Axiomas
+        descripcion: Toda probabilidad es no negativa y asigna 1 al espacio muestral.
+        tex: 'P(\Omega) = 1, \qquad P(A) \ge 0'
+      - nombre: Aditividad
+        descripcion: Las probabilidades de eventos disjuntos se suman.
+        tex: 'A \cap B = \emptyset \implies P(A \cup B) = P(A) + P(B)'
+      - nombre: Complemento
+        descripcion: La probabilidad de que el evento no ocurra.
+        tex: 'P(A^c) = 1 - P(A)'
+      - nombre: Diferencia
+        descripcion: La probabilidad de la parte de $B$ que queda fuera de $A$, si $A \subset B$.
+        tex: 'A \subset B \implies P(B \setminus A) = P(B) - P(A)'
+      - nombre: Unión de dos eventos
+        descripcion: Se suman las probabilidades y se descuenta la intersección, contada dos veces.
+        tex: 'P(A \cup B) = P(A) + P(B) - P(A \cap B)'
+      - nombre: Unión de tres eventos
+        descripcion: Inclusión-exclusión, que alterna las intersecciones de a dos y de a tres.
+        tex: '\begin{aligned} P(A \cup B \cup C) &= P(A) + P(B) + P(C) \\ &\quad - P(AB) - P(AC) - P(BC) + P(ABC) \end{aligned}'
 
   - titulo: Álgebras de eventos
     formulas:
-      - '\Omega \in \mathcal{A}, \qquad A \in \mathcal{A} \implies A^c \in \mathcal{A}'
-      - 'A, B \in \mathcal{A} \implies A \cup B \in \mathcal{A}'
+      - nombre: Definición de álgebra
+        descripcion: Contiene al espacio muestral y es cerrada por complemento y por unión finita.
+        tex: '\begin{gathered} \Omega \in \mathcal{A} \\ A \in \mathcal{A} \implies A^c \in \mathcal{A} \\ A, B \in \mathcal{A} \implies A \cup B \in \mathcal{A} \end{gathered}'
 
   - titulo: Espacios discretos y equiprobables
     formulas:
-      - 'P(A) = \sum_{\omega \in A} p(\omega), \qquad \sum_{\omega \in \Omega} p(\omega) = 1'
-      - '\text{Laplace: } P(A) = \dfrac{\#A}{\#\Omega}'
-      - '\text{geométrica: } P(A) = \dfrac{\text{medida}(A)}{\text{medida}(\Omega)}'
+      - nombre: Espacio discreto
+        descripcion: La probabilidad de un evento es la suma de los pesos de sus puntos.
+        tex: 'P(A) = \sum_{\omega \in A} p(\omega), \qquad \sum_{\omega \in \Omega} p(\omega) = 1'
+      - nombre: Regla de Laplace
+        descripcion: En un espacio equiprobable, casos favorables sobre casos posibles.
+        tex: 'P(A) = \dfrac{\#A}{\#\Omega}'
+      - nombre: Probabilidad geométrica
+        descripcion: Para un punto elegido al azar en una región, cociente de medidas.
+        tex: 'P(A) = \dfrac{\operatorname{medida}(A)}{\operatorname{medida}(\Omega)}'
 
   - titulo: Conteo
     formulas:
-      - '\text{con orden, con reposición: } n^k'
-      - '\text{con orden, sin reposición: } \dfrac{n!}{(n-k)!}'
-      - '\text{sin orden, sin reposición: } \dbinom{n}{k} = \dfrac{n!}{k!\,(n-k)!}'
-      - '\text{permutaciones con repetición: } \dfrac{n!}{n_1! \cdots n_r!}'
-      - '\text{ocupación, } n \text{ bolas distinguibles en } r \text{ cajas: } r^n'
-      - '\text{ocupación, indistinguibles: } \dbinom{n + r - 1}{r - 1}'
+      - nombre: Con orden y con reposición
+        descripcion: Secuencias de $k$ elementos elegidos entre $n$, que pueden repetirse.
+        tex: 'n^k'
+      - nombre: Con orden y sin reposición
+        descripcion: Secuencias de $k$ elementos distintos elegidos entre $n$.
+        tex: '\dfrac{n!}{(n-k)!}'
+      - nombre: Sin orden y sin reposición
+        descripcion: Subconjuntos de $k$ elementos de un conjunto de $n$.
+        tex: '\dbinom{n}{k} = \dfrac{n!}{k!\,(n-k)!}'
+      - nombre: Permutaciones con repetición
+        descripcion: Ordenamientos de $n$ objetos en grupos de $n_1, \dots, n_r$ iguales.
+        tex: '\dfrac{n!}{n_1! \cdots n_r!}'
+      - nombre: Ocupación, bolas distinguibles
+        descripcion: Formas de ubicar $n$ bolas distinguibles en $r$ cajas.
+        tex: 'r^n'
+      - nombre: Ocupación, bolas indistinguibles
+        descripcion: Formas de repartir $n$ bolas iguales en $r$ cajas.
+        tex: '\dbinom{n + r - 1}{r - 1}'
 
   - titulo: Continuidad
     formulas:
-      - 'A_n \subset A_{n+1} \implies P\!\left(\bigcup_{n \ge 1} A_n\right) = \lim_{n \to \infty} P(A_n)'
-      - 'B_{n+1} \subset B_n \implies P\!\left(\bigcap_{n \ge 1} B_n\right) = \lim_{n \to \infty} P(B_n)'
+      - nombre: Sucesión creciente
+        descripcion: La probabilidad de la unión es el límite de las probabilidades.
+        tex: 'A_n \subset A_{n+1} \implies P\!\left(\bigcup_{n \ge 1} A_n\right) = \lim_{n \to \infty} P(A_n)'
+      - nombre: Sucesión decreciente
+        descripcion: La probabilidad de la intersección es el límite de las probabilidades.
+        tex: 'B_{n+1} \subset B_n \implies P\!\left(\bigcap_{n \ge 1} B_n\right) = \lim_{n \to \infty} P(B_n)'
 
   - titulo: Probabilidad condicional, total y Bayes
     formulas:
-      - 'P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}, \qquad P(B) > 0'
-      - 'P(A_1 \cap \cdots \cap A_n) = P(A_1)\,P(A_2 \mid A_1) \cdots P(A_n \mid A_1 \cap \cdots \cap A_{n-1})'
-      - 'P(A) = \sum_i P(A \mid B_i)\,P(B_i)'
-      - 'P(B_j \mid A) = \dfrac{P(A \mid B_j)\,P(B_j)}{\sum_i P(A \mid B_i)\,P(B_i)}'
-    nota: 'En las dos últimas, $B_1, B_2, \dots$ es una partición de $\Omega$.'
+      - nombre: Probabilidad condicional
+        descripcion: La probabilidad de $A$ cuando se sabe que ocurrió $B$.
+        tex: 'P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}, \qquad P(B) > 0'
+      - nombre: Regla del producto
+        descripcion: La probabilidad de una intersección, recorriendo las ramas de un árbol.
+        tex: '\begin{aligned} &P(A_1 \cap \cdots \cap A_n) \\ &\quad = P(A_1)\,P(A_2 \mid A_1) \cdots P(A_n \mid A_1 \cap \cdots \cap A_{n-1}) \end{aligned}'
+      - nombre: Probabilidad total
+        descripcion: Promedia las condicionales sobre una partición $B_1, B_2, \dots$ de $\Omega$.
+        tex: 'P(A) = \sum_i P(A \mid B_i)\,P(B_i)'
+      - nombre: Regla de Bayes
+        descripcion: Invierte el condicionamiento, de $P(A \mid B_j)$ a $P(B_j \mid A)$.
+        tex: 'P(B_j \mid A) = \dfrac{P(A \mid B_j)\,P(B_j)}{\sum_i P(A \mid B_i)\,P(B_i)}'
 
   - titulo: Independencia
     formulas:
-      - 'P(A \cap B) = P(A)\,P(B)'
-      - 'P\!\left(\bigcap_{i \in J} A_i\right) = \prod_{i \in J} P(A_i) \quad \text{para todo } J \subset \{1, \dots, n\}'
+      - nombre: Dos eventos
+        descripcion: Saber que ocurrió uno no cambia la probabilidad del otro.
+        tex: 'P(A \cap B) = P(A)\,P(B)'
+      - nombre: Varios eventos
+        descripcion: Independencia mutua, con el producto para toda subfamilia.
+        tex: 'P\!\left(\bigcap_{i \in J} A_i\right) = \prod_{i \in J} P(A_i) \quad \forall J \subset \{1, \dots, n\}'
     nota: 'Si $A$ y $B$ son independientes, también lo son $A^c$ y $B$, $A$ y $B^c$, y $A^c$ y $B^c$.'

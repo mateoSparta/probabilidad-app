@@ -204,3 +204,11 @@ export const IconoImprimir = () => (
     <rect x="6" y="14" width="12" height="8" rx="1" />
   </Svg>
 )
+
+/** Distribuciones: una campana sobre un eje (de la calculadora). */
+export const IconoDistribuciones = () => (
+  <Svg>
+    <path d="M3 19h18" />
+    <path d="M2 17c4 0 5.5-10 10-10s6 10 10 10" />
+  </Svg>
+)

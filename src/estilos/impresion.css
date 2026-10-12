@@ -38,9 +38,8 @@
   }
 
   /* --- hoja de fórmulas: dos columnas, cada guía con su título a todo el
-     ancho y ningún tema partido entre columnas o páginas --- */
+     ancho y entera en una página, y ninguna ficha partida --- */
 
-  /* Cada guía entera en una página: así su título nunca queda solo al pie. */
   #impresion .hoja__guia {
     columns: 2;
     column-gap: 7mm;
@@ -54,72 +53,75 @@
     border-bottom: 0.6pt solid #000;
     font-size: 10.5pt;
   }
-  #impresion .hoja__bloque {
-    break-inside: avoid;
-    margin: 0 0 2.5mm;
-  }
+  #impresion .hoja__bloque { margin: 0 0 2mm; }
   #impresion .hoja__tema {
-    margin: 0 0 0.6mm;
-    font-size: 8.5pt;
+    margin: 0 0 1mm;
+    font-size: 7pt;
+    color: #000;
+    break-after: avoid;
   }
-  #impresion .hoja__formulas { gap: 0.5mm; }
-  #impresion .hoja__formulas li { overflow: visible; }
+  #impresion .hoja__fichas { display: block; }
+  #impresion .ficha-formula {
+    display: block;
+    break-inside: avoid;
+    margin: 0 0 1.6mm;
+    padding: 0.8mm 1.6mm 0.4mm;
+    background: none;
+    border: 0;
+    border-left: 0.6pt solid #999;
+    border-radius: 0;
+  }
+  #impresion .ficha-formula__nombre { font-size: 8pt; }
+  #impresion .ficha-formula__descripcion {
+    margin-top: 0.2mm;
+    font-size: 6.8pt;
+    font-style: italic;
+    color: #333;
+  }
+  #impresion .ficha-formula__tex {
+    padding-top: 0.6mm;
+    overflow: visible;
+  }
+  #impresion .ficha-formula__tex .katex-display { margin: 0.4mm 0; }
   #impresion .hoja__nota {
     margin-top: 0.5mm;
-    font-size: 7.5pt;
+    font-size: 7pt;
   }
 
-  /* --- tablas: cifras chicas pero legibles; cada bloque entero en una
-     página --- */
+  /* --- tablas: el gráfico y el recuadro arriba, las cifras abajo; cada
+     tabla entera en su página --- */
 
-  #impresion .tabla-num { margin-bottom: 5mm; }
-  /* Las tablas que entran en una página no se parten; la binomial y la
-     Poisson, que ocupan varias, empiezan en una página nueva, para que su
-     título quede arriba de su primer bloque. */
-  #impresion .tabla-num { break-inside: avoid-page; }
-  #impresion .tabla-num--binomial,
-  #impresion .tabla-num--poisson {
-    break-inside: auto;
-    break-before: page;
+  #impresion .tabla-num {
+    margin-bottom: 5mm;
+    break-inside: avoid-page;
   }
+  #impresion .tabla-num + .tabla-num { break-before: page; }
   #impresion .tabla-num__titulo {
-    margin: 0 0 0.8mm;
-    font-size: 10.5pt;
-  }
-  #impresion .tabla-num__descripcion {
     margin: 0 0 2mm;
-    font-size: 7.5pt;
+    font-size: 12pt;
   }
-  #impresion .tabla-num__bloques { gap: 3mm; }
+  #impresion .tabla-num__cabeza {
+    gap: 3mm 8mm;
+    margin-bottom: 3mm;
+  }
+  #impresion .grafico-tabla {
+    width: 75mm;
+    background: #fff;
+    border-color: #555;
+    --grafico-area: #d6d6d6;
+  }
+  #impresion .grafico-tabla__rotulo { font-size: 8pt; }
+  #impresion .tabla-num__recuerda {
+    font-size: 9pt;
+    border-color: #000;
+  }
+  #impresion .tabla-num__bloques { gap: 4mm; }
+  #impresion .tabla-num__subtitulo { font-size: 10pt; }
   #impresion .tabla-num__bloque { break-inside: avoid; }
   #impresion .tabla-num__marco { overflow: visible; }
-  #impresion .tabla-num table { font-size: 7pt; }
+  #impresion .tabla-num table { font-size: 8pt; }
   #impresion .tabla-num th,
-  #impresion .tabla-num td { padding: 0.15mm 1.1mm; }
-
-  /* La binomial (diecinueve tablas chicas) y la Poisson (cuatro bloques de
-     diez columnas) van en dos columnas. */
-  #impresion .tabla-num--binomial .tabla-num__bloques,
-  #impresion .tabla-num--poisson .tabla-num__bloques {
-    display: block;
-    columns: 2;
-    column-gap: 6mm;
-  }
-  #impresion .tabla-num--binomial .tabla-num__bloque,
-  #impresion .tabla-num--poisson .tabla-num__bloque { margin-bottom: 2.5mm; }
-  #impresion .tabla-num--binomial table,
-  #impresion .tabla-num--poisson table { font-size: 6.5pt; }
-  #impresion .tabla-num--binomial th,
-  #impresion .tabla-num--binomial td,
-  #impresion .tabla-num--poisson th,
-  #impresion .tabla-num--poisson td { padding: 0.1mm 0.8mm; }
-
-  /* Los factoriales son una columna angosta: van al lado de los combinatorios. */
-  #impresion .tabla-num--combinatoria .tabla-num__bloques {
-    display: flex;
-    align-items: flex-start;
-    gap: 8mm;
-  }
+  #impresion .tabla-num td { padding: 0.3mm 1.6mm; }
 
   /* --- el kit: una carátula, y las tablas desde una página nueva --- */
 

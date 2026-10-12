@@ -15,6 +15,7 @@ import { claveItem } from '../dominio/tipos'
 import type {
   BloqueTeoria,
   Ejercicio,
+  FichaDistribucion,
   Guia,
   HojaFormulas,
   PasoSecuencia,
@@ -69,6 +70,12 @@ const crudoTablas = import.meta.glob('/content/tablas/*.yaml', {
   eager: true,
 }) as Crudo
 
+const crudoDistribuciones = import.meta.glob('/content/distribuciones.yaml', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Crudo
+
 const crudoConfig = import.meta.glob('/content/config.yaml', {
   query: '?raw',
   import: 'default',
@@ -101,6 +108,10 @@ export const hojasFormulas: HojaFormulas[] = Object.values(crudoFormulas)
 export const tablas: Tabla[] = Object.values(crudoTablas)
   .map((txt) => load(txt) as Tabla)
   .sort((a, b) => a.orden - b.orden)
+
+/** Las fichas de la calculadora de distribuciones, en el orden de la tabla de la cátedra. */
+export const fichasDistribuciones: FichaDistribucion[] =
+  (load(Object.values(crudoDistribuciones)[0] ?? '[]') as FichaDistribucion[] | null) ?? []
 
 // ------------------------------------------------------------------ skills
 

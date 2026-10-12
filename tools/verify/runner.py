@@ -35,7 +35,7 @@ sys.path.insert(0, str(AQUI))
 
 
 #  Los modulos de infraestructura no son modelos.
-NO_SON_MODELOS = {"comun", "runner", "tablas"}
+NO_SON_MODELOS = {"comun", "runner", "tablas", "distribuciones"}
 
 
 def modelos(filtro: str | None) -> list[str]:

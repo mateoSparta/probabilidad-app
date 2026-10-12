@@ -23,6 +23,8 @@ import { load } from 'js-yaml'
 import katex from 'katex'
 import { evaluate } from 'mathjs'
 
+import { UNIVARIADAS } from '../src/dominio/distribuciones.ts'
+
 const RAIZ = resolve(import.meta.dirname, '..')
 const CONTENT = join(RAIZ, 'content')
 const VERIFICACION = join(CONTENT, '.verificacion', 'resultados.json')
@@ -740,7 +742,8 @@ function errorKatex(tex: string): string | null {
   }
 }
 
-type BloqueFormulasCrudo = { titulo?: string; formulas?: unknown[]; nota?: string }
+type FormulaCruda = { nombre?: string; descripcion?: string; tex?: string }
+type BloqueFormulasCrudo = { titulo?: string; formulas?: FormulaCruda[]; nota?: string }
 const hojas = listar(join(CONTENT, 'formulas'), '.yaml').map((r) => ({
   ruta: r,
   hoja: leerYaml<{ guia?: number; bloques?: BloqueFormulasCrudo[] }>(r) ?? {},
@@ -767,12 +770,20 @@ for (const { ruta, hoja } of hojas) {
     if (!b.formulas?.length) err(`${quien}: no tiene fórmulas`)
     for (const f of b.formulas ?? []) {
       nFormulas++
-      if (typeof f !== 'string') {
-        err(`${quien}: una fórmula que no es texto`)
+      const deQuien = `${quien}, "${f?.nombre ?? '(sin nombre)'}"`
+      if (!f?.nombre?.trim() || !f?.descripcion?.trim() || typeof f?.tex !== 'string') {
+        err(`${deQuien}: cada fórmula necesita nombre, descripcion y tex`)
         continue
       }
-      const e = errorKatex(f)
-      if (e) err(`${quien}: KaTeX no parsea \`${f}\` (${e})`)
+      revisarEstilo(deQuien, f.nombre)
+      revisarEstilo(deQuien, f.descripcion)
+      // La expresión se muestra sola y centrada: el texto va en el nombre o
+      // en la descripción, no dentro de la fórmula.
+      if (/^\\text\{[^}]*:\s*\}/.test(f.tex)) {
+        err(`${deQuien}: la fórmula empieza con un rótulo de texto; va en el nombre`)
+      }
+      const e = errorKatex(f.tex)
+      if (e) err(`${deQuien}: KaTeX no parsea \`${f.tex}\` (${e})`)
     }
   }
 }
@@ -782,7 +793,8 @@ type TablaCruda = {
   titulo?: string
   guia?: number
   orden?: number
-  descripcion?: string
+  grafico?: string
+  recuerda?: string
   bloques?: { esquina?: string; columnas?: string[]; filas?: string[][] }[]
 }
 const tablasCrudas = listar(join(CONTENT, 'tablas'), '.yaml').map((r) => leerYaml<TablaCruda>(r) ?? {})
@@ -795,6 +807,9 @@ for (const t of tablasCrudas) {
   if (!t.id || !t.titulo || typeof t.guia !== 'number' || typeof t.orden !== 'number') {
     err(`${donde}: le falta id, titulo, guia u orden`)
   }
+  if (t.grafico !== 'normal' && t.grafico !== 't' && t.grafico !== 'chi2') {
+    err(`${donde}: \`grafico\` tiene que ser normal, t o chi2`)
+  }
   if (t.guia !== undefined && guiasEvaluadas.size && !guiasEvaluadas.has(t.guia)) {
     err(`${donde}: la guía ${t.guia} no está en ninguna evaluación de config.yaml`)
   }
@@ -806,8 +821,42 @@ for (const t of tablasCrudas) {
     }
   }
 }
+// Las fichas de distribuciones: cada una con su cuenta en el dominio (salvo
+// las multivariadas, que tienen calculadora propia), y al revés.
+type FichaCruda = Record<string, unknown> & { id?: string; nombre?: string; grupo?: string }
+const rutaFichas = join(CONTENT, 'distribuciones.yaml')
+const fichas = existsSync(rutaFichas) ? (leerYaml<FichaCruda[]>(rutaFichas) ?? []) : []
+const MULTIVARIADAS = new Set(['multinomial', 'normal-bivariada'])
+const idsUnivariadas = new Set(UNIVARIADAS.map((d) => d.id))
+for (const f of fichas) {
+  const donde = `distribución ${f.id ?? '(sin id)'}`
+  if (!f.id || !f.nombre || !f.grupo) err(`${donde}: le falta id, nombre o grupo`)
+  if (f.id && !idsUnivariadas.has(f.id) && !MULTIVARIADAS.has(f.id)) {
+    err(`${donde}: no tiene cuenta en src/dominio/distribuciones.ts`)
+  }
+  for (const campo of ['notacion', 'funcion', 'soporte', 'parametros', 'esperanza', 'varianza', 'supervivencia']) {
+    const v = f[campo]
+    if (v === undefined) {
+      if (campo !== 'supervivencia') err(`${donde}: falta \`${campo}\``)
+      continue
+    }
+    const e = errorKatex(String(v))
+    if (e) err(`${donde}, ${campo}: KaTeX no parsea \`${v}\` (${e})`)
+  }
+  for (const eq of (f.equivalencias as string[] | undefined) ?? []) {
+    const e = errorKatex(eq)
+    if (e) err(`${donde}, equivalencias: KaTeX no parsea \`${eq}\` (${e})`)
+  }
+  revisarEstilo(donde, f.modelo)
+  revisarEstilo(donde, f.nota)
+}
+for (const id of idsUnivariadas) {
+  if (!fichas.some((f) => f.id === id)) err(`la distribución ${id} no tiene ficha en content/distribuciones.yaml`)
+}
+
 console.log(
-  `check: ${nFormulas} fórmulas en ${hojas.length} hojas, ${tablasCrudas.length} tablas con ${nCeldas} valores.`,
+  `check: ${nFormulas} fórmulas en ${hojas.length} hojas, ${tablasCrudas.length} tablas con ${nCeldas} valores, ` +
+    `${fichas.length} distribuciones.`,
 )
 
 // ------------------------------------------------------------------ salida

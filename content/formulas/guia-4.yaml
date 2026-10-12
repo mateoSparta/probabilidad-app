@@ -4,28 +4,58 @@ guia: 4
 bloques:
   - titulo: Método de la función de distribución
     formulas:
-      - 'F_Y(t) = P(g(X) \le t)'
-      - 'g \text{ creciente: } F_Y(t) = F_X\!\left(g^{-1}(t)\right)'
-      - 'g \text{ decreciente, } X \text{ continua: } F_Y(t) = 1 - F_X\!\left(g^{-1}(t)\right)'
-      - 'g \text{ monótona: } f_Y(t) = f_X\!\left(g^{-1}(t)\right) \left\lvert \dfrac{d}{dt} g^{-1}(t) \right\rvert'
+      - nombre: Planteo
+        descripcion: Se expresa el evento $\{g(X) \le t\}$ en términos de $X$.
+        tex: 'F_Y(t) = P(g(X) \le t)'
+      - nombre: Transformación creciente
+        descripcion: La distribución de $Y$ es la de $X$ compuesta con la inversa.
+        tex: 'F_Y(t) = F_X\!\left(g^{-1}(t)\right)'
+      - nombre: Transformación decreciente
+        descripcion: Para $X$ continua, el evento se invierte y se usa el complemento.
+        tex: 'F_Y(t) = 1 - F_X\!\left(g^{-1}(t)\right)'
+      - nombre: Densidad de una transformación monótona
+        descripcion: La densidad de $X$ en la inversa, por la derivada de la inversa en valor absoluto.
+        tex: 'f_Y(t) = f_X\!\left(g^{-1}(t)\right) \left\lvert \dfrac{d}{dt} g^{-1}(t) \right\rvert'
 
   - titulo: Cambio de variables
     formulas:
-      - 'f_{U,V}(u, v) = f_{X,Y}\big(g^{-1}(u, v)\big)\, \lvert J_{g^{-1}}(u, v) \rvert'
-      - 'J_{g^{-1}}(u, v) = \det \begin{pmatrix} \partial x / \partial u & \partial x / \partial v \\ \partial y / \partial u & \partial y / \partial v \end{pmatrix}'
-      - '\operatorname{sop}(U, V) = g\big(\operatorname{sop}(X, Y)\big)'
+      - nombre: Densidad transformada
+        descripcion: Para una transformación inyectiva y diferenciable de un vector continuo.
+        tex: 'f_{U,V}(u, v) = f_{X,Y}\big(g^{-1}(u, v)\big)\, \lvert J_{g^{-1}}(u, v) \rvert'
+      - nombre: Jacobiano
+        descripcion: El determinante de las derivadas de la transformación inversa.
+        tex: 'J_{g^{-1}}(u, v) = \det \begin{pmatrix} \partial x / \partial u & \partial x / \partial v \\ \partial y / \partial u & \partial y / \partial v \end{pmatrix}'
+      - nombre: Soporte
+        descripcion: El soporte nuevo es la imagen del soporte original.
+        tex: '\operatorname{sop}(U, V) = g\big(\operatorname{sop}(X, Y)\big)'
 
   - titulo: Mínimo y máximo de independientes
     formulas:
-      - 'P\big(\min_i X_i > t\big) = \prod_i P(X_i > t)'
-      - 'P\big(\max_i X_i \le t\big) = \prod_i P(X_i \le t)'
-      - 'X_i \sim \text{Exp}(\lambda_i): \ \min(X_1, X_2) \sim \text{Exp}(\lambda_1 + \lambda_2)'
-      - 'P(X_1 < X_2) = \dfrac{\lambda_1}{\lambda_1 + \lambda_2}'
+      - nombre: Mínimo
+        descripcion: El mínimo supera $t$ si todas las variables lo superan.
+        tex: 'P\big(\min_i X_i > t\big) = \prod_i P(X_i > t)'
+      - nombre: Máximo
+        descripcion: El máximo no supera $t$ si ninguna variable lo supera.
+        tex: 'P\big(\max_i X_i \le t\big) = \prod_i P(X_i \le t)'
+      - nombre: Mínimo de exponenciales
+        descripcion: Es exponencial, con la suma de las intensidades.
+        tex: 'X_i \sim \text{Exp}(\lambda_i) \implies \min(X_1, X_2) \sim \text{Exp}(\lambda_1 + \lambda_2)'
+      - nombre: Cuál ocurre primero
+        descripcion: La probabilidad de que la primera exponencial sea la menor.
+        tex: 'P(X_1 < X_2) = \dfrac{\lambda_1}{\lambda_1 + \lambda_2}'
 
   - titulo: Suma de independientes
     formulas:
-      - 'f_{X+Y}(z) = \int f_X(x)\, f_Y(z - x)\, dx'
-      - 'p_{X+Y}(z) = \sum_x p_X(x)\, p_Y(z - x)'
-      - '\text{Poisson}(\lambda) + \text{Poisson}(\mu) = \text{Poisson}(\lambda + \mu)'
-      - 'X \mid (X + Y = n) \sim \text{Bin}\!\left(n, \dfrac{\lambda}{\lambda + \mu}\right)'
+      - nombre: Convolución continua
+        descripcion: La densidad de la suma de dos variables continuas independientes.
+        tex: 'f_{X+Y}(z) = \int_{-\infty}^{\infty} f_X(x)\, f_Y(z - x)\, dx'
+      - nombre: Convolución discreta
+        descripcion: La función de probabilidad de la suma de dos discretas independientes.
+        tex: 'p_{X+Y}(z) = \sum_x p_X(x)\, p_Y(z - x)'
+      - nombre: Suma de Poisson
+        descripcion: Las Poisson independientes se suman en el parámetro.
+        tex: '\text{Poisson}(\lambda) + \text{Poisson}(\mu) = \text{Poisson}(\lambda + \mu)'
+      - nombre: Condicionar a la suma
+        descripcion: Dada la suma de dos Poisson independientes, cada una es binomial.
+        tex: 'X \mid (X + Y = n) \sim \text{Bin}\!\left(n, \dfrac{\lambda}{\lambda + \mu}\right)'
     nota: 'También son cerradas bajo la suma las normales independientes, cuyas medias y varianzas se suman, y las exponenciales de igual tasa, cuya suma es Gamma.'

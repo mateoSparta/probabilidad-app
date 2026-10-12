@@ -3,10 +3,11 @@
 # además con fuentes/teoria/Tablas.pdf. No editar a mano.
 
 id: t
-titulo: 'Cuantiles de la t de Student'
+titulo: 'Cuantiles de la distribución $t$ de Student'
 guia: 10
-orden: 6
-descripcion: '$P(T \le k_\alpha) = \alpha$, con $T \sim t_\nu$. Por simetría, $k_{1-\alpha} = -k_\alpha$.'
+orden: 2
+grafico: t
+recuerda: '$k_{1-\alpha} = -k_\alpha$'
 bloques:
   - titulo: null
     esquina: '$\nu \backslash \alpha$'

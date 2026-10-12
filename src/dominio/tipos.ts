@@ -188,11 +188,19 @@ export type EstadoSkill = 'sin_explorar' | 'en_desarrollo' | 'dominado' | 'flojo
 
 // ----------------------------------------------- material para el examen
 
+/** Una fórmula de la hoja: su nombre, para qué sirve y la expresión. */
+export type FormulaHoja = {
+  nombre: string
+  /** Una línea, con `$...$`. */
+  descripcion: string
+  /** LaTeX, sin los delimitadores: matemática sola, que se muestra centrada. */
+  tex: string
+}
+
 /** Un tema de la hoja de fórmulas: su título, sus fórmulas y una aclaración. */
 export type BloqueFormulas = {
   titulo: string
-  /** LaTeX, sin los delimitadores. */
-  formulas: string[]
+  formulas: FormulaHoja[]
   /** Texto con `$...$`. */
   nota?: string
 }
@@ -220,6 +228,28 @@ export type Tabla = {
   /** La guía en la que se usa por primera vez: decide en qué etapa entra. */
   guia: number
   orden: number
-  descripcion: string
+  /** El gráfico de la distribución que encabeza la tabla, como en las de la cátedra. */
+  grafico: 'normal' | 't' | 'chi2'
+  /** Lo que la cátedra pone en el recuadro "Recuerda", con `$...$`. */
+  recuerda?: string
   bloques: BloqueTabla[]
+}
+
+/** La ficha de una distribución (content/distribuciones.yaml); la cuenta está en dominio/distribuciones.ts. */
+export type FichaDistribucion = {
+  id: string
+  nombre: string
+  grupo: 'discreta' | 'continua' | 'multivariada'
+  /** LaTeX, sin los delimitadores. */
+  notacion: string
+  funcion: string
+  soporte: string
+  parametros: string
+  esperanza: string
+  varianza: string
+  /** Para qué se usa, con `$...$`. */
+  modelo: string
+  supervivencia?: string
+  equivalencias?: string[]
+  nota?: string
 }

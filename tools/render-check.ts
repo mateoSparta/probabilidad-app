@@ -110,6 +110,7 @@ try {
     ['simulacro', 'Simulacro'],
     ['seguimiento', 'Seguimiento'],
     ['formulas', 'Fórmulas y tablas'],
+    ['distribuciones', 'Distribuciones'],
   ]) {
     const cab = render(createElement(Cabecera, { ruta: { seccion, guia: 1 } }))
     afirmar(cab.includes('class="hamburguesa"'), `en ${seccion} no está el menú de hamburguesa`)
@@ -117,7 +118,7 @@ try {
     afirmar(lista.includes('>Inicio<'), `en ${seccion} el menú no ofrece volver al inicio`)
     afirmar(!lista.includes(`</svg>${nombre}<`), `en ${seccion} el menú ofrece la sección actual`)
     const opciones = (lista.match(/class="navegacion__opcion"/g) ?? []).length
-    afirmar(opciones === 5, `en ${seccion} el menú tiene ${opciones} opciones en lugar de 5`)
+    afirmar(opciones === 6, `en ${seccion} el menú tiene ${opciones} opciones en lugar de 6`)
   }
 
   // --- la guía 1 ---
@@ -276,11 +277,22 @@ try {
       plan: planMenu,
     }),
   )
-  // La hoja de fórmulas es una herramienta: va en la fila aparte, más baja.
-  afirmar(
-    /class="menu__grilla menu__grilla--herramientas"[\s\S]*href="#\/formulas"[\s\S]*Fórmulas y tablas/.test(menu),
-    'el inicio no tiene la tarjeta de fórmulas y tablas en la fila de herramientas',
-  )
+  // Seis opciones del mismo tamaño en la misma grilla.
+  const tarjetas = (menu.match(/class="menu__opcion"/g) ?? []).length
+  afirmar(tarjetas === 6 && menu.includes('href="#/formulas"') && menu.includes('href="#/distribuciones"'),
+    `el inicio tiene ${tarjetas} opciones en lugar de las seis, con fórmulas y distribuciones`)
+  afirmar(!menu.includes('menu__grilla--herramientas'), 'sigue la fila aparte de herramientas')
+
+  // --- distribuciones ---
+  const { VistaDistribuciones } = await servidor.ssrLoadModule('/src/vistas/VistaDistribuciones.tsx')
+  const dist = render(createElement(VistaDistribuciones, {}))
+  const chips = (dist.match(/class="chip-opcion[^"]*" aria-pressed/g) ?? []).length
+  afirmar(chips === contenido.fichasDistribuciones.length && chips === 19,
+    `el selector tiene ${chips} distribuciones en lugar de 19`)
+  afirmar(dist.includes('class="grafico-dist"') && dist.includes('class="resultado__valor"') && !dist.includes('mate-roto'),
+    'la calculadora no dibuja el gráfico o el resultado de la normal')
+  afirmar(/class="resultado__valor">0,\d{6}</.test(dist), 'la calculadora no muestra la probabilidad con seis decimales')
+  afirmar(dist.includes('class="dist__tabla" href="#/formulas"'), 'la ficha de la normal no lleva a su tabla')
 
   // --- fórmulas y tablas ---
   const { VistaFormulas } = await servidor.ssrLoadModule('/src/vistas/VistaFormulas.tsx')
@@ -289,6 +301,13 @@ try {
     'la sección de fórmulas no se dibuja o no tiene el botón de imprimir')
   afirmar(!formulas.includes('mate-roto') && formulas.includes('class="katex'),
     'hay fórmulas de la hoja que KaTeX no pudo parsear')
+  // Cada fórmula es una ficha con nombre, descripción y la expresión centrada.
+  const fichasF = (formulas.match(/<article class="ficha-formula">/g) ?? []).length
+  afirmar(fichasF > 100 && (formulas.match(/class="ficha-formula__descripcion"/g) ?? []).length === fichasF &&
+    (formulas.match(/class="katex-display"/g) ?? []).length >= fichasF,
+    `las fórmulas no van en fichas con nombre, descripción y expresión centrada (${fichasF})`)
+  afirmar(formulas.includes('aria-label="Índice de las fórmulas"') && formulas.includes('id="formulas-guia-1"'),
+    'falta el índice de la izquierda, con sus anclas')
   for (let g = 1; g <= 8; g++) {
     afirmar(formulas.includes(`<span class="hoja__numero">Guía ${g}</span>`), `la hoja del parcial no tiene la guía ${g}`)
   }
@@ -298,10 +317,13 @@ try {
   afirmar(etapasMaterial === 3, `el filtro tiene ${etapasMaterial} opciones en lugar de Parcial, Final y Todas`)
   const { TablasDeExamen, KitExamen } = await servidor.ssrLoadModule('/src/componentes/Material.tsx')
   const tablasParcial = render(createElement(TablasDeExamen, { guias: [1, 2, 3, 4, 5, 6, 7, 8] }))
-  for (const t of ['Factoriales y números combinatorios', 'Binomial acumulada', 'Poisson acumulada', 'Función exponencial', 'Distribución normal estándar']) {
-    afirmar(tablasParcial.includes(t), `las tablas del parcial no incluyen "${t}"`)
-  }
-  afirmar(!tablasParcial.includes('t de Student'), 'las tablas del parcial incluyen la t, que es del final')
+  afirmar(tablasParcial.includes('Tabla de distribución normal') && tablasParcial.includes('Recuerda:') &&
+    tablasParcial.includes('class="grafico-tabla"'), 'la tabla normal no tiene su gráfico y su recuadro, como la de la cátedra')
+  afirmar(!tablasParcial.includes('t de Student') && !tablasParcial.includes('Binomial'),
+    'las tablas del parcial incluyen otras que la normal')
+  const tablasTodas = render(createElement(TablasDeExamen, { guias: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }))
+  afirmar((tablasTodas.match(/class="grafico-tabla"/g) ?? []).length === 3,
+    'no están las tres tablas de la cátedra, cada una con su gráfico')
   afirmar(tablasParcial.includes('<td>0,50399</td>') && tablasParcial.includes('<td>0,97500</td>'),
     'la tabla normal no tiene los valores de la cátedra')
   const kit = render(createElement(KitExamen, { evaluacion: contenido.config.evaluaciones[0] }))

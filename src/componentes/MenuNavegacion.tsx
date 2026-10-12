@@ -21,6 +21,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks'
 
 import { escribirRuta, NOMBRE_SECCION, type Ruta, type Seccion } from '../dominio/ruta'
 import {
+  IconoDistribuciones,
   IconoEjercicios,
   IconoFormulas,
   IconoInicio,
@@ -44,6 +45,7 @@ const OPCIONES: Opcion[] = [
   { seccion: 'simulacro', nombre: NOMBRE_SECCION.simulacro, Icono: IconoSimulacro },
   { seccion: 'seguimiento', nombre: NOMBRE_SECCION.seguimiento, Icono: IconoSeguimiento },
   { seccion: 'formulas', nombre: NOMBRE_SECCION.formulas, Icono: IconoFormulas },
+  { seccion: 'distribuciones', nombre: NOMBRE_SECCION.distribuciones, Icono: IconoDistribuciones },
 ]
 
 type Fase = 'cerrado' | 'abierto' | 'cerrando'

@@ -3,10 +3,10 @@
 # además con fuentes/teoria/Tablas.pdf. No editar a mano.
 
 id: chi2
-titulo: 'Cuantiles de la chi cuadrado'
+titulo: 'Cuantiles de la distribución $\chi^2$'
 guia: 10
-orden: 7
-descripcion: '$P(X \le k_\alpha) = \alpha$, con $X \sim \chi^2_\nu$.'
+orden: 3
+grafico: chi2
 bloques:
   - titulo: null
     esquina: '$\nu \backslash \alpha$'

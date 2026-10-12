@@ -1,11 +1,18 @@
 /**
  * "↑ Subir", al costado derecho de la columna y a la altura de lo que se está
- * leyendo. Lo usan las guías y el panel de skills: se ve sólo cuando lo que
- * marca el comienzo de la página (la fila de círculos de una guía, la primera
- * fila de skills) ya quedó arriba; mientras tanto está oculto, sin foco y sin
- * ocupar lugar en la lectura.
+ * leyendo. Lo usan todas las pantallas largas (guías, skills, fórmulas,
+ * distribuciones) y aparece en todas a la misma distancia de scroll; mientras
+ * tanto está oculto, sin foco y sin ocupar lugar en la lectura.
  */
 import { useEffect, useState } from 'preact/hooks'
+
+/**
+ * Cuánto hay que bajar para que aparezca, en píxeles. Es el promedio
+ * redondeado de dónde aparecía cuando cada pantalla tenía su propio criterio
+ * (339 a 367 en las guías, al salir la fila de círculos; 609 en skills, al
+ * salir la primera fila): un poco más de media pantalla.
+ */
+export const DISTANCIA_SUBIR = 400
 
 export function SubirLateral({ visible }: { visible: boolean }) {
   return (
@@ -25,34 +32,14 @@ export function SubirLateral({ visible }: { visible: boolean }) {
   )
 }
 
-/**
- * Si el elemento ya quedó arriba, fuera de la zona visible.
- *
- * Cuando deja de verse, hay que distinguir si quedó arriba o abajo de la
- * zona visible, y la comparación tiene que ser contra el borde de esa zona
- * (`rootBounds`) y no contra el borde de la ventana: al bajar con la rueda
- * del mouse, el observador avisa cuando el elemento ya pasó debajo de una
- * barra fija pero todavía no salió de la ventana, y no vuelve a avisar
- * después. `margenSuperior` descuenta esa barra, si la hay.
- */
-export function usarQuedoArriba(
-  buscar: () => Element | null | undefined,
-  margenSuperior: number,
-  deps: readonly unknown[],
-): boolean {
-  const [arriba, setArriba] = useState(false)
+/** Si ya se bajó lo suficiente como para mostrar "Subir". */
+export function usarSubir(): boolean {
+  const [visible, setVisible] = useState(false)
   useEffect(() => {
-    const el = buscar()
-    if (!el || typeof IntersectionObserver === 'undefined') return
-    const observador = new IntersectionObserver(
-      ([e]) => {
-        const borde = e.rootBounds?.top ?? 0
-        setArriba(!e.isIntersecting && e.boundingClientRect.bottom <= borde + 1)
-      },
-      { rootMargin: `-${margenSuperior}px 0px 0px 0px` },
-    )
-    observador.observe(el)
-    return () => observador.disconnect()
-  }, deps)
-  return arriba
+    const revisar = () => setVisible(scrollY > DISTANCIA_SUBIR)
+    revisar()
+    addEventListener('scroll', revisar, { passive: true })
+    return () => removeEventListener('scroll', revisar)
+  }, [])
+  return visible
 }

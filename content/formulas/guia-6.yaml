@@ -6,37 +6,66 @@ guia: 6
 bloques:
   - titulo: Bernoulli
     formulas:
-      - 'X \sim \text{Ber}(p): \ P(X = 1) = p, \quad P(X = 0) = 1 - p'
-      - 'E[X] = p, \qquad \operatorname{var}[X] = p(1-p)'
+      - nombre: Función de probabilidad
+        descripcion: Un ensayo, con éxito de probabilidad $p$.
+        tex: 'X \sim \text{Ber}(p): \ P(X = 1) = p, \quad P(X = 0) = 1 - p'
+      - nombre: Esperanza y varianza
+        descripcion: La media es la probabilidad de éxito.
+        tex: 'E[X] = p, \qquad \operatorname{var}[X] = p(1-p)'
 
   - titulo: Binomial
     formulas:
-      - 'X \sim \text{Bin}(n, p): \ P(X = k) = \dbinom{n}{k} p^k (1-p)^{n-k}, \quad k = 0, \dots, n'
-      - 'E[X] = np, \qquad \operatorname{var}[X] = np(1-p)'
+      - nombre: Función de probabilidad
+        descripcion: La cantidad de éxitos en $n$ ensayos independientes; el combinatorio cuenta los órdenes.
+        tex: 'X \sim \text{Bin}(n, p): \ P(X = k) = \dbinom{n}{k} p^k (1-p)^{n-k}'
+      - nombre: Esperanza y varianza
+        descripcion: Las de $n$ Bernoulli independientes, sumadas.
+        tex: 'E[X] = np, \qquad \operatorname{var}[X] = np(1-p)'
 
   - titulo: Geométrica
     formulas:
-      - 'N \sim \mathcal{G}(p): \ P(N = n) = (1-p)^{n-1} p, \quad n \ge 1'
-      - 'P(N > n) = (1-p)^n'
-      - 'E[N] = \dfrac{1}{p}, \qquad \operatorname{var}[N] = \dfrac{1-p}{p^2}'
+      - nombre: Función de probabilidad
+        descripcion: La cantidad de ensayos hasta el primer éxito, contando el del éxito.
+        tex: 'N \sim \mathcal{G}(p): \ P(N = n) = (1-p)^{n-1} p, \quad n \ge 1'
+      - nombre: Cola
+        descripcion: Que haga falta más de $n$ ensayos equivale a $n$ fracasos seguidos.
+        tex: 'P(N > n) = (1-p)^n'
+      - nombre: Esperanza y varianza
+        descripcion: En promedio, $1/p$ ensayos hasta el primer éxito.
+        tex: 'E[N] = \dfrac{1}{p}, \qquad \operatorname{var}[N] = \dfrac{1-p}{p^2}'
 
   - titulo: Pascal
     formulas:
-      - 'N \sim \text{Pas}(k, p): \ P(N = n) = \dbinom{n-1}{k-1} p^k (1-p)^{n-k}, \quad n \ge k'
-      - 'E[N] = \dfrac{k}{p}, \qquad \operatorname{var}[N] = \dfrac{k(1-p)}{p^2}'
+      - nombre: Función de probabilidad
+        descripcion: La cantidad de ensayos hasta el $k$-ésimo éxito; el último ensayo es un éxito.
+        tex: 'N \sim \text{Pas}(k, p): \ P(N = n) = \dbinom{n-1}{k-1} p^k (1-p)^{n-k}, \quad n \ge k'
+      - nombre: Esperanza y varianza
+        descripcion: Las de $k$ geométricas independientes, sumadas.
+        tex: 'E[N] = \dfrac{k}{p}, \qquad \operatorname{var}[N] = \dfrac{k(1-p)}{p^2}'
 
   - titulo: Hipergeométrica
     formulas:
-      - 'X \sim \mathcal{H}(N, d, n): \ P(X = k) = \dfrac{\dbinom{d}{k}\dbinom{N - d}{n - k}}{\dbinom{N}{n}}'
-      - 'E[X] = \dfrac{nd}{N}, \qquad \operatorname{var}[X] = \dfrac{nd(N-d)(N-n)}{N^2(N-1)}'
-    nota: '$N$ elementos, $d$ de ellos marcados, y se extraen $n$ sin reposición.'
+      - nombre: Función de probabilidad
+        descripcion: Éxitos en $n$ extracciones sin reposición de $N$ elementos, $d$ de ellos éxitos.
+        tex: 'X \sim \mathcal{H}(N, d, n): \ P(X = k) = \dfrac{\dbinom{d}{k}\dbinom{N - d}{n - k}}{\dbinom{N}{n}}'
+      - nombre: Esperanza y varianza
+        descripcion: Como en la binomial con $p = d/N$, con un factor de corrección por población finita.
+        tex: 'E[X] = \dfrac{nd}{N}, \qquad \operatorname{var}[X] = \dfrac{nd(N-d)(N-n)}{N^2(N-1)}'
 
   - titulo: Multinomial
     formulas:
-      - 'P(X_1 = k_1, \dots, X_r = k_r) = \dfrac{n!}{k_1! \cdots k_r!}\, p_1^{k_1} \cdots p_r^{k_r}'
-      - 'k_1 + \dots + k_r = n, \qquad p_1 + \dots + p_r = 1'
-      - 'X_i \sim \text{Bin}(n, p_i), \qquad \operatorname{cov}(X_i, X_j) = -n p_i p_j \ (i \ne j)'
+      - nombre: Función de probabilidad
+        descripcion: Cuántos de $n$ ensayos independientes caen en cada una de $r$ categorías.
+        tex: 'P(X_1 = k_1, \dots, X_r = k_r) = \dfrac{n!}{k_1! \cdots k_r!}\, p_1^{k_1} \cdots p_r^{k_r}'
+      - nombre: Restricciones
+        descripcion: Los conteos suman $n$ y las probabilidades suman 1.
+        tex: 'k_1 + \dots + k_r = n, \qquad p_1 + \dots + p_r = 1'
+      - nombre: Marginales y covarianza
+        descripcion: Cada componente es binomial, y dos componentes distintas se correlacionan negativamente.
+        tex: 'X_i \sim \text{Bin}(n, p_i), \qquad \operatorname{cov}(X_i, X_j) = -n p_i p_j \quad (i \ne j)'
 
   - titulo: Pérdida de memoria
     formulas:
-      - 'P(N > n + m \mid N > n) = P(N > m)'
+      - nombre: Geométrica
+        descripcion: Los fracasos pasados no cambian la distribución de lo que falta esperar.
+        tex: 'P(N > n + m \mid N > n) = P(N > m)'

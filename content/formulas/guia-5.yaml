@@ -4,21 +4,39 @@ guia: 5
 bloques:
   - titulo: Densidades condicionales
     formulas:
-      - 'f_{Y \mid X = x}(y) = \dfrac{f_{(X,Y)}(x, y)}{f_X(x)}, \qquad f_X(x) > 0'
-      - 'f_{(X,Y)}(x, y) = f_{Y \mid X = x}(y)\, f_X(x)'
+      - nombre: Densidad condicional
+        descripcion: La distribución de $Y$ sabiendo que $X = x$.
+        tex: 'f_{Y \mid X = x}(y) = \dfrac{f_{(X,Y)}(x, y)}{f_X(x)}, \qquad f_X(x) > 0'
+      - nombre: Conjunta a partir de la condicional
+        descripcion: Se multiplica la condicional por la marginal.
+        tex: 'f_{(X,Y)}(x, y) = f_{Y \mid X = x}(y)\, f_X(x)'
 
   - titulo: Mezclas y Bayes con datos continuos
     formulas:
-      - 'f_X(x) = \sum_j f_{X \mid S = s_j}(x)\, P(S = s_j)'
-      - 'P(S = s \mid X = x) = \dfrac{f_{X \mid S = s}(x)\, P(S = s)}{\sum_j f_{X \mid S = s_j}(x)\, P(S = s_j)}'
+      - nombre: Densidad de una mezcla
+        descripcion: El promedio de las densidades condicionales, ponderado por las causas.
+        tex: 'f_X(x) = \sum_j f_{X \mid S = s_j}(x)\, P(S = s_j)'
+      - nombre: Bayes con una observación continua
+        descripcion: La probabilidad de cada causa después de observar $X = x$; intervienen densidades.
+        tex: 'P(S = s \mid X = x) = \dfrac{f_{X \mid S = s}(x)\, P(S = s)}{\sum_j f_{X \mid S = s_j}(x)\, P(S = s_j)}'
 
   - titulo: Esperanza condicional
     formulas:
-      - '\varphi(x) = E[Y \mid X = x] = \int y\, f_{Y \mid X = x}(y)\, dy'
-      - 'E[Y \mid X] = \varphi(X)'
-      - 'E[Y] = E\big[E[Y \mid X]\big] = \sum_i E[Y \mid X = x_i]\, P(X = x_i)'
-      - '\text{Wald: } E\!\left[\textstyle\sum_{i=1}^{N} L_i\right] = E[N]\, E[L]'
+      - nombre: Función de regresión
+        descripcion: La media de $Y$ para cada valor fijo de $X$.
+        tex: '\varphi(x) = E[Y \mid X = x] = \int_{-\infty}^{\infty} y\, f_{Y \mid X = x}(y)\, dy'
+      - nombre: Esperanza condicional
+        descripcion: La regresión evaluada en $X$, que es una variable aleatoria.
+        tex: 'E[Y \mid X] = \varphi(X)'
+      - nombre: Esperanza total
+        descripcion: La media de $Y$ es el promedio de las medias condicionales.
+        tex: 'E[Y] = E\big[E[Y \mid X]\big] = \sum_i E[Y \mid X = x_i]\, P(X = x_i)'
+      - nombre: Identidad de Wald
+        descripcion: La media de una suma de una cantidad aleatoria $N$ de términos i.i.d.
+        tex: 'E\!\left[\sum_{i=1}^{N} L_i\right] = E[N]\, E[L]'
 
   - titulo: Varianza total
     formulas:
-      - '\operatorname{var}[Y] = E\big[\operatorname{var}[Y \mid X]\big] + \operatorname{var}\big[E[Y \mid X]\big]'
+      - nombre: Descomposición de la varianza
+        descripcion: La dispersión dentro de cada valor de $X$ más la dispersión de las medias.
+        tex: '\operatorname{var}[Y] = E\big[\operatorname{var}[Y \mid X]\big] + \operatorname{var}\big[E[Y \mid X]\big]'

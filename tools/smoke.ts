@@ -78,6 +78,16 @@ import {
   type SkillConItems,
 } from '../src/dominio/ritmo.ts'
 import { claveItem, type Ejercicio, type Intento, type Item } from '../src/dominio/tipos.ts'
+import {
+  cuantil,
+  distribucionBivariada,
+  multinomial,
+  probabilidad,
+  univariadaPorId,
+  UNIVARIADAS,
+  valoresPorDefecto,
+  type Valores,
+} from '../src/dominio/distribuciones.ts'
 
 /** Un intento mínimo, para los casos donde sólo importan el ítem y la fecha. */
 function mkIntento(item: string, ts: string): Intento {
@@ -1015,6 +1025,124 @@ for (const [valor, alternativa] of equivalentes) {
     enFinal.diasRestantes === null && enFinal.veredicto === 'sin_fecha' && enFinal.porDia === 0,
     `sin fecha el plan da ${enFinal.veredicto}, ${enFinal.diasRestantes} días y ${enFinal.porDia} por día`,
   )
+}
+
+// ------------------------------------- calculadora de distribuciones
+
+// Cada valor contra la referencia de mpmath (tools/verify/distribuciones.py).
+{
+  type Punto = { x: number; puntual: number; distribucion: number }
+  type Caso = {
+    id: string
+    parametros: Valores
+    puntos: Punto[]
+    cuantiles: { alfa: number; x: number }[]
+    esperanza: number | string
+    varianza: number | string
+  }
+  const ref = JSON.parse(
+    readFileSync(join(RAIZ, 'content', '.verificacion', 'distribuciones.json'), 'utf8'),
+  ) as {
+    univariadas: Caso[]
+    multinomial: { n: number; ps: number[]; xs: number[]; prob: number }[]
+    bivariada: { mu1: number; mu2: number; s1: number; s2: number; rho: number; a: number; b: number; prob: number }[]
+  }
+  /** Coincidencia relativa, o absoluta para valores chicos. */
+  const cerca = (a: number, b: number, tol = 1e-9) => Math.abs(a - b) <= tol * Math.max(1, Math.abs(b))
+
+  const vistos = new Set<string>()
+  for (const c of ref.univariadas) {
+    const d = univariadaPorId.get(c.id)
+    afirmar(!!d, `la calculadora no tiene la distribución ${c.id}`)
+    if (!d) continue
+    vistos.add(c.id)
+    const quien = `${c.id} ${JSON.stringify(c.parametros)}`
+    for (const pt of c.puntos) {
+      const pu = d.puntual(pt.x, c.parametros)
+      const di = d.distribucion(pt.x, c.parametros)
+      afirmar(cerca(pu, pt.puntual), `${quien}: en x = ${pt.x} da ${pu} y mpmath ${pt.puntual}`)
+      afirmar(cerca(di, pt.distribucion), `${quien}: F(${pt.x}) da ${di} y mpmath ${pt.distribucion}`)
+    }
+    for (const q of c.cuantiles) {
+      const x = cuantil(d, c.parametros, q.alfa)
+      const bien = d.tipo === 'discreta' ? x === q.x : cerca(x, q.x, 1e-8)
+      afirmar(bien, `${quien}: el cuantil ${q.alfa} da ${x} y mpmath ${q.x}`)
+    }
+    const e = d.esperanza(c.parametros)
+    const v = d.varianza(c.parametros)
+    afirmar(typeof c.esperanza === 'string' ? e === c.esperanza : typeof e === 'number' && cerca(e, c.esperanza),
+      `${quien}: la esperanza da ${e} y mpmath ${c.esperanza}`)
+    afirmar(typeof c.varianza === 'string' ? v === c.varianza : typeof v === 'number' && cerca(v, c.varianza),
+      `${quien}: la varianza da ${v} y mpmath ${c.varianza}`)
+  }
+  for (const d of UNIVARIADAS) afirmar(vistos.has(d.id), `la distribución ${d.id} no tiene valores de referencia`)
+
+  for (const m of ref.multinomial) {
+    const prob = multinomial(m.n, m.ps, m.xs)
+    afirmar(cerca(prob, m.prob), `multinomial ${JSON.stringify(m.xs)}: da ${prob} y mpmath ${m.prob}`)
+  }
+  for (const b of ref.bivariada) {
+    const prob = distribucionBivariada(b.a, b.b, b)
+    afirmar(cerca(prob, b.prob, 1e-8), `normal bivariada (${b.a}, ${b.b}): da ${prob} y mpmath ${b.prob}`)
+  }
+
+  // Eventos: en las discretas se cuentan los extremos.
+  const bin = univariadaPorId.get('binomial')!
+  const pb = { n: 10, p: 0.3 }
+  afirmar(cerca(probabilidad(bin, pb, { tipo: 'mayor', x: 3 }), 1 - bin.distribucion(2, pb)), 'P(X ≥ 3) no cuenta el 3')
+  afirmar(cerca(probabilidad(bin, pb, { tipo: 'entre', a: 2, b: 4 }), bin.distribucion(4, pb) - bin.distribucion(1, pb)),
+    'P(2 ≤ X ≤ 4) no cuenta los extremos')
+  // El cuantil es el menor x con F(x) ≥ α, y en las continuas invierte F.
+  for (const d of UNIVARIADAS) {
+    const p = valoresPorDefecto(d)
+    for (const alfa of [0.1, 0.5, 0.9]) {
+      const x = cuantil(d, p, alfa)
+      const bien = d.tipo === 'discreta'
+        ? d.distribucion(x, p) >= alfa - 1e-12 && (x === d.soporte(p)[0] || d.distribucion(x - 1, p) < alfa)
+        : cerca(d.distribucion(x, p), alfa, 1e-9)
+      afirmar(bien, `${d.id}: el cuantil ${alfa} con los parámetros por defecto no invierte F`)
+    }
+  }
+}
+
+// Las tablas impresas (content/tablas, de tools/verify/tablas.py) y la
+// calculadora coinciden al redondeo de la tabla: con la tabla en la mano o con
+// la calculadora, el mismo número.
+{
+  const leer = (id: string) =>
+    load(readFileSync(join(RAIZ, 'content', 'tablas', `${id}.yaml`), 'utf8')) as {
+      bloques: { columnas: string[]; filas: string[][] }[]
+    }
+  const num = (s: string) => Number(s.replace(',', '.'))
+  /** El valor exacto redondeado da lo impreso (con margen para el empate). */
+  const alRedondeo = (v: number, impreso: string) => {
+    const d = impreso.split(',')[1]?.length ?? 0
+    return Math.abs(v - num(impreso)) <= 0.5 * 10 ** -d + 1e-12
+  }
+  let celdas = 0
+  const revisar = (v: number, impreso: string, donde: string) => {
+    celdas++
+    afirmar(alRedondeo(v, impreso), `${donde}: la calculadora da ${v} y la tabla ${impreso}`)
+  }
+  const normal = univariadaPorId.get('normal')!
+  const [phi, cuantiles] = leer('normal').bloques
+  for (const [fila, ...valores] of phi.filas)
+    valores.forEach((s, j) => {
+      const z = num(fila) + num(phi.columnas[j])
+      revisar(normal.distribucion(z, { mu: 0, sigma2: 1 }), s, `Φ(${z.toFixed(2)})`)
+    })
+  cuantiles.filas[0].slice(1).forEach((s, j) =>
+    revisar(cuantil(normal, { mu: 0, sigma2: 1 }, num(cuantiles.columnas[j])), s, `z de ${cuantiles.columnas[j]}`),
+  )
+  for (const [id, param] of [['t', 'nu'], ['chi2', 'k']] as const) {
+    const d = univariadaPorId.get(id)!
+    const { columnas, filas } = leer(id).bloques[0]
+    for (const [fila, ...valores] of filas)
+      valores.forEach((s, j) =>
+        revisar(cuantil(d, { [param]: num(fila) }, num(columnas[j])), s, `${id} con ${fila} y α = ${columnas[j]}`),
+      )
+  }
+  afirmar(celdas > 1000, `sólo se compararon ${celdas} celdas de las tablas`)
 }
 
 console.log(`smoke: ${ejercicios.length} ejercicios, ${ok} afirmaciones OK.`)

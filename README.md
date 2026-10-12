@@ -38,9 +38,15 @@ Está cargado el núcleo recomendado por la cátedra (los ejercicios marcados `!
 en la guía) de las ocho guías.
 
 **Fórmulas y tablas para el examen.** La sección del mismo nombre imprime (o
-guarda en PDF) la hoja de fórmulas, las tablas para resolver sin calculadora y
-un kit con todo junto. Las tablas las genera y verifica
+guarda en PDF) la hoja de fórmulas, las tablas de la cátedra (normal, $t$ y
+$\chi^2$) y un kit con todo junto. Las tablas las genera y verifica
 `tools/verify/tablas.py`; ver [revision/formulas.md](revision/formulas.md).
+
+**Distribuciones.** Las 19 distribuciones de la tabla de la cátedra, cada una
+con su ficha y una calculadora: se eligen los parámetros y el evento (o se
+arrastran sus líneas sobre el gráfico) y da la probabilidad o el cuantil. Cada
+cuenta se contrasta con mpmath y con las tablas; ver
+[revision/distribuciones.md](revision/distribuciones.md).
 
 **Lo que falta y por qué: [revision/00-estado.md](revision/00-estado.md).** Ahí
 está el índice; el detalle por guía está en `revision/guia-N.md`.

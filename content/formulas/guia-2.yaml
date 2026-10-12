@@ -4,34 +4,65 @@ guia: 2
 bloques:
   - titulo: Función de distribución
     formulas:
-      - 'F_X(x) = P(X \le x)'
-      - 'P(a < X \le b) = F_X(b) - F_X(a)'
-      - 'P(X = a) = F_X(a) - F_X(a^-), \qquad P(X < a) = F_X(a^-)'
-      - 'P(X > a) = 1 - F_X(a)'
-    nota: '$F_X$ es no decreciente y continua a derecha, con límite 0 en $-\infty$ y 1 en $+\infty$.'
+      - nombre: Definición
+        descripcion: Acumula la probabilidad hasta $x$. Es no decreciente, continua a derecha y va de 0 a 1.
+        tex: 'F_X(x) = P(X \le x)'
+      - nombre: Probabilidad de un intervalo
+        descripcion: La diferencia de la distribución entre los extremos.
+        tex: 'P(a < X \le b) = F_X(b) - F_X(a)'
+      - nombre: Probabilidad puntual
+        descripcion: El salto de $F_X$ en $a$; vale 0 donde $F_X$ es continua.
+        tex: 'P(X = a) = F_X(a) - F_X(a^-)'
+      - nombre: Desigualdad estricta
+        descripcion: Se usa el límite por izquierda.
+        tex: 'P(X < a) = F_X(a^-)'
+      - nombre: Cola
+        descripcion: La probabilidad de superar un valor.
+        tex: 'P(X > a) = 1 - F_X(a)'
 
   - titulo: Variables discretas y continuas
     formulas:
-      - 'p_X(x) = P(X = x), \qquad \sum_x p_X(x) = 1'
-      - 'P(a < X < b) = \int_a^b f_X(x)\,dx, \qquad \int_{-\infty}^{\infty} f_X(x)\,dx = 1'
-      - 'F_X(x) = \int_{-\infty}^{x} f_X(u)\,du, \qquad f_X(x) = F_X''(x)'
-      - 'X \sim U(a, b): \ f_X(x) = \dfrac{1}{b - a}\,\mathbf{1}\{a < x < b\}'
+      - nombre: Función de probabilidad
+        descripcion: Los pesos de una variable discreta, que suman 1.
+        tex: 'p_X(x) = P(X = x), \qquad \sum_x p_X(x) = 1'
+      - nombre: Densidad
+        descripcion: Las probabilidades de una variable continua son áreas bajo la densidad.
+        tex: 'P(a < X < b) = \int_a^b f_X(x)\,dx, \qquad \int_{-\infty}^{\infty} f_X(x)\,dx = 1'
+      - nombre: Distribución y densidad
+        descripcion: Se pasa de una a la otra integrando o derivando.
+        tex: 'F_X(x) = \int_{-\infty}^{x} f_X(u)\,du, \qquad f_X(x) = F_X''(x)'
+      - nombre: Uniforme
+        descripcion: Densidad constante sobre un intervalo.
+        tex: 'X \sim U(a, b) \implies f_X(x) = \dfrac{1}{b - a}\,\mathbf{1}\{a < x < b\}'
 
   - titulo: Condicionamiento a un evento
     formulas:
-      - 'F_{X \mid A}(x) = \dfrac{P(X \le x,\ A)}{P(A)}'
-      - 'f_{X \mid A}(x) = \dfrac{f_X(x)\,\mathbf{1}\{x \in A\}}{P(A)}'
+      - nombre: Distribución condicional
+        descripcion: La distribución de $X$ sabiendo que ocurrió $A$.
+        tex: 'F_{X \mid A}(x) = \dfrac{P(X \le x,\ A)}{P(A)}'
+      - nombre: Densidad truncada
+        descripcion: Se restringe la densidad a $A$ y se renormaliza.
+        tex: 'f_{X \mid A}(x) = \dfrac{f_X(x)\,\mathbf{1}\{x \in A\}}{P(A)}'
 
   - titulo: Vectores aleatorios
     formulas:
-      - 'F_{(X,Y)}(x, y) = P(X \le x,\ Y \le y)'
-      - 'f_X(x) = \int_{-\infty}^{\infty} f_{(X,Y)}(x, y)\,dy, \qquad f_Y(y) = \int_{-\infty}^{\infty} f_{(X,Y)}(x, y)\,dx'
-      - 'p_X(x) = \sum_y p_{(X,Y)}(x, y)'
-      - 'P((X,Y) \in A) = \iint_A f_{(X,Y)}(x, y)\,dx\,dy'
-    nota: 'Si $(X, Y)$ es uniforme sobre una región $\Lambda$, la densidad vale $1/\text{área}(\Lambda)$ en $\Lambda$.'
+      - nombre: Distribución conjunta
+        descripcion: La probabilidad de que las dos coordenadas no superen sus valores.
+        tex: 'F_{(X,Y)}(x, y) = P(X \le x,\ Y \le y)'
+      - nombre: Marginales continuas
+        descripcion: Se integra la conjunta respecto de la otra variable.
+        tex: 'f_X(x) = \int_{-\infty}^{\infty} f_{(X,Y)}(x, y)\,dy, \qquad f_Y(y) = \int_{-\infty}^{\infty} f_{(X,Y)}(x, y)\,dx'
+      - nombre: Marginal discreta
+        descripcion: Se suma la conjunta sobre los valores de la otra variable.
+        tex: 'p_X(x) = \sum_y p_{(X,Y)}(x, y)'
+      - nombre: Probabilidad de una región
+        descripcion: La integral doble de la conjunta sobre la región.
+        tex: 'P((X,Y) \in A) = \iint_A f_{(X,Y)}(x, y)\,dx\,dy'
+    nota: 'Si $(X, Y)$ es uniforme sobre una región $\Lambda$, la densidad vale $1/\text{área}(\Lambda)$ en $\Lambda$, y cada probabilidad es un cociente de áreas.'
 
   - titulo: Independencia de variables aleatorias
     formulas:
-      - 'f_{(X,Y)}(x, y) = f_X(x)\,f_Y(y)'
-      - 'F_{(X,Y)}(x, y) = F_X(x)\,F_Y(y)'
+      - nombre: Factorización
+        descripcion: La conjunta es el producto de las marginales.
+        tex: 'f_{(X,Y)}(x, y) = f_X(x)\,f_Y(y), \qquad F_{(X,Y)}(x, y) = F_X(x)\,F_Y(y)'
     nota: 'Si el soporte conjunto no es un producto cartesiano (en los casos usuales, un rectángulo), $X$ e $Y$ no son independientes.'

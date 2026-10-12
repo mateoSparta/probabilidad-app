@@ -4,25 +4,56 @@ guia: 3
 bloques:
   - titulo: Esperanza
     formulas:
-      - 'E[X] = \sum_k x_k\, P(X = x_k), \qquad E[X] = \int_{-\infty}^{\infty} x\, f_X(x)\, dx'
-      - 'E[g(X)] = \int g(x)\, f_X(x)\, dx'
-      - 'E[g(X,Y)] = \iint g(x,y)\, f_{(X,Y)}(x,y)\, dx\, dy'
-      - 'E[aX + bY + c] = a\,E[X] + b\,E[Y] + c'
-      - 'X, Y \text{ independientes} \implies E[XY] = E[X]\,E[Y]'
-      - 'E[X \mid A] = \dfrac{E[X\, \mathbf{1}_A]}{P(A)}'
+      - nombre: Esperanza de una discreta
+        descripcion: El promedio de los valores, ponderados por su probabilidad.
+        tex: 'E[X] = \sum_k x_k\, P(X = x_k)'
+      - nombre: Esperanza de una continua
+        descripcion: El promedio de los valores, ponderados por la densidad.
+        tex: 'E[X] = \int_{-\infty}^{\infty} x\, f_X(x)\, dx'
+      - nombre: Esperanza de una función
+        descripcion: Se integra $g$ contra la densidad, sin calcular la distribución de $g(X)$.
+        tex: 'E[g(X)] = \int_{-\infty}^{\infty} g(x)\, f_X(x)\, dx'
+      - nombre: Función de un vector
+        descripcion: Lo mismo, con la densidad conjunta.
+        tex: 'E[g(X,Y)] = \iint g(x,y)\, f_{(X,Y)}(x,y)\, dx\, dy'
+      - nombre: Linealidad
+        descripcion: Vale siempre, haya o no independencia.
+        tex: 'E[aX + bY + c] = a\,E[X] + b\,E[Y] + c'
+      - nombre: Producto de independientes
+        descripcion: Con $X$ e $Y$ independientes, la esperanza del producto se factoriza.
+        tex: 'E[XY] = E[X]\,E[Y]'
+      - nombre: Esperanza condicional a un evento
+        descripcion: El promedio de $X$ sobre los resultados en que ocurre $A$.
+        tex: 'E[X \mid A] = \dfrac{E[X\, \mathbf{1}_A]}{P(A)}'
     nota: 'Si la variable es mixta, se integra la parte continua y se suman los átomos.'
 
   - titulo: Varianza y covarianza
     formulas:
-      - '\operatorname{var}[X] = E\!\left[(X - \mu)^2\right] = E[X^2] - (E[X])^2'
-      - '\operatorname{var}[aX + b] = a^2 \operatorname{var}[X]'
-      - '\operatorname{cov}(X, Y) = E[XY] - E[X]\,E[Y]'
-      - '\operatorname{var}[X + Y] = \operatorname{var}[X] + \operatorname{var}[Y] + 2\operatorname{cov}(X, Y)'
-      - '\operatorname{cov}(aX + bY + c,\ Z) = a\operatorname{cov}(X,Z) + b\operatorname{cov}(Y,Z)'
-      - '\rho(X, Y) = \dfrac{\operatorname{cov}(X, Y)}{\sigma_X\,\sigma_Y}, \qquad -1 \le \rho \le 1'
+      - nombre: Varianza
+        descripcion: La dispersión alrededor de la media. La segunda forma es la práctica para calcular.
+        tex: '\operatorname{var}[X] = E\!\left[(X - \mu)^2\right] = E[X^2] - (E[X])^2'
+      - nombre: Cambio de escala
+        descripcion: Sumar una constante no cambia la varianza, y multiplicar por $a$ la multiplica por $a^2$.
+        tex: '\operatorname{var}[aX + b] = a^2 \operatorname{var}[X]'
+      - nombre: Covarianza
+        descripcion: Mide cómo varían juntas dos variables.
+        tex: '\operatorname{cov}(X, Y) = E[XY] - E[X]\,E[Y]'
+      - nombre: Varianza de una suma
+        descripcion: La covarianza corrige la suma de las varianzas.
+        tex: '\operatorname{var}[X + Y] = \operatorname{var}[X] + \operatorname{var}[Y] + 2\operatorname{cov}(X, Y)'
+      - nombre: Bilinealidad
+        descripcion: La covarianza es lineal en cada argumento.
+        tex: '\operatorname{cov}(aX + bY + c,\ Z) = a\operatorname{cov}(X,Z) + b\operatorname{cov}(Y,Z)'
+      - nombre: Coeficiente de correlación
+        descripcion: La covarianza normalizada, que no depende de las escalas.
+        tex: '\rho(X, Y) = \dfrac{\operatorname{cov}(X, Y)}{\sigma_X\,\sigma_Y}, \qquad -1 \le \rho \le 1'
     nota: 'Si $X$ e $Y$ son independientes, $\operatorname{cov}(X, Y) = 0$; la recíproca no vale.'
 
   - titulo: Desigualdades
     formulas:
-      - '\text{Markov: } P(X \ge a) \le \dfrac{E[X]}{a} \quad (X \ge 0,\ a > 0)'
-      - '\text{Chebyshev: } P(\lvert X - \mu \rvert \ge \varepsilon) \le \dfrac{\operatorname{var}[X]}{\varepsilon^2}'
+      - nombre: Markov
+        descripcion: Acota una cola de una variable no negativa conociendo sólo su media.
+        tex: 'P(X \ge a) \le \dfrac{E[X]}{a}, \qquad X \ge 0,\ a > 0'
+      - nombre: Chebyshev
+        descripcion: Acota la probabilidad de alejarse de la media conociendo la varianza.
+        tex: 'P(\lvert X - \mu \rvert \ge \varepsilon) \le \dfrac{\operatorname{var}[X]}{\varepsilon^2}'

@@ -12,12 +12,12 @@
  * Es la vista que contesta "¿dónde estoy flojo?" de un vistazo, que es el
  * punto de medir el dominio sobre intentos recientes y no acumulados.
  */
-import { useRef, useState } from 'preact/hooks'
+import { useState } from 'preact/hooks'
 
 import { IconoCandado, IconoComprobar } from '../componentes/Iconos'
 import { Formula, Mate } from '../componentes/Mate'
 import { Dialogo } from '../componentes/Modal'
-import { SubirLateral, usarQuedoArriba } from '../componentes/SubirLateral'
+import { SubirLateral, usarSubir } from '../componentes/SubirLateral'
 import {
   claveItemExamen,
   config,
@@ -113,9 +113,7 @@ export function PanelSkills({
   /** El skill de la ventana. Se conserva al cerrarla para que salga con su contenido. */
   const [elegido, setElegido] = useState<string | null>(null)
   const [abierto, setAbierto] = useState(false)
-  /** La grilla de la guía 1: "Subir" aparece cuando su primera fila quedó arriba. */
-  const primeraGrilla = useRef<HTMLUListElement>(null)
-  const filaArriba = usarQuedoArriba(() => primeraGrilla.current?.firstElementChild, 0, [])
+  const subir = usarSubir()
 
   const grupos = skillsPorGuia()
   // El resumen cuenta sólo los que se pueden practicar.
@@ -123,8 +121,6 @@ export function PanelSkills({
   const estados = habilitados.map((s) => estadoSkill(progreso, itemsPorSkill.get(s.id) ?? VACIO))
   const resumen = contarPorEstado(estados)
   const etapasMateria = etapas(config.evaluaciones)
-  // La primera grilla del panel: la de la guía más baja.
-  const primeraGuia = grupos[0]?.guia
 
   /** Cierra la ventana y después navega: así no queda abierta sobre otra sección. */
   function cerrarE(ir?: () => void): void {
@@ -134,7 +130,7 @@ export function PanelSkills({
 
   return (
     <>
-      <SubirLateral visible={filaArriba} />
+      <SubirLateral visible={subir} />
 
       <section class="guia__intro">
         <h2>Panel de skills</h2>
@@ -178,7 +174,7 @@ export function PanelSkills({
                   Guía {guia}
                   {skills.every(skillBloqueado) && <IconoCandado />}
                 </h4>
-                <ul class="grilla-skills" ref={guia === primeraGuia ? primeraGrilla : undefined}>
+                <ul class="grilla-skills">
                   {skills.map((s) =>
                     skillBloqueado(s) ? (
                       <CeldaBloqueada key={s.id} skill={s} />

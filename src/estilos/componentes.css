@@ -418,7 +418,11 @@
 
 /* ---------------------------------------------------------- matemática */
 
-.katex { font-size: 1.03em; }
+/* Un rótulo en mayúsculas no puede cambiar la matemática: λ no es Λ ni a es A. */
+.katex {
+  font-size: 1.03em;
+  text-transform: none;
+}
 
 /* Puntuación pegada a una fórmula: va adentro de la caja de KaTeX para que
    no quede sola al principio de un renglón (ver componentes/latex.ts). Se
@@ -1483,16 +1487,21 @@
   border-bottom-color: var(--acento);
 }
 
-/* La hoja de fórmulas: cada guía con su título y sus temas. */
-.hoja__guia { margin-bottom: var(--e-6); }
+/* La hoja de fórmulas: cada guía con su título y sus temas, y en cada tema
+   una ficha por fórmula (nombre, para qué sirve y la expresión centrada). Las
+   fichas van de a dos; la que no entra ocupa la fila entera (Material.tsx). */
+.hoja__guia {
+  margin-bottom: var(--e-7);
+  scroll-margin-top: var(--e-4);
+}
 .hoja__titulo {
   display: flex;
   align-items: baseline;
   gap: var(--e-2);
-  padding-bottom: var(--e-1);
-  margin-bottom: var(--e-3);
+  padding-bottom: var(--e-2);
+  margin-bottom: var(--e-4);
   border-bottom: 1px solid var(--borde-fuerte);
-  font-size: var(--t-md);
+  font-size: var(--t-lg);
 }
 .hoja__numero {
   font-size: var(--t-xs);
@@ -1501,48 +1510,85 @@
   letter-spacing: 0.08em;
   color: var(--acento);
 }
-.hoja__bloque { margin-bottom: var(--e-4); }
+.hoja__bloque {
+  margin-bottom: var(--e-6);
+  scroll-margin-top: var(--e-4);
+}
 .hoja__tema {
-  margin-bottom: var(--e-1);
+  margin-bottom: var(--e-3);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tinta-3);
+}
+.hoja__fichas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e-3);
+}
+@media (max-width: 40rem) {
+  .hoja__fichas { grid-template-columns: minmax(0, 1fr); }
+}
+.ficha-formula {
+  display: flex;
+  flex-direction: column;
+  padding: var(--e-3) var(--e-4);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+}
+.ficha-formula--ancha,
+.ficha-formula--sola { grid-column: 1 / -1; }
+.ficha-formula__nombre {
+  margin: 0;
   font-size: var(--t-sm);
   font-weight: 600;
 }
-.hoja__formulas {
-  display: grid;
-  gap: var(--e-1);
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.ficha-formula__descripcion {
+  margin: 2px 0 0;
+  font-size: var(--t-xs);
+  line-height: 1.4;
+  color: var(--tinta-2);
 }
-.hoja__formulas li { overflow-x: auto; overflow-y: hidden; }
+.ficha-formula__tex {
+  margin-top: auto;
+  padding-top: var(--e-2);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.ficha-formula__tex .katex-display { margin: 0.25em 0; }
 .hoja__nota {
-  margin: var(--e-1) 0 0;
+  margin: var(--e-3) 0 0;
   font-size: var(--t-sm);
   color: var(--tinta-2);
 }
 
-/* Las tablas: cifras alineadas, filetes finos y un renglón más marcado cada
-   cinco para no perderse al leer. */
-.tabla-num { margin-bottom: var(--e-6); }
-.tabla-num__titulo { font-size: var(--t-md); margin-bottom: var(--e-1); }
-.tabla-num__descripcion {
-  margin-bottom: var(--e-3);
-  font-size: var(--t-sm);
-  color: var(--tinta-2);
+/* Las tablas, con el formato de las de la cátedra: el gráfico de la
+   distribución y el recuadro "Recuerda" arriba, y las cifras alineadas, con
+   un renglón más marcado cada cinco para no perderse al leer. */
+.tabla-num {
+  margin-bottom: var(--e-7);
+  scroll-margin-top: var(--e-4);
 }
-.tabla-num__bloques { display: grid; gap: var(--e-4); }
-.tabla-num--binomial .tabla-num__bloques {
-  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
-}
-/* Los factoriales son una columna angosta: van al lado de los combinatorios. */
-.tabla-num--combinatoria .tabla-num__bloques {
+.tabla-num__titulo { font-size: var(--t-lg); margin-bottom: var(--e-3); }
+.tabla-num__cabeza {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
-  gap: var(--e-5);
+  align-items: center;
+  gap: var(--e-4) var(--e-6);
+  margin-bottom: var(--e-4);
 }
+.tabla-num__recuerda {
+  margin: 0;
+  padding: var(--e-2) var(--e-3);
+  border: 1px solid var(--tinta-2);
+  border-radius: var(--radio-lg);
+  font-size: var(--t-sm);
+}
+.tabla-num__bloques { display: grid; gap: var(--e-5); }
 .tabla-num__subtitulo {
-  margin-bottom: var(--e-1);
+  margin-bottom: var(--e-2);
   font-size: var(--t-sm);
   font-weight: 600;
 }
@@ -1554,7 +1600,7 @@
 }
 .tabla-num th,
 .tabla-num td {
-  padding: 2px 6px;
+  padding: 2px 7px;
   text-align: right;
   white-space: nowrap;
   border-bottom: 1px solid var(--borde);
@@ -1571,6 +1617,35 @@
 }
 .tabla-num tbody tr:nth-child(5n) > * { border-bottom-color: var(--borde-fuerte); }
 .tabla-num__esquina { border-right: 1px solid var(--borde-fuerte); }
+
+/* El gráfico de una tabla: el SVG y, encima, los rótulos en KaTeX. */
+.grafico-tabla {
+  position: relative;
+  width: 21rem;
+  max-width: 100%;
+  aspect-ratio: 340 / 140;
+  border: 1px solid var(--borde-fuerte);
+  background: var(--superficie-alta);
+  --grafico-area: color-mix(in srgb, var(--tinta) 16%, transparent);
+}
+.grafico-tabla svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.grafico-tabla__area { fill: var(--grafico-area); }
+.grafico-tabla__curva { fill: none; stroke: var(--tinta); stroke-width: 1.4; }
+.grafico-tabla__eje { stroke: var(--tinta); stroke-width: 1.2; }
+.grafico-tabla__corte { stroke: var(--tinta); stroke-width: 1.1; stroke-dasharray: 4 3; }
+.grafico-tabla__flecha { fill: none; stroke: var(--tinta); stroke-width: 0.9; }
+.grafico-tabla__punta { fill: var(--tinta); }
+.grafico-tabla__rotulo {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: var(--t-xs);
+  white-space: nowrap;
+}
 
 /* El saludo del final: un guiño, chico y al centro. */
 .suerte {
@@ -1600,3 +1675,243 @@
 
 /* El contenedor de impresión no se ve en pantalla (ver impresion.css). */
 #impresion { display: none; }
+
+/* --------------------------------------------------- distribuciones */
+
+/* El selector: tres grupos de chips, con el nombre del grupo a la izquierda. */
+.dist-selector {
+  display: grid;
+  gap: var(--e-2);
+  margin-bottom: var(--e-6);
+}
+.dist-selector__grupo {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  align-items: baseline;
+  gap: var(--e-3);
+}
+.dist-selector__nombre {
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tinta-3);
+}
+.dist-selector__opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-1) var(--e-2);
+}
+@media (max-width: 40rem) {
+  .dist-selector__grupo { grid-template-columns: 1fr; }
+}
+
+.dist {
+  padding: var(--e-5);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra);
+}
+.dist__cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--e-1) var(--e-4);
+}
+.dist__nombre { margin: 0; font-size: var(--t-lg); }
+.dist__notacion { color: var(--tinta-2); }
+.dist__tabla {
+  margin-left: auto;
+  font-size: var(--t-sm);
+  color: var(--acento);
+  text-underline-offset: 2px;
+}
+.dist__modelo {
+  margin: var(--e-2) 0 var(--e-5);
+  color: var(--tinta-2);
+}
+
+/* La calculadora: parámetros, evento, gráfico y resultado. */
+.calculadora {
+  display: grid;
+  gap: var(--e-4);
+}
+/* En pantallas anchas, parámetros y evento lado a lado, para que el gráfico
+   quede cerca de los controles. */
+@media (min-width: 48rem) {
+  .calculadora {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: var(--e-6);
+  }
+  .calculadora > :not(fieldset) { grid-column: 1 / -1; }
+}
+.calculadora fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.calculadora__rotulo {
+  padding: 0;
+  margin: 0 0 var(--e-2);
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tinta-3);
+}
+.calculadora__parametros,
+.calculadora__valores {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--e-2) var(--e-5);
+}
+.calculadora__parametros > legend { width: 100%; }
+.calculadora__modos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-1) var(--e-2);
+  margin-bottom: var(--e-3);
+}
+.calculadora__modos .chip-opcion { padding-block: var(--e-1); }
+.calculadora__error {
+  width: 100%;
+  margin: 0;
+  font-size: var(--t-sm);
+  color: var(--flojo);
+}
+.calculadora__grafico {
+  padding: var(--e-2) var(--e-2) 0;
+  background: var(--superficie-alta);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+.calculadora__resultado { display: grid; gap: var(--e-2); }
+.calculadora__momentos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-1) var(--e-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+.calculadora__condicional {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-2) var(--e-4);
+  font-size: var(--t-sm);
+}
+.calculadora__condicional p { margin: 0; flex: 1 1 18rem; }
+
+/* Un campo numérico con su etiqueta en KaTeX y, abajo, la ayuda o el error. */
+.campo-num {
+  display: grid;
+  grid-template-columns: auto 6.5rem;
+  align-items: center;
+  column-gap: var(--e-2);
+  margin: 0;
+}
+.campo-num__entrada {
+  width: 100%;
+  font-family: var(--mono);
+}
+.campo-num__ayuda {
+  grid-column: 2;
+  font-size: 0.7rem;
+  color: var(--tinta-3);
+}
+.campo-num--error .campo-num__ayuda { color: var(--flojo); }
+.campo-num--error .campo-num__entrada { border-color: var(--flojo); }
+.campo-num--calculado {
+  display: flex;
+  align-self: center;
+  color: var(--tinta-2);
+}
+
+/* El resultado, grande. */
+.resultado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--e-2);
+  margin: 0;
+  font-size: var(--t-md);
+}
+.resultado__valor {
+  font-size: var(--t-lg);
+  font-variant-numeric: tabular-nums;
+  color: var(--acento);
+}
+
+/* El gráfico: barras o curva, el área en acento y las manijas arrastrables. */
+.grafico-dist {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: none;
+  user-select: none;
+  cursor: crosshair;
+}
+.grafico-dist--arrastrando { cursor: grabbing; }
+.grafico-dist--bivariado { max-width: 26rem; margin: 0 auto; }
+.grafico-dist__guia { stroke: var(--borde); stroke-width: 1; }
+.grafico-dist__eje { stroke: var(--tinta-2); stroke-width: 1.2; }
+.grafico-dist__marca {
+  font-family: var(--serif);
+  font-size: 11px;
+  fill: var(--tinta-3);
+}
+.grafico-dist__eje-rotulo {
+  font-family: var(--serif);
+  font-size: 12px;
+  font-style: italic;
+  fill: var(--tinta-2);
+}
+.grafico-dist__curva { fill: none; stroke: var(--tinta); stroke-width: 1.8; }
+.grafico-dist__area { fill: color-mix(in srgb, var(--acento) 30%, transparent); }
+.grafico-dist__barra { fill: color-mix(in srgb, var(--tinta) 22%, transparent); }
+.grafico-dist__barra--dentro { fill: var(--acento); }
+.grafico-dist__nivel { fill: none; stroke: var(--tinta-2); stroke-width: 1.2; }
+.grafico-dist__nivel--2 { stroke-opacity: 0.6; }
+.grafico-dist__nivel--3 { stroke-opacity: 0.35; }
+.grafico-dist__linea { stroke: var(--acento); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.grafico-dist__perilla {
+  fill: var(--superficie-alta);
+  stroke: var(--acento);
+  stroke-width: 2;
+  cursor: grab;
+}
+.grafico-dist__manija:focus { outline: none; }
+.grafico-dist__manija:focus-visible .grafico-dist__perilla { stroke-width: 3.5; }
+.grafico-dist__valor {
+  font-family: var(--serif);
+  font-size: 12px;
+  fill: var(--acento);
+}
+
+/* La ficha: una lista de propiedades con las fórmulas de la cátedra. */
+.dist-propiedades {
+  margin-top: var(--e-6);
+  padding-top: var(--e-4);
+  border-top: 1px solid var(--borde);
+}
+.dist-propiedades__lista { margin: 0; }
+.dist-propiedades__fila {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: var(--e-3);
+  padding: var(--e-2) 0;
+  border-bottom: 1px solid var(--borde);
+}
+.dist-propiedades__fila dt {
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+.dist-propiedades__fila dd {
+  margin: 0;
+  overflow-x: auto;
+}
+.dist-propiedades__equivalencia { display: block; }

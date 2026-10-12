@@ -1,0 +1,230 @@
+# Las fichas de la calculadora de distribuciones (PLAN.md §12.4). Notación,
+# soporte, parámetros, función, esperanza y varianza son los de la tabla de
+# la cátedra (fuentes/teoria/probabilidad_distribuciones.pdf), y también los
+# modelos de las discretas, las funciones de supervivencia y las
+# equivalencias. Los modelos de las continuas y de las multivariadas son
+# propios; ver revision/distribuciones.md.
+#
+# La cuenta (densidades, distribuciones, cuantiles) está en
+# src/dominio/distribuciones.ts, con el mismo id.
+
+- id: bernoulli
+  nombre: Bernoulli
+  grupo: discreta
+  notacion: 'X \sim \text{Ber}(p)'
+  funcion: 'p_X(x) = p^x (1-p)^{1-x}'
+  soporte: '\{0, 1\}'
+  parametros: 'p \in (0, 1)'
+  esperanza: 'p'
+  varianza: 'p(1-p)'
+  modelo: 'Modela un experimento con dos resultados posibles. Asigna el valor 1 al éxito, que tiene probabilidad $p$, y 0 al fracaso.'
+  equivalencias: ['\text{Ber}(p) \equiv \mathcal{B}(1, p)']
+
+- id: binomial
+  nombre: Binomial
+  grupo: discreta
+  notacion: 'X \sim \mathcal{B}(n, p)'
+  funcion: 'p_X(x) = \binom{n}{x} p^x (1-p)^{n-x}'
+  soporte: '\{0, 1, \dots, n\}'
+  parametros: 'p \in (0, 1),\ n \in \mathbb{N}'
+  esperanza: 'np'
+  varianza: 'np(1-p)'
+  modelo: 'Modela la cantidad de éxitos obtenidos al repetir $n$ veces, de forma independiente, un experimento de Bernoulli con probabilidad $p$ de éxito.'
+
+- id: geometrica
+  nombre: Geométrica
+  grupo: discreta
+  notacion: 'X \sim \mathcal{G}(p)'
+  funcion: 'p_X(x) = (1-p)^{x-1} p'
+  soporte: '\{1, 2, 3, \dots\}'
+  parametros: 'p \in (0, 1)'
+  esperanza: '1/p'
+  varianza: '(1-p)/p^2'
+  modelo: 'Modela la cantidad de ensayos necesarios hasta obtener el primer éxito, si se repite de forma independiente un experimento de Bernoulli con probabilidad $p$ de éxito. No tiene memoria.'
+  equivalencias: ['\mathcal{G}(p) \equiv \text{Pas}(1, p)']
+
+- id: pascal
+  nombre: Pascal
+  grupo: discreta
+  notacion: 'X \sim \text{Pas}(k, p)'
+  funcion: 'p_X(x) = \binom{x-1}{k-1} (1-p)^{x-k} p^k'
+  soporte: '\{k, k+1, k+2, \dots\}'
+  parametros: 'p \in (0, 1),\ k \in \mathbb{N}'
+  esperanza: 'k/p'
+  varianza: 'k(1-p)/p^2'
+  modelo: 'Modela la cantidad de ensayos necesarios hasta obtener $k$ éxitos, si se repite de forma independiente un experimento de Bernoulli con probabilidad $p$ de éxito. Algunos autores la llaman binomial negativa.'
+
+- id: poisson
+  nombre: Poisson
+  grupo: discreta
+  notacion: 'X \sim \text{Poi}(\mu)'
+  funcion: 'p_X(x) = \dfrac{\mu^x e^{-\mu}}{x!}'
+  soporte: '\{0, 1, 2, \dots\}'
+  parametros: '\mu > 0'
+  esperanza: '\mu'
+  varianza: '\mu'
+  modelo: 'Modela la cantidad de eventos en un intervalo cuando ocurren de a uno, de forma independiente y a tasa constante, como en un proceso de Poisson. Aproxima a la binomial con $n$ grande y $p$ chico, con $\mu = np$.'
+
+- id: hipergeometrica
+  nombre: Hipergeométrica
+  grupo: discreta
+  notacion: 'X \sim \mathcal{H}(N, d, n)'
+  funcion: 'p_X(x) = \dfrac{\binom{d}{x}\binom{N-d}{n-x}}{\binom{N}{n}}'
+  soporte: '\{m, \dots, M\},\ m = \max\{0, d+n-N\},\ M = \min\{n, d\}'
+  parametros: 'd \le N,\ n \le N,\ N \in \mathbb{N}'
+  esperanza: 'nd/N'
+  varianza: '\dfrac{nd(N-d)(N-n)}{N^2(N-1)}'
+  modelo: 'Modela la cantidad de éxitos en $n$ extracciones sin reposición de una población de tamaño total $N$, de los cuales $d$ individuos son éxito y $N - d$ no lo son.'
+
+- id: uniforme
+  nombre: Uniforme
+  grupo: continua
+  notacion: 'X \sim \mathcal{U}[a, b]'
+  funcion: 'f_X(x) = \dfrac{1}{b - a}'
+  soporte: '[a, b]'
+  parametros: 'a < b'
+  esperanza: '(a + b)/2'
+  varianza: '(b - a)^2/12'
+  modelo: 'Modela un punto elegido al azar en un intervalo. La probabilidad de cada subintervalo es proporcional a su longitud.'
+  equivalencias: ['\mathcal{U}(0, 1) \equiv \beta(1, 1)']
+
+- id: exponencial
+  nombre: Exponencial
+  grupo: continua
+  notacion: 'X \sim \mathcal{E}(\lambda)'
+  funcion: 'f_X(x) = \lambda e^{-\lambda x}'
+  soporte: '[0, +\infty)'
+  parametros: '\lambda > 0'
+  esperanza: '1/\lambda'
+  varianza: '1/\lambda^2'
+  modelo: 'Modela tiempos de espera sin memoria, como el tiempo hasta el primer evento de un proceso de Poisson de intensidad $\lambda$.'
+  supervivencia: 'S(t) = e^{-\lambda t},\ t \ge 0'
+  equivalencias: ['\mathcal{E}(\lambda) \equiv \Gamma(1, \lambda) \equiv \text{Wei}(1, 1/\lambda)']
+
+- id: gamma
+  nombre: Gamma
+  grupo: continua
+  notacion: 'X \sim \Gamma(\nu, \lambda)'
+  funcion: 'f_X(x) = \dfrac{\lambda^\nu}{\Gamma(\nu)} x^{\nu-1} e^{-\lambda x}'
+  soporte: '[0, +\infty)'
+  parametros: '\nu > 0,\ \lambda > 0'
+  esperanza: '\nu/\lambda'
+  varianza: '\nu/\lambda^2'
+  modelo: 'Con $\nu$ entero, modela el tiempo hasta el $\nu$-ésimo evento de un proceso de Poisson de intensidad $\lambda$, que es la suma de $\nu$ exponenciales independientes.'
+  supervivencia: 'S(t) = \sum_{n=0}^{k-1} \dfrac{e^{-\lambda t} (\lambda t)^n}{n!},\ t > 0 \ \ (\nu = k \in \mathbb{N})'
+  nota: 'La función Gamma cumple $\Gamma(n) = (n-1)!$ para $n \in \mathbb{N}$, $\Gamma(t + 1) = t\,\Gamma(t)$ y $\Gamma(1/2) = \sqrt{\pi}$.'
+
+- id: normal
+  nombre: Normal
+  grupo: continua
+  notacion: 'X \sim \mathcal{N}(\mu, \sigma^2)'
+  funcion: 'f_X(x) = \dfrac{1}{\sqrt{2\pi}\,\sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}}'
+  soporte: '\mathbb{R}'
+  parametros: '\mu \in \mathbb{R},\ \sigma^2 > 0'
+  esperanza: '\mu'
+  varianza: '\sigma^2'
+  modelo: 'Modela errores de medición y, por el teorema central del límite, sumas y promedios de muchas variables independientes.'
+
+- id: chi2
+  nombre: Chi cuadrado
+  grupo: continua
+  notacion: 'X \sim \chi^2_k'
+  funcion: 'f_X(x) = \dfrac{1}{2^{k/2}\,\Gamma(k/2)} x^{k/2-1} e^{-x/2}'
+  soporte: '[0, +\infty)'
+  parametros: 'k \in \mathbb{N}'
+  esperanza: 'k'
+  varianza: '2k'
+  modelo: 'Es la distribución de la suma de los cuadrados de $k$ normales estándar independientes. En estadística, con datos normales, $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$, y de ahí salen los intervalos y los tests de la varianza (guías 10 y 11).'
+  equivalencias: ['\chi^2_k \equiv \Gamma(k/2, 1/2)']
+
+- id: t
+  nombre: t de Student
+  grupo: continua
+  notacion: 'X \sim t_\nu'
+  funcion: 'f_X(x) = \dfrac{\Gamma\!\left(\frac{\nu+1}{2}\right)}{\sqrt{\nu\pi}\,\Gamma\!\left(\frac{\nu}{2}\right)} \left(1 + \dfrac{x^2}{\nu}\right)^{-\frac{\nu+1}{2}}'
+  soporte: '\mathbb{R}'
+  parametros: '\nu > 0'
+  esperanza: '0 \ \ (\nu > 1)'
+  varianza: '\dfrac{\nu}{\nu - 2} \ \ (\nu > 2)'
+  modelo: 'Aparece al estandarizar el promedio de datos normales con el desvío estimado; en estadística, en los intervalos y los tests de la media con varianza desconocida (guías 10 y 11). Con $\nu$ grande se parece a la normal estándar.'
+
+- id: weibull
+  nombre: Weibull
+  grupo: continua
+  notacion: 'X \sim \text{Wei}(c, \alpha)'
+  funcion: 'f_X(x) = \dfrac{c}{\alpha}\left(\dfrac{x}{\alpha}\right)^{c-1} e^{-(x/\alpha)^c}'
+  soporte: '[0, +\infty)'
+  parametros: 'c > 0,\ \alpha > 0'
+  esperanza: '\alpha\,\Gamma(1 + 1/c)'
+  varianza: '\alpha^2\left[\Gamma(1 + 2/c) - \Gamma^2(1 + 1/c)\right]'
+  modelo: 'Modela tiempos de vida y de falla. Según $c$, la tasa de falla crece ($c > 1$), es constante ($c = 1$, la exponencial) o decrece ($c < 1$).'
+  supervivencia: 'S(t) = e^{-(t/\alpha)^c},\ t \ge 0'
+
+- id: rayleigh
+  nombre: Rayleigh
+  grupo: continua
+  notacion: 'X \sim \text{Ray}(\sigma)'
+  funcion: 'f_X(x) = \dfrac{x}{\sigma^2} e^{-x^2/(2\sigma^2)}'
+  soporte: '[0, +\infty)'
+  parametros: '\sigma > 0'
+  esperanza: '\sigma\sqrt{\pi/2}'
+  varianza: '\dfrac{4 - \pi}{2}\,\sigma^2'
+  modelo: 'Es la distribución de la distancia al origen de un punto del plano cuyas coordenadas son normales independientes de media 0 y desvío $\sigma$.'
+  supervivencia: 'S(t) = e^{-t^2/(2\sigma^2)},\ t \ge 0'
+
+- id: pareto
+  nombre: Pareto
+  grupo: continua
+  notacion: 'X \sim \text{Par}(m, \alpha)'
+  funcion: 'f_X(x) = \dfrac{\alpha m^\alpha}{x^{\alpha+1}}'
+  soporte: '[m, +\infty)'
+  parametros: 'm > 0,\ \alpha > 0'
+  esperanza: '\dfrac{\alpha m}{\alpha - 1} \ \ (\alpha > 1)'
+  varianza: '\dfrac{m^2 \alpha}{(\alpha-1)^2(\alpha-2)} \ \ (\alpha > 2)'
+  modelo: 'Modela magnitudes de cola pesada, en las que unos pocos valores muy grandes concentran buena parte del total, como los ingresos o los tamaños de archivos.'
+  supervivencia: 'S(t) = (m/t)^\alpha,\ t \ge m'
+
+- id: beta
+  nombre: Beta
+  grupo: continua
+  notacion: 'X \sim \beta(a, b)'
+  funcion: 'f_X(x) = \dfrac{\Gamma(a+b)}{\Gamma(a)\,\Gamma(b)} x^{a-1}(1-x)^{b-1}'
+  soporte: '(0, 1)'
+  parametros: 'a > 0,\ b > 0'
+  esperanza: 'a/(a+b)'
+  varianza: '\dfrac{ab}{(a+b)^2(a+b+1)}'
+  modelo: 'Modela proporciones y probabilidades, con valores en $(0, 1)$. En la estimación bayesiana es la distribución a priori habitual de una probabilidad (guía 12).'
+  equivalencias: ['\beta(1, 1) \equiv \mathcal{U}(0, 1)']
+
+- id: cauchy
+  nombre: Cauchy
+  grupo: continua
+  notacion: 'X \sim \text{Cau}(x_0, \gamma)'
+  funcion: 'f_X(x) = \dfrac{1}{\pi\gamma}\left[\dfrac{\gamma^2}{(x - x_0)^2 + \gamma^2}\right]'
+  soporte: '\mathbb{R}'
+  parametros: 'x_0 \in \mathbb{R},\ \gamma > 0'
+  esperanza: '\text{no existe}'
+  varianza: '\text{no existe}'
+  modelo: 'Es la distribución del cociente de dos normales estándar independientes. Sus colas son tan pesadas que no tiene esperanza ni varianza.'
+
+- id: multinomial
+  nombre: Multinomial
+  grupo: multivariada
+  notacion: '\mathbf{X} \sim \mathcal{M}(n, p_1, \dots, p_k)'
+  funcion: 'p_{\mathbf{X}}(x_1, \dots, x_k) = \dfrac{n!}{x_1! \cdots x_k!}\, p_1^{x_1} \cdots p_k^{x_k}'
+  soporte: 'x_i \in \{0, \dots, n\},\ \sum_i x_i = n'
+  parametros: '0 < p_i < 1,\ \sum_i p_i = 1,\ n \in \mathbb{N}'
+  esperanza: 'E[X_i] = np_i'
+  varianza: '\operatorname{var}(X_i) = np_i(1-p_i),\ \operatorname{cov}(X_i, X_j) = -np_ip_j'
+  modelo: 'Modela la cantidad de observaciones de cada resultado posible al repetir $n$ veces, de forma independiente, un experimento con $k$ resultados de probabilidades $p_1, \dots, p_k$. Cada componente es binomial, $X_i \sim \mathcal{B}(n, p_i)$.'
+
+- id: normal-bivariada
+  nombre: Normal bivariada
+  grupo: multivariada
+  notacion: '(X_1, X_2) \sim \mathcal{N}_2(\mu_1, \mu_2, \sigma_1^2, \sigma_2^2, \rho)'
+  funcion: 'f(x_1, x_2) = \dfrac{1}{2\pi\sigma_1\sigma_2\sqrt{1-\rho^2}} \exp\!\left(-\dfrac{z_1^2 - 2\rho z_1 z_2 + z_2^2}{2(1-\rho^2)}\right),\ z_i = \dfrac{x_i - \mu_i}{\sigma_i}'
+  soporte: '\mathbb{R}^2'
+  parametros: '\mu_i \in \mathbb{R},\ \sigma_i^2 > 0,\ -1 < \rho < 1'
+  esperanza: 'E[X_i] = \mu_i'
+  varianza: '\operatorname{var}(X_i) = \sigma_i^2,\ \operatorname{cov}(X_1, X_2) = \rho\sigma_1\sigma_2'
+  modelo: 'Modela dos variables normales correlacionadas. Las marginales son normales, y también las condicionales, $X_2 \mid X_1 = x_1 \sim \mathcal{N}\big(\mu_2 + \rho\sigma_2 \frac{x_1 - \mu_1}{\sigma_1},\ (1-\rho^2)\sigma_2^2\big)$.'

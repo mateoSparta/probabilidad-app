@@ -6,37 +6,66 @@ guia: 7
 bloques:
   - titulo: Distribución de Poisson
     formulas:
-      - 'X \sim \text{Poisson}(\mu): \ P(X = k) = \dfrac{e^{-\mu} \mu^k}{k!}, \quad k = 0, 1, \dots'
-      - 'E[X] = \operatorname{var}[X] = \mu'
+      - nombre: Función de probabilidad
+        descripcion: La cantidad de eventos en un intervalo, con media $\mu$.
+        tex: 'X \sim \text{Poisson}(\mu): \ P(X = k) = \dfrac{e^{-\mu} \mu^k}{k!}, \quad k = 0, 1, \dots'
+      - nombre: Esperanza y varianza
+        descripcion: La media y la varianza coinciden.
+        tex: 'E[X] = \operatorname{var}[X] = \mu'
 
   - titulo: Proceso de Poisson de intensidad $\lambda$
     formulas:
-      - 'N(a, b] \sim \text{Poisson}(\lambda (b-a))'
-      - '\text{intervalos disjuntos} \implies \text{conteos independientes}'
-      - '\operatorname{cov}(N(a,b],\, N(c,d]) = \lambda \cdot \text{longitud de la intersección}'
+      - nombre: Conteo en un intervalo
+        descripcion: Depende sólo de la longitud del intervalo, no de su ubicación. Los conteos en intervalos disjuntos son independientes.
+        tex: 'N(a, b] \sim \text{Poisson}\big(\lambda (b-a)\big)'
+      - nombre: Intervalos superpuestos
+        descripcion: La covarianza es la varianza del conteo en la parte común.
+        tex: '\operatorname{cov}\big(N(a,b],\, N(c,d]\big) = \lambda\, \big\lvert (a,b] \cap (c,d] \big\rvert'
 
   - titulo: Tiempos de espera
     formulas:
-      - 'S_1 \sim \text{Exp}(\lambda): \ f(t) = \lambda e^{-\lambda t}, \quad P(S_1 > t) = e^{-\lambda t}'
-      - 'E[S_1] = \dfrac{1}{\lambda}, \qquad \operatorname{var}[S_1] = \dfrac{1}{\lambda^2}'
-      - 'S_n \sim \text{Gamma}(n, \lambda): \ f(t) = \dfrac{\lambda^n t^{n-1} e^{-\lambda t}}{(n-1)!}, \quad t > 0'
-      - 'E[S_n] = \dfrac{n}{\lambda}, \qquad \operatorname{var}[S_n] = \dfrac{n}{\lambda^2}'
-      - 'S_n > t \iff N(t) \le n - 1, \qquad P(S_n > t) = \sum_{k=0}^{n-1} e^{-\lambda t} \dfrac{(\lambda t)^k}{k!}'
-      - 'P(T > s + t \mid T > s) = P(T > t)'
+      - nombre: Primer arribo
+        descripcion: El tiempo hasta el primer evento es exponencial.
+        tex: 'S_1 \sim \text{Exp}(\lambda): \ f(t) = \lambda e^{-\lambda t}, \quad P(S_1 > t) = e^{-\lambda t}'
+      - nombre: Momentos de la exponencial
+        descripcion: En promedio, $1/\lambda$ hasta el primer evento.
+        tex: 'E[S_1] = \dfrac{1}{\lambda}, \qquad \operatorname{var}[S_1] = \dfrac{1}{\lambda^2}'
+      - nombre: Arribo $n$-ésimo
+        descripcion: La suma de $n$ exponenciales independientes, que es una Gamma.
+        tex: 'S_n \sim \text{Gamma}(n, \lambda): \ f(t) = \dfrac{\lambda^n t^{n-1} e^{-\lambda t}}{(n-1)!}, \quad t > 0'
+      - nombre: Momentos de la Gamma
+        descripcion: Los de $n$ exponenciales independientes, sumados.
+        tex: 'E[S_n] = \dfrac{n}{\lambda}, \qquad \operatorname{var}[S_n] = \dfrac{n}{\lambda^2}'
+      - nombre: Relación con el conteo
+        descripcion: El arribo $n$-ésimo es posterior a $t$ si hasta $t$ hubo menos de $n$ eventos.
+        tex: '\begin{gathered} S_n > t \iff N(t) \le n - 1 \\ P(S_n > t) = \sum_{k=0}^{n-1} e^{-\lambda t} \dfrac{(\lambda t)^k}{k!} \end{gathered}'
+      - nombre: Pérdida de memoria
+        descripcion: Lo que falta esperar no depende de lo que ya se esperó.
+        tex: 'P(T > s + t \mid T > s) = P(T > t)'
 
   - titulo: Condicionamiento a $N(t) = n$
     formulas:
-      - 'N(t) = n \implies \text{los } n \text{ tiempos son i.i.d. } U(0, t)'
-      - 'P(N(s) = k \mid N(t) = n) = \dbinom{n}{k}\left(\tfrac{s}{t}\right)^{k}\left(1 - \tfrac{s}{t}\right)^{n-k}'
+      - nombre: Conteo en un subintervalo
+        descripcion: Dados $n$ arribos en $(0, t]$, sus tiempos son uniformes independientes, y cada uno cae en $(0, s]$ con probabilidad $s/t$.
+        tex: 'P(N(s) = k \mid N(t) = n) = \dbinom{n}{k}\left(\dfrac{s}{t}\right)^{k}\left(1 - \dfrac{s}{t}\right)^{n-k}'
 
   - titulo: Superposición y adelgazamiento
     formulas:
-      - '\text{superposición: } \lambda = \lambda_1 + \lambda_2'
-      - '\text{adelgazamiento con probabilidad } p: \ \lambda_p = p\,\lambda'
-      - 'P(\text{el primero es del proceso 1}) = \dfrac{\lambda_1}{\lambda_1 + \lambda_2}'
-    nota: 'Los procesos que resultan de adelgazar son independientes entre sí.'
+      - nombre: Superposición
+        descripcion: Dos procesos de Poisson independientes juntos forman otro, con la suma de las intensidades.
+        tex: '\lambda = \lambda_1 + \lambda_2'
+      - nombre: Adelgazamiento
+        descripcion: Conservar cada evento con probabilidad $p$ da un proceso de Poisson; los procesos que resultan son independientes.
+        tex: '\lambda_p = p\,\lambda'
+      - nombre: Origen del primer evento
+        descripcion: La probabilidad de que el primer evento provenga del proceso 1.
+        tex: 'P(\text{proceso } 1) = \dfrac{\lambda_1}{\lambda_1 + \lambda_2}'
 
   - titulo: Poisson compuesto
     formulas:
-      - 'T = \sum_{i=1}^{N} X_i, \qquad E[T] = E[N]\, E[X]'
-      - '\operatorname{var}[T] = E[N]\operatorname{var}[X] + \operatorname{var}[N]\,(E[X])^2'
+      - nombre: Media
+        descripcion: La de una suma de una cantidad Poisson de términos i.i.d.
+        tex: 'T = \sum_{i=1}^{N} X_i, \qquad E[T] = E[N]\, E[X]'
+      - nombre: Varianza
+        descripcion: Suma la variación de cada término y la de la cantidad de términos.
+        tex: '\operatorname{var}[T] = E[N]\operatorname{var}[X] + \operatorname{var}[N]\,(E[X])^2'

@@ -487,8 +487,8 @@ Cada fase termina con algo usable. La idea es estudiar desde la fase 2.
 | 4. Guías 2–8 | Pipeline §7 guía por guía (una sesión de Claude Code por guía). | Cada guía con su `revision/` cerrado. | **núcleo hecho** en las 8; falta el cruce contra las resueltas |
 | 5. Simulacro | Exámenes cargados y verificados, timer, entrega, nota y veredicto. | Un simulacro completo con nota coherente. | **hecha**: 10 exámenes completos en el pool |
 | 6. Futuro | Guías 9–12, integradoras de PyE B completas (ejercicios 4 y 5), ejercicios parametrizados. | — | pendiente; el panel ya muestra los skills de 9–12 bloqueados |
-| 7. Material para el examen | Hoja de fórmulas, tablas imprimibles y kit para el examen (§12.1 a §12.3). | Impresos, alcanzan para resolver un parcial sin calculadora. | **hecha**: fórmulas de las guías 1 a 8, 7 tablas verificadas y el kit; ver `revision/formulas.md` |
-| 8. Distribuciones | Fichas de cada distribución y calculadora (§12.4). | Cada valor de la calculadora coincide con mpmath y con las tablas. | pendiente |
+| 7. Material para el examen | Hoja de fórmulas, tablas imprimibles y kit para el examen (§12.1 a §12.3). | Impresos, alcanzan para resolver un parcial con calculadora científica. | **hecha**: 120 fórmulas de las guías 1 a 8 en fichas, las 3 tablas de la cátedra verificadas y el kit; ver `revision/formulas.md` |
+| 8. Distribuciones | Fichas de cada distribución y calculadora (§12.4). | Cada valor de la calculadora coincide con mpmath y con las tablas. | **hecha**: las 19 distribuciones de la tabla de la cátedra; ver `revision/distribuciones.md` |
 
 **Por qué la fase 0.5.** El extractor va antes de la fase 2 porque cambia el
 costo de todo el contenido que viene después: con él, cargar una guía es
@@ -517,17 +517,17 @@ revisar y verificar en vez de transcribir. Son 219 ejercicios en alcance.
 
 ## 12. Material para el examen y distribuciones
 
-Lo que se lleva al examen son hojas impresas: no se pueden usar dispositivos
-electrónicos, ni siquiera calculadora, y la cátedra no limita la cantidad de
-hojas. De ahí salen las tres decisiones de fondo:
+Lo que se lleva al examen son hojas impresas y una calculadora científica:
+no se pueden usar otros dispositivos electrónicos, y la cátedra no limita la
+cantidad de hojas. De ahí salen las tres decisiones de fondo:
 
 - **Exportar es imprimir.** Un solo botón, "Imprimir o guardar PDF", que abre
   el diálogo del navegador (ofrece "Guardar como PDF") con una hoja de estilos
   de impresión. Las fórmulas salen vectoriales, sin dependencias nuevas.
   Generar el PDF dentro de la app exigiría una librería pesada y KaTeX saldría
   como imagen.
-- **Las tablas tienen que reemplazar a la calculadora,** así que no alcanza
-  con las de la cátedra.
+- **Las tablas son las de la cátedra** (normal, $t$ y $\chi^2$): lo demás
+  (binomial, Poisson, $e^{-x}$, combinatorios) sale con la calculadora.
 - **Todo se filtra por etapa** (`etapas()` de `src/dominio/evaluaciones.ts`):
   Parcial (guías 1 a 8), Final (los temas propios, 9 a 12) y Todas. Si ya se
   imprimió lo del parcial, para el final alcanza con completar.
@@ -537,8 +537,10 @@ hojas. De ahí salen las tres decisiones de fondo:
 - Sección nueva `#/formulas`, con su tarjeta en el inicio y su entrada en el
   menú.
 - **Contenido como datos:** `content/formulas/guia-N.yaml`, con bloques
-  titulados por tema y, en cada uno, fórmulas en LaTeX y a lo sumo una línea
-  de aclaración. Se arma a partir de las fórmulas de `skills.yaml` y de la
+  titulados por tema y, en cada uno, fichas con el nombre de la fórmula, una
+  descripción breve de para qué sirve y la expresión en LaTeX, que se ve
+  centrada. A la izquierda, un índice con las guías y sus temas, como el de
+  los ejercicios. Se arma a partir de las fórmulas de `skills.yaml` y de la
   teoría cargada, y se contrasta con `fuentes/teoria/Grynberg_Notas.pdf` y
   `probabilidad_distribuciones.pdf`. No se genera automáticamente desde los
   skills: ahí las fórmulas se repiten y están pensadas para el panel de cada
@@ -553,16 +555,17 @@ hojas. De ahí salen las tres decisiones de fondo:
 
 ### 12.2 Tablas imprimibles (fase 7)
 
-Propuesta, para recortar o ampliar en la revisión:
+Las de `fuentes/teoria/Tablas.pdf`, con su gráfico y su recuadro "Recuerda":
 
 | Tabla | Rango | Etapa |
 |---|---|---|
-| Normal $\Phi(z)$ | $z$ de 0,00 a 3,49, como la de la cátedra, más los cuantiles usuales $z_\alpha$ | parcial |
-| Poisson acumulada $P(X \le k)$ | $\lambda$ de 0,1 a 1 (paso 0,1), de 1,5 a 10 (paso 0,5) y de 11 a 20 | parcial |
-| Binomial acumulada $P(X \le k)$ | $n$ de 2 a 20, $p$ de 0,05 a 0,5 (para $p > 0{,}5$, por simetría) | parcial |
-| $e^{-x}$ | $x$ de 0 a 10 | parcial |
-| Factoriales y combinatorios | $n!$ hasta 20, $\binom{n}{k}$ hasta $n = 20$ | parcial |
-| Cuantiles de $t$ y de $\chi^2$ | los de la cátedra | final |
+| Normal $\Phi(z)$ | $z$ de 0,00 a 3,59, más los cuantiles habituales | parcial |
+| Cuantiles de $t$ | $\nu$ de 1 a 40, 50 a 90 | final |
+| Cuantiles de $\chi^2$ | $\nu$ de 1 a 40, 50 a 90 | final |
+
+La primera versión traía además binomial, Poisson, $e^{-x}$ y combinatorios,
+pensadas para resolver sin calculadora. Se sacaron al confirmar que la
+calculadora científica está permitida.
 
 - **Datos generados y verificados:** `tools/verify/tablas.py` las calcula con
   aritmética exacta o mpmath y las escribe en `content/tablas/`. $\Phi$, $t$ y
@@ -587,21 +590,29 @@ Propuesta, para recortar o ampliar en la revisión:
 
 ### 12.4 Distribuciones (fase 8)
 
-- Sección nueva `#/distribuciones`, con una ficha por distribución, agrupadas
-  por etapa: Bernoulli, binomial, geométrica, Pascal, hipergeométrica, Poisson
-  y multinomial; uniforme, exponencial, Gamma, normal y normal bivariada; para
-  el final, $\chi^2$, $t$ y Beta.
-- **Ficha:** notación, soporte, parámetros, $p_X$ o $f_X$, $F_X$ cuando es
-  cerrada, esperanza y varianza, cuándo se usa y cómo se relaciona con las
-  otras (Poisson, exponencial y Gamma; binomial, Poisson y normal). La fuente
-  es `probabilidad_distribuciones.pdf`, que ya trae los comentarios de
-  modelado ("Algunos modelos"). Contenido en `content/distribuciones.yaml`.
-- **Calculadora:** $P(X = k)$, $P(X \le x)$, $P(a < X \le b)$ y cuantiles, con
-  un gráfico SVG que sombrea el área. Las funciones numéricas (gamma y beta
-  incompletas regularizadas, para Gamma, $\chi^2$, $t$ y Beta) van en
-  `src/dominio/distribuciones.ts`, y `tools/verify/distribuciones.py` las
-  contrasta con mpmath en una grilla de parámetros y con las tablas de §12.2.
-- Desde cada ficha, un enlace a la tabla que le corresponde.
+- Sección nueva `#/distribuciones`, con una ficha por cada una de las 19
+  distribuciones de `probabilidad_distribuciones.pdf`, agrupadas como en la
+  tabla: discretas (Bernoulli, binomial, geométrica, Pascal, Poisson,
+  hipergeométrica), continuas (uniforme, exponencial, Gamma, normal,
+  $\chi^2$, $t$, Weibull, Rayleigh, Pareto, Beta, Cauchy) y multivariadas
+  (multinomial y normal bivariada).
+- **Ficha:** notación, soporte, parámetros, $p_X$ o $f_X$, la función de
+  supervivencia cuando la tabla la trae, esperanza y varianza, para qué se
+  usa y las equivalencias con otras distribuciones. La fuente es
+  `probabilidad_distribuciones.pdf`, que ya trae los comentarios de modelado
+  de las discretas ("Algunos modelos"). Contenido en
+  `content/distribuciones.yaml`.
+- **Calculadora:** $P(X = x)$, $P(X \le x)$, $P(X > x)$, $P(a < X < b)$ y
+  cuantiles, con un gráfico SVG que sombrea el área (barras en las
+  discretas). Las líneas del evento se arrastran sobre el gráfico. La
+  multinomial calcula $P(X_1 = x_1, \dots, X_k = x_k)$; la normal bivariada,
+  $P(X_1 \le a, X_2 \le b)$ sobre sus elipses, y la condicional.
+- **Verificación:** las funciones numéricas (gamma y beta incompletas
+  regularizadas, para Gamma, $\chi^2$, $t$ y Beta) van en
+  `src/dominio/distribuciones.ts`. `tools/smoke.ts` las contrasta con mpmath
+  (`tools/verify/distribuciones.py`) en una grilla de parámetros, y con cada
+  celda de las tablas de §12.2.
+- Desde las fichas de la normal, la $t$ y la $\chi^2$, un enlace a su tabla.
 
 ### 12.5 Riesgos
 
@@ -609,5 +620,3 @@ Propuesta, para recortar o ampliar en la revisión:
   contrasta con la teoría y entra en la revisión de Mateo.
 - **La impresión depende del navegador:** se prueba en Edge con `page.pdf` de
   Playwright (paginación, columnas, que ningún bloque se parta).
-- **La lista de tablas es una propuesta:** conviene confirmarla con un parcial
-  resuelto a mano, sin calculadora, antes de cerrarla.

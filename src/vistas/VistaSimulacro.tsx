@@ -691,8 +691,8 @@ function KitParaElExamen() {
   return (
     <section class="kit-aviso" aria-label={`Kit para el ${ev.nombre}`}>
       <p class="kit-aviso__texto">
-        Para llevar al {ev.nombre}, las fórmulas de las {rangoGuias(ev.guias)} y las tablas
-        para resolver sin calculadora, en un solo documento.
+        Para llevar al {ev.nombre}, las fórmulas de las {rangoGuias(ev.guias)} y las tablas de
+        la cátedra, en un solo documento.
       </p>
       <button
         class="boton boton--icono"

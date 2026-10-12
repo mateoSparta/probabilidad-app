@@ -6,23 +6,42 @@ guia: 8
 bloques:
   - titulo: Distribución normal
     formulas:
-      - 'X \sim N(\mu, \sigma^2): \ f_X(x) = \dfrac{1}{\sqrt{2\pi}\,\sigma}\, e^{-(x-\mu)^2/(2\sigma^2)}'
-      - 'Z = \dfrac{X - \mu}{\sigma} \sim N(0, 1), \qquad P(X \le x) = \Phi\!\left(\dfrac{x - \mu}{\sigma}\right)'
-      - '\Phi(-z) = 1 - \Phi(z), \qquad \Phi(z_\alpha) = \alpha'
+      - nombre: Densidad
+        descripcion: Una campana centrada en $\mu$, con dispersión $\sigma$.
+        tex: 'X \sim N(\mu, \sigma^2): \ f_X(x) = \dfrac{1}{\sqrt{2\pi}\,\sigma}\, e^{-(x-\mu)^2/(2\sigma^2)}'
+      - nombre: Estandarización
+        descripcion: Lleva cualquier normal a la estándar, para usar la tabla.
+        tex: '\begin{gathered} Z = \dfrac{X - \mu}{\sigma} \sim N(0, 1) \\ P(X \le x) = \Phi\!\left(\dfrac{x - \mu}{\sigma}\right) \end{gathered}'
+      - nombre: Simetría y cuantiles
+        descripcion: La tabla sólo da $\Phi$ para argumentos positivos.
+        tex: '\Phi(-z) = 1 - \Phi(z), \qquad \Phi(z_\alpha) = \alpha'
 
-  - titulo: Combinación lineal de normales independientes
+  - titulo: Combinación lineal de normales
     formulas:
-      - '\sum_i a_i X_i + b \sim N\!\left(\sum_i a_i \mu_i + b,\ \sum_i a_i^2 \sigma_i^2\right)'
+      - nombre: Combinación lineal
+        descripcion: Con normales independientes el resultado es normal; los coeficientes van al cuadrado en la varianza.
+        tex: '\sum_i a_i X_i + b \sim N\!\left(\sum_i a_i \mu_i + b,\ \sum_i a_i^2 \sigma_i^2\right)'
 
   - titulo: Teorema central del límite
     formulas:
-      - 'S_n = \sum_{i=1}^{n} X_i \approx N\!\left(n\mu,\ n\sigma^2\right)'
-      - 'P(S_n \le s) \approx \Phi\!\left(\dfrac{s - n\mu}{\sigma\sqrt{n}}\right)'
-      - '\bar{X}_n = \dfrac{S_n}{n} \approx N\!\left(\mu,\ \dfrac{\sigma^2}{n}\right)'
-    nota: 'Las $X_i$ son independientes e idénticamente distribuidas, con media $\mu$ y varianza $\sigma^2$. Si la incógnita es $n$, con $u = \sqrt{n}$ queda una cuadrática.'
+      - nombre: Suma
+        descripcion: La suma de muchas variables i.i.d., con media $\mu$ y varianza $\sigma^2$, es aproximadamente normal.
+        tex: 'S_n = \sum_{i=1}^{n} X_i \approx N\!\left(n\mu,\ n\sigma^2\right)'
+      - nombre: Probabilidad de la suma
+        descripcion: Se estandariza y se busca en la tabla. Si la incógnita es $n$, con $u = \sqrt{n}$ queda una cuadrática.
+        tex: 'P(S_n \le s) \approx \Phi\!\left(\dfrac{s - n\mu}{\sigma\sqrt{n}}\right)'
+      - nombre: Promedio
+        descripcion: El promedio se concentra alrededor de la media cuando $n$ crece.
+        tex: '\bar{X}_n = \dfrac{S_n}{n} \approx N\!\left(\mu,\ \dfrac{\sigma^2}{n}\right)'
 
   - titulo: Aproximación normal de una discreta
     formulas:
-      - '\text{Bin}(n, p) \approx N\big(np,\ np(1-p)\big), \qquad \text{Poisson}(\mu) \approx N(\mu, \mu)'
-      - 'P(X \le k) \approx \Phi\!\left(\dfrac{k + 0{,}5 - \mu}{\sigma}\right)'
-      - 'P(X = k) \approx \Phi\!\left(\dfrac{k + 0{,}5 - \mu}{\sigma}\right) - \Phi\!\left(\dfrac{k - 0{,}5 - \mu}{\sigma}\right)'
+      - nombre: Binomial y Poisson
+        descripcion: Se reemplazan por una normal con la misma media y la misma varianza.
+        tex: '\text{Bin}(n, p) \approx N\big(np,\ np(1-p)\big), \qquad \text{Poisson}(\mu) \approx N(\mu, \mu)'
+      - nombre: Corrección por continuidad, acumulada
+        descripcion: Se extiende medio punto más allá de $k$.
+        tex: 'P(X \le k) \approx \Phi\!\left(\dfrac{k + 0{,}5 - \mu}{\sigma}\right)'
+      - nombre: Corrección por continuidad, puntual
+        descripcion: La probabilidad de $k$ es el área entre $k - 0{,}5$ y $k + 0{,}5$.
+        tex: 'P(X = k) \approx \Phi\!\left(\dfrac{k + 0{,}5 - \mu}{\sigma}\right) - \Phi\!\left(\dfrac{k - 0{,}5 - \mu}{\sigma}\right)'

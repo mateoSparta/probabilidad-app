@@ -4,8 +4,10 @@
 /* ------------------------------------------------- menú principal */
 
 /* `grid-auto-rows: 1fr` hace que todas las filas midan lo que la más alta:
-   las cuatro opciones quedan del mismo alto aunque su texto ocupe distinta
-   cantidad de renglones. */
+   las seis opciones quedan del mismo alto aunque su texto ocupe distinta
+   cantidad de renglones. Son dos columnas por tres filas, más bajas que
+   antes (descripción de dos renglones como máximo), para que el inicio
+   siga entrando sin desplazarse. */
 .menu__grilla {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
@@ -26,7 +28,7 @@
   column-gap: var(--e-4);
   row-gap: var(--e-1);
   height: 100%;
-  padding: var(--e-4) var(--e-5);
+  padding: var(--e-3) var(--e-5);
   background: var(--superficie);
   border: 1px solid var(--borde);
   border-radius: var(--radio-lg);
@@ -260,6 +262,18 @@
   border-left-color: var(--acento);
 }
 
+/* En el índice de fórmulas, las guías agrupan a sus temas. */
+.indice__lista .indice__grupo { display: block; }
+.indice__tema--guia {
+  font-weight: 600;
+  color: var(--tinta);
+}
+.indice__sublista {
+  list-style: none;
+  margin: 0 0 var(--e-2);
+  padding: 0 0 0 var(--e-2);
+}
+
 .indice__avance {
   flex: none;
   font-family: var(--mono);
@@ -313,7 +327,7 @@
   }
   .subir {
     position: sticky;
-    top: 4.25rem;
+    top: var(--e-5);
     margin-top: var(--e-6);
     display: inline-flex;
     align-items: center;
@@ -341,10 +355,11 @@
     color: var(--acento);
   }
   .subir__flecha { display: inline-block; }
-  /* En skills no hay barra fija arriba: "Subir" se pega a la misma distancia
-     del borde superior que de las tarjetas (28,8 px de tinta en los dos
-     lados; la tinta empieza 4,8 px por debajo del borde del botón). */
-  .vista--skills .subir { top: var(--e-5); }
+  /* Donde no hay barra fija arriba, "Subir" se pega a la misma distancia del
+     borde superior que de la columna (28,8 px de tinta en los dos lados; la
+     tinta empieza 4,8 px por debajo del borde del botón). En las guías baja
+     hasta quedar debajo de la barra de pestañas. */
+  .vista--ejercicios .subir { top: 4.25rem; }
 }
 
 /* -------------------------------------------- aviso del parcial */
@@ -581,24 +596,4 @@
 .navegacion__opcion:focus-visible {
   background: var(--acento-suave);
   color: var(--acento);
-}
-
-/* Las herramientas del inicio (la hoja de fórmulas, y después las
-   distribuciones): una fila aparte, más baja que las cuatro opciones, con el
-   dato a la derecha. */
-.menu__grilla--herramientas {
-  margin-top: var(--e-4);
-  grid-auto-rows: auto;
-}
-.menu__opcion--compacta {
-  grid-template-columns: auto 1fr auto;
-  grid-template-areas:
-    'icono nombre dato'
-    'icono descripcion dato';
-  align-items: center;
-  padding-block: var(--e-3);
-}
-.menu__opcion--compacta .menu__dato {
-  margin-top: 0;
-  text-align: right;
 }
