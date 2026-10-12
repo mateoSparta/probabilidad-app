@@ -232,9 +232,9 @@ function alTerminarDeDesplazar(listo: () => void): void {
 }
 
 /**
- * Pinta de naranja claro las fichas de un tema, con un fundido de entrada,
- * un segundo quieto y un fundido de salida (`resaltar` en animaciones.css).
- * Si ya estaba pintado, la animación vuelve a empezar.
+ * Pinta de naranja muy claro las fichas de un tema: un fundido de entrada y
+ * otro de salida, el doble de largo, sin pausa entre los dos (`resaltar` en
+ * animaciones.css). Si ya estaba pintado, la animación vuelve a empezar.
  */
 function resaltarTema(id: string): void {
   const bloque = document.getElementById(id)
@@ -242,7 +242,7 @@ function resaltarTema(id: string): void {
   bloque.classList.remove('hoja__bloque--resaltado')
   void bloque.offsetWidth
   bloque.classList.add('hoja__bloque--resaltado')
-  setTimeout(() => bloque.classList.remove('hoja__bloque--resaltado'), 2000)
+  setTimeout(() => bloque.classList.remove('hoja__bloque--resaltado'), 1000)
 }
 
 /**
@@ -282,10 +282,11 @@ function usarGuiaVisible(guias: readonly number[], pausa: { current: boolean }):
  * El índice de la izquierda, como el de las guías: las guías con sus temas,
  * o las tablas, según la pestaña. Al hacer clic, baja hasta ahí.
  *
- * En las fórmulas es un acordeón: cada guía se pliega y se despliega con su
- * flecha, y hay a lo sumo una abierta. Al desplazarse, queda abierta la guía
- * que se está leyendo. Al elegir un tema, además de bajar, sus fichas se
- * pintan un momento para que se vea adónde se llegó.
+ * En las fórmulas es un acordeón: la guía desplegada es siempre la que se
+ * está leyendo. Elegir una guía baja hasta su comienzo (y por eso la
+ * despliega); al desplazarse, se despliega la que pasa a leerse. Al elegir
+ * un tema, además de bajar, sus fichas se pintan un momento para que se vea
+ * adónde se llegó.
  */
 export function IndiceMaterial({
   pestana,
@@ -324,16 +325,19 @@ export function IndiceMaterial({
     )
   }
 
-  function irATema(guia: number, i: number): void {
+  /** Baja hasta un ancla de la guía, con el acordeón quieto mientras dura el desplazamiento. */
+  function bajar(guia: number, ancla: string, alLlegar?: () => void): void {
     setAbierta(guia)
     pausa.current = true
-    irA(anclaTema(guia, i))
+    irA(ancla)
     alTerminarDeDesplazar(() => {
       pausa.current = false
       dispatchEvent(new Event('scroll'))
-      resaltarTema(anclaTema(guia, i))
+      alLlegar?.()
     })
   }
+  const irATema = (guia: number, i: number) =>
+    bajar(guia, anclaTema(guia, i), () => resaltarTema(anclaTema(guia, i)))
 
   if (hojas.length === 0) return null
   return (
@@ -353,7 +357,7 @@ export function IndiceMaterial({
                   class="indice__tema indice__tema--guia"
                   aria-expanded={abierto}
                   aria-controls={`indice-guia-${h.guia}`}
-                  onClick={() => setAbierta(abierto ? null : h.guia)}
+                  onClick={() => bajar(h.guia, anclaGuia(h.guia))}
                 >
                   <IconoDesplegar />
                   Guía {h.guia}

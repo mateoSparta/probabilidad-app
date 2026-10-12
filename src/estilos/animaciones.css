@@ -83,10 +83,10 @@
   from { opacity: 0; transform: translateX(-28px); }
   to { opacity: 1; transform: none; }
 }
-/* Un fundido de entrada, un segundo quieto y un fundido de salida. */
+/* Un fundido de entrada y uno de salida que dura el doble, sin pausa. */
 @keyframes resaltar {
   0%, 100% { background-color: var(--superficie); border-color: var(--borde); }
-  16%, 68% { background-color: var(--resaltado); border-color: var(--resaltado-borde); }
+  33.333% { background-color: var(--resaltado); border-color: var(--resaltado-borde); }
 }
 
 /* ----------------------------------------- cambio de sección o guía */
@@ -124,11 +124,12 @@
 .material--izquierda { animation: desde-izquierda 340ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
 .material--fundido { animation: aparecer 280ms ease-out both; }
 
-/* El tema elegido en el índice: sus fichas se pintan un momento. */
+/* El tema elegido en el índice: sus fichas se pintan un momento, 300 ms
+   hasta el naranja y 600 ms de vuelta. */
 .hoja__bloque--resaltado .ficha-formula {
-  --resaltado: color-mix(in srgb, var(--acento) 13%, var(--superficie));
-  --resaltado-borde: color-mix(in srgb, var(--acento) 35%, var(--borde));
-  animation: resaltar 1.9s ease both;
+  --resaltado: color-mix(in srgb, var(--acento) 7%, var(--superficie));
+  --resaltado-borde: color-mix(in srgb, var(--acento) 22%, var(--borde));
+  animation: resaltar 900ms ease-in-out both;
 }
 
 /* ------------------------------------------------------- distribuciones */

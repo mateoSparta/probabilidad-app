@@ -220,6 +220,9 @@
   }
 }
 
+/* Estándar del proyecto: en los índices de la izquierda nada va en negro.
+   Títulos y rótulos en --tinta-3, entradas en --tinta-2, y el acento sólo
+   para la elegida o la que está bajo el mouse. */
 .indice__titulo {
   margin: 0 0 var(--e-2);
   font-size: var(--t-xs);
@@ -272,7 +275,7 @@
   gap: var(--e-1);
   width: 100%;
   font-weight: 600;
-  color: var(--tinta);
+  color: var(--tinta-2);
 }
 .indice__tema--guia .icono {
   flex: none;
@@ -292,16 +295,20 @@
   overflow: hidden;
   list-style: none;
   margin: 0;
-  padding: 0 0 0 var(--e-3);
+  padding: 0;
 }
+/* La sangría va dentro del botón, así su filete de la izquierda cae sobre
+   la línea del índice, como el de las guías. */
+.indice__sublista .indice__tema { padding-left: calc(2 * var(--e-3)); }
 .indice__sublista li:last-child { padding-bottom: var(--e-2); }
 
-/* En el de distribuciones, los grupos son rótulos y no se pliegan, y la
-   elegida queda marcada como al pasar el mouse. */
+/* En el de distribuciones, los grupos son rótulos que cortan la línea: cada
+   grupo lleva su tramo, y el rótulo va entre uno y otro, alineado con ella.
+   No se pliegan, y la elegida queda marcada como al pasar el mouse. */
+.indice--grupos .indice__lista { border-left: 0; }
 .indice__rotulo {
-  margin: var(--e-2) 0 var(--e-1);
-  padding-left: var(--e-3);
-  font-size: 0.68rem;
+  margin: var(--e-3) 0 var(--e-1);
+  font-size: var(--t-xs);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--tinta-3);
@@ -310,8 +317,9 @@
 .indice__sublista--fija {
   min-height: auto;
   overflow: visible;
-  padding-left: 0;
+  border-left: 1px solid var(--borde);
 }
+.indice__sublista--fija .indice__tema { padding-left: var(--e-3); }
 .indice__tema--activo,
 .indice__tema--activo:hover {
   color: var(--acento);

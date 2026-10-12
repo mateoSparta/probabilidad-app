@@ -895,7 +895,8 @@
 /* --- pool --- */
 
 .pool__titulo,
-.pendientes__titulo {
+.pendientes__titulo,
+.dist-mas__titulo {
   font-size: var(--t-xs);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1352,6 +1353,12 @@
 }
 .segmentado--linea .segmentado__nombre { font-size: var(--t-sm); }
 .segmentado--linea .segmentado__dato { white-space: nowrap; }
+/* Que el dato se vea sólo en la opción elegida: es del color del fondo del
+   selector (--borde sobre --fondo), y lo revela el blanco que se desliza
+   debajo. */
+.segmentado--revelar .segmentado__dato {
+  color: color-mix(in srgb, var(--tinta) 12.2%, var(--fondo));
+}
 /* En un teléfono no entran en un renglón: el dato va debajo del nombre. */
 @media (max-width: 40rem) {
   .segmentado--linea .segmentado__opcion {
@@ -2063,14 +2070,9 @@
   gap: var(--e-1);
   margin-top: var(--e-4);
 }
-.dist-mas__titulo {
-  margin: 0;
-  font-size: var(--t-base);
-}
-.dist-mas__seccion + .dist-mas__seccion {
-  padding-top: var(--e-1);
-  border-top: 1px solid var(--borde);
-}
+/* Los títulos, en mayúsculas y en gris, como "Parciales disponibles" del
+   simulacro (comparten la regla de .pool__titulo). */
+.dist-mas__titulo { margin: 0; }
 
 /* Los tips: una lista con viñetas en acento. */
 .dist-tips {
