@@ -61,6 +61,8 @@ import {
   simulacroRetomable,
 } from '../src/dominio/sesion.ts'
 import {
+  alcances,
+  conFechas,
   etapas,
   evaluacionActual,
   guiasDeLaMateria,
@@ -937,6 +939,10 @@ for (const [valor, alternativa] of equivalentes) {
     ['#/skills', 'skills', 1],
     ['#/simulacro', 'simulacro', 1],
     ['#/seguimiento', 'seguimiento', 1],
+    ['#/machete', 'machete', 1],
+    ['#/distribuciones', 'distribuciones', 1],
+    // El nombre viejo del Machete sigue andando.
+    ['#/formulas', 'machete', 1],
     ['#/cualquiera', 'menu', 1],
     ['#ej-g1-04', 'menu', 1],
   ]
@@ -950,7 +956,7 @@ for (const [valor, alternativa] of equivalentes) {
   // La guía anterior se conserva al pasar por una sección que no la lleva.
   afirmar(leerRuta('#/skills', 5).guia === 5, 'pasar por Skills hizo perder la guía')
   // Escribir y volver a leer da la misma ruta.
-  for (const seccion of ['menu', 'ejercicios', 'skills', 'simulacro', 'seguimiento'] as const) {
+  for (const seccion of ['menu', 'ejercicios', 'skills', 'simulacro', 'seguimiento', 'machete', 'distribuciones'] as const) {
     const r = { seccion, guia: 4 }
     const vuelta = leerRuta(escribirRuta(r), 4)
     afirmar(vuelta.seccion === seccion && vuelta.guia === 4, `ida y vuelta de la ruta ${seccion}`)
@@ -1007,6 +1013,19 @@ for (const [valor, alternativa] of equivalentes) {
   afirmar(rangoGuias([1, 2, 3]) === 'guías 1 a 3', rangoGuias([1, 2, 3]))
   afirmar(rangoGuias([9]) === 'guía 9', rangoGuias([9]))
   afirmar(rangoGuias([1, 3, 5]) === 'guías 1, 3 y 5', rangoGuias([1, 3, 5]))
+  // El Machete ofrece "Todas" primero, y después cada etapa con sus guías propias.
+  const alc = alcances(evs)
+  afirmar(alc.map((a) => a.id).join() === 'todas,parcial,final' && alc[0].guias.length === 12 && alc[2].guias.join() === '9,10,11,12',
+    `los alcances son ${alc.map((a) => a.id).join()}`)
+  // Las fechas que cambia el usuario pisan las del contenido, y sólo esas.
+  const cambiadas = conFechas(evs, { final: '2027-02-15' })
+  afirmar(cambiadas[0] === parcial && cambiadas[1].fecha === '2027-02-15' && final.fecha === null,
+    'conFechas no aplica sólo la fecha cambiada, o modifica la original')
+  const sinFecha = conFechas(evs, { parcial: null })
+  afirmar(evaluacionActual(sinFecha, new Date('2026-11-05T10:00:00'))?.nombre === 'parcial',
+    'un parcial que se dejó sin fecha no sigue pendiente')
+  afirmar(evaluacionActual(conFechas(evs, { parcial: '2026-11-06' }), new Date('2026-11-02T10:00:00'))?.nombre === 'parcial',
+    'postergar el parcial no lo vuelve a poner como el examen que toca')
 
   // El plan cuenta sólo los skills de las guías de la evaluación.
   const sk: SkillConItems[] = [

@@ -3,7 +3,7 @@
  *
  *   #/                     menú principal
  *   #/ejercicios/3         guía 3
- *   #/skills, #/simulacro, #/seguimiento, #/formulas, #/distribuciones
+ *   #/skills, #/simulacro, #/seguimiento, #/machete, #/distribuciones
  *
  * Va en el hash y no en el path porque GitHub Pages sirve archivos estáticos:
  * un path inventado devolvería 404 al recargar. Que la ruta viva en la URL es
@@ -19,7 +19,7 @@ export type Seccion =
   | 'skills'
   | 'simulacro'
   | 'seguimiento'
-  | 'formulas'
+  | 'machete'
   | 'distribuciones'
 
 export type Ruta = {
@@ -36,11 +36,14 @@ export const NOMBRE_SECCION: Record<Exclude<Seccion, 'menu'>, string> = {
   skills: 'Skills',
   simulacro: 'Simulacro',
   seguimiento: 'Seguimiento',
-  formulas: 'Fórmulas y tablas',
+  machete: 'Machete',
   distribuciones: 'Distribuciones',
 }
 
 const SECCIONES = new Set<string>(Object.keys(NOMBRE_SECCION))
+
+/** Nombres viejos de secciones, para que un enlace guardado siga andando. */
+const ALIAS: Record<string, Seccion> = { formulas: 'machete' }
 
 /**
  * Interpreta el hash. Cualquier cosa que no se reconozca lleva al menú: una
@@ -48,7 +51,8 @@ const SECCIONES = new Set<string>(Object.keys(NOMBRE_SECCION))
  */
 export function leerRuta(hash: string, guiaPorDefecto = 1): Ruta {
   const partes = hash.replace(/^#\/?/, '').split('/').filter(Boolean)
-  const [seccion, numero] = partes
+  const [crudo, numero] = partes
+  const seccion = crudo && (ALIAS[crudo] ?? crudo)
   if (!seccion || !SECCIONES.has(seccion)) return { seccion: 'menu', guia: guiaPorDefecto }
   const guia = Number(numero)
   return {

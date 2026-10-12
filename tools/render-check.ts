@@ -109,7 +109,7 @@ try {
     ['skills', 'Skills'],
     ['simulacro', 'Simulacro'],
     ['seguimiento', 'Seguimiento'],
-    ['formulas', 'Fórmulas y tablas'],
+    ['machete', 'Machete'],
     ['distribuciones', 'Distribuciones'],
   ]) {
     const cab = render(createElement(Cabecera, { ruta: { seccion, guia: 1 } }))
@@ -279,26 +279,51 @@ try {
   )
   // Seis opciones del mismo tamaño en la misma grilla.
   const tarjetas = (menu.match(/class="menu__opcion"/g) ?? []).length
-  afirmar(tarjetas === 6 && menu.includes('href="#/formulas"') && menu.includes('href="#/distribuciones"'),
-    `el inicio tiene ${tarjetas} opciones en lugar de las seis, con fórmulas y distribuciones`)
+  afirmar(tarjetas === 6 && menu.includes('href="#/machete"') && menu.includes('>Machete<') && menu.includes('href="#/distribuciones"'),
+    `el inicio tiene ${tarjetas} opciones en lugar de las seis, con el Machete y distribuciones`)
   afirmar(!menu.includes('menu__grilla--herramientas'), 'sigue la fila aparte de herramientas')
 
   // --- distribuciones ---
   const { VistaDistribuciones } = await servidor.ssrLoadModule('/src/vistas/VistaDistribuciones.tsx')
   const dist = render(createElement(VistaDistribuciones, {}))
-  const chips = (dist.match(/class="chip-opcion[^"]*" aria-pressed/g) ?? []).length
-  afirmar(chips === contenido.fichasDistribuciones.length && chips === 19,
-    `el selector tiene ${chips} distribuciones en lugar de 19`)
+  // Las distribuciones se eligen en el índice de la izquierda (y en un
+  // selector, en pantallas angostas); la normal arranca elegida.
+  const enIndice = (dist.match(/<button class="indice__tema( indice__tema--activo)?"/g) ?? []).length
+  const opcionesSelector = (dist.match(/<option /g) ?? []).length
+  afirmar(enIndice === 19 && opcionesSelector === 19 && contenido.fichasDistribuciones.length === 19,
+    `el índice tiene ${enIndice} distribuciones y el selector ${opcionesSelector}, en lugar de 19`)
+  afirmar(/indice__tema--activo"[^>]*>Normal</.test(dist), 'la normal no arranca marcada en el índice')
   afirmar(dist.includes('class="grafico-dist"') && dist.includes('class="resultado__valor"') && !dist.includes('mate-roto'),
     'la calculadora no dibuja el gráfico o el resultado de la normal')
   afirmar(/class="resultado__valor">0,\d{6}</.test(dist), 'la calculadora no muestra la probabilidad con seis decimales')
-  afirmar(dist.includes('class="dist__tabla" href="#/formulas"'), 'la ficha de la normal no lleva a su tabla')
+  afirmar(dist.includes('class="hueco"'), 'los valores no se escriben en la frase')
+  afirmar(dist.includes('class="dist__tabla" href="#/machete"'), 'la ficha de la normal no lleva a su tabla')
+  // La ficha y los tips, plegados: en el pantallazo inicial no se ven.
+  afirmar((dist.match(/class="desplegable dist-mas__seccion"/g) ?? []).length === 2 && dist.includes('aria-expanded="false"'),
+    'la ficha y los tips no arrancan plegados')
+  afirmar(dist.includes('Intuición y relaciones') && dist.includes('teorema central del límite'),
+    'faltan los tips de la normal')
+  afirmar(dist.includes('Imprimir la tabla'), 'falta el botón que imprime la tabla de distribuciones')
+  const { TablaDeDistribuciones } = await servidor.ssrLoadModule('/src/componentes/TablaDistribuciones.tsx')
+  const tablaDist = render(createElement(TablaDeDistribuciones, {}))
+  afirmar(!tablaDist.includes('mate-roto') && (tablaDist.match(/<tr>/g) ?? []).length >= 19 &&
+    tablaDist.includes('Distribuciones discretas univariadas') && tablaDist.includes('Distribuciones continuas univariadas') &&
+    tablaDist.includes('Distribuciones multivariadas') && tablaDist.includes('Equivalencias'),
+    'la tabla de distribuciones no tiene las secciones de la de la cátedra')
 
-  // --- fórmulas y tablas ---
-  const { VistaFormulas } = await servidor.ssrLoadModule('/src/vistas/VistaFormulas.tsx')
-  const formulas = render(createElement(VistaFormulas, {}))
-  afirmar(formulas.includes('Fórmulas y tablas') && formulas.includes('Imprimir o guardar PDF'),
-    'la sección de fórmulas no se dibuja o no tiene el botón de imprimir')
+  // --- machete ---
+  const { VistaMachete } = await servidor.ssrLoadModule('/src/vistas/VistaMachete.tsx')
+  const formulas = render(createElement(VistaMachete, {}))
+  afirmar(formulas.includes('<h2>Machete</h2>') && formulas.includes('Imprimir o guardar PDF'),
+    'el Machete no se dibuja o no tiene el botón de imprimir')
+  // "Todas" es la primera opción y la elegida al entrar.
+  afirmar(/name="alcance-material" value="todas" checked/.test(formulas) &&
+    formulas.indexOf('value="todas"') < formulas.indexOf('value="parcial"'),
+    'el filtro no arranca en "Todas", primera opción')
+  // El índice es un acordeón: sólo la primera guía desplegada.
+  afirmar((formulas.match(/indice__grupo--abierto/g) ?? []).length === 1 &&
+    (formulas.match(/aria-expanded="false"/g) ?? []).length >= 7,
+    'el índice del Machete no arranca con una sola guía desplegada')
   afirmar(!formulas.includes('mate-roto') && formulas.includes('class="katex'),
     'hay fórmulas de la hoja que KaTeX no pudo parsear')
   // Cada fórmula es una ficha con nombre, descripción y la expresión centrada.
@@ -327,8 +352,10 @@ try {
   afirmar(tablasParcial.includes('<td>0,50399</td>') && tablasParcial.includes('<td>0,97500</td>'),
     'la tabla normal no tiene los valores de la cátedra')
   const kit = render(createElement(KitExamen, { evaluacion: contenido.config.evaluaciones[0] }))
-  afirmar(kit.includes('Kit para el parcial') && kit.indexOf('Fórmulas') < kit.indexOf('Tablas') && kit.includes('Suerte en el examen'),
-    'el kit no tiene carátula, fórmulas, tablas y saludo')
+  afirmar(!kit.includes('Kit para el parcial') && !kit.includes('kit__caratula'), 'el kit sigue teniendo carátula')
+  afirmar(kit.indexOf('Fórmulas') < kit.indexOf('Tablas') && kit.indexOf('Tablas') < kit.indexOf('Tabla de distribuciones') &&
+    kit.includes('Suerte en el examen'),
+    'el kit no tiene fórmulas, tablas, la tabla de distribuciones y el saludo, en ese orden')
   for (const [nombre, href] of [
     ['Ejercicios', '#/ejercicios/3'],
     ['Skills', '#/skills'],

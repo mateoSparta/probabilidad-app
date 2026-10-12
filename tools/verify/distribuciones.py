@@ -262,11 +262,100 @@ def casos_bivariada():
     return salida
 
 
+def coma(x, decimales: int) -> str:
+    return f"{float(x):.{decimales}f}".replace(".", ",")
+
+
+def numeros_de_los_tips() -> dict[str, list[str]]:
+    """
+    Los números que citan los tips de content/distribuciones.yaml, calculados
+    acá; tools/check.ts exige que cada uno aparezca tal cual en el tip de su
+    distribución. Las relaciones que los tips enuncian sin números se
+    comprueban con valores concretos (un `assert` que falla corta el script).
+    """
+    cerca = lambda a, b, tol=mp.mpf("1e-20"): abs(a - b) <= tol * max(1, abs(b))
+
+    # Exponencial: P(X > 1/lambda) = e^{-1}; la mediana ln 2 / lambda queda antes de la media.
+    e1 = mp.e ** -1
+    assert mp.log(2) < 1
+    # Normal: la regla 68-95-99,7.
+    Phi = lambda z: (1 + mp.erf(z / mp.sqrt(2))) / 2
+    dentro = [2 * Phi(k) - 1 for k in (1, 2, 3)]
+    # t de Student: cuantiles 0,975, por bisección sobre la distribución.
+    def cdf_t(x, nu):
+        return mp.quad(lambda u: mp.gamma((nu + 1) / mp.mpf(2)) / (mp.sqrt(nu * mp.pi) * mp.gamma(nu / mp.mpf(2)))
+                       * (1 + u * u / nu) ** (-(nu + 1) / mp.mpf(2)), [-mp.inf, 0, x])
+    def cuantil_t(alfa, nu):
+        lo, hi = mp.mpf(0), mp.mpf(100)
+        for _ in range(120):
+            mid = (lo + hi) / 2
+            lo, hi = (mid, hi) if cdf_t(mid, nu) < alfa else (lo, mid)
+        return (lo + hi) / 2
+    alfa = mp.mpf("0.975")
+    t975 = [cuantil_t(alfa, nu) for nu in (1, 10, 30)]
+    z975 = mp.sqrt(2) * mp.erfinv(2 * alfa - 1)
+    # Pareto: con alpha = log_4 5, el 20 % más alto se lleva el 80 % del total.
+    # La fracción del total que aporta la cola X > x_q, con P(X > x_q) = q, es q^(1 - 1/alpha).
+    a8020 = mp.log(5) / mp.log(4)
+    assert cerca(mp.mpf("0.2") ** (1 - 1 / a8020), mp.mpf("0.8"))
+    # Rayleigh: la media sigma*sqrt(pi/2) y la moda en sigma (donde f' = 0).
+    media_ray = mp.sqrt(mp.pi / 2)
+    assert cerca(mp.diff(lambda x: x * mp.e ** (-x * x / 2), 1), mp.mpf(0))
+    # Geométrica con p = 1/6: esperanza 6. chi2_2 = Gamma(1, 1/2): media 2.
+    assert Fraction(1, 1) / Fraction(1, 6) == 6
+
+    # Relaciones sin números, con valores concretos.
+    # Pascal y binomial: P(Pas(k, p) <= n) = P(B(n, p) >= k).
+    p = Fraction(3, 10)
+    for k, n in [(3, 7), (5, 12), (1, 4)]:
+        pas = sum(comb(x - 1, k - 1) * (1 - p) ** (x - k) * p**k for x in range(k, n + 1))
+        bino = sum(comb(n, j) * p**j * (1 - p) ** (n - j) for j in range(k, n + 1))
+        assert pas == bino, (k, n)
+    # Weibull de forma 2 y Rayleigh: S(t) = e^{-(t/alpha)^2} = e^{-t^2/(2 sigma^2)} con sigma = alpha/sqrt(2).
+    for al, t in [(1.5, 0.7), (3, 4.2)]:
+        s = mp.mpf(al) / mp.sqrt(2)
+        assert cerca(mp.e ** (-(mp.mpf(t) / al) ** 2), mp.e ** (-mp.mpf(t) ** 2 / (2 * s * s)))
+    # Mínimo de n Weibull: S(t)^n = e^{-(t/(alpha n^{-1/c}))^c}.
+    c, al, n, t = mp.mpf("1.7"), mp.mpf(2), 5, mp.mpf("0.9")
+    assert cerca((mp.e ** (-(t / al) ** c)) ** n, mp.e ** (-(t / (al * mp.mpf(n) ** (-1 / c))) ** c))
+    # Weibull como potencia de una exponencial: con X ~ E(1), P(alpha X^{1/c} > t) =
+    # P(X > (t/alpha)^c) = e^{-(t/alpha)^c}, que tiene que ser la cola de la densidad de Wei(c, alpha).
+    f_wei = lambda x: (c / al) * (x / al) ** (c - 1) * mp.e ** (-(x / al) ** c)
+    assert cerca(mp.quad(f_wei, [t, mp.inf]), mp.e ** (-((t / al) ** c)), mp.mpf("1e-15"))
+    # Rayleigh al cuadrado: P(X^2 > s) = P(X > sqrt(s)), integrando la densidad de Ray(sigma),
+    # es e^{-s/(2 sigma^2)}, la cola de una exponencial de intensidad 1/(2 sigma^2).
+    sg, s = mp.mpf("1.3"), mp.mpf("2.1")
+    f_ray = lambda x: x / sg**2 * mp.e ** (-x * x / (2 * sg * sg))
+    assert cerca(mp.quad(f_ray, [mp.sqrt(s), mp.inf]), mp.e ** (-s / (2 * sg * sg)), mp.mpf("1e-15"))
+    # Cauchy: los cuartiles son x0 -+ gamma, el rango intercuartílico 2 gamma.
+    x0, g = mp.mpf("1.5"), mp.mpf("0.8")
+    F_cau = lambda x: mp.mpf(1) / 2 + mp.atan((x - x0) / g) / mp.pi
+    assert cerca(F_cau(x0 + g), mp.mpf(3) / 4) and cerca(F_cau(x0 - g), mp.mpf(1) / 4)
+    # Beta y estadísticos de orden: P(U_(k) <= x) = P(B(n, x) >= k) = I_x(k, n-k+1).
+    for k, n, x in [(2, 5, mp.mpf("0.3")), (4, 6, mp.mpf("0.55"))]:
+        orden = sum(mp.binomial(n, j) * x**j * (1 - x) ** (n - j) for j in range(k, n + 1))
+        assert cerca(orden, mp.betainc(k, n - k + 1, 0, x, regularized=True), mp.mpf("1e-25"))
+    # Pareto condicionada: P(X > s | X > t) = (t/s)^alpha.
+    m, a, t, s = mp.mpf(2), mp.mpf("2.5"), mp.mpf(3), mp.mpf(7)
+    assert cerca((m / s) ** a / (m / t) ** a, (t / s) ** a)
+
+    return {
+        "exponencial": [coma(100 * e1, 1) + " %", coma(e1, 3)],
+        "normal": [coma(v, 3) for v in dentro],
+        "t": [coma(v, 3) for v in t975] + [coma(z975, 3)],
+        "pareto": [coma(a8020, 2)],
+        "rayleigh": [coma(media_ray, 2)],
+        "geometrica": ["6 tiradas"],
+        "chi2": ["media 2"],
+    }
+
+
 def main() -> int:
     datos = {
         "univariadas": casos_discretos() + casos_continuos(),
         "multinomial": casos_multinomial(),
         "bivariada": casos_bivariada(),
+        "tips": numeros_de_los_tips(),
     }
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
     SALIDA.write_text(json.dumps(datos, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")

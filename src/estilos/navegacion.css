@@ -262,16 +262,60 @@
   border-left-color: var(--acento);
 }
 
-/* En el índice de fórmulas, las guías agrupan a sus temas. */
+/* En el índice del Machete, las guías agrupan a sus temas en un acordeón:
+   cada guía se despliega con su flecha y hay a lo sumo una abierta. El
+   plegado anima la altura con el truco de la grilla de 0fr a 1fr. */
 .indice__lista .indice__grupo { display: block; }
 .indice__tema--guia {
+  display: flex;
+  align-items: center;
+  gap: var(--e-1);
+  width: 100%;
   font-weight: 600;
   color: var(--tinta);
 }
+.indice__tema--guia .icono {
+  flex: none;
+  font-size: 0.95em;
+  color: var(--tinta-3);
+  transition: transform 220ms ease;
+}
+.indice__grupo--abierto .indice__tema--guia .icono { transform: rotate(90deg); }
+.indice__plegable {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 280ms ease;
+}
+.indice__grupo--abierto .indice__plegable { grid-template-rows: 1fr; }
 .indice__sublista {
+  min-height: 0;
+  overflow: hidden;
   list-style: none;
-  margin: 0 0 var(--e-2);
-  padding: 0 0 0 var(--e-2);
+  margin: 0;
+  padding: 0 0 0 var(--e-3);
+}
+.indice__sublista li:last-child { padding-bottom: var(--e-2); }
+
+/* En el de distribuciones, los grupos son rótulos y no se pliegan, y la
+   elegida queda marcada como al pasar el mouse. */
+.indice__rotulo {
+  margin: var(--e-2) 0 var(--e-1);
+  padding-left: var(--e-3);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tinta-3);
+}
+.indice__grupo:first-child .indice__rotulo { margin-top: 0; }
+.indice__sublista--fija {
+  min-height: auto;
+  overflow: visible;
+  padding-left: 0;
+}
+.indice__tema--activo,
+.indice__tema--activo:hover {
+  color: var(--acento);
+  border-left-color: var(--acento);
 }
 
 .indice__avance {
@@ -374,7 +418,9 @@
   align-items: center;
   flex-wrap: wrap;
   gap: var(--e-2);
-  padding: var(--e-2) var(--e-4);
+  /* A los dos lados, el lugar del lápiz: el texto queda centrado y no pasa
+     por debajo. */
+  padding: var(--e-2) 2.75rem;
   font-size: var(--t-xs);
   color: var(--tinta-2);
   text-align: center;
@@ -408,6 +454,34 @@
 }
 .aviso-examen__sep {
   color: var(--tinta-3);
+}
+/* El lápiz, contra el borde derecho del recuadro: abre el calendario. */
+.aviso-examen { position: relative; }
+.aviso-examen__editar {
+  position: absolute;
+  top: 50%;
+  right: var(--e-2);
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radio);
+  background: transparent;
+  color: var(--tinta-2);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 150ms, color 150ms;
+}
+.aviso-examen__editar:hover,
+.aviso-examen__editar:focus-visible {
+  background: color-mix(in srgb, var(--tinta) 7%, transparent);
+  color: var(--tinta);
+}
+.aviso-examen .aviso-examen__editar .icono {
+  font-size: 1rem;
+  color: inherit;
 }
 
 /* Un color por estado del ritmo, compartido por el aviso compacto y el

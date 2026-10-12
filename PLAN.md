@@ -51,7 +51,7 @@ Hay cinco principios que guían las decisiones:
 | Insignias | Por skill, globales (un skill puede aparecer en varias guías). Hay un panel general de skills. |
 | Simulacro | Botón (no tab). Elige al azar un examen de PyE B, con timer configurable (por defecto 4 h), toggle de tags y botón "Entregar" que calcula la nota. |
 | Persistencia | `localStorage` + exportar/importar JSON. Se guardan dos cosas separadas: el **historial** de intentos (de donde salen las insignias) y la **sesión** (dónde quedaste: ítems resueltos, lo tipeado, el simulacro a medio rendir). |
-| Fechas de los exámenes | En `content/config.yaml`, como una lista de evaluaciones (parcial, final y las que se agreguen), cada una con su fecha y sus guías. El encabezado muestra los días que faltan para la próxima y Seguimiento calcula cuántos ítems por día hacen falta para dominar los temas que entran en ella. |
+| Fechas de los exámenes | En `content/config.yaml`, como una lista de evaluaciones (parcial, final y las que se agreguen), cada una con su fecha y sus guías. El encabezado muestra los días que faltan para la próxima y Seguimiento calcula cuántos ítems por día hacen falta para dominar los temas que entran en ella. El lápiz del aviso abre un calendario para cambiar la fecha desde la app; el cambio se guarda en el navegador (`src/datos/usarFechas.ts`) y la de `config.yaml` queda como la original. |
 | Stack | Vite + TypeScript + Preact, KaTeX, math.js. Sin backend. |
 
 **Sobre el filtro por skills.** La primera versión de este plan proponía chips
@@ -529,28 +529,35 @@ cantidad de hojas. De ahí salen las tres decisiones de fondo:
 - **Las tablas son las de la cátedra** (normal, $t$ y $\chi^2$): lo demás
   (binomial, Poisson, $e^{-x}$, combinatorios) sale con la calculadora.
 - **Todo se filtra por etapa** (`etapas()` de `src/dominio/evaluaciones.ts`):
-  Parcial (guías 1 a 8), Final (los temas propios, 9 a 12) y Todas. Si ya se
-  imprimió lo del parcial, para el final alcanza con completar.
+  Todas, Parcial (guías 1 a 8) y Final (los temas propios, 9 a 12). Todas va
+  primera y es la de entrada, porque lo más común es imprimir todo junto; si
+  ya se imprimió lo del parcial, para el final alcanza con completar.
 
 ### 12.1 Hoja de fórmulas (fase 7)
 
-- Sección nueva `#/formulas`, con su tarjeta en el inicio y su entrada en el
-  menú.
+- Sección **Machete** (`#/machete`; el viejo `#/formulas` sigue llevando
+  ahí), con su tarjeta en el inicio y su entrada en el menú. Arriba, el
+  filtro de etapa en un renglón, a la izquierda del botón de imprimir y con
+  su mismo alto; debajo, las pestañas Fórmulas y Tablas a todo el ancho, que
+  cambian el contenido con un desplazamiento horizontal.
 - **Contenido como datos:** `content/formulas/guia-N.yaml`, con bloques
   titulados por tema y, en cada uno, fichas con el nombre de la fórmula, una
   descripción breve de para qué sirve y la expresión en LaTeX, que se ve
-  centrada. A la izquierda, un índice con las guías y sus temas, como el de
-  los ejercicios. Se arma a partir de las fórmulas de `skills.yaml` y de la
+  centrada. A la izquierda, un índice con las guías y sus temas, en
+  acordeón: a lo sumo una guía desplegada, la que se está leyendo (la última
+  cuyo título pasó la mitad de la pantalla). Al elegir un tema, además de
+  bajar, sus fichas se pintan un momento de naranja claro. Se arma a partir de las fórmulas de `skills.yaml` y de la
   teoría cargada, y se contrasta con `fuentes/teoria/Grynberg_Notas.pdf` y
   `probabilidad_distribuciones.pdf`. No se genera automáticamente desde los
   skills: ahí las fórmulas se repiten y están pensadas para el panel de cada
   ítem, no para un machete.
 - El validador parsea cada fórmula con KaTeX y aplica el registro de §4.9.
-- **Filtro:** Parcial, Final y Todas. Una opción sin contenido (hoy, Final) se
-  ve deshabilitada.
+- **Filtro:** Todas, Parcial y Final. Una opción sin contenido se ve
+  deshabilitada.
 - **Impresión:** A4, márgenes chicos, dos columnas, letra de unos 9 pt, sin
-  la interfaz de la app; cada guía con su encabezado y ningún bloque partido
-  entre columnas (`break-inside: avoid`). Al pie, "Suerte en el examen 🖒".
+  la interfaz de la app; cada guía desde una página nueva, con su
+  encabezado, y ningún bloque partido entre columnas (`break-inside:
+  avoid`). Al pie, "Suerte en el examen 🖒".
   El 🖒 (U+1F592) falta en muchas fuentes: si al imprimir no se ve, va 👍.
 
 ### 12.2 Tablas imprimibles (fase 7)
@@ -574,16 +581,17 @@ calculadora científica está permitida.
   discrepancia, como pide CLAUDE.md. La app sólo las muestra.
 - Generarlas, en lugar de publicar `Tablas.pdf`, evita redistribuir material
   de la cátedra en el sitio público (ver DEPLOY.md).
-- Van en la misma sección que la hoja de fórmulas ("Fórmulas y tablas"), con
-  su propio botón de imprimir.
+- Van en el Machete, en su pestaña. Las cifras ocupan el ancho de la
+  columna y el gráfico va centrado, en pantalla y en el papel.
 
 ### 12.3 Kit para el examen (fase 7)
 
 - Botón en el simulacro: "Kit para el parcial", o "para el final", según la
   evaluación que toque.
-- Abre una vista de impresión con una carátula (examen y fecha), la hoja de
-  fórmulas de la etapa, sus tablas y el saludo, y lanza el diálogo de
-  impresión: un clic, un único PDF.
+- Abre una vista de impresión con la hoja de fórmulas de la etapa, sus
+  tablas, la tabla de distribuciones de la cátedra y el saludo, cada parte
+  desde una página nueva, y lanza el diálogo de impresión: un clic, un único
+  PDF. Sin carátula.
 - Reutiliza los componentes de §12.1 y §12.2. Descargar archivos sueltos
   obligaría a generar los PDF en el build con un navegador, y eso complica el
   deploy en GitHub Pages.
@@ -613,6 +621,21 @@ calculadora científica está permitida.
   (`tools/verify/distribuciones.py`) en una grilla de parámetros, y con cada
   celda de las tablas de §12.2.
 - Desde las fichas de la normal, la $t$ y la $\chi^2$, un enlace a su tabla.
+- **Pantalla:** de entrada, sólo lo indispensable (la distribución, sus
+  parámetros, qué calcular, el gráfico y la frase con el resultado, cuyos
+  valores se escriben en la propia fórmula). Las distribuciones se eligen en
+  un índice a la izquierda, como el de las guías (en un teléfono, con un
+  selector). Plegadas debajo, la ficha (con la esperanza y la varianza de los
+  parámetros elegidos) y "Intuición y relaciones": tips para reconocer
+  cuándo aplica cada una y cómo se relaciona con las demás
+  (`content/distribuciones.yaml`, campo `tips`). Los números que citan los
+  tips los calcula `tools/verify/distribuciones.py`, y `tools/check.ts` exige
+  que coincidan.
+- **Tabla de la cátedra para imprimir:** un botón arma la tabla de
+  distribuciones con el formato de `probabilidad_distribuciones.pdf`
+  (discretas y continuas en tablas, modelos, supervivencias, multivariadas y
+  equivalencias) a partir de los mismos datos; el PDF de la cátedra no se
+  publica. También va en el kit.
 
 ### 12.5 Riesgos
 

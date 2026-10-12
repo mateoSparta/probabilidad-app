@@ -1,8 +1,8 @@
 # Revisión del material para el examen
 
 Estado de la fase 7 (PLAN.md §12): la hoja de fórmulas, las tablas y el kit.
-Se ven en la sección **Fórmulas y tablas** del inicio, y el kit se imprime
-desde el simulacro.
+Se ven en la sección **Machete** del inicio, y el kit se imprime desde el
+simulacro.
 
 ---
 
@@ -79,7 +79,7 @@ Lo que agregué respecto de los skills, por si conviene sacar algo:
   y $P(S_n > t)$, y la aproximación normal de la Poisson.
 
 **Corrección de paso:** la fórmula del jacobiano en `skills.yaml` había
-perdido el `\` que separa las filas de la matriz, y se veía en una sola fila.
+perdido el `\\` que separa las filas de la matriz, y se veía en una sola fila.
 Está corregida.
 
 ## 3. La impresión
@@ -89,13 +89,15 @@ Se probó en Edge generando el PDF real:
 
 | Documento | Páginas |
 |---|---|
-| Fórmulas del parcial | 7 |
+| Fórmulas de todas las guías | 8, una por guía |
 | Tablas de todas las guías | 3, una por tabla |
-| Kit para el parcial | 9 |
+| Tabla de distribuciones | 3 |
+| Kit para el parcial | 12 |
 
-A4, dos columnas para las fórmulas, ninguna guía partida entre dos páginas
-(las guías 4 y 5 comparten una), cada tabla con su gráfico, en blanco y
-negro. El saludo final es "Suerte en el
+A4, dos columnas para las fórmulas, cada guía desde una página nueva, cada
+tabla a todo el ancho con su gráfico centrado, en blanco y negro. El kit no
+lleva carátula: empieza por las fórmulas, sigue con las tablas y termina con
+la tabla de distribuciones, cada parte desde una página nueva. El saludo final es "Suerte en el
 examen 🖒"; el 🖒 se ve en Windows (con Segoe UI Symbol), pero puede faltar en
 otros sistemas.
 

@@ -56,6 +56,18 @@ export function evaluacionActual(
   return evaluaciones.at(-1) ?? null
 }
 
+/** Las fechas que cambió el usuario, por nombre de evaluación; null es "sin fecha". */
+export type FechasCambiadas = Readonly<Record<string, string | null>>
+
+/**
+ * Las evaluaciones con las fechas que cambió el usuario desde el aviso del
+ * encabezado (ver datos/usarFechas.ts). Las que no cambió quedan con la de
+ * content/config.yaml.
+ */
+export function conFechas(evaluaciones: readonly Evaluacion[], fechas: FechasCambiadas): Evaluacion[] {
+  return evaluaciones.map((ev) => (ev.nombre in fechas ? { ...ev, fecha: fechas[ev.nombre] } : ev))
+}
+
 /** Una etapa de la materia: una evaluación con las guías que suma. */
 export type Etapa = {
   evaluacion: Evaluacion
@@ -119,9 +131,10 @@ export type Alcance = {
 }
 
 /**
- * Los alcances del material para el examen: uno por etapa, con sus guías
- * propias (Parcial: 1 a 8; Final: 9 a 12), y "Todas". El del final no repite
- * lo del parcial porque, si ya se imprimió, alcanza con completar.
+ * Los alcances del material para el examen: "Todas" primero, porque lo más
+ * común es imprimir todo junto, y después uno por etapa, con sus guías
+ * propias (Parcial: 1 a 8; Final: 9 a 12). El del final no repite lo del
+ * parcial porque, si ya se imprimió, alcanza con completar.
  */
 export function alcances(evaluaciones: readonly Evaluacion[]): Alcance[] {
   const porEtapa = etapas(evaluaciones).map((e) => ({
@@ -129,5 +142,5 @@ export function alcances(evaluaciones: readonly Evaluacion[]): Alcance[] {
     rotulo: rotulo(e.evaluacion),
     guias: e.propias,
   }))
-  return [...porEtapa, { id: 'todas', rotulo: 'Todas', guias: guiasDeLaMateria(evaluaciones) }]
+  return [{ id: 'todas', rotulo: 'Todas', guias: guiasDeLaMateria(evaluaciones) }, ...porEtapa]
 }

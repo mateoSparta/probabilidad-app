@@ -44,7 +44,7 @@ const OPCIONES: Opcion[] = [
   { seccion: 'skills', nombre: NOMBRE_SECCION.skills, Icono: IconoSkills },
   { seccion: 'simulacro', nombre: NOMBRE_SECCION.simulacro, Icono: IconoSimulacro },
   { seccion: 'seguimiento', nombre: NOMBRE_SECCION.seguimiento, Icono: IconoSeguimiento },
-  { seccion: 'formulas', nombre: NOMBRE_SECCION.formulas, Icono: IconoFormulas },
+  { seccion: 'machete', nombre: NOMBRE_SECCION.machete, Icono: IconoFormulas },
   { seccion: 'distribuciones', nombre: NOMBRE_SECCION.distribuciones, Icono: IconoDistribuciones },
 ]
 

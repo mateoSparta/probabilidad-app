@@ -101,7 +101,7 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
       dato: ETIQUETA_VEREDICTO[plan.veredicto],
     },
     {
-      seccion: 'formulas',
+      seccion: 'machete',
       Icono: IconoFormulas,
       descripcion: 'Las fórmulas de cada guía y las tablas de la cátedra, para imprimir.',
       dato: `${hojasFormulas.length} guías · ${tablas.length} tablas`,

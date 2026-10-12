@@ -1,6 +1,8 @@
 # Configuración de la cursada.
 #
 # Es contenido, no código: cambiar una fecha acá alcanza, no hay que tocar src/.
+# Desde la app, el lápiz del aviso del encabezado cambia la fecha sólo en ese
+# navegador; la de acá queda como la original.
 
 # Las evaluaciones de la cursada, en orden cronológico, cada una con las guías
 # que evalúa. El aviso del encabezado y el plan de Seguimiento apuntan a la

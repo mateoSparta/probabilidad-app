@@ -249,7 +249,17 @@ export type FichaDistribucion = {
   varianza: string
   /** Para qué se usa, con `$...$`. */
   modelo: string
+  /** Una aclaración del soporte, con `$...$`; en la tabla impresa va al pie. */
+  nota_soporte?: string
   supervivencia?: string
   equivalencias?: string[]
+  /** Una observación de la tabla de la cátedra, con `$...$`. */
   nota?: string
+  /** Marginales, condicionales y demás propiedades de las multivariadas, en LaTeX. */
+  propiedades?: string[]
+  /**
+   * Observaciones para desarrollar la intuición: cuándo aparece, con qué
+   * otras se relaciona, algún dato curioso. Con `$...$`.
+   */
+  tips: string[]
 }

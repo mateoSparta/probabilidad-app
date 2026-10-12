@@ -10,13 +10,14 @@ import {
   skillsConItems,
   skillsDeItem,
 } from './datos/contenido'
+import { ContextoEvaluaciones, usarFechas } from './datos/usarFechas'
 import { usarProgreso } from './datos/usarProgreso'
 import { usarRuta } from './datos/usarRuta'
 import { usarSesion } from './datos/usarSesion'
 import { armarPlan } from './dominio/ritmo'
 import { PanelSkills } from './vistas/PanelSkills'
 import { VistaDistribuciones } from './vistas/VistaDistribuciones'
-import { VistaFormulas } from './vistas/VistaFormulas'
+import { VistaMachete } from './vistas/VistaMachete'
 import { VistaGuia } from './vistas/VistaGuia'
 import { VistaMenu } from './vistas/VistaMenu'
 import { VistaSeguimiento } from './vistas/VistaSeguimiento'
@@ -30,10 +31,17 @@ export function App() {
   /** El ancla (ejercicio o teoría) a la que hay que bajar cuando se dibuje su guía. */
   const [destino, setDestino] = useState<string | null>(null)
 
-  // El plan depende del progreso, así que se recalcula cuando cambia.
+  // Las evaluaciones, con las fechas que el usuario haya cambiado.
+  const evaluaciones = usarFechas()
+
+  // El plan depende del progreso y de las fechas, así que se recalcula cuando cambian.
   const plan = useMemo(
-    () => armarPlan(api.progreso, skillsConItems(), skillsDeItem, config),
-    [api.progreso],
+    () =>
+      armarPlan(api.progreso, skillsConItems(), skillsDeItem, {
+        ...config,
+        evaluaciones: [...evaluaciones.evaluaciones],
+      }),
+    [api.progreso, evaluaciones],
   )
 
   // Al cambiar de sección o de guía la página arranca desde arriba, salvo que
@@ -61,7 +69,7 @@ export function App() {
   }
 
   return (
-    <>
+    <ContextoEvaluaciones.Provider value={evaluaciones}>
       <Cabecera ruta={ruta} plan={plan} />
       <main class="columna">
         {/* La key hace que cada cambio de sección (o de guía) monte la vista
@@ -94,7 +102,7 @@ export function App() {
             />
           )}
           {ruta.seccion === 'simulacro' && <VistaSimulacro api={api} sesion={sesion} />}
-          {ruta.seccion === 'formulas' && <VistaFormulas />}
+          {ruta.seccion === 'machete' && <VistaMachete />}
           {ruta.seccion === 'distribuciones' && <VistaDistribuciones />}
           {ruta.seccion === 'seguimiento' && (
             <VistaSeguimiento plan={plan} sesion={sesion} onIrAEjercicio={irAEjercicio} />
@@ -103,6 +111,6 @@ export function App() {
       </main>
       <LogoCatedra visible={ruta.seccion === 'menu'} />
       <Globo />
-    </>
+    </ContextoEvaluaciones.Provider>
   )
 }

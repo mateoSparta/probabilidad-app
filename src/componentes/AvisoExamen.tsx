@@ -5,17 +5,20 @@
  *
  * `AvisoExamenCompacto` va en el encabezado, en un recuadro del ancho de la
  * columna: el examen, su fecha y los días que faltan, teñidos según el ritmo.
- * Es lo único que se ve siempre, y por eso no dice nada más.
+ * Es lo único que se ve siempre, y por eso no dice nada más. En el extremo
+ * derecho, un lápiz abre el calendario para cambiar la fecha (EditorFecha).
  *
  * `AvisoExamenDetalle` va en Seguimiento, con la cuenta completa: qué falta,
  * cuántos ítems por día y si el ritmo de los últimos días alcanza.
  */
 import type { ComponentChildren } from 'preact'
+import { useState } from 'preact/hooks'
 
 import { rotulo } from '../dominio/evaluaciones'
 import { ETIQUETA_VEREDICTO, fechaCorta, type Plan } from '../dominio/ritmo'
 import type { Seccion } from '../dominio/ruta'
-import { IconoCalendario } from './Iconos'
+import { EditorFecha } from './EditorFecha'
+import { IconoCalendario, IconoEditar } from './Iconos'
 
 /** La clase de color que corresponde a cada veredicto. */
 function tono(plan: Plan): string {
@@ -36,6 +39,7 @@ function tono(plan: Plan): string {
 }
 
 export function AvisoExamenCompacto({ plan, seccion }: { plan: Plan; seccion?: Seccion }) {
+  const [editando, setEditando] = useState(false)
   const ev = plan.evaluacion
   if (!ev) return null
   const dias = plan.diasRestantes
@@ -54,24 +58,35 @@ export function AvisoExamenCompacto({ plan, seccion }: { plan: Plan; seccion?: S
   // al seguimiento (cómo viene el ritmo). En la sección a la que llevarían,
   // son texto: un enlace a la misma página no lleva a ningún lado.
   return (
-    <p class={'aviso-examen ' + tono(plan)}>
-      <IconoCalendario />
-      <Enlace
-        clase="aviso-examen__fecha"
-        destino="simulacro"
-        actual={seccion}
-        ayuda="Practicar con un simulacro"
-      >
-        {rotulo(ev)}
-        {ev.fecha && ` ${fechaCorta(ev.fecha)}`}
-      </Enlace>
-      <span class="aviso-examen__sep" aria-hidden="true">
-        ·
-      </span>
-      <Enlace clase="aviso-examen__dias" destino="seguimiento" actual={seccion} ayuda="Ver el seguimiento">
-        {texto}
-      </Enlace>
-    </p>
+    <>
+      <p class={'aviso-examen ' + tono(plan)}>
+        <IconoCalendario />
+        <Enlace
+          clase="aviso-examen__fecha"
+          destino="simulacro"
+          actual={seccion}
+          ayuda="Practicar con un simulacro"
+        >
+          {rotulo(ev)}
+          {ev.fecha && ` ${fechaCorta(ev.fecha)}`}
+        </Enlace>
+        <span class="aviso-examen__sep" aria-hidden="true">
+          ·
+        </span>
+        <Enlace clase="aviso-examen__dias" destino="seguimiento" actual={seccion} ayuda="Ver el seguimiento">
+          {texto}
+        </Enlace>
+        <button
+          class="aviso-examen__editar"
+          aria-label="Cambiar la fecha del examen"
+          data-tip="Cambiar la fecha"
+          onClick={() => setEditando(true)}
+        >
+          <IconoEditar />
+        </button>
+      </p>
+      <EditorFecha abierto={editando} inicial={ev.nombre} onCerrar={() => setEditando(false)} />
+    </>
   )
 }
 
@@ -116,16 +131,15 @@ export function AvisoExamenDetalle({ plan }: { plan: Plan }) {
         </p>
       ) : veredicto === 'vencido' ? (
         <p>
-          La fecha del {nombre} ya pasó. Si cambió, actualizala en{' '}
-          <code>content/config.yaml</code>.
+          La fecha del {nombre} ya pasó. Si cambió, actualizala con el lápiz del aviso de arriba.
         </p>
       ) : veredicto === 'sin_fecha' ? (
         <p>
           Todavía no hay fecha para {examen}. Faltan <strong>{plan.itemsFaltantes} ítems</strong>,
           distribuidos en {plan.ejerciciosFaltantes} ejercicios, para dominar los{' '}
           {plan.skillsTotal - plan.skillsDominados} skills pendientes. Cuando la fecha esté
-          definida, cargala en <code>content/config.yaml</code> para calcular cuántos ítems por
-          día hacen falta.
+          definida, cargala con el lápiz del aviso de arriba para calcular cuántos ítems por día
+          hacen falta.
         </p>
       ) : (
         <>

@@ -742,6 +742,18 @@ function errorKatex(tex: string): string | null {
   }
 }
 
+/** Si cada `$...$` de un texto parsea en KaTeX; si no, el primer error. */
+function errorMate(texto: string): string | null {
+  for (const [, tex] of texto.matchAll(/\$([^$]+)\$/g)) {
+    try {
+      katex.renderToString(tex, { throwOnError: true })
+    } catch (e) {
+      return `KaTeX no parsea \`${tex}\` (${e instanceof Error ? e.message : String(e)})`
+    }
+  }
+  return null
+}
+
 type FormulaCruda = { nombre?: string; descripcion?: string; tex?: string }
 type BloqueFormulasCrudo = { titulo?: string; formulas?: FormulaCruda[]; nota?: string }
 const hojas = listar(join(CONTENT, 'formulas'), '.yaml').map((r) => ({
@@ -828,6 +840,7 @@ const rutaFichas = join(CONTENT, 'distribuciones.yaml')
 const fichas = existsSync(rutaFichas) ? (leerYaml<FichaCruda[]>(rutaFichas) ?? []) : []
 const MULTIVARIADAS = new Set(['multinomial', 'normal-bivariada'])
 const idsUnivariadas = new Set(UNIVARIADAS.map((d) => d.id))
+let nTips = 0
 for (const f of fichas) {
   const donde = `distribución ${f.id ?? '(sin id)'}`
   if (!f.id || !f.nombre || !f.grupo) err(`${donde}: le falta id, nombre o grupo`)
@@ -843,20 +856,50 @@ for (const f of fichas) {
     const e = errorKatex(String(v))
     if (e) err(`${donde}, ${campo}: KaTeX no parsea \`${v}\` (${e})`)
   }
-  for (const eq of (f.equivalencias as string[] | undefined) ?? []) {
-    const e = errorKatex(eq)
-    if (e) err(`${donde}, equivalencias: KaTeX no parsea \`${eq}\` (${e})`)
+  for (const campo of ['equivalencias', 'propiedades']) {
+    for (const tex of (f[campo] as string[] | undefined) ?? []) {
+      const e = errorKatex(tex)
+      if (e) err(`${donde}, ${campo}: KaTeX no parsea \`${tex}\` (${e})`)
+    }
   }
-  revisarEstilo(donde, f.modelo)
-  revisarEstilo(donde, f.nota)
+  for (const campo of ['modelo', 'nota', 'nota_soporte']) {
+    revisarEstilo(donde, f[campo])
+    const e = typeof f[campo] === 'string' ? errorMate(f[campo] as string) : null
+    if (e) err(`${donde}, ${campo}: ${e}`)
+  }
+  const tips = f.tips as unknown
+  if (!Array.isArray(tips) || tips.length < 3 || tips.some((t) => typeof t !== 'string' || !t.trim())) {
+    err(`${donde}: necesita al menos tres tips`)
+  } else {
+    nTips += tips.length
+    for (const t of tips as string[]) {
+      revisarEstilo(`${donde}, tips`, t)
+      const e = errorMate(t)
+      if (e) err(`${donde}, tips: ${e}`)
+    }
+  }
 }
 for (const id of idsUnivariadas) {
   if (!fichas.some((f) => f.id === id)) err(`la distribución ${id} no tiene ficha en content/distribuciones.yaml`)
 }
+// Los números que citan los tips salen de tools/verify/distribuciones.py
+// (CLAUDE.md: ningún valor inventado). Se buscan tal cual, con la coma de
+// KaTeX (`0{,}368`) normalizada.
+const rutaRef = join(CONTENT, '.verificacion', 'distribuciones.json')
+const numerosTips = existsSync(rutaRef)
+  ? ((JSON.parse(readFileSync(rutaRef, 'utf8')) as { tips?: Record<string, string[]> }).tips ?? {})
+  : {}
+if (Object.keys(numerosTips).length === 0) err('distribuciones.json no trae los números de los tips: corré tools/verify/distribuciones.py')
+for (const [id, numeros] of Object.entries(numerosTips)) {
+  const texto = (((fichas.find((f) => f.id === id)?.tips as string[] | undefined) ?? []).join(' ')).replace(/\{,\}/g, ',')
+  for (const n of numeros) {
+    if (!texto.includes(n)) err(`distribución ${id}: los tips no citan ${n}, que calcula tools/verify/distribuciones.py`)
+  }
+}
 
 console.log(
   `check: ${nFormulas} fórmulas en ${hojas.length} hojas, ${tablasCrudas.length} tablas con ${nCeldas} valores, ` +
-    `${fichas.length} distribuciones.`,
+    `${fichas.length} distribuciones con ${nTips} tips.`,
 )
 
 // ------------------------------------------------------------------ salida

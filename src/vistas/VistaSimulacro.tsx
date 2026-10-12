@@ -34,6 +34,7 @@ import { Enunciado, TextoMarcado } from '../componentes/Mate'
 import { Tags, usarResaltado } from '../componentes/Tags'
 // `config` es la de la cursada (content/config.yaml); la del simulacro es estado local.
 import { claveItemExamen, config as configCursada, examenes, examenPorId } from '../datos/contenido'
+import { evaluacionesGuardadas, usarEvaluaciones } from '../datos/usarFechas'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
 import {
@@ -75,7 +76,7 @@ type Config = {
  * el otro.
  */
 function tipoPorDefecto(): TipoExamen {
-  const preferido = evaluacionActual(configCursada.evaluaciones)?.simulacro ?? 'parcial'
+  const preferido = evaluacionActual(evaluacionesGuardadas())?.simulacro ?? 'parcial'
   if (poolDe(examenes, preferido).length > 0) return preferido
   return preferido === 'parcial' ? 'integradora' : 'parcial'
 }
@@ -686,13 +687,13 @@ function Configuracion({
  * de sus guías en un solo documento, para imprimir o guardar en PDF.
  */
 function KitParaElExamen() {
-  const ev = evaluacionActual(configCursada.evaluaciones)
+  const ev = evaluacionActual(usarEvaluaciones().evaluaciones)
   if (!ev) return null
   return (
     <section class="kit-aviso" aria-label={`Kit para el ${ev.nombre}`}>
       <p class="kit-aviso__texto">
         Para llevar al {ev.nombre}, las fórmulas de las {rangoGuias(ev.guias)} y las tablas de
-        la cátedra, en un solo documento.
+        la cátedra.
       </p>
       <button
         class="boton boton--icono"

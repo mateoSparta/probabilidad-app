@@ -81,7 +81,7 @@ bloques:
         tex: 'P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}, \qquad P(B) > 0'
       - nombre: Regla del producto
         descripcion: La probabilidad de una intersección, recorriendo las ramas de un árbol.
-        tex: '\begin{aligned} &P(A_1 \cap \cdots \cap A_n) \\ &\quad = P(A_1)\,P(A_2 \mid A_1) \cdots P(A_n \mid A_1 \cap \cdots \cap A_{n-1}) \end{aligned}'
+        tex: 'P(A_1 \cap \cdots \cap A_n) = P(A_1)\,P(A_2 \mid A_1) \cdots P(A_n \mid A_1 \cap \cdots \cap A_{n-1})'
       - nombre: Probabilidad total
         descripcion: Promedia las condicionales sobre una partición $B_1, B_2, \dots$ de $\Omega$.
         tex: 'P(A) = \sum_i P(A \mid B_i)\,P(B_i)'

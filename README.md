@@ -37,15 +37,16 @@ independientes, y el build los contrasta en cada corrida.
 Está cargado el núcleo recomendado por la cátedra (los ejercicios marcados `!`
 en la guía) de las ocho guías.
 
-**Fórmulas y tablas para el examen.** La sección del mismo nombre imprime (o
-guarda en PDF) la hoja de fórmulas, las tablas de la cátedra (normal, $t$ y
+**Machete para el examen.** La sección Machete imprime (o guarda en PDF) la
+hoja de fórmulas, las tablas de la cátedra (normal, $t$ y
 $\chi^2$) y un kit con todo junto. Las tablas las genera y verifica
 `tools/verify/tablas.py`; ver [revision/formulas.md](revision/formulas.md).
 
 **Distribuciones.** Las 19 distribuciones de la tabla de la cátedra, cada una
-con su ficha y una calculadora: se eligen los parámetros y el evento (o se
-arrastran sus líneas sobre el gráfico) y da la probabilidad o el cuantil. Cada
-cuenta se contrasta con mpmath y con las tablas; ver
+con una calculadora (los valores se escriben en la fórmula o se arrastran sus
+líneas sobre el gráfico) y, plegadas, su ficha y tips para la intuición. Cada
+cuenta se contrasta con mpmath y con las tablas. Un botón imprime la tabla de
+distribuciones de la cátedra, que también va en el kit; ver
 [revision/distribuciones.md](revision/distribuciones.md).
 
 **Lo que falta y por qué: [revision/00-estado.md](revision/00-estado.md).** Ahí
@@ -59,6 +60,11 @@ definida) y las guías que evalúa. El encabezado y Seguimiento apuntan a la
 primera que no pasó, así que después del parcial pasan solos al final. Un
 recuperatorio u otra fecha de final se agregan como otra entrada de la lista.
 Ahí también están el curso y qué ritmo se considera cómodo.
+
+Desde la app, el lápiz del aviso del encabezado abre un calendario para
+cambiar la fecha del parcial o del final. El cambio se guarda en el navegador,
+como el progreso, y la fecha de `config.yaml` queda como la original: el
+mismo calendario ofrece volver a ella.
 
 Las guías que entran por primera vez en cada evaluación son sus temas: el
 panel de skills las agrupa así, y los skills de las guías todavía sin cargar

@@ -75,7 +75,48 @@ La ficha de la Gamma lleva una nota con las propiedades de $\Gamma$
 **Corrección de paso:** el modelo de la $\chi^2$ decía que era "la de la
 varianza muestral". Es la de $(n-1)S^2/\sigma^2$, y así quedó.
 
-## 3. Decisiones
+### Los tips ("Intuición y relaciones")
+
+Cada distribución tiene entre tres y cinco tips (74 en total, campo `tips`):
+cuándo aparece, cómo se relaciona con las demás y algún dato histórico.
+**Son propios y conviene leerlos.** Lo que cuidé:
+
+- **Los números que citan los calcula `tools/verify/distribuciones.py`**, y
+  `tools/check.ts` exige que aparezcan tal cual: la regla 68-95-99,7 (0,683,
+  0,954, 0,997), los cuantiles 0,975 de la $t$ con 1, 10 y 30 grados de
+  libertad (12,706, 2,228, 2,042) contra 1,960 de la normal, el 36,8 % de la
+  exponencial, el $\alpha = \log_4 5 \approx 1{,}16$ del 80/20 de Pareto y la
+  media $\approx 1{,}25\,\sigma$ de la Rayleigh.
+- **Las relaciones sin números se comprueban con valores concretos** en el
+  mismo script: $P(\text{Pas}(k, p) \le n) = P(\mathcal{B}(n, p) \ge k)$,
+  $\text{Wei}(2, \alpha) \equiv \text{Ray}(\alpha/\sqrt 2)$, el mínimo de
+  Weibull, la Weibull como potencia de una exponencial, el cuadrado de una
+  Rayleigh, los cuartiles de la Cauchy, los estadísticos de orden de la
+  uniforme y la Pareto condicionada.
+- **Los datos históricos** (Bortkiewicz y las patadas de caballo, 1898;
+  Gosset y Guinness, 1908; Galton y la regresión, 1886; De Moivre y Gauss;
+  Pareto) son los conocidos, sin fechas dudosas.
+- No mencionan simulación (es de la cursada de Industrial).
+
+## 3. La pantalla
+
+De entrada se ve sólo lo indispensable: la distribución (elegida en un
+índice a la izquierda, como el de las guías, o con un selector en el
+teléfono), sus parámetros, qué calcular, el gráfico y la frase con el
+resultado, con los valores escritos en la propia fórmula. La ficha y los
+tips están plegados debajo. La ficha agrega, a las fórmulas de la cátedra, la
+esperanza, la varianza y el desvío con los parámetros elegidos.
+
+El botón "Imprimir la tabla" arma la tabla de distribuciones con el formato
+de la de la cátedra (componentes/TablaDistribuciones.tsx), con los mismos
+datos de `content/distribuciones.yaml`: tres páginas, con las discretas y
+sus modelos, las continuas con las supervivencias, y las multivariadas con
+las equivalencias. Para eso se agregaron al YAML la aclaración del soporte de
+la hipergeométrica (`nota_soporte`) y las propiedades de la multinomial y de
+la normal bivariada (`propiedades`), copiadas de la tabla de la cátedra. La
+tabla va también en el kit para el examen.
+
+## 4. Decisiones
 
 - **Eventos.** En las discretas se cuentan los extremos: $P(X = x)$,
   $P(X \le x)$, $P(X \ge x)$ y $P(a \le X \le b)$. En las continuas,

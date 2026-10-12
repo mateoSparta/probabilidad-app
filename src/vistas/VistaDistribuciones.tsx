@@ -1,19 +1,28 @@
 /**
  * Distribuciones (PLAN.md §12.4): las de la tabla de la cátedra, cada una con
- * su ficha (para qué se usa, soporte, función, momentos) y una calculadora.
+ * una calculadora y, plegadas, su ficha y observaciones para la intuición.
  *
- * La calculadora toma los parámetros, dibuja la distribución y calcula la
- * probabilidad de un evento (P(X ≤ x), P(X > x), P(a < X < b), P(X = x)) o un
- * cuantil. El evento se elige también arrastrando sus líneas sobre el
- * gráfico. Las cuentas están en dominio/distribuciones.ts y se contrastan con
- * mpmath (tools/verify/distribuciones.py).
+ * Lo que se ve de entrada es lo indispensable: la distribución elegida, sus
+ * parámetros, el gráfico y la probabilidad. Los valores se escriben en los
+ * huecos de la propia frase ("P(X ≤ _) = 0,75") o se eligen arrastrando las
+ * líneas del gráfico. La ficha (fórmulas y momentos) y los tips se despliegan
+ * a pedido. A la izquierda, un índice con las distribuciones, como el de las
+ * guías; en pantallas angostas, un selector.
+ *
+ * Las cuentas están en dominio/distribuciones.ts y se contrastan con mpmath
+ * (tools/verify/distribuciones.py). El botón de imprimir arma la tabla de
+ * distribuciones de la cátedra (componentes/TablaDistribuciones.tsx).
  */
-import { useState } from 'preact/hooks'
+import type { ComponentChildren } from 'preact'
+import { useEffect, useState } from 'preact/hooks'
 
 import { GraficoDistribucion, type Manija } from '../componentes/GraficoDistribucion'
+import { IconoDesplegar, IconoImprimir } from '../componentes/Iconos'
 import { Formula, Mate } from '../componentes/Mate'
-import { pedirTabla } from '../componentes/Material'
+import { pedirTabla, Suerte } from '../componentes/Material'
 import { SubirLateral, usarSubir } from '../componentes/SubirLateral'
+import { sinMiembroIzquierdo, TablaDeDistribuciones } from '../componentes/TablaDistribuciones'
+import { imprimir } from '../componentes/imprimir'
 import { fichasDistribuciones, tablas } from '../datos/contenido'
 import {
   condicionalBivariada,
@@ -46,56 +55,78 @@ const tex = (v: number, dec = 4) => formatearNumero(v, dec, true).replace(',', '
 
 const momento = (m: Momento) => (typeof m === 'number' ? formatearNumero(m, 4, true) : m === 'infinita' ? '∞' : 'no existe')
 
-/** La última distribución elegida, para encontrarla al volver a la sección. */
+/** La última distribución elegida y qué secciones estaban abiertas, para encontrarlas al volver. */
 let ultima = 'normal'
+let abiertasAntes = { ficha: false, tips: false }
 
 export function VistaDistribuciones() {
   const [id, setIdLocal] = useState(ultima)
-  const setId = (nueva: string) => {
-    ultima = nueva
-    setIdLocal(nueva)
-  }
+  const [abiertas, setAbiertasLocal] = useState(abiertasAntes)
   const subir = usarSubir()
   const ficha = fichasDistribuciones.find((f) => f.id === id) ?? fichasDistribuciones[0]
   const d = univariadaPorId.get(ficha.id)
   const tabla = tablas.find((t) => t.id === ficha.id)
+  // Los parámetros válidos de la calculadora, para los momentos de la ficha.
+  const [valores, setValores] = useState<Valores | null>(null)
+
+  const elegir = (nueva: string) => {
+    ultima = nueva
+    setValores(null)
+    setIdLocal(nueva)
+  }
+  const alternar = (cual: 'ficha' | 'tips') => {
+    abiertasAntes = { ...abiertas, [cual]: !abiertas[cual] }
+    setAbiertasLocal(abiertasAntes)
+  }
+
+  function imprimirTabla(): void {
+    void imprimir(
+      <div class="impreso impreso--distribuciones">
+        <TablaDeDistribuciones />
+        <Suerte />
+      </div>,
+      'Tabla de distribuciones - Probabilidad y Estadística B',
+    )
+  }
 
   return (
     <>
+      <IndiceDistribuciones actual={ficha.id} onElegir={elegir} />
       <SubirLateral visible={subir} />
 
-      <section class="guia__intro">
-        <h2>Distribuciones</h2>
+      <section class="guia__intro dist-intro">
+        <div class="dist-intro__fila">
+          <h2>Distribuciones</h2>
+          <button class="boton boton--icono" onClick={imprimirTabla}>
+            <IconoImprimir />
+            Imprimir la tabla
+          </button>
+        </div>
         <p class="guia__descripcion">
-          Las distribuciones de la tabla de la cátedra, con su ficha y una calculadora. Se eligen
-          los parámetros y el evento, y el gráfico muestra la probabilidad como área o como
-          barras. Las líneas del gráfico se arrastran para cambiar el evento.
+          Cada distribución del curso con su gráfico y una calculadora. Los valores se escriben en
+          la fórmula o se eligen arrastrando las líneas del gráfico.
         </p>
       </section>
 
-      <nav class="dist-selector" aria-label="Distribuciones">
-        {GRUPOS.map(({ grupo, nombre }) => (
-          <div key={grupo} class="dist-selector__grupo">
-            <span class="dist-selector__nombre">{nombre}</span>
-            <div class="dist-selector__opciones">
+      <label class="dist-elegir">
+        <span class="sr-solo">Distribución</span>
+        <select class="entrada" value={ficha.id} onChange={(e) => elegir((e.target as HTMLSelectElement).value)}>
+          {GRUPOS.map(({ grupo, nombre }) => (
+            <optgroup key={grupo} label={nombre}>
               {fichasDistribuciones
                 .filter((f) => f.grupo === grupo)
                 .map((f) => (
-                  <button
-                    key={f.id}
-                    class={'chip-opcion' + (f.id === ficha.id ? ' chip-opcion--activa' : '')}
-                    aria-pressed={f.id === ficha.id}
-                    onClick={() => setId(f.id)}
-                  >
+                  <option key={f.id} value={f.id}>
                     {f.nombre}
-                  </button>
+                  </option>
                 ))}
-            </div>
-          </div>
-        ))}
-      </nav>
+            </optgroup>
+          ))}
+        </select>
+      </label>
 
-      <section class="dist" aria-labelledby="dist-nombre">
+      {/* La key vuelve a montar la tarjeta (y la calculadora) al cambiar de distribución. */}
+      <section key={ficha.id} class="dist" aria-labelledby="dist-nombre">
         <header class="dist__cabeza">
           <h3 id="dist-nombre" class="dist__nombre">
             {ficha.nombre}
@@ -104,29 +135,198 @@ export function VistaDistribuciones() {
             <Formula tex={ficha.notacion} />
           </span>
           {tabla && (
-            <a class="dist__tabla" href="#/formulas" onClick={() => pedirTabla(tabla.id)}>
-              Ver la tabla de la cátedra
+            <a class="dist__tabla" href="#/machete" onClick={() => pedirTabla(tabla.id)}>
+              Tabla de la cátedra
             </a>
           )}
         </header>
-        <p class="dist__modelo">
-          <Mate>{ficha.modelo}</Mate>
-        </p>
 
-        {/* La key reinicia la calculadora al cambiar de distribución. */}
         {d ? (
-          <CalculadoraUnivariada key={d.id} d={d} />
+          <CalculadoraUnivariada d={d} onValores={setValores} />
         ) : ficha.id === 'multinomial' ? (
           <CalculadoraMultinomial />
         ) : (
           <CalculadoraBivariada />
         )}
-
-        <Propiedades ficha={ficha} />
       </section>
+
+      <div key={'mas-' + ficha.id} class="dist-mas">
+        <Desplegable titulo="Ficha" abierto={abiertas.ficha} onAlternar={() => alternar('ficha')}>
+          <Propiedades ficha={ficha} d={d} valores={valores} />
+        </Desplegable>
+        <Desplegable titulo="Intuición y relaciones" abierto={abiertas.tips} onAlternar={() => alternar('tips')}>
+          <ul class="dist-tips">
+            {ficha.tips.map((t, i) => (
+              <li key={i} style={{ '--i': i }}>
+                <Mate>{t}</Mate>
+              </li>
+            ))}
+          </ul>
+        </Desplegable>
+      </div>
     </>
   )
 }
+
+// ------------------------------------------------------------- índice
+
+/** Las distribuciones, agrupadas como en la tabla de la cátedra, en la columna de la izquierda. */
+function IndiceDistribuciones({ actual, onElegir }: { actual: string; onElegir: (id: string) => void }) {
+  return (
+    <aside class="indice" aria-label="Distribuciones">
+      <div class="indice__contenido">
+        <p class="indice__titulo">Distribuciones</p>
+        <ol class="indice__lista">
+          {GRUPOS.map(({ grupo, nombre }, i) => (
+            <li key={grupo} class="indice__grupo" style={{ '--i': i }}>
+              <p class="indice__rotulo">{nombre}</p>
+              <ol class="indice__sublista indice__sublista--fija">
+                {fichasDistribuciones
+                  .filter((f) => f.grupo === grupo)
+                  .map((f) => (
+                    <li key={f.id}>
+                      <button
+                        class={'indice__tema' + (f.id === actual ? ' indice__tema--activo' : '')}
+                        aria-current={f.id === actual ? 'true' : undefined}
+                        onClick={() => onElegir(f.id)}
+                      >
+                        {f.nombre}
+                      </button>
+                    </li>
+                  ))}
+              </ol>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </aside>
+  )
+}
+
+// ---------------------------------------------------------- desplegable
+
+/** Una sección que se pliega, como "Parciales disponibles" en el simulacro. */
+function Desplegable({
+  titulo,
+  abierto,
+  onAlternar,
+  children,
+}: {
+  titulo: string
+  abierto: boolean
+  onAlternar: () => void
+  children: ComponentChildren
+}) {
+  const id = 'desplegable-' + titulo.toLowerCase().replace(/\W+/g, '-')
+  return (
+    <section class={'desplegable dist-mas__seccion' + (abierto ? ' desplegable--abierto' : '')}>
+      <h3 class="dist-mas__titulo">
+        <button class="desplegable__boton" aria-expanded={abierto} aria-controls={id} onClick={onAlternar}>
+          <IconoDesplegar />
+          {titulo}
+        </button>
+      </h3>
+      <div id={id} class="desplegable__contenido" inert={!abierto}>
+        <div class="desplegable__interior">{children}</div>
+      </div>
+    </section>
+  )
+}
+
+// ------------------------------------------------------------ huecos
+
+/**
+ * Un valor que se escribe dentro de una fórmula: un hueco subrayado, con la
+ * tipografía de KaTeX, que crece con lo que se escribe. La ayuda (el rango
+ * del parámetro) aparece en un globo.
+ */
+function Hueco({
+  valor,
+  etiqueta,
+  error,
+  ayuda,
+  onCambiar,
+}: {
+  valor: string
+  etiqueta: string
+  error?: boolean
+  ayuda?: string
+  onCambiar: (v: string) => void
+}) {
+  return (
+    <input
+      class={'hueco' + (error ? ' hueco--error' : '')}
+      type="text"
+      inputMode="decimal"
+      spellcheck={false}
+      autoComplete="off"
+      value={valor}
+      style={{ width: `${Math.max(2, valor.length) + 1.2}ch` }}
+      aria-label={etiqueta}
+      aria-invalid={error ? true : undefined}
+      data-tip={ayuda}
+      onInput={(e) => onCambiar((e.target as HTMLInputElement).value)}
+    />
+  )
+}
+
+/** Una pieza de la frase: texto en KaTeX o un hueco. */
+type Pieza = string | ComponentChildren
+
+/** Una frase matemática con huecos: "P(X ≤ [ ]) = 0,75". */
+function Frase({ piezas }: { piezas: Pieza[] }) {
+  return (
+    <span class="frase">
+      {piezas.map((p, i) => (typeof p === 'string' ? <Formula key={i} tex={p} /> : <span key={i}>{p}</span>))}
+    </span>
+  )
+}
+
+/** Los parámetros, cada uno como "μ = [ ]", y debajo el aviso si alguno no sirve. */
+function Parametros({ children, aviso }: { children: ComponentChildren; aviso?: string | null }) {
+  return (
+    <div class="calc__parametros">
+      <div class="calc__campos">{children}</div>
+      {aviso && (
+        <p class="calc__aviso">
+          <Mate>{aviso}</Mate>
+        </p>
+      )}
+    </div>
+  )
+}
+
+function CampoParametro({
+  texParam,
+  valor,
+  error,
+  ayuda,
+  onCambiar,
+}: {
+  texParam: string
+  valor: string
+  error?: boolean
+  ayuda?: string
+  onCambiar: (v: string) => void
+}) {
+  return (
+    <span class="calc__campo">
+      <Formula tex={texParam + ' ='} />
+      <Hueco valor={valor} etiqueta={texParam} error={error} ayuda={ayuda} onCambiar={onCambiar} />
+    </span>
+  )
+}
+
+function pistaParametro(q: Parametro): string | undefined {
+  if (q.entero) return q.min !== undefined ? `Entero, desde ${q.min}` : 'Entero'
+  if (q.min === 0 && q.max === 1) return 'Entre 0 y 1'
+  if (q.min === 0 && q.minAbierto) return 'Positivo'
+  return undefined
+}
+
+/** "Tiene que ser positivo." con el parámetro adelante: "$\lambda$ tiene que ser positivo." */
+const conParametro = (texParam: string, mensaje: string) =>
+  `$${texParam}$ ${mensaje.charAt(0).toLowerCase()}${mensaje.slice(1)}`
 
 // ---------------------------------------------------------- univariadas
 
@@ -139,19 +339,25 @@ function modos(d: Univariada): { modo: Modo; tex: string }[] {
     { modo: 'menor', tex: 'P(X \\le x)' },
     { modo: 'mayor', tex: discreta ? 'P(X \\ge x)' : 'P(X > x)' },
     { modo: 'entre', tex: discreta ? 'P(a \\le X \\le b)' : 'P(a < X < b)' },
-    { modo: 'cuantil', tex: '\\text{cuantil } x_\\alpha' },
+    { modo: 'cuantil', tex: 'x_\\alpha' },
   ]
 }
 
-function CalculadoraUnivariada({ d }: { d: Univariada }) {
+function CalculadoraUnivariada({ d, onValores }: { d: Univariada; onValores: (p: Valores | null) => void }) {
   const discreta = d.tipo === 'discreta'
   const [crudos, setCrudos] = useState<Record<string, string>>(() =>
     Object.fromEntries(d.parametros.map((p) => [p.id, formatearNumero(p.defecto, 4, true)])),
   )
   const p: Valores = Object.fromEntries(d.parametros.map((q) => [q.id, leerNumero(crudos[q.id] ?? '')]))
   const errores = Object.fromEntries(d.parametros.map((q) => [q.id, errorParametro(q, p[q.id])]))
-  const restriccion = Object.values(errores).some(Boolean) ? null : (d.restriccion?.(p) ?? null)
-  const valido = !Object.values(errores).some(Boolean) && !restriccion
+  const conError = d.parametros.find((q) => errores[q.id])
+  const restriccion = conError ? null : (d.restriccion?.(p) ?? null)
+  const valido = !conError && !restriccion
+  const avisoParametros = conError ? conParametro(conError.tex, errores[conError.id]!) : restriccion
+
+  // Los momentos de la ficha siguen a los parámetros.
+  const claveValores = valido ? JSON.stringify(p) : ''
+  useEffect(() => onValores(valido ? p : null), [claveValores])
 
   // Valores iniciales del evento, con los parámetros por defecto.
   const [inicial] = useState(() => {
@@ -172,44 +378,48 @@ function CalculadoraUnivariada({ d }: { d: Univariada }) {
   const errorEvento =
     modo === 'cuantil'
       ? !(alfa > 0 && alfa < 1)
-        ? 'α tiene que estar entre 0 y 1.'
+        ? '$\\alpha$ tiene que estar entre 0 y 1.'
         : null
       : modo === 'entre'
         ? !Number.isFinite(a) || !Number.isFinite(b)
-          ? 'a y b tienen que ser números.'
+          ? '$a$ y $b$ tienen que ser números.'
           : a > b
-            ? 'Tiene que ser a ≤ b.'
+            ? 'Tiene que ser $a \\le b$.'
             : null
         : !Number.isFinite(x)
-          ? 'x tiene que ser un número.'
+          ? '$x$ tiene que ser un número.'
           : modo === 'igual' && !Number.isInteger(x)
-            ? 'x tiene que ser un entero.'
+            ? '$x$ tiene que ser un entero.'
             : null
 
-  let resultado: { etiqueta: string; valor: string; detalle?: string } | null = null
+  let valor: string | null = null
   let region: [number, number] = [0, -1]
   let manijas: Manija[] = []
+  const hx = <Hueco valor={xT} etiqueta="x" error={!Number.isFinite(x)} onCambiar={setX} />
+  const ha = <Hueco valor={aT} etiqueta="a" error={!Number.isFinite(a)} onCambiar={setA} />
+  const hb = <Hueco valor={bT} etiqueta="b" error={!Number.isFinite(b)} onCambiar={setB} />
+  const halfa = <Hueco valor={alfaT} etiqueta="α" error={!(alfa > 0 && alfa < 1)} onCambiar={setAlfa} />
+  const le = discreta ? '\\le' : '<'
+  const piezas: Pieza[] =
+    modo === 'igual'
+      ? ['P(X =', hx, ')']
+      : modo === 'menor'
+        ? ['P(X \\le', hx, ')']
+        : modo === 'mayor'
+          ? [discreta ? 'P(X \\ge' : 'P(X >', hx, ')']
+          : modo === 'entre'
+            ? ['P(', ha, `${le} X ${le}`, hb, ')']
+            : [discreta ? 'P(X \\le x_\\alpha) \\ge' : 'P(X \\le x_\\alpha) =', halfa, '\\;\\Rightarrow\\; x_\\alpha']
 
   if (valido && !errorEvento) {
     if (modo === 'cuantil') {
       const xq = cuantil(d, p, alfa)
       region = [-Infinity, xq]
       manijas = [{ id: 'x', valor: xq, rotulo: 'xα' }]
-      resultado = {
-        etiqueta: `x_{${tex(alfa, 4)}}`,
-        valor: formatearNumero(xq, discreta ? 0 : 6, true),
-        detalle: discreta
-          ? `El menor $x$ con $F_X(x) \\ge ${tex(alfa)}$; $F_X(x) = ${tex(d.distribucion(xq, p), 6)}$.`
-          : `El valor con $F_X(x) = ${tex(alfa)}$.`,
-      }
+      valor = formatearNumero(xq, discreta ? 0 : 6, true)
     } else {
       const evento: Evento = modo === 'entre' ? { tipo: 'entre', a, b } : { tipo: modo, x }
-      const etiqueta = modos(d)
-        .find((m) => m.modo === modo)!
-        .tex.replace('x', tex(x))
-        .replace(/\ba\b/, tex(a))
-        .replace(/\bb\b/, tex(b))
-      resultado = { etiqueta, valor: formatearNumero(probabilidad(d, p, evento), 6) }
+      valor = formatearNumero(probabilidad(d, p, evento), 6)
       region =
         modo === 'menor'
           ? [-Infinity, discreta ? Math.floor(x) : x]
@@ -242,33 +452,25 @@ function CalculadoraUnivariada({ d }: { d: Univariada }) {
   }
 
   return (
-    <div class="calculadora">
-      <fieldset class="calculadora__parametros">
-        <legend class="calculadora__rotulo">Parámetros</legend>
-        {d.parametros.map((q) => (
-          <CampoNumero
-            key={q.id}
-            etiqueta={q.tex}
-            valor={crudos[q.id] ?? ''}
-            error={errores[q.id]}
-            onCambiar={(v) => setCrudos((c) => ({ ...c, [q.id]: v }))}
-            pista={pistaParametro(q)}
-          />
-        ))}
-        {restriccion && (
-          <p class="calculadora__error">
-            <Mate>{restriccion}</Mate>
-          </p>
-        )}
-      </fieldset>
-
-      <fieldset class="calculadora__evento">
-        <legend class="calculadora__rotulo">Calcular</legend>
-        <div class="calculadora__modos" role="radiogroup">
+    <div class="calc">
+      <div class="calc__controles">
+        <Parametros aviso={avisoParametros}>
+          {d.parametros.map((q) => (
+            <CampoParametro
+              key={q.id}
+              texParam={q.tex}
+              valor={crudos[q.id] ?? ''}
+              error={!!errores[q.id] || !!restriccion}
+              ayuda={pistaParametro(q)}
+              onCambiar={(v) => setCrudos((c) => ({ ...c, [q.id]: v }))}
+            />
+          ))}
+        </Parametros>
+        <div class="calc__modos" role="radiogroup" aria-label="Qué calcular">
           {modos(d).map((m) => (
             <button
               key={m.modo}
-              class={'chip-opcion' + (m.modo === modo ? ' chip-opcion--activa' : '')}
+              class={'calc__modo' + (m.modo === modo ? ' calc__modo--activo' : '')}
               role="radio"
               aria-checked={m.modo === modo}
               onClick={() => setModo(m.modo)}
@@ -277,99 +479,38 @@ function CalculadoraUnivariada({ d }: { d: Univariada }) {
             </button>
           ))}
         </div>
-        <div class="calculadora__valores">
-          {modo === 'entre' ? (
-            <>
-              <CampoNumero etiqueta="a" valor={aT} onCambiar={setA} />
-              <CampoNumero etiqueta="b" valor={bT} onCambiar={setB} />
-            </>
-          ) : modo === 'cuantil' ? (
-            <CampoNumero etiqueta="\alpha" valor={alfaT} onCambiar={setAlfa} />
-          ) : (
-            <CampoNumero etiqueta="x" valor={xT} onCambiar={setX} />
-          )}
-        </div>
-        {errorEvento && <p class="calculadora__error">{errorEvento}</p>}
-      </fieldset>
+      </div>
 
       {valido ? (
-        <div class="calculadora__grafico">
+        <div class="calc__grafico">
           <GraficoDistribucion d={d} p={p} region={region} manijas={manijas} onMover={mover} />
         </div>
       ) : (
-        <p class="vacio">Con estos parámetros no hay distribución que graficar.</p>
+        <p class="calc__vacio">Con estos parámetros no hay distribución que graficar.</p>
       )}
 
       {valido && (
-        <div class="calculadora__resultado">
-          {resultado && (
-            <p class="resultado">
-              <span class="resultado__etiqueta">
-                <Formula tex={resultado.etiqueta} />
-              </span>
-              <span class="resultado__igual">=</span>
-              <strong class="resultado__valor">{resultado.valor}</strong>
-            </p>
-          )}
-          {resultado?.detalle && (
-            <p class="dato-chico">
-              <Mate>{resultado.detalle}</Mate>
-            </p>
-          )}
-          <ul class="calculadora__momentos">
-            <li>
-              <Formula tex="E[X]" /> = {momento(d.esperanza(p))}
-            </li>
-            <li>
-              <Formula tex="\operatorname{var}(X)" /> = {momento(d.varianza(p))}
-            </li>
-            {typeof d.varianza(p) === 'number' && (
-              <li>
-                <Formula tex="\sigma_X" /> = {formatearNumero(Math.sqrt(d.varianza(p) as number), 4, true)}
-              </li>
+        <div key={modo} class="calc__resultado">
+          <p class="resultado">
+            <Frase piezas={piezas} />
+            {valor !== null && (
+              <>
+                <Formula tex="=" />
+                <strong class="resultado__valor">{valor}</strong>
+              </>
             )}
-          </ul>
+          </p>
+          {errorEvento ? (
+            <p class="calc__aviso">
+              <Mate>{errorEvento}</Mate>
+            </p>
+          ) : (
+            modo === 'cuantil' &&
+            discreta && <p class="calc__nota">El menor valor que cumple la desigualdad.</p>
+          )}
         </div>
       )}
     </div>
-  )
-}
-
-function pistaParametro(q: Parametro): string | undefined {
-  if (q.entero) return q.min !== undefined ? `entero, desde ${q.min}` : 'entero'
-  if (q.min === 0 && q.max === 1) return 'entre 0 y 1'
-  if (q.min === 0 && q.minAbierto) return 'positivo'
-  return undefined
-}
-
-function CampoNumero({
-  etiqueta,
-  valor,
-  error,
-  pista,
-  onCambiar,
-}: {
-  etiqueta: string
-  valor: string
-  error?: string | null
-  pista?: string
-  onCambiar: (v: string) => void
-}) {
-  return (
-    <label class={'campo-num' + (error ? ' campo-num--error' : '')}>
-      <span class="campo-num__etiqueta">
-        <Formula tex={etiqueta + ' ='} />
-      </span>
-      <input
-        class="entrada campo-num__entrada"
-        type="text"
-        inputMode="decimal"
-        value={valor}
-        aria-invalid={error ? true : undefined}
-        onInput={(e) => onCambiar((e.target as HTMLInputElement).value)}
-      />
-      {(error || pista) && <span class="campo-num__ayuda">{error ?? pista}</span>}
-    </label>
   )
 }
 
@@ -390,120 +531,123 @@ function CalculadoraMultinomial() {
   const todosP = [...ps, pk]
   const todosX = [...xs, xk]
 
-  const error = !(Number.isInteger(n) && n >= 1 && n <= 500)
+  const errorParametros = !(Number.isInteger(n) && n >= 1 && n <= 500)
     ? '$n$ tiene que ser un entero entre 1 y 500.'
     : ps.some((v) => !(v > 0 && v < 1))
       ? 'Cada $p_i$ tiene que estar entre 0 y 1.'
       : !(pk > 0)
         ? `Las probabilidades tienen que sumar menos de 1, porque $p_${k}$ es lo que falta.`
-        : xs.some((v) => !(Number.isInteger(v) && v >= 0))
-          ? 'Cada $x_i$ tiene que ser un entero no negativo.'
-          : xk < 0
-            ? `Los $x_i$ suman más que $n$, y $x_${k}$ sería negativo.`
-            : null
-  const prob = error ? null : multinomial(n, todosP, todosX)
+        : null
+  const errorEvento = errorParametros
+    ? null
+    : xs.some((v) => !(Number.isInteger(v) && v >= 0))
+      ? 'Cada $x_i$ tiene que ser un entero no negativo.'
+      : xk < 0
+        ? `Los $x_i$ suman más que $n$, y $x_${k}$ sería negativo.`
+        : null
+  const prob = errorParametros || errorEvento ? null : multinomial(n, todosP, todosX)
   const binomial = univariadaPorId.get('binomial')!
   const j = Math.min(componente, k - 1)
 
-  return (
-    <div class="calculadora">
-      <fieldset class="calculadora__parametros">
-        <legend class="calculadora__rotulo">Parámetros</legend>
-        <CampoNumero etiqueta="n" valor={nT} onCambiar={setN} />
-        <label class="campo-num">
-          <span class="campo-num__etiqueta">
-            <Formula tex="k =" />
-          </span>
-          <select class="entrada campo-num__entrada" value={k} onChange={(e) => setK(Number((e.target as HTMLSelectElement).value))}>
-            {[2, 3, 4, 5, 6].map((v) => (
-              <option key={v} value={v}>
-                {v}
-              </option>
-            ))}
-          </select>
-        </label>
-        {Array.from({ length: k - 1 }, (_, i) => (
-          <CampoNumero
-            key={i}
-            etiqueta={`p_${i + 1}`}
-            valor={psT[i] ?? ''}
-            onCambiar={(v) => setPs((s) => Object.assign([...s], { [i]: v }))}
-          />
-        ))}
-        <p class="campo-num campo-num--calculado">
-          <Formula tex={`p_${k} = ${Number.isFinite(pk) ? tex(pk, 4) : '?'}`} />
-        </p>
-      </fieldset>
+  const piezas: Pieza[] = []
+  for (let i = 0; i < k - 1; i++) {
+    piezas.push(`${i === 0 ? 'P(' : ',\\ '}X_${i + 1} =`)
+    piezas.push(
+      <Hueco
+        valor={xsT[i] ?? ''}
+        etiqueta={`x${i + 1}`}
+        error={!(Number.isInteger(xs[i]) && xs[i] >= 0)}
+        onCambiar={(v) => setXs((s) => Object.assign([...s], { [i]: v }))}
+      />,
+    )
+  }
+  piezas.push(`,\\ X_${k} = ${Number.isFinite(xk) ? tex(xk, 0) : '?'})`)
 
-      <fieldset class="calculadora__evento">
-        <legend class="calculadora__rotulo">
-          Calcular <Formula tex="P(X_1 = x_1, \dots, X_k = x_k)" />
-        </legend>
-        <div class="calculadora__valores">
+  return (
+    <div class="calc">
+      <div class="calc__controles">
+        <Parametros aviso={errorParametros}>
+          <CampoParametro texParam="n" valor={nT} error={!(Number.isInteger(n) && n >= 1)} onCambiar={setN} />
+          <span class="calc__campo">
+            <Formula tex="k =" />
+            <select
+              class="hueco hueco--lista"
+              aria-label="k"
+              data-tip="De 2 a 6 resultados"
+              value={k}
+              onChange={(e) => setK(Number((e.target as HTMLSelectElement).value))}
+            >
+              {[2, 3, 4, 5, 6].map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </span>
           {Array.from({ length: k - 1 }, (_, i) => (
-            <CampoNumero
+            <CampoParametro
               key={i}
-              etiqueta={`x_${i + 1}`}
-              valor={xsT[i] ?? ''}
-              onCambiar={(v) => setXs((s) => Object.assign([...s], { [i]: v }))}
+              texParam={`p_${i + 1}`}
+              valor={psT[i] ?? ''}
+              error={!(ps[i] > 0 && ps[i] < 1)}
+              onCambiar={(v) => setPs((s) => Object.assign([...s], { [i]: v }))}
             />
           ))}
-          <p class="campo-num campo-num--calculado">
-            <Formula tex={`x_${k} = ${Number.isFinite(xk) ? tex(xk, 0) : '?'}`} />
-          </p>
-        </div>
-      </fieldset>
+          <span class="calc__campo calc__campo--calculado">
+            <Formula tex={`p_${k} = ${Number.isFinite(pk) ? tex(pk, 4) : '?'}`} />
+          </span>
+        </Parametros>
+        {!errorParametros && (
+          <div class="calc__modos" role="radiogroup" aria-label="Marginal del gráfico">
+            {todosP.map((_, i) => (
+              <button
+                key={i}
+                class={'calc__modo' + (i === j ? ' calc__modo--activo' : '')}
+                role="radio"
+                aria-checked={i === j}
+                data-tip={`Graficar la marginal de X${i + 1}`}
+                onClick={() => setComponente(i)}
+              >
+                <Formula tex={`X_${i + 1}`} />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
-      {error ? (
-        <p class="calculadora__error">
-          <Mate>{error}</Mate>
-        </p>
+      {errorParametros ? (
+        <p class="calc__vacio">Con estos parámetros no hay distribución que graficar.</p>
       ) : (
         <>
-          <div class="calculadora__marginal">
-            <p class="calculadora__rotulo">Marginal</p>
-            <div class="calculadora__modos">
-              {todosP.map((_, i) => (
-                <button
-                  key={i}
-                  class={'chip-opcion' + (i === j ? ' chip-opcion--activa' : '')}
-                  aria-pressed={i === j}
-                  onClick={() => setComponente(i)}
-                >
-                  <Formula tex={`X_${i + 1}`} />
-                </button>
-              ))}
-            </div>
-            <p class="dato-chico">
-              <Mate>{`$X_${j + 1} \\sim \\mathcal{B}(${tex(n, 0)}, ${tex(todosP[j])})$, con el valor $x_${j + 1} = ${tex(todosX[j], 0)}$ resaltado.`}</Mate>
-            </p>
-          </div>
-          <div class="calculadora__grafico">
+          <div class="calc__grafico">
             <GraficoDistribucion
               d={binomial}
               p={{ n, p: todosP[j] }}
-              region={[todosX[j], todosX[j]]}
-              manijas={j < k - 1 ? [{ id: 'x', valor: todosX[j], rotulo: `x${j + 1}` }] : []}
+              region={Number.isFinite(todosX[j]) ? [todosX[j], todosX[j]] : [0, -1]}
+              manijas={
+                j < k - 1 && Number.isFinite(todosX[j]) ? [{ id: 'x', valor: todosX[j], rotulo: `x${j + 1}` }] : []
+              }
               onMover={(_, v) => setXs((s) => Object.assign([...s], { [j]: String(v) }))}
             />
-          </div>
-          <div class="calculadora__resultado">
-            <p class="resultado">
-              <span class="resultado__etiqueta">
-                <Formula tex={`P(\\mathbf{X} = (${todosX.map((v) => tex(v, 0)).join(', ')}))`} />
-              </span>
-              <span class="resultado__igual">=</span>
-              <strong class="resultado__valor">{formatearNumero(prob!, 6)}</strong>
+            <p class="calc__pie">
+              <Mate>{`La marginal $X_${j + 1} \\sim \\mathcal{B}(${tex(n, 0)}, ${tex(todosP[j])})$.`}</Mate>
             </p>
-            <ul class="calculadora__momentos">
-              <li>
-                <Formula tex={`E[X_${j + 1}]`} /> = {formatearNumero(n * todosP[j], 4, true)}
-              </li>
-              <li>
-                <Formula tex={`\\operatorname{var}(X_${j + 1})`} /> ={' '}
-                {formatearNumero(n * todosP[j] * (1 - todosP[j]), 4, true)}
-              </li>
-            </ul>
+          </div>
+          <div class="calc__resultado">
+            <p class="resultado">
+              <Frase piezas={piezas} />
+              {prob !== null && (
+                <>
+                  <Formula tex="=" />
+                  <strong class="resultado__valor">{formatearNumero(prob, 6)}</strong>
+                </>
+              )}
+            </p>
+            {errorEvento && (
+              <p class="calc__aviso">
+                <Mate>{errorEvento}</Mate>
+              </p>
+            )}
           </div>
         </>
       )}
@@ -520,68 +664,76 @@ function CalculadoraBivariada() {
   const v = Object.fromEntries(Object.entries(t).map(([k, s]) => [k, leerNumero(s)])) as Record<string, number>
   const cambiar = (k: string) => (s: string) => setT((o) => ({ ...o, [k]: s }))
 
-  const error = [v.mu1, v.mu2, v.a, v.b, v.x1].some((x) => !Number.isFinite(x))
-    ? 'Todos los valores tienen que ser números.'
+  const errorParametros = [v.mu1, v.mu2].some((x) => !Number.isFinite(x))
+    ? 'Las medias tienen que ser números.'
     : !(v.s21 > 0 && v.s22 > 0)
       ? 'Las varianzas tienen que ser positivas.'
       : !(v.rho > -1 && v.rho < 1)
         ? 'Tiene que ser $-1 < \\rho < 1$.'
         : null
+  const errorEvento = errorParametros
+    ? null
+    : [v.a, v.b, v.x1].some((x) => !Number.isFinite(x))
+      ? '$a$, $b$ y $x_1$ tienen que ser números.'
+      : null
   const par: Bivariada = { mu1: v.mu1, mu2: v.mu2, s1: Math.sqrt(v.s21), s2: Math.sqrt(v.s22), rho: v.rho }
-  const prob = error ? null : distribucionBivariada(v.a, v.b, par)
-  const cond = error ? null : condicionalBivariada(v.x1, par)
+  const listo = !errorParametros && !errorEvento
+  const prob = listo ? distribucionBivariada(v.a, v.b, par) : null
+  const cond = listo ? condicionalBivariada(v.x1, par) : null
+
+  const campo = (k: string, texParam: string, error: boolean) => (
+    <CampoParametro texParam={texParam} valor={t[k]} error={error} onCambiar={cambiar(k)} />
+  )
+  const hueco = (k: string, etiqueta: string) => (
+    <Hueco valor={t[k]} etiqueta={etiqueta} error={!Number.isFinite(v[k])} onCambiar={cambiar(k)} />
+  )
 
   return (
-    <div class="calculadora">
-      <fieldset class="calculadora__parametros">
-        <legend class="calculadora__rotulo">Parámetros</legend>
-        <CampoNumero etiqueta="\mu_1" valor={t.mu1} onCambiar={cambiar('mu1')} />
-        <CampoNumero etiqueta="\mu_2" valor={t.mu2} onCambiar={cambiar('mu2')} />
-        <CampoNumero etiqueta="\sigma_1^2" valor={t.s21} onCambiar={cambiar('s21')} />
-        <CampoNumero etiqueta="\sigma_2^2" valor={t.s22} onCambiar={cambiar('s22')} />
-        <CampoNumero etiqueta="\rho" valor={t.rho} onCambiar={cambiar('rho')} />
-      </fieldset>
+    <div class="calc">
+      <div class="calc__controles">
+        <Parametros aviso={errorParametros}>
+          {campo('mu1', '\\mu_1', !Number.isFinite(v.mu1))}
+          {campo('mu2', '\\mu_2', !Number.isFinite(v.mu2))}
+          {campo('s21', '\\sigma_1^2', !(v.s21 > 0))}
+          {campo('s22', '\\sigma_2^2', !(v.s22 > 0))}
+          {campo('rho', '\\rho', !(v.rho > -1 && v.rho < 1))}
+        </Parametros>
+      </div>
 
-      <fieldset class="calculadora__evento">
-        <legend class="calculadora__rotulo">
-          Calcular <Formula tex="P(X_1 \le a,\ X_2 \le b)" />
-        </legend>
-        <div class="calculadora__valores">
-          <CampoNumero etiqueta="a" valor={t.a} onCambiar={cambiar('a')} />
-          <CampoNumero etiqueta="b" valor={t.b} onCambiar={cambiar('b')} />
-        </div>
-      </fieldset>
-
-      {error ? (
-        <p class="calculadora__error">
-          <Mate>{error}</Mate>
-        </p>
+      {errorParametros ? (
+        <p class="calc__vacio">Con estos parámetros no hay distribución que graficar.</p>
       ) : (
         <>
-          <div class="calculadora__grafico">
+          <div class="calc__grafico calc__grafico--cuadrado">
             <GraficoBivariado
               par={par}
-              a={v.a}
-              b={v.b}
+              a={Number.isFinite(v.a) ? v.a : par.mu1}
+              b={Number.isFinite(v.b) ? v.b : par.mu2}
               onMover={(a, b) => setT((o) => ({ ...o, a: formatearNumero(a, 3, true), b: formatearNumero(b, 3, true) }))}
             />
           </div>
-          <div class="calculadora__resultado">
+          <div class="calc__resultado">
             <p class="resultado">
-              <span class="resultado__etiqueta">
-                <Formula tex={`P(X_1 \\le ${tex(v.a)},\\ X_2 \\le ${tex(v.b)})`} />
-              </span>
-              <span class="resultado__igual">=</span>
-              <strong class="resultado__valor">{formatearNumero(prob!, 6)}</strong>
+              <Frase piezas={['P(X_1 \\le', hueco('a', 'a'), ',\\ X_2 \\le', hueco('b', 'b'), ')']} />
+              {prob !== null && (
+                <>
+                  <Formula tex="=" />
+                  <strong class="resultado__valor">{formatearNumero(prob, 6)}</strong>
+                </>
+              )}
             </p>
-            <div class="calculadora__condicional">
-              <CampoNumero etiqueta="x_1" valor={t.x1} onCambiar={cambiar('x1')} />
-              <p>
-                <Mate>
-                  {`$X_2 \\mid X_1 = ${tex(v.x1)} \\sim \\mathcal{N}(${tex(cond!.media)},\\ ${tex(cond!.desvio ** 2)})$, y $P(X_2 \\le ${tex(v.b)} \\mid X_1 = ${tex(v.x1)}) = ${tex(Phi((v.b - cond!.media) / cond!.desvio), 6)}$.`}
-                </Mate>
+            {cond && (
+              <p class="resultado resultado--secundario">
+                <Frase piezas={[`P(X_2 \\le ${tex(v.b)} \\mid X_1 =`, hueco('x1', 'x1'), ')']} />
+                <Formula tex="=" />
+                <span class="resultado__otro">{formatearNumero(Phi((v.b - cond.media) / cond.desvio), 6)}</span>
               </p>
-            </div>
+            )}
+            {errorEvento && (
+              <p class="calc__aviso">
+                <Mate>{errorEvento}</Mate>
+              </p>
+            )}
           </div>
         </>
       )}
@@ -689,45 +841,82 @@ function GraficoBivariado({
 
 // ------------------------------------------------------------- ficha
 
-function Propiedades({ ficha }: { ficha: FichaDistribucion }) {
-  const funcion = ficha.grupo === 'discreta' ? 'p_X(x)' : ficha.grupo === 'continua' ? 'f_X(x)' : 'Función'
-  const filas: [string, string | undefined][] = [
-    [funcion, ficha.funcion],
-    ['Soporte', ficha.soporte],
-    ['Parámetros', ficha.parametros],
-    [ficha.grupo === 'multivariada' ? 'Esperanzas' : 'E[X]', ficha.esperanza],
-    [ficha.grupo === 'multivariada' ? 'Varianzas' : 'var(X)', ficha.varianza],
-    ['Supervivencia', ficha.supervivencia],
+/**
+ * La ficha: el modelo y las fórmulas de la tabla de la cátedra. En las
+ * univariadas, la esperanza y la varianza llevan además su valor con los
+ * parámetros elegidos.
+ */
+function Propiedades({ ficha, d, valores }: { ficha: FichaDistribucion; d?: Univariada; valores: Valores | null }) {
+  const funcion = ficha.grupo === 'discreta' ? 'p_X(x)' : ficha.grupo === 'continua' ? 'f_X(x)' : null
+  const conValores = d && valores ? { d, valores } : null
+  const varianza = conValores ? conValores.d.varianza(conValores.valores) : null
+  const filas: { rotulo: ComponentChildren; tex?: string; valor?: string | null; nota?: string }[] = [
+    { rotulo: funcion ? <Formula tex={funcion} /> : 'Función', tex: funcion ? sinMiembroIzquierdo(ficha.funcion) : ficha.funcion },
+    { rotulo: 'Soporte', tex: ficha.soporte, nota: ficha.nota_soporte },
+    { rotulo: 'Parámetros', tex: ficha.parametros },
+    {
+      rotulo: ficha.grupo === 'multivariada' ? 'Esperanzas' : <Formula tex="E[X]" />,
+      tex: ficha.esperanza,
+      valor: conValores ? momento(conValores.d.esperanza(conValores.valores)) : null,
+    },
+    {
+      rotulo: ficha.grupo === 'multivariada' ? 'Varianzas' : <Formula tex="\operatorname{var}(X)" />,
+      tex: ficha.varianza,
+      valor: varianza === null ? null : momento(varianza),
+    },
+    ...(typeof varianza === 'number'
+      ? [{ rotulo: <Formula tex="\sigma_X" />, valor: formatearNumero(Math.sqrt(varianza), 4, true) }]
+      : []),
+    ...(ficha.supervivencia ? [{ rotulo: 'Supervivencia', tex: ficha.supervivencia }] : []),
   ]
   return (
-    <div class="dist-propiedades">
-      <p class="calculadora__rotulo">Ficha</p>
-      <dl class="dist-propiedades__lista">
-        {filas
-          .filter(([, v]) => v)
-          .map(([k, v]) => (
-            <div key={k} class="dist-propiedades__fila">
-              <dt>{k === funcion && ficha.grupo !== 'multivariada' ? <Formula tex={k} /> : k}</dt>
-              <dd>
-                <Formula tex={v!} />
-              </dd>
-            </div>
-          ))}
-        {ficha.equivalencias?.length ? (
-          <div class="dist-propiedades__fila">
-            <dt>Equivalencias</dt>
+    <div class="dist-ficha">
+      <p class="dist-ficha__modelo">
+        <Mate>{ficha.modelo}</Mate>
+      </p>
+      <dl class="dist-ficha__lista">
+        {filas.map((f, i) => (
+          <div key={i} class="dist-ficha__fila">
+            <dt>{f.rotulo}</dt>
             <dd>
-              {ficha.equivalencias.map((e) => (
-                <span key={e} class="dist-propiedades__equivalencia">
-                  <Formula tex={e} />
+              {f.tex && <Formula tex={f.tex} />}
+              {f.valor != null && (
+                <span class="dist-ficha__valor">
+                  {f.tex && <Formula tex="=" />}
+                  {f.valor}
                 </span>
+              )}
+              {f.nota && (
+                <span class="dist-ficha__nota">
+                  <Mate>{f.nota}</Mate>
+                </span>
+              )}
+            </dd>
+          </div>
+        ))}
+        {ficha.propiedades?.length ? (
+          <div class="dist-ficha__fila">
+            <dt>Propiedades</dt>
+            <dd class="dist-ficha__varias">
+              {ficha.propiedades.map((p) => (
+                <Formula key={p} tex={p} />
+              ))}
+            </dd>
+          </div>
+        ) : null}
+        {ficha.equivalencias?.length ? (
+          <div class="dist-ficha__fila">
+            <dt>Equivalencias</dt>
+            <dd class="dist-ficha__varias">
+              {ficha.equivalencias.map((e) => (
+                <Formula key={e} tex={e} />
               ))}
             </dd>
           </div>
         ) : null}
       </dl>
       {ficha.nota && (
-        <p class="dato-chico">
+        <p class="dist-ficha__pie">
           <Mate>{ficha.nota}</Mate>
         </p>
       )}

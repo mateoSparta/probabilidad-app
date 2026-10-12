@@ -2,20 +2,21 @@
  * El material para llevar al examen (PLAN.md §12): la hoja de fórmulas, las
  * tablas y el kit que junta las dos para una evaluación.
  *
- * Los mismos componentes se ven en la sección Fórmulas y tablas y se
+ * Los mismos componentes se ven en el Machete y se
  * imprimen tal cual (ver imprimir.ts y estilos/impresion.css). El contenido
  * es dato: las fórmulas vienen de content/formulas/ y las tablas de
  * content/tablas/, generadas y verificadas por tools/verify/tablas.py.
  */
-import { useLayoutEffect, useRef } from 'preact/hooks'
+import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks'
 
 import { guiaPorNumero, hojasFormulas, tablas } from '../datos/contenido'
-import { rangoGuias, type Evaluacion } from '../dominio/evaluaciones'
-import { fechaCorta } from '../dominio/ritmo'
+import type { Evaluacion } from '../dominio/evaluaciones'
 import type { Tabla } from '../dominio/tipos'
 import { GraficoTabla } from './GraficoTabla'
+import { IconoDesplegar } from './Iconos'
 import { Formula, Mate } from './Mate'
 import { irA } from './MapaEjercicios'
+import { TablaDeDistribuciones } from './TablaDistribuciones'
 
 /** Si hay algo que mostrar para esas guías. */
 export const hayFormulas = (guias: readonly number[]) =>
@@ -28,7 +29,7 @@ const anclaTabla = (id: string) => `tabla-${id}`
 
 /**
  * La tabla que pidió otra sección (la ficha de una distribución). Al entrar,
- * Fórmulas y tablas abre la pestaña de tablas y baja hasta ella. No va en la
+ * el Machete abre la pestaña de tablas y baja hasta ella. No va en la
  * URL porque la ruta sólo lleva la sección y la guía.
  */
 let tablaPedida: string | null = null
@@ -208,8 +209,83 @@ function TablaNumerica({ tabla, ancla }: { tabla: Tabla; ancla?: string }) {
 }
 
 /**
+ * Corre `listo` cuando termina el desplazamiento en curso, o enseguida si no
+ * hay ninguno: mira la posición cada 80 ms y espera dos lecturas iguales. No
+ * usa `scrollend` porque no todos los navegadores lo emiten.
+ */
+function alTerminarDeDesplazar(listo: () => void): void {
+  let ultima = scrollY
+  let quietas = 0
+  let vueltas = 0
+  const t = setInterval(() => {
+    vueltas++
+    if (scrollY === ultima) quietas++
+    else {
+      quietas = 0
+      ultima = scrollY
+    }
+    if (quietas >= 2 || vueltas > 50) {
+      clearInterval(t)
+      listo()
+    }
+  }, 80)
+}
+
+/**
+ * Pinta de naranja claro las fichas de un tema, con un fundido de entrada,
+ * un segundo quieto y un fundido de salida (`resaltar` en animaciones.css).
+ * Si ya estaba pintado, la animación vuelve a empezar.
+ */
+function resaltarTema(id: string): void {
+  const bloque = document.getElementById(id)
+  if (!bloque) return
+  bloque.classList.remove('hoja__bloque--resaltado')
+  void bloque.offsetWidth
+  bloque.classList.add('hoja__bloque--resaltado')
+  setTimeout(() => bloque.classList.remove('hoja__bloque--resaltado'), 2000)
+}
+
+/**
+ * La guía que se está leyendo: la última cuyo título ya pasó la mitad de la
+ * pantalla, o la primera si ninguna. Mientras `pausa` está prendida (un salto
+ * desde el índice en curso) no se actualiza, para que el acordeón no abra
+ * cada guía por la que pasa el desplazamiento.
+ */
+function usarGuiaVisible(guias: readonly number[], pausa: { current: boolean }): number | null {
+  const [visible, setVisible] = useState<number | null>(guias[0] ?? null)
+  useEffect(() => {
+    let cuadro = 0
+    const revisar = () => {
+      cuadro = 0
+      if (pausa.current) return
+      let actual = guias[0] ?? null
+      for (const g of guias) {
+        const titulo = document.getElementById(anclaGuia(g))
+        if (titulo && titulo.getBoundingClientRect().top <= innerHeight / 2) actual = g
+      }
+      setVisible(actual)
+    }
+    const alDesplazar = () => {
+      if (!cuadro) cuadro = requestAnimationFrame(revisar)
+    }
+    revisar()
+    addEventListener('scroll', alDesplazar, { passive: true })
+    return () => {
+      removeEventListener('scroll', alDesplazar)
+      cancelAnimationFrame(cuadro)
+    }
+  }, [guias.join()])
+  return visible
+}
+
+/**
  * El índice de la izquierda, como el de las guías: las guías con sus temas,
  * o las tablas, según la pestaña. Al hacer clic, baja hasta ahí.
+ *
+ * En las fórmulas es un acordeón: cada guía se pliega y se despliega con su
+ * flecha, y hay a lo sumo una abierta. Al desplazarse, queda abierta la guía
+ * que se está leyendo. Al elegir un tema, además de bajar, sus fichas se
+ * pintan un momento para que se vea adónde se llegó.
  */
 export function IndiceMaterial({
   pestana,
@@ -218,6 +294,15 @@ export function IndiceMaterial({
   pestana: 'formulas' | 'tablas'
   guias: readonly number[]
 }) {
+  const hojas = hojasFormulas.filter((h) => guias.includes(h.guia))
+  const pausa = useRef(false)
+  const visible = usarGuiaVisible(
+    hojas.map((h) => h.guia),
+    pausa,
+  )
+  const [abierta, setAbierta] = useState<number | null>(visible)
+  useEffect(() => setAbierta(visible), [visible])
+
   if (pestana === 'tablas') {
     const lista = tablas.filter((t) => guias.includes(t.guia))
     if (lista.length === 0) return null
@@ -226,8 +311,8 @@ export function IndiceMaterial({
         <div class="indice__contenido">
           <p class="indice__titulo">Tablas</p>
           <ol class="indice__lista">
-            {lista.map((t) => (
-              <li key={t.id}>
+            {lista.map((t, i) => (
+              <li key={t.id} style={{ '--i': i }}>
                 <button class="indice__tema" onClick={() => irA(anclaTabla(t.id))}>
                   <Mate>{t.titulo}</Mate>
                 </button>
@@ -238,29 +323,55 @@ export function IndiceMaterial({
       </aside>
     )
   }
-  const hojas = hojasFormulas.filter((h) => guias.includes(h.guia))
+
+  function irATema(guia: number, i: number): void {
+    setAbierta(guia)
+    pausa.current = true
+    irA(anclaTema(guia, i))
+    alTerminarDeDesplazar(() => {
+      pausa.current = false
+      dispatchEvent(new Event('scroll'))
+      resaltarTema(anclaTema(guia, i))
+    })
+  }
+
   if (hojas.length === 0) return null
   return (
     <aside class="indice" aria-label="Índice de las fórmulas">
       <div class="indice__contenido">
         <p class="indice__titulo">Fórmulas</p>
         <ol class="indice__lista">
-          {hojas.map((h) => (
-            <li key={h.guia} class="indice__grupo">
-              <button class="indice__tema indice__tema--guia" onClick={() => irA(anclaGuia(h.guia))}>
-                Guía {h.guia}
-              </button>
-              <ol class="indice__sublista">
-                {h.bloques.map((b, i) => (
-                  <li key={b.titulo}>
-                    <button class="indice__tema" onClick={() => irA(anclaTema(h.guia, i))}>
-                      <Mate>{b.titulo}</Mate>
-                    </button>
-                  </li>
-                ))}
-              </ol>
-            </li>
-          ))}
+          {hojas.map((h, k) => {
+            const abierto = abierta === h.guia
+            return (
+              <li
+                key={h.guia}
+                class={'indice__grupo' + (abierto ? ' indice__grupo--abierto' : '')}
+                style={{ '--i': k }}
+              >
+                <button
+                  class="indice__tema indice__tema--guia"
+                  aria-expanded={abierto}
+                  aria-controls={`indice-guia-${h.guia}`}
+                  onClick={() => setAbierta(abierto ? null : h.guia)}
+                >
+                  <IconoDesplegar />
+                  Guía {h.guia}
+                </button>
+                <div class="indice__plegable" id={`indice-guia-${h.guia}`} inert={!abierto}>
+                  <ol class="indice__sublista">
+                    {h.bloques.map((b, i) => (
+                      <li key={b.titulo} style={{ '--i': i }}>
+                        <button class="indice__tema" onClick={() => irATema(h.guia, i)}>
+                          <Mate>{b.titulo}</Mate>
+                        </button>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </li>
+            )
+          })}
         </ol>
       </div>
     </aside>
@@ -273,22 +384,14 @@ export function Suerte() {
 }
 
 /**
- * Todo lo que hace falta para una evaluación, en un solo documento: una
- * carátula, las fórmulas y las tablas de sus guías, y el saludo.
+ * Todo lo que hace falta para una evaluación, en un solo documento: las
+ * fórmulas y las tablas de sus guías, la tabla de distribuciones de la
+ * cátedra y el saludo. Cada parte empieza en una página nueva.
  */
 export function KitExamen({ evaluacion }: { evaluacion: Evaluacion }) {
-  const { guias, nombre, fecha } = evaluacion
+  const { guias } = evaluacion
   return (
     <div class="kit">
-      <header class="kit__caratula">
-        <p class="kit__materia">Probabilidad y Estadística B · 61.09 · 81.04 · CB003</p>
-        <h2 class="kit__titulo">Kit para el {nombre}</h2>
-        <p class="kit__dato">
-          {fecha ? `${fechaCorta(fecha)} · ` : ''}
-          {rangoGuias(guias)}
-        </p>
-        <p class="kit__indice">Las fórmulas de cada guía y las tablas de la cátedra.</p>
-      </header>
       {hayFormulas(guias) && (
         <section class="kit__parte">
           <h2 class="kit__parte-titulo">Fórmulas</h2>
@@ -296,11 +399,14 @@ export function KitExamen({ evaluacion }: { evaluacion: Evaluacion }) {
         </section>
       )}
       {hayTablas(guias) && (
-        <section class="kit__parte kit__parte--tablas">
+        <section class="kit__parte kit__parte--nueva-pagina">
           <h2 class="kit__parte-titulo">Tablas</h2>
           <TablasDeExamen guias={guias} />
         </section>
       )}
+      <section class="kit__parte kit__parte--nueva-pagina">
+        <TablaDeDistribuciones />
+      </section>
       <Suerte />
     </div>
   )

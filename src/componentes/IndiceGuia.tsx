@@ -65,7 +65,7 @@ export function IndiceGuia({ guia, sesion }: Props) {
             }).length
 
             return (
-              <li key={tema.id || i}>
+              <li key={tema.id || i} style={{ '--i': i }}>
                 <button
                   class="indice__tema"
                   onClick={() => irA(tema.id || 'ej-' + tema.ejercicios[0]?.id)}

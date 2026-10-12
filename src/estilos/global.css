@@ -13,6 +13,9 @@ body {
   line-height: var(--interlinea);
   font-feature-settings: 'kern' 1, 'liga' 1, 'onum' 1;
   text-rendering: optimizeLegibility;
+  /* Lo que entra deslizándose desde un costado no puede abrir una barra de
+     desplazamiento horizontal mientras dura la animación. */
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4 { font-weight: 600; line-height: 1.25; margin: 0 0 var(--e-3); }
