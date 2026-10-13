@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
 
+import { Accesos } from './componentes/Accesos'
 import { Cabecera } from './componentes/Cabecera'
 import { Globo } from './componentes/Globo'
-import { LogoCatedra } from './componentes/LogoCatedra'
 import {
   config,
   destinoDeSkill,
@@ -126,7 +126,7 @@ export function App() {
           )}
         </div>
       </main>
-      <LogoCatedra visible={ruta.seccion === 'menu'} />
+      <Accesos visible={ruta.seccion === 'menu'} />
       <Globo />
     </ContextoEvaluaciones.Provider>
   )

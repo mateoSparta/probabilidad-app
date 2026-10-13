@@ -1592,40 +1592,52 @@
   border-top-color: var(--tinta);
 }
 
-/* ------------------------------------------------ sello de la cátedra */
+/* ------------------------------------------- accesos del inicio */
 
-/* Flota en la esquina inferior derecha del inicio, fuera de la columna en
-   pantallas anchas. Al pasar el mouse crece un poco y la sombra se hace más
-   honda, como si se levantara de la página. */
-.catedra {
+/* Flotan en la esquina inferior derecha del inicio, fuera de la columna en
+   pantallas anchas: círculos chicos, del tono del recuadro del menú de
+   navegación, con el ícono en gris que pasa al acento con el mouse. En un
+   teléfono van en fila, y el inicio deja lugar abajo para que no tapen el
+   pie. */
+.accesos {
   position: fixed;
   right: var(--e-6);
   bottom: var(--e-6);
   z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.catedra__boton {
-  display: block;
-  width: 9rem;
-  height: 9rem;
+.accesos__boton {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--borde-fuerte);
   border-radius: 50%;
-  overflow: hidden;
-  background: #fff;
-  box-shadow: 0 1px 3px #2b262026, 0 4px 12px #2b26201f;
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+  color: var(--tinta-2);
+  font-size: 1.3rem;
+  transition: background 150ms, border-color 150ms, color 150ms, transform 180ms ease;
 }
-.catedra__boton img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-.catedra__boton:hover,
-.catedra__boton:focus-visible {
-  transform: scale(1.06);
-  box-shadow: 0 6px 14px #2b262030, 0 16px 34px #2b262038;
+.accesos__boton:hover,
+.accesos__boton:focus-visible {
+  background: var(--superficie-alta);
+  border-color: var(--acento);
+  color: var(--acento);
+  transform: translateY(-2px);
 }
 @media (max-width: 40rem) {
-  .catedra { right: var(--e-4); bottom: var(--e-4); }
-  .catedra__boton { width: 7rem; height: 7rem; }
+  .accesos {
+    right: var(--e-4);
+    bottom: var(--e-4);
+    flex-direction: row;
+  }
+  #app:has(.vista--menu) main { padding-bottom: calc(var(--e-7) + 2.75rem); }
 }
 
 /* ----------------------------------------------- fórmulas y tablas */

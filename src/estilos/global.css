@@ -59,12 +59,22 @@ code, kbd, input, textarea, button, select {
   gap: var(--e-4);
 }
 
+/* El código de la materia lleva a la página de la cátedra: se ve como un
+   rótulo, y sólo con el mouse encima se nota que es un enlace. */
 .migas__codigo {
-  display: block;
+  display: table;
   font-size: var(--t-xs);
   color: var(--tinta-2);
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 150ms, border-color 150ms;
+}
+a.migas__codigo:hover,
+a.migas__codigo:focus-visible {
+  color: var(--acento);
+  border-bottom-color: currentColor;
 }
 
 .migas__lista {

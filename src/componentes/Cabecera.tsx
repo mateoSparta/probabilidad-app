@@ -2,6 +2,9 @@
  * Encabezado: migas, aviso del examen objetivo y, en Ejercicios, las pestañas
  * de las guías.
  *
+ * Arriba de las migas, el código de la materia, que lleva a la página de la
+ * cátedra en el campus.
+ *
  * Las migas son la navegación principal: "Probabilidad y Estadística B" lleva
  * al menú y la sección actual se muestra a continuación. Todo son enlaces
  * comunes al hash, así que el botón de atrás del navegador funciona igual.
@@ -29,6 +32,8 @@ import { MenuNavegacion } from './MenuNavegacion'
  * content/config.yaml; las que no tienen contenido se ven bloqueadas.
  */
 const GUIAS = guiasDeLaMateria(config.evaluaciones)
+
+const PAGINA_CATEDRA = 'https://campusgrado.fi.uba.ar/course/view.php?id=46'
 
 /** La ayuda de una pestaña bloqueada: de qué examen es tema la guía. */
 function ayudaBloqueada(guia: number): string {
@@ -83,7 +88,16 @@ export function Cabecera({ ruta, plan }: Props) {
         <div class="columna">
           <div class="cabecera__fila">
             <nav class="migas" aria-label="Ubicación">
-              <span class="migas__codigo">61.09 · 81.04 · CB003</span>
+              <a
+                class="migas__codigo"
+                href={PAGINA_CATEDRA}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-tip="Página de la cátedra"
+                aria-label="61.09 · 81.04 · CB003: página de la cátedra en el campus (se abre en otra pestaña)"
+              >
+                61.09 · 81.04 · CB003
+              </a>
               <ol class="migas__lista">
                 <li>
                   <h1 class="migas__titulo">

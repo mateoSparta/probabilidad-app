@@ -847,17 +847,22 @@ try {
     'la leyenda del ritmo no dice "N ítems resueltos en limpio por día"',
   )
 
-  // El sello de la cátedra lleva al campus, en otra pestaña, con su globo.
-  const { LogoCatedra } = await servidor.ssrLoadModule('/src/componentes/LogoCatedra.tsx')
-  const sello = render(createElement(LogoCatedra, { visible: true }))
+  // Los accesos del inicio: cafecito y GitHub, en otra pestaña, con su globo.
+  const { Accesos } = await servidor.ssrLoadModule('/src/componentes/Accesos.tsx')
+  const accesos = render(createElement(Accesos, { visible: true }))
   afirmar(
-    sello.includes('href="https://campusgrado.fi.uba.ar/course/view.php?id=46"') &&
-      sello.includes('target="_blank"') &&
-      sello.includes('data-tip="Página de cátedra"') &&
-      sello.includes('catedra--entrando'),
-    'el sello de la cátedra no lleva al campus o no tiene su globo',
+    accesos.includes('href="https://cafecito.app/carpincho_fiubense"') &&
+      accesos.includes('href="https://github.com/mateoSparta/probabilidad-app"') &&
+      (accesos.match(/target="_blank"/g) ?? []).length === 2 &&
+      accesos.includes('data-tip="El proyecto en GitHub"') &&
+      accesos.includes('accesos--entrando'),
+    'los accesos del inicio no llevan a cafecito y a GitHub, o no tienen su globo',
   )
-  afirmar(render(createElement(LogoCatedra, { visible: false })) === '', 'el sello se dibuja fuera del inicio')
+  afirmar(render(createElement(Accesos, { visible: false })) === '', 'los accesos se dibujan fuera del inicio')
+  // El sello de la FIUBA se fue: la página de la cátedra está en el código de la materia.
+  const cabeceraInicio = render(createElement(Cabecera, { ruta: { seccion: 'menu', guia: 1 } }))
+  afirmar(cabeceraInicio.includes('<a class="migas__codigo" href="https://campusgrado.fi.uba.ar/course/view.php?id=46"'),
+    'el código de la materia no lleva a la página de la cátedra')
 
   // --- los círculos cambian de color según el estado ---
   const primerEjercicio = contenido.ejercicioPorId.get('g1-04')
