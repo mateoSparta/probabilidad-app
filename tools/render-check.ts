@@ -886,18 +886,18 @@ try {
     'la leyenda del ritmo no dice "N ítems resueltos en limpio por día"',
   )
 
-  // Los accesos del inicio: cafecito y GitHub, en otra pestaña, con su globo.
+  // Los accesos de la esquina: cafecito y GitHub, en otra pestaña, con su
+  // globo encima. Están en todas las secciones (App los monta siempre).
   const { Accesos } = await servidor.ssrLoadModule('/src/componentes/Accesos.tsx')
-  const accesos = render(createElement(Accesos, { visible: true }))
+  const accesos = render(createElement(Accesos, {}))
   afirmar(
     accesos.includes('href="https://cafecito.app/carpincho_fiubense"') &&
       accesos.includes('href="https://github.com/mateoSparta/probabilidad-app"') &&
       (accesos.match(/target="_blank"/g) ?? []).length === 2 &&
       accesos.includes('data-tip="El proyecto en GitHub"') &&
-      accesos.includes('accesos--entrando'),
-    'los accesos del inicio no llevan a cafecito y a GitHub, o no tienen su globo',
+      (accesos.match(/data-tip-lado="arriba"/g) ?? []).length === 3,
+    'los accesos no llevan a cafecito y a GitHub, o no tienen su globo encima',
   )
-  afirmar(render(createElement(Accesos, { visible: false })) === '', 'los accesos se dibujan fuera del inicio')
   // El tercero es el modo nocturno: un botón con la luna y el sol.
   afirmar(
     /<button class="accesos__boton accesos__tema"[^>]*aria-label="Modo nocturno" aria-pressed="false"/.test(accesos) &&

@@ -5,9 +5,12 @@
  * pasar el mouse, el globo dice cuántos y cuándo.
  *
  * Muestra las semanas que entran en el ancho de la columna, terminando en la
- * actual: nunca hay barra horizontal, y lo que no entra no se ve. El ancho se
- * mide al dibujar y cada vez que cambia la ventana; hasta medirlo (en el
- * render del servidor, por ejemplo) se asume el de la columna completa.
+ * actual: nunca hay barra horizontal, y lo que no entra no se ve. Los
+ * cuadrados son grandes (24 semanas en la columna completa, menos de medio año:
+ * un cuatrimestre dura cuatro meses y más no haría falta) y se estiran para
+ * llenar el ancho justo. El ancho se mide al dibujar y cada vez que cambia
+ * la ventana; hasta medirlo (en el render del servidor, por ejemplo) se
+ * asume el de la columna completa.
  *
  * La intensidad es relativa al día de más actividad que se ve: cuatro
  * escalones, como en GitHub, así el calendario se lee igual con dos ítems
@@ -17,12 +20,13 @@ import { useLayoutEffect, useRef, useState } from 'preact/hooks'
 
 import { dia, resueltosPorDia, type Progreso } from '../dominio/progreso'
 
-const CELDA = 11
-const ESPACIO = 3
+/** El lado mínimo de un cuadrado; se estira hasta llenar el ancho. */
+const CELDA_MINIMA = 26
+const ESPACIO = 4
 /** El lugar de los nombres de los días, a la izquierda. */
-const ROTULOS = 28
-/** Las semanas de una columna de 760 px, hasta medir la real. */
-const SEMANAS_POR_DEFECTO = 50
+const ROTULOS = 30
+/** Hasta medir: las semanas y el lado en una columna de 728 px útiles. */
+const POR_DEFECTO = { semanas: 24, celda: 26.5 }
 
 const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
 const MESES_LARGOS = [
@@ -49,14 +53,17 @@ function ayuda(c: Celda): string {
 
 export function Actividad({ progreso, hoy = new Date() }: { progreso: Progreso; hoy?: Date }) {
   const marco = useRef<HTMLDivElement>(null)
-  const [semanas, setSemanas] = useState(SEMANAS_POR_DEFECTO)
+  const [{ semanas, celda }, setMedidas] = useState(POR_DEFECTO)
 
   useLayoutEffect(() => {
     const el = marco.current
     if (!el) return
     const medir = () => {
       const ancho = el.clientWidth - ROTULOS
-      setSemanas(Math.max(4, Math.floor((ancho + ESPACIO) / (CELDA + ESPACIO))))
+      const n = Math.max(4, Math.floor((ancho + ESPACIO) / (CELDA_MINIMA + ESPACIO)))
+      // Medio píxel menos, para que el redondeo nunca pase del ancho.
+      const lado = Math.floor(((ancho - (n - 1) * ESPACIO) / n) * 2) / 2
+      setMedidas((m) => (m.semanas === n && m.celda === lado ? m : { semanas: n, celda: lado }))
     }
     medir()
     if (typeof ResizeObserver === 'undefined') return
@@ -111,7 +118,7 @@ export function Actividad({ progreso, hoy = new Date() }: { progreso: Progreso; 
       <div
         ref={marco}
         class="actividad__marco"
-        style={{ '--semanas': semanas, '--celda': `${CELDA}px`, '--espacio': `${ESPACIO}px`, '--rotulos': `${ROTULOS}px` }}
+        style={{ '--semanas': semanas, '--celda': `${celda}px`, '--espacio': `${ESPACIO}px`, '--rotulos': `${ROTULOS}px` }}
       >
         <div class="actividad__meses" aria-hidden="true">
           {meses.map((m, s) => (

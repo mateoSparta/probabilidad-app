@@ -706,7 +706,7 @@ function CalculadoraMultinomial({ ficha }: { ficha: FichaDistribucion }) {
               </p>
             </div>
             <div class="calc__resultado">
-              <p class="resultado resultado--centrado">
+              <p class="resultado">
                 <Frase piezas={piezas} />
                 {prob !== null && (
                   <>
@@ -795,7 +795,7 @@ function CalculadoraBivariada({ ficha }: { ficha: FichaDistribucion }) {
               />
             </div>
             <div class="calc__resultado">
-              <p class="resultado resultado--centrado">
+              <p class="resultado">
                 <Frase piezas={['P(X_1 \\le', hueco('a', 'a'), ',\\ X_2 \\le', hueco('b', 'b'), ')']} />
                 {prob !== null && (
                   <>
@@ -805,7 +805,7 @@ function CalculadoraBivariada({ ficha }: { ficha: FichaDistribucion }) {
                 )}
               </p>
               {cond && (
-                <p class="resultado resultado--secundario resultado--centrado">
+                <p class="resultado resultado--secundario">
                   <Frase piezas={[`P(X_2 \\le ${tex(v.b)} \\mid X_1 =`, hueco('x1', 'x1'), ')']} />
                   <Formula tex="=" />
                   <span class="resultado__otro">{formatearNumero(Phi((v.b - cond.media) / cond.desvio), 6)}</span>

@@ -1357,11 +1357,18 @@
 }
 .segmentado--linea .segmentado__nombre { font-size: var(--t-sm); }
 .segmentado--linea .segmentado__dato { white-space: nowrap; }
-/* Que el dato se vea sólo en la opción elegida: es del color del fondo del
-   selector (--borde sobre --fondo), y lo revela el blanco que se desliza
-   debajo. */
+/* Que el dato se vea sólo en la opción elegida, en el gris de los textos
+   secundarios: en las demás está transparente (ocupa su lugar, así el
+   nombre no se mueve) y aparece con un fundido cuando llega el fondo
+   blanco que se desliza. */
 .segmentado--revelar .segmentado__dato {
-  color: color-mix(in srgb, var(--tinta) 12.2%, var(--fondo));
+  color: var(--tinta-2);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.segmentado--revelar .segmentado__opcion--activa .segmentado__dato {
+  opacity: 1;
+  transition-delay: 120ms;
 }
 /* En un teléfono no entran en un renglón: el dato va debajo del nombre. */
 @media (max-width: 40rem) {
@@ -1659,13 +1666,13 @@
   border-top-color: var(--tinta);
 }
 
-/* ------------------------------------------- accesos del inicio */
+/* ------------------------------------------- accesos de la esquina */
 
-/* Flotan en la esquina inferior derecha del inicio, fuera de la columna en
-   pantallas anchas: círculos chicos, del tono del recuadro del menú de
+/* Flotan en la esquina inferior derecha, en todas las secciones, fuera de
+   la columna en pantallas anchas: círculos chicos, del tono del recuadro del menú de
    navegación, con el ícono en gris que pasa al acento con el mouse. En un
-   teléfono van en fila, y el inicio deja lugar abajo para que no tapen el
-   pie. */
+   teléfono van en fila, y la página deja lugar abajo para que no tapen el
+   final. */
 .accesos {
   position: fixed;
   right: var(--e-6);
@@ -1726,7 +1733,7 @@
     bottom: var(--e-4);
     flex-direction: row;
   }
-  #app:has(.vista--menu) main { padding-bottom: calc(var(--e-7) + 2.75rem); }
+  main { padding-bottom: calc(var(--e-7) + 2.75rem); }
 }
 
 /* ----------------------------------------------- fórmulas y tablas */
@@ -2148,29 +2155,10 @@
   margin: 0;
   font-size: var(--t-md);
 }
-/* Con lugar, el último "=" queda fijo en el centro: la frase crece hacia la
-   izquierda y el valor hacia la derecha. Así, al arrastrar el gráfico, que
-   el valor pase de un decimal a dos (o el hueco se ensanche) no corre toda
-   la frase de un lado a otro. Si la frase sola es más ancha que media
-   columna, el "=" se corre lo justo. */
-@media (min-width: 40rem) {
-  .resultado {
-    display: grid;
-    grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
-    column-gap: 0.35em;
-  }
-  .resultado > .frase { justify-self: end; }
-  .resultado > :last-child:not(.frase) { justify-self: start; }
-  /* Sin valor (hay un error en el evento), la frase va centrada. */
-  .resultado > .frase:only-child {
-    grid-column: 1 / -1;
-    justify-self: center;
-  }
-  /* En las multivariadas la frase es larga y el "=" al centro la corría a
-     la izquierda. Ahí los huecos y el valor ya tienen ancho fijo, así que
-     la línea entera va centrada sin moverse. */
-  .resultado--centrado { display: flex; }
-}
+/* La línea entera va centrada. No se mueve al arrastrar el gráfico porque
+   todo lo que cambia tiene ancho fijo: cada hueco mide lo que el valor más
+   largo que puede tomar, y el resultado, lo que el más largo posible
+   (VistaDistribuciones.tsx). */
 .resultado__valor {
   font-size: var(--t-lg);
   font-weight: 600;

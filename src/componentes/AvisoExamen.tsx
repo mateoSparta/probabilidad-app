@@ -103,7 +103,8 @@ export function AvisoExamenCompacto({ plan }: { plan: Plan }) {
         class={'aviso-examen ' + tono(plan)}
         aria-expanded={abierto}
         aria-controls={idMenu}
-        data-tip="Objetivo"
+        // Abierta la lista, el globo sobra: la lista ya lo dice en su título.
+        data-tip={abierto ? undefined : 'Objetivo'}
         aria-label={`Examen objetivo: ${ev.nombre}, ${cuandoEs(ev.fecha, plan.diasRestantes)}. Cambiar el examen o su fecha`}
         onClick={() => setAbierto((a) => !a)}
       >
@@ -125,7 +126,10 @@ export function AvisoExamenCompacto({ plan }: { plan: Plan }) {
         </span>
       </button>
 
-      <div id={idMenu} class="aviso-menu" inert={!abierto} role="group" aria-label="Examen objetivo">
+      <div id={idMenu} class="aviso-menu" inert={!abierto} role="group" aria-labelledby={idMenu + '-titulo'}>
+        <p id={idMenu + '-titulo'} class="aviso-menu__encabezado">
+          Objetivo
+        </p>
         {agrupar(evaluaciones).map((g) => (
           <section key={g.grupo} class="aviso-menu__grupo">
             <p class="aviso-menu__titulo">{g.rotulo}</p>

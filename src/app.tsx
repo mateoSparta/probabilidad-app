@@ -126,7 +126,7 @@ export function App() {
           )}
         </div>
       </main>
-      <Accesos visible={ruta.seccion === 'menu'} />
+      <Accesos />
       <Globo />
     </ContextoEvaluaciones.Provider>
   )

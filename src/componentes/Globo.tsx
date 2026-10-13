@@ -6,7 +6,9 @@
  * recibir el foco con el teclado, sin demora. Hay un solo globo para toda la
  * página, montado una vez en la raíz, y se ubica con `position: fixed` debajo
  * del elemento (o encima, si abajo no entra), así que ningún contenedor con
- * `overflow` lo recorta.
+ * `overflow` lo recorta. Con `data-tip-lado="arriba"` va encima, salvo que
+ * arriba no entre: lo usan los botones de la esquina inferior, para que todos
+ * lo muestren del mismo lado.
  *
  * Si el texto cambia mientras el globo está a la vista (la pestaña de la guía
  * abierta lo calcula al entrar el mouse), el globo se actualiza: un
@@ -21,7 +23,7 @@ const SEPARACION = 8
 /** Distancia mínima del globo a los bordes de la ventana, en px. */
 const MARGEN = 8
 
-type Estado = { texto: string; rect: DOMRect }
+type Estado = { texto: string; rect: DOMRect; arriba: boolean }
 
 export function Globo() {
   const [estado, setEstado] = useState<Estado | null>(null)
@@ -37,7 +39,7 @@ export function Globo() {
         setEstado(null)
         return
       }
-      setEstado({ texto, rect: el.getBoundingClientRect() })
+      setEstado({ texto, rect: el.getBoundingClientRect(), arriba: el.dataset.tipLado === 'arriba' })
     }
 
     function seguir(el: HTMLElement | null): void {
@@ -104,7 +106,9 @@ export function Globo() {
     const alto = g.offsetHeight
     const centro = rect.left + rect.width / 2
     const x = Math.min(Math.max(centro - ancho / 2, MARGEN), innerWidth - ancho - MARGEN)
-    const abajo = rect.bottom + SEPARACION + alto <= innerHeight - MARGEN
+    const entraAbajo = rect.bottom + SEPARACION + alto <= innerHeight - MARGEN
+    const entraArriba = rect.top - SEPARACION - alto >= MARGEN
+    const abajo = estado.arriba ? !entraArriba : entraAbajo
     const y = abajo ? rect.bottom + SEPARACION : rect.top - SEPARACION - alto
     g.style.left = `${Math.round(x)}px`
     g.style.top = `${Math.round(y)}px`

@@ -439,21 +439,13 @@
   animation: aparecer 90ms ease-out both;
 }
 
-/* ------------------------------------------- accesos del inicio */
+/* ------------------------------------------------ accesos de la esquina */
 
-/* Suben desde abajo del borde de la ventana, de a uno, se pasan unos px de
-   su lugar y se acomodan. La salida es la misma animación invertida en el
-   tiempo: los tramos van en orden inverso y cada curva es la simétrica de la
-   de entrada (cubic-bezier(a, b, c, d) invertida es
-   cubic-bezier(1-c, 1-d, 1-a, 1-b)). Entran de abajo hacia arriba y se van
-   al revés. */
-.accesos--entrando .accesos__item {
+/* Al abrir la app suben desde abajo del borde de la ventana, de a uno (el de
+   abajo primero), se pasan unos px de su lugar y se acomodan. */
+.accesos__item {
   animation: acceso-entrar 560ms both;
-  animation-delay: calc(var(--j, 0) * 70ms);
-}
-.accesos--saliendo .accesos__item {
-  animation: acceso-salir 560ms both;
-  animation-delay: calc(var(--i, 0) * 70ms);
+  animation-delay: calc(300ms + var(--j, 0) * 70ms);
 }
 
 @keyframes acceso-entrar {
@@ -466,17 +458,6 @@
     animation-timing-function: ease-in-out;
   }
   100% { transform: translateY(0); }
-}
-@keyframes acceso-salir {
-  0% {
-    transform: translateY(0);
-    animation-timing-function: ease-in-out;
-  }
-  30% {
-    transform: translateY(-6px);
-    animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.3);
-  }
-  100% { transform: translateY(12rem); }
 }
 
 /* ------------------------------------------------ movimiento reducido */

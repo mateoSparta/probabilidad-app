@@ -94,9 +94,9 @@ export function Cabecera({ ruta, plan }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 data-tip="Página de la cátedra"
-                aria-label="61.09 · 81.04 · CB003: página de la cátedra en el campus (se abre en otra pestaña)"
+                aria-label="FIUBA - 61.09 · 81.04 · CB003: página de la cátedra en el campus (se abre en otra pestaña)"
               >
-                61.09 · 81.04 · CB003
+                FIUBA - 61.09 · 81.04 · CB003
               </a>
               <ol class="migas__lista">
                 <li>

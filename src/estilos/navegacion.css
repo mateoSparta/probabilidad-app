@@ -170,7 +170,7 @@
   color: var(--tinta-3);
 }
 .actividad__marco {
-  font-size: 0.68rem;
+  font-size: var(--t-xs);
   line-height: 1;
   color: var(--tinta-3);
 }
@@ -205,7 +205,7 @@
   display: block;
   width: var(--celda);
   height: var(--celda);
-  border-radius: 2px;
+  border-radius: 4px;
   transition: transform 120ms ease, box-shadow 120ms ease;
 }
 .actividad__dia--0 { background: var(--borde); }
@@ -216,8 +216,14 @@
 .actividad__dia--futuro { background: transparent; }
 .actividad__dia--hoy { box-shadow: 0 0 0 1px var(--tinta-2); }
 .actividad__grilla .actividad__dia:not(.actividad__dia--futuro):hover {
-  transform: scale(1.25);
+  transform: scale(1.12);
   box-shadow: 0 0 0 1px var(--tinta);
+}
+/* En la leyenda los cuadrados van chicos: es una referencia, no un día. */
+.actividad__leyenda .actividad__dia {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 3px;
 }
 .actividad__leyenda {
   display: flex;
@@ -598,6 +604,17 @@
   visibility: visible;
   transform: none;
   transition: opacity 170ms ease, transform 170ms ease, visibility 0s;
+}
+/* El título de la lista, con una línea debajo que la separa de los grupos. */
+.aviso-menu__encabezado {
+  margin: 0;
+  padding: 0 var(--e-2) var(--e-2);
+  border-bottom: 1px solid var(--borde);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--tinta-2);
 }
 .aviso-menu__titulo {
   margin: 0 0 var(--e-1);
