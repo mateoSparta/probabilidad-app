@@ -1,27 +1,27 @@
 /**
  * El aviso del examen objetivo, en dos formatos. El objetivo es el que eligió
  * el usuario o, si no eligió, el que toca según content/config.yaml: el
- * parcial, un recuperatorio o el final (ver dominio/evaluaciones.ts); el
- * texto lo nombra a partir de ahí.
+ * parcial, un recuperatorio o un llamado a final (ver
+ * dominio/evaluaciones.ts); el texto lo nombra a partir de ahí.
  *
- * `AvisoExamenCompacto` va en el encabezado, en un recuadro del ancho de la
- * columna: el examen, su fecha y los días que faltan, teñidos según el ritmo,
- * y un lápiz que abre el calendario para editar las fechas (EditorFecha). Es
- * lo único que se ve siempre, y por eso no dice nada más. Los chevrones de
- * los extremos cambian el objetivo, que es el mismo de Seguimiento.
+ * `AvisoExamenCompacto` va en el encabezado: un botón del ancho de la columna
+ * con el examen y cuándo es ("Parcial · 30/10 (faltan 18 días)"), teñido
+ * según el ritmo. Al apretarlo, el chevrón gira y se despliega la lista de
+ * todas las evaluaciones, agrupadas: elegir una la vuelve el objetivo, y el
+ * lápiz que aparece al pasar el mouse abre el calendario para cambiar su
+ * fecha (EditorFecha). En Seguimiento se pliega, porque el objetivo se elige
+ * ahí mismo.
  *
  * `AvisoExamenDetalle` va en Seguimiento, con la cuenta completa: qué falta,
  * cuántos ítems por día y si el ritmo de los últimos días alcanza.
  */
-import type { ComponentChildren } from 'preact'
-import { useState } from 'preact/hooks'
+import { useEffect, useId, useRef, useState } from 'preact/hooks'
 
 import { usarEvaluaciones } from '../datos/usarFechas'
-import { rotulo, type Evaluacion } from '../dominio/evaluaciones'
-import { ETIQUETA_VEREDICTO, fechaCorta, type Plan } from '../dominio/ritmo'
-import type { Seccion } from '../dominio/ruta'
+import { agrupar, rotulo, rotuloInstancia } from '../dominio/evaluaciones'
+import { cuandoEs, ETIQUETA_VEREDICTO, type Plan } from '../dominio/ritmo'
 import { EditorFecha } from './EditorFecha'
-import { IconoAnterior, IconoCalendario, IconoEditar, IconoSiguiente } from './Iconos'
+import { IconoCalendario, IconoComprobar, IconoEditar, IconoSiguiente } from './Iconos'
 
 /** La clase de color que corresponde a cada veredicto. */
 function tono(plan: Plan): string {
@@ -41,120 +41,141 @@ function tono(plan: Plan): string {
   }
 }
 
-export function AvisoExamenCompacto({ plan, seccion }: { plan: Plan; seccion?: Seccion }) {
-  const [editando, setEditando] = useState(false)
-  /** De qué lado entra el texto al cambiar de examen. */
-  const [sentido, setSentido] = useState<'adelante' | 'atras' | null>(null)
+/** Qué evaluación edita el calendario. Se conserva al cerrarlo, para que salga con su contenido. */
+type Edicion = { nombre: string; abierto: boolean }
+
+export function AvisoExamenCompacto({ plan, oculto = false }: { plan: Plan; oculto?: boolean }) {
   const { evaluaciones, elegirObjetivo } = usarEvaluaciones()
+  const [abierto, setAbierto] = useState(false)
+  const [edicion, setEdicion] = useState<Edicion | null>(null)
+  /** De qué lado entra el texto al cambiar de examen: el de la elegida en la lista. */
+  const [sentido, setSentido] = useState<'adelante' | 'atras' | null>(null)
+  const marco = useRef<HTMLDivElement>(null)
+  const boton = useRef<HTMLButtonElement>(null)
+  const idMenu = useId()
   const ev = plan.evaluacion
+
+  // Plegado (en Seguimiento), la lista se cierra.
+  useEffect(() => {
+    if (oculto) setAbierto(false)
+  }, [oculto])
+
+  // Abierta, se cierra con un clic afuera, y el foco va a la elegida.
+  useEffect(() => {
+    if (!abierto) return
+    marco.current
+      ?.querySelector<HTMLElement>('.aviso-menu__elegir[aria-pressed="true"]')
+      ?.focus({ preventScroll: true })
+    const afuera = (e: PointerEvent) => {
+      if (!marco.current?.contains(e.target as Node)) setAbierto(false)
+    }
+    document.addEventListener('pointerdown', afuera)
+    return () => document.removeEventListener('pointerdown', afuera)
+  }, [abierto])
+
   if (!ev) return null
 
-  // Los chevrones recorren las evaluaciones en orden y dan la vuelta.
-  const i = evaluaciones.findIndex((e) => e.nombre === ev.nombre)
-  const n = evaluaciones.length
-  const anterior = evaluaciones[(i - 1 + n) % n]
-  const siguiente = evaluaciones[(i + 1) % n]
-  function cambiar(a: Evaluacion, s: 'adelante' | 'atras'): void {
-    setSentido(s)
-    elegirObjetivo(a.nombre)
+  function elegir(nombre: string): void {
+    const antes = evaluaciones.findIndex((e) => e.nombre === ev!.nombre)
+    const despues = evaluaciones.findIndex((e) => e.nombre === nombre)
+    if (despues !== antes) {
+      setSentido(despues > antes ? 'adelante' : 'atras')
+      elegirObjetivo(nombre)
+    }
+    setAbierto(false)
+    boton.current?.focus({ preventScroll: true })
   }
-  const dias = plan.diasRestantes
-  const texto =
-    dias === null
-      ? 'sin fecha'
-      : dias > 1
-        ? `faltan ${dias} días`
-        : dias === 1
-          ? 'es mañana'
-          : dias === 0
-            ? 'es hoy'
-            : 'ya pasó'
 
-  // La fecha lleva al simulacro (practicar el examen) y los días que faltan,
-  // al seguimiento (cómo viene el ritmo). En la sección a la que llevarían,
-  // son texto: un enlace a la misma página no lleva a ningún lado.
+  function editar(nombre: string): void {
+    setAbierto(false)
+    setEdicion({ nombre, abierto: true })
+  }
+
   return (
-    <>
-      <div class={'aviso-examen ' + tono(plan)}>
-        {n > 1 && (
+    <div
+      ref={marco}
+      class={'aviso' + (oculto ? ' aviso--oculto' : '') + (abierto ? ' aviso--abierto' : '')}
+      inert={oculto}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape' && abierto) {
+          setAbierto(false)
+          boton.current?.focus({ preventScroll: true })
+        }
+      }}
+    >
+      <div class="aviso__plegable">
+        <div class="aviso__interior">
           <button
-            class="aviso-examen__cambiar aviso-examen__cambiar--antes"
-            aria-label={`Ver el ${anterior.nombre}`}
-            data-tip={rotulo(anterior)}
-            onClick={() => cambiar(anterior, 'atras')}
+            ref={boton}
+            class={'aviso-examen ' + tono(plan)}
+            aria-expanded={abierto}
+            aria-controls={idMenu}
+            aria-label={`Examen objetivo: ${ev.nombre}, ${cuandoEs(ev.fecha, plan.diasRestantes)}. Cambiar el examen o su fecha`}
+            onClick={() => setAbierto((a) => !a)}
           >
-            <IconoAnterior />
+            {/* La key vuelve a montar el texto al cambiar de examen: entra
+                deslizándose del lado de la elegida. */}
+            <span
+              key={ev.nombre}
+              class={'aviso-examen__texto' + (sentido ? ' aviso-examen__texto--' + sentido : '')}
+            >
+              <IconoCalendario />
+              <span class="aviso-examen__examen">{rotulo(ev)}</span>
+              <span class="aviso-examen__sep" aria-hidden="true">
+                ·
+              </span>
+              <span class="aviso-examen__cuando">{cuandoEs(ev.fecha, plan.diasRestantes)}</span>
+            </span>
+            <span class="aviso-examen__chevron" aria-hidden="true">
+              <IconoSiguiente />
+            </span>
           </button>
-        )}
-        {/* La key vuelve a montar el texto al cambiar de examen: entra deslizándose
-            del lado del chevrón. */}
-        <p
-          key={ev.nombre}
-          class={'aviso-examen__texto' + (sentido ? ' aviso-examen__texto--' + sentido : '')}
-          aria-live="polite"
-        >
-          <IconoCalendario />
-          <Enlace
-            clase="aviso-examen__fecha"
-            destino="simulacro"
-            actual={seccion}
-            ayuda="Practicar con un simulacro"
-          >
-            {rotulo(ev)}
-            {ev.fecha && ` ${fechaCorta(ev.fecha)}`}
-          </Enlace>
-          <span class="aviso-examen__sep" aria-hidden="true">
-            ·
-          </span>
-          <Enlace clase="aviso-examen__dias" destino="seguimiento" actual={seccion} ayuda="Ver el seguimiento">
-            {texto}
-          </Enlace>
-          <span class="aviso-examen__sep" aria-hidden="true">
-            ·
-          </span>
-          <button
-            class="aviso-examen__editar"
-            aria-label="Editar las fechas de los exámenes"
-            data-tip="Editar fechas"
-            onClick={() => setEditando(true)}
-          >
-            <IconoEditar />
-          </button>
-        </p>
-        {n > 1 && (
-          <button
-            class="aviso-examen__cambiar aviso-examen__cambiar--despues"
-            aria-label={`Ver el ${siguiente.nombre}`}
-            data-tip={rotulo(siguiente)}
-            onClick={() => cambiar(siguiente, 'adelante')}
-          >
-            <IconoSiguiente />
-          </button>
-        )}
+        </div>
       </div>
-      <EditorFecha abierto={editando} inicial={ev.nombre} onCerrar={() => setEditando(false)} />
-    </>
-  )
-}
 
-function Enlace({
-  clase,
-  destino,
-  actual,
-  ayuda,
-  children,
-}: {
-  clase: string
-  destino: Seccion
-  actual?: Seccion
-  ayuda: string
-  children: ComponentChildren
-}) {
-  if (destino === actual) return <span class={clase + ' aviso-examen__aca'}>{children}</span>
-  return (
-    <a class={clase} href={'#/' + destino} data-tip={ayuda}>
-      {children}
-    </a>
+      <div id={idMenu} class="aviso-menu" inert={!abierto} role="group" aria-label="Examen objetivo">
+        {agrupar(evaluaciones).map((g) => (
+          <section key={g.grupo} class="aviso-menu__grupo">
+            <p class="aviso-menu__titulo">{g.rotulo}</p>
+            <ul class="aviso-menu__lista">
+              {g.evaluaciones.map((e) => {
+                const elegida = e.nombre === ev.nombre
+                return (
+                  <li key={e.nombre} class={'aviso-menu__opcion' + (elegida ? ' aviso-menu__opcion--elegida' : '')}>
+                    <button class="aviso-menu__elegir" aria-pressed={elegida} onClick={() => elegir(e.nombre)}>
+                      <span class="aviso-menu__marca" aria-hidden="true">
+                        {elegida && <IconoComprobar />}
+                      </span>
+                      <span class="aviso-menu__nombre">{rotuloInstancia(e)}</span>
+                      <span class="aviso-menu__cuando">{cuandoEs(e.fecha)}</span>
+                    </button>
+                    <button
+                      class="aviso-menu__editar"
+                      aria-label={`Editar la fecha del ${e.nombre}`}
+                      data-tip="Editar la fecha"
+                      onClick={() => editar(e.nombre)}
+                    >
+                      <IconoEditar />
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
+        ))}
+      </div>
+
+      {edicion && (
+        <EditorFecha
+          abierto={edicion.abierto}
+          nombre={edicion.nombre}
+          onCerrar={() => {
+            setEdicion({ ...edicion, abierto: false })
+            boton.current?.focus({ preventScroll: true })
+          }}
+        />
+      )}
+    </div>
   )
 }
 
@@ -178,14 +199,14 @@ export function AvisoExamenDetalle({ plan }: { plan: Plan }) {
         </p>
       ) : veredicto === 'vencido' ? (
         <p>
-          La fecha del {nombre} ya pasó. Si cambió, actualizala con el lápiz del aviso de arriba.
+          La fecha del {nombre} ya pasó. Si cambió, actualizala con el lápiz de su opción, arriba.
         </p>
       ) : veredicto === 'sin_fecha' ? (
         <p>
           Todavía no hay fecha para {examen}. Faltan <strong>{plan.itemsFaltantes} ítems</strong>,
           distribuidos en {plan.ejerciciosFaltantes} ejercicios, para dominar los{' '}
           {plan.skillsTotal - plan.skillsDominados} skills pendientes. Cuando la fecha esté
-          definida, cargala con el lápiz del aviso de arriba para calcular cuántos ítems por día
+          definida, cargala con el lápiz de su opción, arriba, para calcular cuántos ítems por día
           hacen falta.
         </p>
       ) : (

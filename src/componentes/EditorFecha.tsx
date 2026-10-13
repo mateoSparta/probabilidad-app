@@ -1,10 +1,10 @@
 /**
- * El calendario para editar las fechas de los exámenes, en una ventana modal.
- * Se abre con el lápiz del aviso del encabezado.
+ * El calendario para cambiar la fecha de un examen, en una ventana modal. Se
+ * abre con el lápiz de cada examen: en el desplegable del aviso del
+ * encabezado o en el selector de Seguimiento.
  *
- * Arriba se elige qué evaluación (si hay más de una); al medio, el mes, que
- * se recorre con las flechas; abajo, la fecha elegida con los días que
- * faltan. También se puede dejar sin fecha o volver a la de
+ * Arriba, el mes, que se recorre con las flechas; abajo, la fecha elegida con
+ * los días que faltan. También se puede dejar sin fecha o volver a la de
  * content/config.yaml. Nada se guarda hasta apretar "Guardar".
  */
 import { useEffect, useState } from 'preact/hooks'
@@ -14,7 +14,6 @@ import { diasHasta } from '../dominio/evaluaciones'
 import { fechaCorta } from '../dominio/ritmo'
 import { IconoAnterior, IconoSiguiente } from './Iconos'
 import { Dialogo } from './Modal'
-import { SelectorExamen } from './SelectorExamen'
 
 const MESES = [
   'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -50,38 +49,28 @@ const mesDe = (f: string | null): Mes => {
 
 type Props = {
   abierto: boolean
-  /** La evaluación que se edita al abrir: la del aviso. */
-  inicial: string
+  /** La evaluación cuya fecha se edita. */
+  nombre: string
   onCerrar: () => void
 }
 
-export function EditorFecha({ abierto, inicial, onCerrar }: Props) {
+export function EditorFecha({ abierto, nombre, onCerrar }: Props) {
   const { evaluaciones, originales, cambiarFecha } = usarEvaluaciones()
-  const [nombre, setNombre] = useState(inicial)
-  // Un borrador por evaluación: cambiar de pestaña no pierde lo elegido.
-  const [borrador, setBorrador] = useState<Record<string, string | null>>({})
+  const ev = evaluaciones.find((e) => e.nombre === nombre)
+  const [elegida, setElegida] = useState<string | null>(ev?.fecha ?? null)
   const [mes, setMes] = useState<Mes>(mesDe(null))
   const [sentido, setSentido] = useState<'adelante' | 'atras' | null>(null)
 
-  // Al abrir, todo arranca de las fechas vigentes.
+  // Al abrir, arranca de la fecha vigente.
   useEffect(() => {
     if (!abierto) return
-    const fechas = Object.fromEntries(evaluaciones.map((ev) => [ev.nombre, ev.fecha]))
-    setBorrador(fechas)
-    setNombre(inicial)
-    setMes(mesDe(fechas[inicial] ?? null))
+    setElegida(ev?.fecha ?? null)
+    setMes(mesDe(ev?.fecha ?? null))
     setSentido(null)
-  }, [abierto])
+  }, [abierto, nombre])
 
-  const elegida = borrador[nombre] ?? null
-  const original = originales.find((ev) => ev.nombre === nombre)?.fecha ?? null
+  const original = originales.find((e) => e.nombre === nombre)?.fecha ?? null
   const hoy = hoyIso()
-
-  function elegirEvaluacion(n: string): void {
-    setNombre(n)
-    setMes(mesDe(borrador[n] ?? null))
-    setSentido(null)
-  }
 
   function moverMes(paso: 1 | -1): void {
     setSentido(paso === 1 ? 'adelante' : 'atras')
@@ -92,9 +81,7 @@ export function EditorFecha({ abierto, inicial, onCerrar }: Props) {
   }
 
   function guardar(): void {
-    for (const ev of evaluaciones) {
-      if (ev.nombre in borrador && borrador[ev.nombre] !== ev.fecha) cambiarFecha(ev.nombre, borrador[ev.nombre])
-    }
+    if (ev && elegida !== ev.fecha) cambiarFecha(nombre, elegida)
     onCerrar()
   }
 
@@ -104,7 +91,7 @@ export function EditorFecha({ abierto, inicial, onCerrar }: Props) {
   return (
     <Dialogo
       abierto={abierto}
-      titulo="Fechas de los exámenes"
+      titulo={`Fecha del ${nombre}`}
       clase="modal--fecha"
       onCerrar={onCerrar}
       acciones={
@@ -118,17 +105,6 @@ export function EditorFecha({ abierto, inicial, onCerrar }: Props) {
         </>
       }
     >
-      {evaluaciones.length > 1 && (
-        <SelectorExamen
-          evaluaciones={evaluaciones}
-          elegida={nombre}
-          onElegir={elegirEvaluacion}
-          nombre="examen-fecha"
-          etiqueta="Examen"
-          fechaDe={(ev) => borrador[ev.nombre] ?? null}
-          clase="editor-fecha__examen"
-        />
-      )}
 
       <div class="calendario">
         <div class="calendario__cabeza">
@@ -167,7 +143,7 @@ export function EditorFecha({ abierto, inicial, onCerrar }: Props) {
                 }
                 aria-pressed={f === elegida}
                 aria-label={fechaLarga(f)}
-                onClick={() => setBorrador((b) => ({ ...b, [nombre]: f }))}
+                onClick={() => setElegida(f)}
               >
                 {i + 1}
               </button>
@@ -188,7 +164,7 @@ export function EditorFecha({ abierto, inicial, onCerrar }: Props) {
       </p>
       <p class="editor-fecha__otras">
         {elegida && (
-          <button class="enlace" onClick={() => setBorrador((b) => ({ ...b, [nombre]: null }))}>
+          <button class="enlace" onClick={() => setElegida(null)}>
             Dejar sin fecha
           </button>
         )}
@@ -196,7 +172,7 @@ export function EditorFecha({ abierto, inicial, onCerrar }: Props) {
           <button
             class="enlace"
             onClick={() => {
-              setBorrador((b) => ({ ...b, [nombre]: original }))
+              setElegida(original)
               setMes(mesDe(original))
               setSentido(null)
             }}

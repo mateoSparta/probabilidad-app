@@ -1,21 +1,25 @@
 # Configuración de la cursada.
 #
 # Es contenido, no código: cambiar una fecha acá alcanza, no hay que tocar src/.
-# Desde la app, el lápiz del aviso del encabezado cambia la fecha sólo en ese
-# navegador; la de acá queda como la original.
+# Desde la app, el lápiz de cada examen (en el aviso del encabezado o en
+# Seguimiento) cambia la fecha sólo en ese navegador; la de acá queda como la
+# original.
 
 # Las evaluaciones de la cursada, en orden cronológico, cada una con las guías
 # que evalúa. El aviso del encabezado y el plan de Seguimiento apuntan de
 # entrada a la primera que todavía no pasó; una sin fecha (`fecha: null`)
 # cuenta como pendiente, y el aviso dice "sin fecha" hasta que se cargue. Desde
-# la app se puede elegir otra como objetivo (los chevrones del aviso, o el
+# la app se puede elegir otra como objetivo (el desplegable del aviso, o el
 # selector de Seguimiento).
 #
-# Las guías que entran por primera vez en una evaluación son sus temas: el
-# panel de skills las agrupa así ("parcial" y "final"). Los recuperatorios
-# tienen las mismas guías que el parcial, así que no forman una etapa.
+# Cada una pertenece a un `grupo`: el parcial con sus recuperatorios, y los
+# llamados de la tanda de finales. Las guías que entran por primera vez en un
+# grupo son sus temas: el panel de skills y el Machete los agrupan así
+# ("Parcial" y "Final"). Sin `grupo`, el grupo es el nombre.
 #
-# `nombre` va en el texto con "el" delante ("faltan 3 días para el parcial").
+# `nombre` va en el texto con "el" delante ("faltan 3 días para el parcial")
+# y tiene que ser único. `instancia` es cómo se la nombra dentro de su grupo
+# (en el selector de Seguimiento); sin ella, es el nombre.
 # `simulacro` es el tipo de examen con el que se practica cada una.
 evaluaciones:
   - nombre: parcial
@@ -23,14 +27,42 @@ evaluaciones:
     guias: [1, 2, 3, 4, 5, 6, 7, 8]
     simulacro: parcial
   - nombre: 1er recuperatorio
+    grupo: parcial
     fecha: null
     guias: [1, 2, 3, 4, 5, 6, 7, 8]
     simulacro: parcial
   - nombre: 2do recuperatorio
+    grupo: parcial
     fecha: null
     guias: [1, 2, 3, 4, 5, 6, 7, 8]
     simulacro: parcial
-  - nombre: final
+  - nombre: 1er llamado a final
+    grupo: final
+    instancia: 1er llamado
+    fecha: null
+    guias: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    simulacro: integradora
+  - nombre: 2do llamado a final
+    grupo: final
+    instancia: 2do llamado
+    fecha: null
+    guias: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    simulacro: integradora
+  - nombre: 3er llamado a final
+    grupo: final
+    instancia: 3er llamado
+    fecha: null
+    guias: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    simulacro: integradora
+  - nombre: 4to llamado a final
+    grupo: final
+    instancia: 4to llamado
+    fecha: null
+    guias: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    simulacro: integradora
+  - nombre: 5to llamado a final
+    grupo: final
+    instancia: 5to llamado
     fecha: null
     guias: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     simulacro: integradora

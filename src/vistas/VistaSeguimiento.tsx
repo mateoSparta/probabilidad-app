@@ -2,23 +2,42 @@
  * Seguimiento: el ritmo respecto del examen objetivo y el estado de cada
  * ejercicio, agrupado por unidad.
  *
- * El objetivo se elige arriba (el parcial, un recuperatorio o el final), y es
- * el mismo que cambian los chevrones del aviso del encabezado: el plan, el
- * color del aviso y el simulacro por defecto lo siguen.
+ * El objetivo se elige arriba, en dos pasos: primero el grupo (el parcial o
+ * el final) y después la instancia (el parcial o un recuperatorio, o uno de
+ * los llamados de la tanda de finales). Es el mismo objetivo del aviso del
+ * encabezado, que acá se pliega: el plan, el color del aviso y el simulacro
+ * por defecto lo siguen. Cada instancia lleva un lápiz para cambiar su fecha.
  *
  * Los círculos son los mismos del mapa de cada guía, pero acá los ejercicios
  * no están en la página: elegir uno lleva a su guía y baja hasta él.
  */
+import { useState } from 'preact/hooks'
+
 import { AvisoExamenDetalle } from '../componentes/AvisoExamen'
+import { EditorFecha } from '../componentes/EditorFecha'
 import { MapaEjercicios } from '../componentes/MapaEjercicios'
 import { SelectorExamen } from '../componentes/SelectorExamen'
 import { guias } from '../datos/contenido'
 import { usarEvaluaciones } from '../datos/usarFechas'
 import type { ApiSesion } from '../datos/usarSesion'
+import { agrupar, evaluacionActual, grupoDe, rangoGuias, type Grupo } from '../dominio/evaluaciones'
 import type { Plan } from '../dominio/ritmo'
 import { ETIQUETA_ESTADO_EJERCICIO, type EstadoEjercicio } from '../dominio/sesion'
 
 const LEYENDA: EstadoEjercicio[] = ['sin_intentar', 'en_progreso', 'mal', 'resuelto']
+
+/**
+ * La última instancia elegida de cada grupo, para volver a ella al cambiar de
+ * grupo y regresar. Vive mientras la página esté abierta.
+ */
+const ultimaDeGrupo = new Map<string, string>()
+
+/** La instancia a la que lleva elegir un grupo: la última elegida o la que toca por fecha. */
+function instanciaDe(g: Grupo): string {
+  const recordada = ultimaDeGrupo.get(g.grupo)
+  if (recordada && g.evaluaciones.some((e) => e.nombre === recordada)) return recordada
+  return (evaluacionActual(g.evaluaciones) ?? g.evaluaciones[0]).nombre
+}
 
 type Props = {
   plan: Plan
@@ -26,11 +45,27 @@ type Props = {
   onIrAEjercicio: (idEjercicio: string) => void
 }
 
+type Edicion = { nombre: string; abierto: boolean }
+
 export function VistaSeguimiento({ plan, sesion, onIrAEjercicio }: Props) {
   const { evaluaciones, objetivo, elegirObjetivo } = usarEvaluaciones()
+  const [edicion, setEdicion] = useState<Edicion | null>(null)
+  /** De qué lado entran las instancias al cambiar de grupo. */
+  const [sentido, setSentido] = useState<'derecha' | 'izquierda' | null>(null)
   const conContenido = guias
     .filter((g) => g.secuencia.some((p) => p.tipo === 'ejercicio'))
     .sort((a, b) => a.numero - b.numero)
+
+  const grupos = agrupar(evaluaciones)
+  const indiceGrupo = objetivo ? grupos.findIndex((g) => g.grupo === grupoDe(objetivo)) : -1
+  const grupo = grupos[indiceGrupo]
+  if (objetivo) ultimaDeGrupo.set(grupoDe(objetivo), objetivo.nombre)
+
+  function elegirGrupo(i: number): void {
+    if (i === indiceGrupo) return
+    setSentido(i > indiceGrupo ? 'derecha' : 'izquierda')
+    elegirObjetivo(instanciaDe(grupos[i]))
+  }
 
   return (
     <>
@@ -43,20 +78,59 @@ export function VistaSeguimiento({ plan, sesion, onIrAEjercicio }: Props) {
         </p>
       </section>
 
-      {evaluaciones.length > 1 && objetivo && (
+      {grupo && objetivo && (
         <section class="objetivo" aria-labelledby="titulo-objetivo">
           <h3 id="titulo-objetivo" class="objetivo__titulo">
             Objetivo
           </h3>
-          <SelectorExamen
-            evaluaciones={evaluaciones}
-            elegida={objetivo.nombre}
-            onElegir={elegirObjetivo}
-            nombre="objetivo"
-            etiqueta="Examen que se prepara"
-            columnas={4}
-          />
+          {grupos.length > 1 && (
+            <div
+              class="segmentado segmentado--linea objetivo__grupos"
+              role="radiogroup"
+              aria-label="Parcial o final"
+              style={{ '--n': grupos.length, '--activa': indiceGrupo }}
+            >
+              <span class="segmentado__indicador" aria-hidden="true" />
+              {grupos.map((g, i) => (
+                <label
+                  key={g.grupo}
+                  class={'segmentado__opcion' + (i === indiceGrupo ? ' segmentado__opcion--activa' : '')}
+                >
+                  <input
+                    class="sr-solo"
+                    type="radio"
+                    name="objetivo-grupo"
+                    value={g.grupo}
+                    checked={i === indiceGrupo}
+                    onChange={() => elegirGrupo(i)}
+                  />
+                  <span class="segmentado__nombre">{g.rotulo}</span>
+                  <span class="segmentado__dato">{rangoGuias(g.evaluaciones[0].guias)}</span>
+                </label>
+              ))}
+            </div>
+          )}
+          {/* La key vuelve a montar las instancias al cambiar de grupo: entran
+              del lado del grupo elegido. */}
+          <div key={grupo.grupo} class={'objetivo__instancias' + (sentido ? ' objetivo__instancias--' + sentido : '')}>
+            <SelectorExamen
+              evaluaciones={grupo.evaluaciones}
+              elegida={objetivo.nombre}
+              onElegir={elegirObjetivo}
+              onEditar={(nombre) => setEdicion({ nombre, abierto: true })}
+              nombre="objetivo"
+              etiqueta={`Instancia del ${grupo.grupo}`}
+            />
+          </div>
         </section>
+      )}
+
+      {edicion && (
+        <EditorFecha
+          abierto={edicion.abierto}
+          nombre={edicion.nombre}
+          onCerrar={() => setEdicion({ ...edicion, abierto: false })}
+        />
       )}
 
       {/* La key repite la entrada del detalle al cambiar de objetivo. */}

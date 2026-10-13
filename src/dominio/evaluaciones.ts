@@ -30,8 +30,15 @@ export function diasHasta(fechaIso: string, ahora = new Date()): number {
 }
 
 export type Evaluacion = {
-  /** Cómo se la nombra en el texto: "parcial", "final". Va con "el". */
+  /** Cómo se la nombra en el texto: "parcial", "3er llamado a final". Va con "el". Único. */
   nombre: string
+  /**
+   * El grupo: el parcial con sus recuperatorios ("parcial") o los llamados de
+   * la tanda de finales ("final"). Sin grupo, el grupo es el nombre.
+   */
+  grupo?: string
+  /** Cómo se la nombra dentro de su grupo: "3er llamado". Sin ella, el nombre. */
+  instancia?: string
   /** En ISO (`2026-10-30`), o null si todavía no tiene fecha. */
   fecha: string | null
   /** Las guías que evalúa. El final evalúa también las del parcial. */
@@ -130,9 +137,35 @@ export function rangoGuias(guias: readonly number[]): string {
   return `guías ${g.slice(0, -1).join(', ')} y ${g.at(-1)}`
 }
 
-/** "Parcial", "Final": el nombre con mayúscula, para un rótulo. */
+const conMayuscula = (t: string) => t.charAt(0).toUpperCase() + t.slice(1)
+
+/** "Parcial", "3er llamado a final": el nombre con mayúscula, para un rótulo. */
 export function rotulo(ev: Evaluacion): string {
-  return ev.nombre.charAt(0).toUpperCase() + ev.nombre.slice(1)
+  return conMayuscula(ev.nombre)
+}
+
+/** El grupo de una evaluación: "parcial" para el parcial y sus recuperatorios. */
+export const grupoDe = (ev: Evaluacion): string => ev.grupo ?? ev.nombre
+
+/** "Parcial", "Final": el grupo con mayúscula. */
+export const rotuloGrupo = (ev: Evaluacion): string => conMayuscula(grupoDe(ev))
+
+/** "Parcial", "1er recuperatorio", "3er llamado": la evaluación dentro de su grupo. */
+export const rotuloInstancia = (ev: Evaluacion): string => conMayuscula(ev.instancia ?? ev.nombre)
+
+/** Un grupo de evaluaciones, en el orden en que aparecen. */
+export type Grupo = { grupo: string; rotulo: string; evaluaciones: Evaluacion[] }
+
+/** Las evaluaciones agrupadas: el parcial con sus recuperatorios, los llamados a final. */
+export function agrupar(evaluaciones: readonly Evaluacion[]): Grupo[] {
+  const salida: Grupo[] = []
+  for (const ev of evaluaciones) {
+    const g = grupoDe(ev)
+    const existente = salida.find((x) => x.grupo === g)
+    if (existente) existente.evaluaciones.push(ev)
+    else salida.push({ grupo: g, rotulo: rotuloGrupo(ev), evaluaciones: [ev] })
+  }
+  return salida
 }
 
 /** Un alcance del material para imprimir: Parcial, Final o Todas. */
@@ -151,8 +184,8 @@ export type Alcance = {
  */
 export function alcances(evaluaciones: readonly Evaluacion[]): Alcance[] {
   const porEtapa = etapas(evaluaciones).map((e) => ({
-    id: e.evaluacion.nombre,
-    rotulo: rotulo(e.evaluacion),
+    id: grupoDe(e.evaluacion),
+    rotulo: rotuloGrupo(e.evaluacion),
     guias: e.propias,
   }))
   return [{ id: 'todas', rotulo: 'Todas', guias: guiasDeLaMateria(evaluaciones) }, ...porEtapa]

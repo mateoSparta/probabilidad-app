@@ -235,6 +235,8 @@ for (const s of skills) {
 
 type EvaluacionCruda = {
   nombre?: string
+  grupo?: string
+  instancia?: string
   fecha?: string | null
   guias?: number[]
   simulacro?: string
@@ -259,9 +261,17 @@ if (existsSync(rutaConfig)) {
     err('config.yaml: falta `evaluaciones`, la lista de exámenes con sus fechas y guías')
   }
   let fechaAnterior: string | null = null
+  const nombresVistos = new Set<string>()
   for (const [i, ev] of (cfg.evaluaciones ?? []).entries()) {
     const quien = `config.yaml: evaluación ${i + 1}${ev.nombre ? ` (${ev.nombre})` : ''}`
     if (!ev.nombre?.trim()) err(`${quien}: falta \`nombre\``)
+    // El nombre es la clave de la fecha guardada y del objetivo elegido.
+    else if (nombresVistos.has(ev.nombre)) err(`${quien}: el nombre está repetido; tiene que ser único`)
+    else nombresVistos.add(ev.nombre)
+    for (const campo of ['grupo', 'instancia'] as const) {
+      const v = ev[campo]
+      if (v !== undefined && !(typeof v === 'string' && v.trim())) err(`${quien}: \`${campo}\` tiene que ser un texto`)
+    }
     if (!Array.isArray(ev.guias) || ev.guias.length === 0) {
       err(`${quien}: falta \`guias\`, la lista de guías que evalúa`)
     } else if (!ev.guias.every((g) => Number.isInteger(g) && g > 0)) {

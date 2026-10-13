@@ -409,6 +409,14 @@ try {
     }),
   )
   afirmar(seguimiento.includes('class="ritmo'), 'Seguimiento no muestra el recuadro del ritmo')
+  // El objetivo se elige en dos pasos: parcial o final, y después la
+  // instancia de ese grupo, cada una con su lápiz.
+  const instancias = (seguimiento.match(/name="objetivo" value="/g) ?? []).length
+  afirmar(
+    (seguimiento.match(/name="objetivo-grupo"/g) ?? []).length === 2 && /value="parcial" checked/.test(seguimiento) &&
+      instancias === 3 && (seguimiento.match(/class="selector-examen__editar"/g) ?? []).length === 3,
+    `el objetivo de Seguimiento no ofrece parcial o final y las 3 instancias del parcial (hay ${instancias})`,
+  )
   afirmar(seguimiento.includes('class="leyenda"'), 'Seguimiento no explica los colores')
   const puntosSeguimiento = (seguimiento.match(/class="punto punto--/g) ?? []).length
   // La leyenda suma cuatro círculos de muestra.
@@ -721,12 +729,28 @@ try {
     hoy,
   )
 
-  // El aviso compacto dice la fecha y los días, y nada más: es lo que se ve
-  // siempre, así que tiene que ser corto.
+  // El aviso compacto es un botón con el examen y cuándo es, y nada más: es
+  // lo que se ve siempre, así que tiene que ser corto. Ya no tiene enlaces ni
+  // lápiz propio: el lápiz va en cada opción del desplegable.
   const avisoCompacto = render(createElement(AvisoExamenCompacto, { plan: planVacio }))
-  afirmar(avisoCompacto.includes('Parcial 30/10'), 'el aviso compacto no dice la fecha')
-  afirmar(avisoCompacto.includes('faltan 22 días'), `el aviso compacto dice: ${avisoCompacto}`)
+  afirmar(
+    /aviso-examen__examen">Parcial<\/span><span class="aviso-examen__sep"[^>]*>·<\/span><span class="aviso-examen__cuando">30\/10 \(faltan 22 días\)</.test(avisoCompacto),
+    'el aviso compacto no dice "Parcial · 30/10 (faltan 22 días)"',
+  )
   afirmar(avisoCompacto.includes('ritmo--'), 'el aviso compacto no lleva el tono del ritmo')
+  afirmar(!/<a\b/.test(avisoCompacto) && !avisoCompacto.includes('aviso-examen__editar'),
+    'el aviso compacto sigue teniendo enlaces o el lápiz suelto')
+  afirmar(/<button class="aviso-examen [^"]*" aria-expanded="false"/.test(avisoCompacto) && avisoCompacto.includes('aviso-examen__chevron'),
+    'el aviso no es un botón con chevrón que despliega la lista')
+  // El desplegable tiene todas las evaluaciones, agrupadas, cada una con su lápiz.
+  const cantidadEvaluaciones = contenido.config.evaluaciones.length
+  afirmar(
+    (avisoCompacto.match(/<li class="aviso-menu__opcion/g) ?? []).length === cantidadEvaluaciones &&
+      (avisoCompacto.match(/class="aviso-menu__editar"/g) ?? []).length === cantidadEvaluaciones,
+    `el desplegable no tiene las ${cantidadEvaluaciones} evaluaciones con su lápiz`,
+  )
+  afirmar(avisoCompacto.includes('aviso-menu__titulo">Parcial<') && avisoCompacto.includes('aviso-menu__titulo">Final<') &&
+    avisoCompacto.includes('5to llamado'), 'el desplegable no agrupa el parcial y los cinco llamados a final')
 
   // El detalle da la cuenta completa.
   const detalleRitmo = render(createElement(AvisoExamenDetalle, { plan: planVacio }))
@@ -776,24 +800,20 @@ try {
     new Date('2026-11-05'),
   )
   const avisoRecu = render(createElement(AvisoExamenCompacto, { plan: planRecu }))
-  afirmar(/1er recuperatorio<\/a>/.test(avisoRecu) && avisoRecu.includes('sin fecha'),
+  afirmar(/aviso-examen__examen">1er recuperatorio</.test(avisoRecu) && /aviso-examen__cuando">sin fecha</.test(avisoRecu),
     'pasado el parcial, el aviso no apunta al 1er recuperatorio')
-  // Los chevrones recorren las evaluaciones, y el lápiz va después de los días.
-  afirmar(avisoRecu.includes('aria-label="Ver el parcial"') && avisoRecu.includes('aria-label="Ver el 2do recuperatorio"'),
-    'los chevrones del aviso no llevan al examen anterior y al siguiente')
-  afirmar(/sin fecha<\/a><span class="aviso-examen__sep"[^>]*>·<\/span><button class="aviso-examen__editar"[^>]*data-tip="Editar fechas"/.test(avisoRecu),
-    'el lápiz no va después de los días, o no dice "Editar fechas"')
   // Elegido otro objetivo, el plan apunta a ése aunque no sea el que toca.
   const planFinal = ritmoMod.armarPlan(
     progresoMod.PROGRESO_VACIO,
     skillsReales,
     contenido.skillsDeItem,
-    { ...contenido.config, objetivo: 'final' },
+    { ...contenido.config, objetivo: '3er llamado a final' },
     new Date('2026-10-20'),
   )
-  afirmar(planFinal.evaluacion?.nombre === 'final', 'el plan no sigue el objetivo elegido')
+  afirmar(planFinal.evaluacion?.nombre === '3er llamado a final', 'el plan no sigue el objetivo elegido')
   const detalleFinal = render(createElement(AvisoExamenDetalle, { plan: planFinal }))
-  afirmar(detalleFinal.includes('Todavía no hay fecha para el final'), 'el detalle no avisa que el final no tiene fecha')
+  afirmar(detalleFinal.includes('Todavía no hay fecha para el 3er llamado a final'),
+    'el detalle no avisa que el llamado a final no tiene fecha')
   // Con fecha, el detalle nombra el examen al contar los días.
   afirmar(/\d+ días para el parcial\./.test(detalleRitmo), 'el detalle no dice "quedan N días para el parcial"')
 
@@ -808,30 +828,12 @@ try {
       posAviso < cabeceraConPlan.indexOf('class="barra-guias"'),
     'el aviso del parcial no quedó entre el título y las pestañas',
   )
-  // La fecha lleva al simulacro y los días que faltan, al seguimiento.
-  afirmar(
-    /<a[^>]*href="#\/simulacro"[^>]*>\s*Parcial 30\/10/.test(cabeceraConPlan),
-    '"Parcial 30/10" no lleva al simulacro',
+  afirmar(!cabeceraConPlan.includes('aviso--oculto'), 'fuera de Seguimiento el aviso está plegado')
+  // En Seguimiento se pliega, porque el objetivo se elige ahí.
+  const cabeceraSeguimiento = render(
+    createElement(Cabecera, { ruta: { seccion: 'seguimiento', guia: 1 }, plan: planVacio }),
   )
-  afirmar(
-    /<a[^>]*href="#\/seguimiento"[^>]*>\s*faltan \d+ días/.test(cabeceraConPlan),
-    '"faltan N días" no lleva al seguimiento',
-  )
-  // En la sección a la que llevaría, cada parte es texto, sin enlace ni globo.
-  const enSeguimiento = render(createElement(AvisoExamenCompacto, { plan: planVacio, seccion: 'seguimiento' }))
-  afirmar(
-    !enSeguimiento.includes('href="#/seguimiento"') &&
-      !enSeguimiento.includes('Ver el seguimiento') &&
-      enSeguimiento.includes('href="#/simulacro"'),
-    'en el seguimiento, "faltan N días" sigue siendo un enlace',
-  )
-  const enSimulacro = render(createElement(AvisoExamenCompacto, { plan: planVacio, seccion: 'simulacro' }))
-  afirmar(
-    !enSimulacro.includes('href="#/simulacro"') &&
-      !enSimulacro.includes('Practicar con un simulacro') &&
-      enSimulacro.includes('href="#/seguimiento"'),
-    'en el simulacro, la fecha del parcial sigue siendo un enlace',
-  )
+  afirmar(/class="aviso aviso--oculto" inert/.test(cabeceraSeguimiento), 'en Seguimiento el aviso no se pliega')
 
   // La leyenda del ritmo dice en qué unidad está.
   let conRitmo = progresoMod.PROGRESO_VACIO

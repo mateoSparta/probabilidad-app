@@ -254,3 +254,15 @@ export function fechaCorta(fechaIso: string): string {
   const [, mes, dia] = fechaIso.split('-')
   return `${dia}/${mes}`
 }
+
+/**
+ * Cuándo es un examen, para el aviso: "30/10 (faltan 18 días)",
+ * "30/10 (mañana)", "30/10 (ya pasó)" o "sin fecha".
+ */
+export function cuandoEs(fechaIso: string | null, dias?: number | null): string {
+  if (!fechaIso) return 'sin fecha'
+  // Los días se pueden pasar ya calculados (los del plan), para que coincidan.
+  const d = dias ?? diasHasta(fechaIso)
+  const falta = d > 1 ? `faltan ${d} días` : d === 1 ? 'mañana' : d === 0 ? 'hoy' : 'ya pasó'
+  return `${fechaCorta(fechaIso)} (${falta})`
+}

@@ -418,109 +418,208 @@
   .vista--ejercicios .subir { top: 4.25rem; }
 }
 
-/* -------------------------------------------- aviso del parcial */
+/* -------------------------------------------- aviso del examen */
 
-/* Un recuadro del ancho de la columna, con el texto centrado. El borde es
-   neutro y sólo la fecha lleva el color del ritmo: tiene que verse sin
-   llamar la atención. */
+/* El marco: el botón y, debajo, el desplegable, que flota sobre la página.
+   En Seguimiento se pliega con el truco de la grilla de 1fr a 0fr, y el
+   encabezado se achica con él. */
+.aviso { position: relative; }
+.aviso__plegable {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 300ms cubic-bezier(0.3, 0.7, 0.3, 1), opacity 220ms ease;
+}
+.aviso--oculto .aviso__plegable {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.aviso__interior {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* El botón: un recuadro del ancho de la columna, con el texto centrado. El
+   borde es neutro y sólo el examen lleva el color del ritmo: tiene que
+   verse sin llamar la atención. A los dos lados, el lugar del chevrón, así
+   el texto queda centrado. */
 .aviso-examen {
   position: relative;
+  display: block;
+  width: 100%;
   margin: var(--e-3) 0 0;
-  /* A los dos lados, el lugar de los chevrones: el texto queda centrado y no
-     pasa por debajo. Recorta el texto que entra deslizándose. */
   padding: var(--e-2) 2.75rem;
   overflow: hidden;
+  appearance: none;
+  font: inherit;
   font-size: var(--t-xs);
   color: var(--tinta-2);
   text-align: center;
   background: var(--superficie);
   border: 1px solid var(--borde);
   border-radius: var(--radio-lg);
+  cursor: pointer;
+  transition: border-color 150ms, background 150ms;
 }
+.aviso-examen:hover,
+.aviso--abierto .aviso-examen {
+  border-color: var(--borde-fuerte);
+  background: var(--superficie-alta);
+}
+.aviso-examen:focus-visible { outline: 2px solid var(--acento); outline-offset: -2px; }
 .aviso-examen__texto {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--e-2);
-  margin: 0;
 }
-/* Al cambiar de examen, el texto entra del lado del chevrón apretado. */
+/* Al cambiar de examen, el texto entra del lado de la elegida. */
 .aviso-examen__texto--adelante { animation: desde-derecha 260ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
 .aviso-examen__texto--atras { animation: desde-izquierda 260ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
 .aviso-examen .icono {
   color: var(--color-ritmo, var(--tinta-3));
   font-size: 1.1em;
 }
-.aviso-examen a {
-  color: inherit;
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color 150ms, color 150ms;
-}
-.aviso-examen a:hover,
-.aviso-examen a:focus-visible {
-  color: var(--acento);
-  border-bottom-color: currentColor;
-}
-.aviso-examen__fecha {
+.aviso-examen__examen {
   font-weight: 500;
   color: var(--color-ritmo, var(--tinta-2));
 }
-/* En su propia sección no es enlace, pero se ve igual que en reposo. */
-.aviso-examen .aviso-examen__aca {
-  color: inherit;
-  border-bottom: 1px solid transparent;
-}
-.aviso-examen__sep {
-  color: var(--tinta-3);
-}
-/* Los chevrones, contra los bordes del recuadro: cambian el examen. */
-.aviso-examen__cambiar {
+.aviso-examen__sep { color: var(--tinta-3); }
+.aviso-examen__cuando { font-variant-numeric: tabular-nums; }
+/* El chevrón, contra el borde derecho: mira a la derecha y gira hacia abajo
+   al desplegar. */
+.aviso-examen__chevron {
   position: absolute;
   top: 50%;
+  right: var(--e-3);
+  display: grid;
+  place-items: center;
+  margin-top: -0.5rem;
+  color: var(--tinta-3);
+  transition: transform 220ms ease, color 150ms;
+}
+.aviso-examen .aviso-examen__chevron .icono {
+  font-size: 1rem;
+  color: inherit;
+}
+.aviso-examen:hover .aviso-examen__chevron { color: var(--tinta-2); }
+.aviso--abierto .aviso-examen__chevron { transform: rotate(90deg); }
+
+/* El desplegable: los grupos lado a lado (de a uno en un teléfono), con el
+   rótulo en versalitas como en los índices. Aparece con un fundido y un
+   leve descenso; cerrado, no se ve ni recibe el foco (inert). */
+.aviso-menu {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + var(--e-1));
+  left: 50%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--e-2) var(--e-5);
+  width: min(100%, 38rem);
+  padding: var(--e-3) var(--e-4);
+  background: var(--superficie-alta);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  box-shadow: 0 2px 6px #2b262012, 0 14px 36px #2b26201f;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -4px);
+  transition: opacity 170ms ease, transform 170ms ease, visibility 0s linear 170ms;
+}
+.aviso--abierto .aviso-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition: opacity 170ms ease, transform 170ms ease, visibility 0s;
+}
+.aviso-menu__titulo {
+  margin: 0 0 var(--e-1);
+  padding-left: calc(1.1rem + var(--e-2));
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tinta-3);
+}
+.aviso-menu__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Cada opción: la marca de la elegida, el nombre y cuándo es; a la derecha,
+   el lápiz, que aparece al pasar el mouse (y queda a la vista en pantallas
+   táctiles, que no tienen hover). */
+.aviso-menu__opcion {
+  display: flex;
+  align-items: center;
+  border-radius: var(--radio);
+  transition: background 120ms;
+}
+.aviso-menu__opcion:hover,
+.aviso-menu__opcion:focus-within { background: color-mix(in srgb, var(--tinta) 5%, transparent); }
+.aviso-menu__elegir {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-2);
+  padding: var(--e-1) var(--e-2);
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+  text-align: left;
+  cursor: pointer;
+}
+.aviso-menu__elegir:focus-visible { outline: 2px solid var(--acento); outline-offset: -2px; border-radius: var(--radio); }
+.aviso-menu__marca {
+  flex: none;
+  width: 1.1rem;
+  align-self: center;
+  display: grid;
+  place-items: center;
+  color: var(--acento);
+}
+.aviso-menu__nombre { flex: 1; }
+.aviso-menu__opcion--elegida .aviso-menu__nombre { color: var(--acento); font-weight: 500; }
+.aviso-menu__cuando {
+  flex: none;
+  font-size: var(--t-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta-3);
+}
+.aviso-menu__editar {
+  flex: none;
   display: grid;
   place-items: center;
   width: 1.75rem;
   height: 1.75rem;
+  margin-right: var(--e-1);
   padding: 0;
   border: 0;
   border-radius: var(--radio);
   background: transparent;
-  color: var(--tinta-2);
+  color: var(--tinta-3);
   cursor: pointer;
-  transform: translateY(-50%);
-  transition: background 150ms, color 150ms;
+  opacity: 0;
+  transform: translateX(-3px);
+  transition: opacity 140ms ease, transform 140ms ease, background 140ms, color 140ms;
 }
-.aviso-examen__cambiar--antes { left: var(--e-2); }
-.aviso-examen__cambiar--despues { right: var(--e-2); }
-/* El lápiz, después de los días: abre el calendario. Con margen negativo
-   arriba y abajo, para no hacer más alto el renglón. */
-.aviso-examen__editar {
-  display: grid;
-  place-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  margin: -0.3rem -0.25rem;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radio);
-  background: transparent;
-  color: var(--tinta-2);
-  cursor: pointer;
-  transition: background 150ms, color 150ms;
+.aviso-menu__opcion:hover .aviso-menu__editar,
+.aviso-menu__opcion:focus-within .aviso-menu__editar {
+  opacity: 1;
+  transform: none;
 }
-.aviso-examen__cambiar:hover,
-.aviso-examen__cambiar:focus-visible,
-.aviso-examen__editar:hover,
-.aviso-examen__editar:focus-visible {
-  background: color-mix(in srgb, var(--tinta) 7%, transparent);
+.aviso-menu__editar:hover,
+.aviso-menu__editar:focus-visible {
+  background: color-mix(in srgb, var(--tinta) 8%, transparent);
   color: var(--tinta);
 }
-.aviso-examen .aviso-examen__cambiar .icono,
-.aviso-examen .aviso-examen__editar .icono {
-  font-size: 1rem;
-  color: inherit;
+@media (hover: none) {
+  .aviso-menu__editar { opacity: 1; transform: none; }
 }
 
 /* Un color por estado del ritmo, compartido por el aviso compacto y el

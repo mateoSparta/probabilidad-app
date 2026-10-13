@@ -31,7 +31,7 @@ import {
   skillsPorGuia,
   ubicacionDeItem,
 } from '../datos/contenido'
-import { etapas, rangoGuias, rotulo, type Etapa } from '../dominio/evaluaciones'
+import { etapas, grupoDe, rangoGuias, rotuloGrupo, type Etapa } from '../dominio/evaluaciones'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
 import {
@@ -87,7 +87,7 @@ function avanceEnPalabras(limpios: number, total: number): string {
  */
 function datoEtapa(etapa: Etapa, anterior: Etapa | undefined): string {
   const { evaluacion, propias, acumula } = etapa
-  const suma = acumula ? (anterior ? `, más lo del ${anterior.evaluacion.nombre}` : ', más lo anterior') : ''
+  const suma = acumula ? (anterior ? `, más lo del ${grupoDe(anterior.evaluacion)}` : ', más lo anterior') : ''
   const cuando = evaluacion.fecha ? fechaCorta(evaluacion.fecha) : 'sin fecha'
   return `${rangoGuias(propias)}${suma} · ${cuando}`
 }
@@ -134,7 +134,7 @@ export function PanelSkills({
   const porEtapa = etapasMateria
     .map((etapa, k) => ({
       etapa,
-      id: `etapa-${etapa.evaluacion.nombre}`,
+      id: `etapa-${grupoDe(etapa.evaluacion)}`,
       dato: datoEtapa(etapa, etapasMateria[k - 1]),
       grupos: grupos.filter((g) => etapa.propias.includes(g.guia)),
     }))
@@ -174,7 +174,7 @@ export function PanelSkills({
           <section key={id} class="etapa" aria-labelledby={id}>
             <header class="etapa__cabeza">
               <h3 id={id} class="etapa__titulo">
-                {rotulo(etapa.evaluacion)}
+                {rotuloGrupo(etapa.evaluacion)}
               </h3>
               <p class="etapa__dato">{dato}</p>
             </header>
@@ -262,7 +262,7 @@ function IndiceSkills({
         <ol class="indice__lista">
           {etapas.map(({ id, etapa, grupos }, i) => (
             <li key={id} class="indice__grupo" style={{ '--i': i }}>
-              <p class="indice__rotulo">{rotulo(etapa.evaluacion)}</p>
+              <p class="indice__rotulo">{rotuloGrupo(etapa.evaluacion)}</p>
               <ol class="indice__sublista indice__sublista--fija">
                 {grupos.map(({ guia, skills }) => {
                   const habilitados = skills.filter((s) => !skillBloqueado(s))

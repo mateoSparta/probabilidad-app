@@ -1,5 +1,5 @@
 /**
- * Encabezado: migas, aviso del próximo examen y, en Ejercicios, las pestañas
+ * Encabezado: migas, aviso del examen objetivo y, en Ejercicios, las pestañas
  * de las guías.
  *
  * Las migas son la navegación principal: "Probabilidad y Estadística B" lleva
@@ -16,7 +16,7 @@
 import { useEffect, useState } from 'preact/hooks'
 
 import { config, guiaTieneContenido } from '../datos/contenido'
-import { guiasDeLaMateria, temaDe } from '../dominio/evaluaciones'
+import { grupoDe, guiasDeLaMateria, temaDe } from '../dominio/evaluaciones'
 import type { Plan } from '../dominio/ritmo'
 import { NOMBRE_SECCION, type Ruta, type Seccion } from '../dominio/ruta'
 import { AvisoExamenCompacto } from './AvisoExamen'
@@ -33,7 +33,7 @@ const GUIAS = guiasDeLaMateria(config.evaluaciones)
 /** La ayuda de una pestaña bloqueada: de qué examen es tema la guía. */
 function ayudaBloqueada(guia: number): string {
   const ev = temaDe(guia, config.evaluaciones)
-  return ev ? `Tema del ${ev.nombre}, todavía sin cargar` : 'Todavía sin cargar'
+  return ev ? `Tema del ${grupoDe(ev)}, todavía sin cargar` : 'Todavía sin cargar'
 }
 
 /** Lo que dura la salida de la miga de la sección; tiene que coincidir con el CSS. */
@@ -113,7 +113,8 @@ export function Cabecera({ ruta, plan }: Props) {
             <MenuNavegacion ruta={ruta} />
           </div>
 
-          {plan && <AvisoExamenCompacto plan={plan} seccion={seccion} />}
+          {/* En Seguimiento se pliega: el objetivo se elige ahí. */}
+          {plan && <AvisoExamenCompacto plan={plan} oculto={seccion === 'seguimiento'} />}
         </div>
       </header>
 

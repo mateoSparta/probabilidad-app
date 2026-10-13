@@ -66,6 +66,10 @@ import {
   etapas,
   evaluacionActual,
   evaluacionObjetivo,
+  agrupar,
+  grupoDe,
+  rotuloGrupo,
+  rotuloInstancia,
   guiasDeLaMateria,
   rangoGuias,
   temaDe,
@@ -999,6 +1003,22 @@ for (const [valor, alternativa] of equivalentes) {
     'con todo vencido no se queda con la última',
   )
   afirmar(evaluacionActual([], new Date()) === null, 'sin evaluaciones no devuelve null')
+  // Los grupos: el parcial con su recuperatorio, los llamados a final. Las
+  // etapas y los rótulos de grupo nombran el grupo, no el primer llamado.
+  {
+    const r1: Evaluacion = { nombre: '1er recuperatorio', grupo: 'parcial', fecha: null, guias: parcial.guias }
+    const ll1: Evaluacion = { ...final, nombre: '1er llamado a final', grupo: 'final', instancia: '1er llamado' }
+    const ll2: Evaluacion = { ...ll1, nombre: '2do llamado a final', instancia: '2do llamado' }
+    const g = agrupar([parcial, r1, ll1, ll2])
+    afirmar(g.map((x) => `${x.rotulo}:${x.evaluaciones.length}`).join() === 'Parcial:2,Final:2',
+      `los grupos son ${g.map((x) => x.rotulo).join()}`)
+    afirmar(rotuloInstancia(ll2) === '2do llamado' && rotuloInstancia(r1) === '1er recuperatorio' && grupoDe(parcial) === 'parcial',
+      'los rótulos de instancia o el grupo por defecto no son los esperados')
+    const et = etapas([parcial, r1, ll1, ll2])
+    afirmar(et.length === 2 && rotuloGrupo(et[1].evaluacion) === 'Final', 'la etapa de los llamados no se llama Final')
+    afirmar(alcances([parcial, r1, ll1, ll2]).map((a) => a.id).join() === 'todas,parcial,final',
+      'los alcances del Machete no usan el grupo')
+  }
   // El objetivo elegido gana; sin elegir (o uno que no existe), el que toca.
   const antes = new Date('2026-10-20T10:00:00')
   afirmar(evaluacionObjetivo(evs, 'final', antes) === final, 'el objetivo elegido no gana sobre el que toca')
