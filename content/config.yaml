@@ -18,50 +18,59 @@
 #
 # `nombre` va en el texto con "el" delante ("faltan 3 días para el parcial")
 # y tiene que ser único. `instancia` es cómo se la nombra dentro de su grupo
-# (en el desplegable del aviso, bajo el rótulo del grupo); sin ella, es el
-# nombre.
+# (en el desplegable del aviso, bajo el rótulo del grupo) y `aviso`, en el
+# botón del aviso, donde la fecha ya la distingue ("Recuperatorio · 20/11");
+# sin ellos, es el nombre.
 # `simulacro` es el tipo de examen con el que se practica cada una.
 evaluaciones:
   - nombre: parcial
+    instancia: 1er llamado
     fecha: "2026-10-30"
     guias: [1, 2, 3, 4, 5, 6, 7, 8]
     simulacro: parcial
   - nombre: 1er recuperatorio
     grupo: parcial
+    aviso: recuperatorio
     fecha: null
     guias: [1, 2, 3, 4, 5, 6, 7, 8]
     simulacro: parcial
   - nombre: 2do recuperatorio
     grupo: parcial
+    aviso: recuperatorio
     fecha: null
     guias: [1, 2, 3, 4, 5, 6, 7, 8]
     simulacro: parcial
   - nombre: 1er llamado a final
     grupo: final
+    aviso: final
     instancia: 1er llamado
     fecha: null
     guias: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     simulacro: integradora
   - nombre: 2do llamado a final
     grupo: final
+    aviso: final
     instancia: 2do llamado
     fecha: null
     guias: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     simulacro: integradora
   - nombre: 3er llamado a final
     grupo: final
+    aviso: final
     instancia: 3er llamado
     fecha: null
     guias: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     simulacro: integradora
   - nombre: 4to llamado a final
     grupo: final
+    aviso: final
     instancia: 4to llamado
     fecha: null
     guias: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     simulacro: integradora
   - nombre: 5to llamado a final
     grupo: final
+    aviso: final
     instancia: 5to llamado
     fecha: null
     guias: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]

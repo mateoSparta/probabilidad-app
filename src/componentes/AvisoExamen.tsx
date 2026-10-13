@@ -19,7 +19,7 @@
 import { useEffect, useId, useRef, useState } from 'preact/hooks'
 
 import { usarEvaluaciones } from '../datos/usarFechas'
-import { agrupar, rotulo, rotuloInstancia } from '../dominio/evaluaciones'
+import { agrupar, rotuloAviso, rotuloInstancia } from '../dominio/evaluaciones'
 import { cuandoEs, ETIQUETA_VEREDICTO, type Plan } from '../dominio/ritmo'
 import { EditorFecha } from './EditorFecha'
 import { IconoCalendario, IconoComprobar, IconoEditar, IconoSiguiente } from './Iconos'
@@ -114,7 +114,7 @@ export function AvisoExamenCompacto({ plan }: { plan: Plan }) {
           class={'aviso-examen__texto' + (sentido ? ' aviso-examen__texto--' + sentido : '')}
         >
           <IconoCalendario />
-          <span class="aviso-examen__examen">{rotulo(ev)}</span>
+          <span class="aviso-examen__examen">{rotuloAviso(ev)}</span>
           <span class="aviso-examen__sep" aria-hidden="true">
             ·
           </span>

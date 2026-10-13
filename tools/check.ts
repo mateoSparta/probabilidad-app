@@ -237,6 +237,7 @@ type EvaluacionCruda = {
   nombre?: string
   grupo?: string
   instancia?: string
+  aviso?: string
   fecha?: string | null
   guias?: number[]
   simulacro?: string
@@ -268,7 +269,7 @@ if (existsSync(rutaConfig)) {
     // El nombre es la clave de la fecha guardada y del objetivo elegido.
     else if (nombresVistos.has(ev.nombre)) err(`${quien}: el nombre está repetido; tiene que ser único`)
     else nombresVistos.add(ev.nombre)
-    for (const campo of ['grupo', 'instancia'] as const) {
+    for (const campo of ['grupo', 'instancia', 'aviso'] as const) {
       const v = ev[campo]
       if (v !== undefined && !(typeof v === 'string' && v.trim())) err(`${quien}: \`${campo}\` tiene que ser un texto`)
     }

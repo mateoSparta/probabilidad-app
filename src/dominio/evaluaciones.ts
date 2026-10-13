@@ -39,6 +39,8 @@ export type Evaluacion = {
   grupo?: string
   /** Cómo se la nombra dentro de su grupo: "3er llamado". Sin ella, el nombre. */
   instancia?: string
+  /** Cómo se la nombra en el botón del aviso, junto a la fecha: "recuperatorio". Sin él, el nombre. */
+  aviso?: string
   /** En ISO (`2026-10-30`), o null si todavía no tiene fecha. */
   fecha: string | null
   /** Las guías que evalúa. El final evalúa también las del parcial. */
@@ -152,6 +154,9 @@ export const rotuloGrupo = (ev: Evaluacion): string => conMayuscula(grupoDe(ev))
 
 /** "Parcial", "1er recuperatorio", "3er llamado": la evaluación dentro de su grupo. */
 export const rotuloInstancia = (ev: Evaluacion): string => conMayuscula(ev.instancia ?? ev.nombre)
+
+/** "Parcial", "Recuperatorio", "Final": la evaluación en el botón del aviso. */
+export const rotuloAviso = (ev: Evaluacion): string => conMayuscula(ev.aviso ?? ev.nombre)
 
 /** Un grupo de evaluaciones, en el orden en que aparecen. */
 export type Grupo = { grupo: string; rotulo: string; evaluaciones: Evaluacion[] }

@@ -751,6 +751,9 @@ try {
   )
   afirmar(avisoCompacto.includes('aviso-menu__titulo">Parcial<') && avisoCompacto.includes('aviso-menu__titulo">Final<') &&
     avisoCompacto.includes('5to llamado'), 'el desplegable no agrupa el parcial y los cinco llamados a final')
+  // Bajo el rótulo "Parcial", el parcial es el "1er llamado": no se repite el grupo.
+  afirmar(/aviso-menu__opcion--elegida">.*?aviso-menu__nombre">1er llamado</.test(avisoCompacto) &&
+    !avisoCompacto.includes('aviso-menu__nombre">Parcial<'), 'en el desplegable el parcial no se llama "1er llamado"')
 
   // El detalle da la cuenta completa.
   const detalleRitmo = render(createElement(AvisoExamenDetalle, { plan: planVacio }))
@@ -800,8 +803,10 @@ try {
     new Date('2026-11-05'),
   )
   const avisoRecu = render(createElement(AvisoExamenCompacto, { plan: planRecu }))
-  afirmar(/aviso-examen__examen">1er recuperatorio</.test(avisoRecu) && /aviso-examen__cuando">sin fecha</.test(avisoRecu),
-    'pasado el parcial, el aviso no apunta al 1er recuperatorio')
+  // El botón lo nombra corto ("Recuperatorio"): la fecha ya lo distingue.
+  afirmar(planRecu.evaluacion?.nombre === '1er recuperatorio' &&
+    /aviso-examen__examen">Recuperatorio</.test(avisoRecu) && /aviso-examen__cuando">sin fecha</.test(avisoRecu),
+    'pasado el parcial, el aviso no apunta al 1er recuperatorio, o no lo nombra "Recuperatorio"')
   // Elegido otro objetivo, el plan apunta a ése aunque no sea el que toca.
   const planFinal = ritmoMod.armarPlan(
     progresoMod.PROGRESO_VACIO,
