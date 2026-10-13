@@ -941,6 +941,23 @@
 .desplegable__boton .icono { font-size: 1.15em; transition: transform 200ms ease; }
 .desplegable--abierto .desplegable__boton .icono { transform: rotate(90deg); }
 
+/* El punto del pool plegado con un examen elegido: aparece creciendo desde
+   el centro, con un rebote leve, y se apaga al desplegar. */
+.pool__marca {
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-left: var(--e-1);
+  border-radius: 50%;
+  background: var(--acento);
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 180ms ease, transform 260ms cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.pool__marca--visible {
+  opacity: 1;
+  transform: none;
+}
+
 .desplegable__contenido {
   display: grid;
   grid-template-rows: 0fr;

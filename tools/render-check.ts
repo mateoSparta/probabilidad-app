@@ -687,6 +687,9 @@ try {
     'el botón de arrancar no quedó dentro del recuadro, debajo de los interruptores, con el pool afuera',
   )
   afirmar(!simulacro.includes('kit-aviso'), 'el kit sigue en el simulacro: ahora está en el Machete')
+  // El punto del pool plegado: está, pero apagado mientras no haya uno elegido.
+  afirmar(simulacro.includes('class="pool__marca"') && !simulacro.includes('pool__marca--visible'),
+    'el título del pool no tiene el punto, o se ve sin un examen elegido')
   // El pool arranca plegado.
   afirmar(
     simulacro.includes('aria-expanded="false"') &&

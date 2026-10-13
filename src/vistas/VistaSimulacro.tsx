@@ -603,6 +603,14 @@ function Configuracion({
               >
                 <IconoDesplegar />
                 {config.tipo === 'parcial' ? 'Parciales' : 'Integradoras'} disponibles
+                {/* Plegado, un punto en acento avisa que adentro hay uno elegido,
+                    aunque no se vea. Al desplegar se apaga: ya se ve cuál es. */}
+                <span
+                  class={'pool__marca' + (actual && !poolAbierto ? ' pool__marca--visible' : '')}
+                  aria-hidden="true"
+                  data-tip={actual && !poolAbierto ? `Hay ${config.tipo === 'parcial' ? 'un parcial' : 'una integradora'} ${seleccionado}` : undefined}
+                />
+                {actual && !poolAbierto && <span class="sr-solo">, con uno {seleccionado}</span>}
               </button>
             </h3>
             <div id="pool-contenido" class="desplegable__contenido" inert={!poolAbierto}>
