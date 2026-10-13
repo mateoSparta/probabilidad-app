@@ -89,19 +89,23 @@ try {
 
   // El menú de hamburguesa aparece fuera del inicio y lista las demás
   // secciones, nunca la actual.
-  // En el inicio el botón es el logo de cafecito: la hamburguesa queda
-  // oculta (está en el DOM para poder animar el cambio) y no hay desplegable.
+  // En el inicio el botón es el de contacto: la hamburguesa queda oculta
+  // (está en el DOM para poder animar el cambio) y no hay desplegable.
   afirmar(
     /<button[^>]*class="hamburguesa"[^>]*aria-hidden="true"/.test(enMenu),
     'en el inicio la hamburguesa no quedó oculta',
   )
   afirmar(
-    enMenu.includes('href="https://cafecito.app/carpincho_fiubense"'),
-    'en el inicio falta el enlace a cafecito',
+    /<button class="contacto-boton" data-tip="Contacto"[^>]*aria-haspopup="dialog"/.test(enMenu) &&
+      !/<button class="contacto-boton"[^>]*aria-hidden="true"/.test(enMenu),
+    'en el inicio falta el botón de contacto, o quedó oculto',
   )
+  // La ventana de contacto: el texto, el mail opcional, el permiso para
+  // adjuntar el contexto (marcado) y la trampa para bots.
   afirmar(
-    !/<a[^>]*class="cafecito"[^>]*aria-hidden="true"/.test(enMenu),
-    'en el inicio el logo de cafecito quedó oculto',
+    enMenu.includes('class="modal modal--contacto"') && /<textarea class="entrada contacto__texto"/.test(enMenu) &&
+      enMenu.includes('type="email"') && /type="checkbox" checked/.test(enMenu) && enMenu.includes('name="_honey"'),
+    'la ventana de contacto no tiene el mensaje, el mail, el permiso de adjuntar y la trampa',
   )
   afirmar(!enMenu.includes('id="menu-navegacion"'), 'en el inicio hay desplegable')
   for (const [seccion, nombre] of [

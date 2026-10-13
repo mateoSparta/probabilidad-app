@@ -675,7 +675,7 @@
 
 /* Va en la esquina superior derecha de la columna, no de la ventana. El
    recuadro es siempre el mismo y adentro se apilan las dos caras: la
-   hamburguesa (en las secciones) y el logo de cafecito (en el inicio). Al
+   hamburguesa (en las secciones) y el botón de contacto (en el inicio). Al
    cambiar de cara, una gira y se achica mientras la otra hace lo inverso. */
 .navegacion {
   position: relative;
@@ -694,7 +694,7 @@
 .navegacion__marco:hover { background: var(--superficie-alta); border-color: var(--acento); }
 
 .hamburguesa,
-.cafecito {
+.contacto-boton {
   position: absolute;
   inset: 0;
   display: block;
@@ -707,16 +707,17 @@
 }
 .hamburguesa { appearance: none; }
 
-.cafecito {
+.contacto-boton {
+  appearance: none;
   display: grid;
   place-items: center;
   color: var(--tinta);
-  font-size: 1.45rem;
+  font-size: 1.3rem;
   opacity: 0;
   transform: scale(0.4) rotate(-120deg);
   pointer-events: none;
 }
-.navegacion--inicio .cafecito {
+.navegacion--inicio .contacto-boton {
   opacity: 1;
   transform: none;
   pointer-events: auto;

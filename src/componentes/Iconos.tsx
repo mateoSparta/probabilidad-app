@@ -199,6 +199,15 @@ export const LogoCafecito = () => (
   </Svg>
 )
 
+/** Contacto: un globo de diálogo con renglones. */
+export const IconoMensaje = () => (
+  <Svg>
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    <path d="M8 8h8" />
+    <path d="M8 12h5" />
+  </Svg>
+)
+
 /** GitHub: el gato del logo, en trazo (de Lucide). */
 export const IconoGithub = () => (
   <Svg>

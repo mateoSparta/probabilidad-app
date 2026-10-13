@@ -1463,6 +1463,73 @@
 .modal--fecha { width: min(24rem, calc(100vw - 2rem)); }
 .modal--fecha::backdrop { backdrop-filter: blur(6px); }
 
+/* La ventana de contacto: el fondo, desenfocado como en el calendario. El
+   texto y el mail ocupan todo el ancho; el tipo va en chips, como las
+   duraciones del simulacro. */
+.modal--contacto { width: min(30rem, calc(100vw - 2rem)); }
+.modal--contacto::backdrop { backdrop-filter: blur(6px); }
+.contacto {
+  display: grid;
+  gap: var(--e-4);
+}
+.contacto__intro,
+.contacto__gracias {
+  margin: 0;
+  color: var(--tinta-2);
+}
+.contacto__tipos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.contacto__tipos .chip-opcion:has(:focus-visible) { outline: 2px solid var(--acento); outline-offset: 1px; }
+.contacto__campo {
+  display: grid;
+  gap: var(--e-1);
+}
+.contacto__rotulo {
+  font-size: var(--t-sm);
+  color: var(--tinta-2);
+}
+.contacto__opcional { color: var(--tinta-3); }
+.contacto .entrada { max-width: none; }
+/* El mensaje, en la tipografía del texto y no en la de los números. */
+.contacto__texto {
+  font-family: var(--serif);
+  font-size: var(--t-base);
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 7rem;
+}
+.contacto .entrada:focus {
+  outline: none;
+  border-color: var(--acento);
+}
+.contacto__adjuntar {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-2);
+  font-size: var(--t-xs);
+  color: var(--tinta-2);
+  cursor: pointer;
+}
+.contacto__adjuntar input { accent-color: var(--acento); }
+.contacto__trampa {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.contacto__error {
+  margin: 0;
+  font-size: var(--t-sm);
+  color: var(--flojo);
+}
+
 .calendario {
   user-select: none;
   /* Los días que entran deslizándose no abren una barra horizontal. */

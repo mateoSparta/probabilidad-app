@@ -4,8 +4,9 @@
  *
  * - En las secciones es un menú de hamburguesa con el resto de las secciones,
  *   "Inicio" primero y nunca la actual.
- * - En el inicio se transforma en el logo de cafecito, que lleva a la página
- *   para invitar un café.
+ * - En el inicio se transforma en el botón de contacto, que abre la ventana
+ *   para mandar ideas, errores u opiniones (Contacto). El cafecito y GitHub
+ *   están abajo a la derecha (Accesos).
  *
  * Las dos caras están siempre en el DOM, apiladas en el mismo recuadro, y el
  * CSS pasa de una a otra con una transición. Si se montara una y se
@@ -20,18 +21,17 @@ import type { ComponentType } from 'preact'
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks'
 
 import { escribirRuta, NOMBRE_SECCION, type Ruta, type Seccion } from '../dominio/ruta'
+import { Contacto } from './Contacto'
 import {
   IconoDistribuciones,
   IconoEjercicios,
   IconoFormulas,
   IconoInicio,
+  IconoMensaje,
   IconoSeguimiento,
   IconoSimulacro,
   IconoSkills,
-  LogoCafecito,
 } from './Iconos'
-
-const CAFECITO = 'https://cafecito.app/carpincho_fiubense'
 
 /** Lo que dura la salida del desplegable; tiene que coincidir con el CSS. */
 const SALIDA_MS = 150
@@ -53,6 +53,7 @@ type Fase = 'cerrado' | 'abierto' | 'cerrando'
 export function MenuNavegacion({ ruta }: { ruta: Ruta }) {
   const enInicio = ruta.seccion === 'menu'
   const [fase, setFase] = useState<Fase>('cerrado')
+  const [contacto, setContacto] = useState(false)
   const raiz = useRef<HTMLDivElement>(null)
   const boton = useRef<HTMLButtonElement>(null)
   const abierto = fase === 'abierto'
@@ -117,19 +118,20 @@ export function MenuNavegacion({ ruta }: { ruta: Ruta }) {
           <span class="hamburguesa__linea" aria-hidden="true" />
         </button>
 
-        <a
-          class="cafecito"
-          href={CAFECITO}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-tip={enInicio ? 'Invitame un cafecito' : undefined}
-          aria-label="Invitame un cafecito (se abre en otra pestaña)"
+        <button
+          class="contacto-boton"
+          data-tip={enInicio ? 'Contacto' : undefined}
+          aria-label="Contacto: mandar una idea, un error o una opinión"
+          aria-haspopup="dialog"
           aria-hidden={enInicio ? undefined : 'true'}
           tabIndex={enInicio ? 0 : -1}
+          onClick={() => setContacto(true)}
         >
-          <LogoCafecito />
-        </a>
+          <IconoMensaje />
+        </button>
       </div>
+
+      <Contacto abierto={contacto} seccion={ruta.seccion} onCerrar={() => setContacto(false)} />
 
       {!enInicio && (
         <ul
