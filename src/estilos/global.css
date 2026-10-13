@@ -2,7 +2,15 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+/* El lugar de la barra de desplazamiento queda siempre reservado. Con las
+   barras clásicas (las de Windows), una página que pasaba de no tener
+   scroll a tenerlo (al desplegar el pool del simulacro, por ejemplo) corría
+   todo el contenido unos píxeles de golpe. Con las que se superponen
+   (macOS, teléfonos) no reserva nada. */
+html {
+  -webkit-text-size-adjust: 100%;
+  scrollbar-gutter: stable;
+}
 
 body {
   margin: 0;

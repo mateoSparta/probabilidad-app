@@ -23,27 +23,19 @@ const SALIDA_MS = 160
 let bloqueos = 0
 
 /**
- * Bloquea el desplazamiento de la página. Si la barra de desplazamiento
- * ocupaba lugar, ese lugar queda reservado, para que esconderla no corra el
- * contenido; si no ocupaba (no había barra, o es de las que se superponen),
- * no se reserva nada, por la misma razón. Devuelve la función que lo
- * deshace, que sólo tiene efecto la primera vez.
+ * Bloquea el desplazamiento de la página. El lugar de la barra está siempre
+ * reservado (`scrollbar-gutter: stable` en global.css), así que esconderla
+ * no corre el contenido. Devuelve la función que lo deshace, que sólo tiene
+ * efecto la primera vez.
  */
 function bloquearFondo(): () => void {
   const html = document.documentElement
-  if (bloqueos++ === 0) {
-    const anchoBarra = innerWidth - html.clientWidth
-    html.style.overflow = 'hidden'
-    if (anchoBarra > 0) html.style.scrollbarGutter = 'stable'
-  }
+  if (bloqueos++ === 0) html.style.overflow = 'hidden'
   let liberado = false
   return () => {
     if (liberado) return
     liberado = true
-    if (--bloqueos === 0) {
-      html.style.overflow = ''
-      html.style.scrollbarGutter = ''
-    }
+    if (--bloqueos === 0) html.style.overflow = ''
   }
 }
 
