@@ -122,10 +122,14 @@ code, kbd, input, textarea, button, select {
   padding: var(--e-2) var(--e-4);
 }
 .tabs::-webkit-scrollbar { display: none; }
-.tabs > :first-child { margin-left: auto; }
+/* El primer hijo es el indicador de la guía abierta (va con position:
+   absolute); el margen va en la primera pestaña. */
+.tabs { position: relative; }
+.tabs > .indicador + * { margin-left: auto; }
 .tabs > :last-child { margin-right: auto; }
 
 .tab {
+  position: relative;
   flex: none;
   display: inline-flex;
   align-items: center;
@@ -144,11 +148,17 @@ code, kbd, input, textarea, button, select {
   transition: background 120ms, color 120ms;
 }
 .tab:hover { background: var(--borde); color: var(--tinta); }
-.tab[aria-current='page'] {
-  background: var(--acento);
-  border-color: var(--acento);
+/* El fondo de la elegida es el indicador, que se desliza entre pestañas. */
+.tab[aria-current='page'],
+.tab[aria-current='page']:hover {
+  background: transparent;
   color: var(--superficie-alta);
   font-weight: 500;
+}
+.tabs .indicador {
+  border-radius: var(--radio-pill);
+  background: var(--acento);
+  box-shadow: none;
 }
 
 /* Guías que todavía no se pueden abrir. */

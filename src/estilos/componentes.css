@@ -2085,6 +2085,10 @@
     grid-column: 1 / -1;
     justify-self: center;
   }
+  /* En las multivariadas la frase es larga y el "=" al centro la corría a
+     la izquierda. Ahí los huecos y el valor ya tienen ancho fijo, así que
+     la línea entera va centrada sin moverse. */
+  .resultado--centrado { display: flex; }
 }
 .resultado__valor {
   font-size: var(--t-lg);

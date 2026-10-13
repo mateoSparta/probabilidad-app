@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'preact/hooks'
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
 
 import { Cabecera } from './componentes/Cabecera'
 import { Globo } from './componentes/Globo'
@@ -15,6 +15,7 @@ import { usarProgreso } from './datos/usarProgreso'
 import { usarRuta } from './datos/usarRuta'
 import { usarSesion } from './datos/usarSesion'
 import { armarPlan } from './dominio/ritmo'
+import type { Ruta } from './dominio/ruta'
 import { PanelSkills } from './vistas/PanelSkills'
 import { VistaDistribuciones } from './vistas/VistaDistribuciones'
 import { VistaMachete } from './vistas/VistaMachete'
@@ -45,6 +46,20 @@ export function App() {
       }),
     [api.progreso, evaluaciones],
   )
+
+  // Al pasar de una guía a otra, la página entra de costado: desde la derecha
+  // si la nueva es posterior, desde la izquierda si es anterior. Se calcula
+  // una vez por cambio de ruta y se conserva en los demás renders, porque
+  // cambiar la clase reiniciaría la animación.
+  const ultima = useRef<{ ruta: Ruta; entrada: string }>({ ruta, entrada: '' })
+  if (ultima.current.ruta !== ruta) {
+    const antes = ultima.current.ruta
+    const entreGuias = antes.seccion === 'ejercicios' && ruta.seccion === 'ejercicios' && antes.guia !== ruta.guia
+    ultima.current = {
+      ruta,
+      entrada: entreGuias ? (ruta.guia > antes.guia ? ' vista--desde-derecha' : ' vista--desde-izquierda') : '',
+    }
+  }
 
   // Al cambiar de sección o de guía la página arranca desde arriba, salvo que
   // se esté yendo a un ejercicio puntual: de eso se encarga VistaGuia.
@@ -77,7 +92,7 @@ export function App() {
         {/* La key hace que cada cambio de sección (o de guía) monte la vista
             de cero, y con eso se repite la animación de entrada. */}
         <div
-          class={'vista vista--' + ruta.seccion}
+          class={'vista vista--' + ruta.seccion + ultima.current.entrada}
           key={ruta.seccion === 'ejercicios' ? `ejercicios-${ruta.guia}` : ruta.seccion}
         >
           {ruta.seccion === 'menu' && (

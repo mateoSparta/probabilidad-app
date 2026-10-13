@@ -94,6 +94,10 @@
 .vista {
   animation: entrar 320ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
 }
+/* De una guía a otra, la página entra de costado, del lado de la guía
+   elegida (la pestaña se desliza hacia el mismo lado). */
+.vista--desde-derecha { animation-name: desde-derecha; }
+.vista--desde-izquierda { animation-name: desde-izquierda; }
 /* La miga de la sección entra desde la izquierda y sale hacia el mismo lado:
    la salida es la entrada al revés. */
 .migas__actual {

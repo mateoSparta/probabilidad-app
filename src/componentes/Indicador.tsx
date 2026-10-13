@@ -41,12 +41,17 @@ export function Indicador({ selector, clave }: Props) {
     ubicado.current = true
   }, [clave])
 
-  // Si cambia el tamaño del grupo (otra fuente, otro ancho de ventana), se
-  // vuelve a ubicar sin animación.
+  // Si cambia el tamaño del grupo (otro ancho de ventana) o terminan de
+  // cargar las fuentes (las opciones cambian de ancho sin que cambie el
+  // grupo), se vuelve a ubicar sin animación. No se observan las opciones:
+  // la elegida cambia de ancho al elegirla y eso cortaría el deslizamiento.
   useEffect(() => {
     const grupo = ref.current!.parentElement
-    if (!grupo || typeof ResizeObserver === 'undefined') return
-    const observador = new ResizeObserver(() => ubicar(ref.current!, selector, false))
+    if (!grupo) return
+    const reubicar = () => ref.current && ubicar(ref.current, selector, false)
+    void document.fonts?.ready.then(reubicar)
+    if (typeof ResizeObserver === 'undefined') return
+    const observador = new ResizeObserver(reubicar)
     observador.observe(grupo)
     return () => observador.disconnect()
   }, [])

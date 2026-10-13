@@ -21,6 +21,7 @@ import type { Plan } from '../dominio/ritmo'
 import { NOMBRE_SECCION, type Ruta, type Seccion } from '../dominio/ruta'
 import { AvisoExamenCompacto } from './AvisoExamen'
 import { IconoCandado } from './Iconos'
+import { Indicador } from './Indicador'
 import { MenuNavegacion } from './MenuNavegacion'
 
 /**
@@ -123,7 +124,8 @@ export function Cabecera({ ruta, plan }: Props) {
 
 /**
  * La fila de pestañas, centrada en la ventana y en un solo renglón. Si no
- * entra, se desplaza de costado.
+ * entra, se desplaza de costado. El fondo de la guía abierta es un
+ * Indicador: al cambiar de guía se desliza hasta la nueva.
  *
  * La pestaña de la guía abierta sirve además para volver al principio: un
  * clic sube hasta arriba, y si ya se bajó lo suficiente como para perder de
@@ -148,6 +150,7 @@ function PestanasGuias({ activa }: { activa: number }) {
   return (
     <nav class="barra-guias" aria-label="Guías de ejercicios">
       <div class="tabs">
+        <Indicador selector=".tab[aria-current='page']" clave={activa} />
         {GUIAS.map((n) =>
           guiaTieneContenido(n) ? (
             <a

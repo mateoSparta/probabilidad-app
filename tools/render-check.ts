@@ -342,7 +342,8 @@ try {
     afirmar(formulas.includes(`<span class="hoja__numero">Guía ${g}</span>`), `la hoja del parcial no tiene la guía ${g}`)
   }
   afirmar(!formulas.includes('>Guía 9<'), 'la hoja del parcial incluye la guía 9')
-  afirmar(formulas.includes('Suerte en el examen'), 'falta el saludo del final')
+  // El saludo va sólo en lo que se imprime (el kit lo verifica más abajo).
+  afirmar(!formulas.includes('Suerte en el examen'), 'el saludo se ve al pie del Machete en pantalla')
   const etapasMaterial = (formulas.match(/name="alcance-material"/g) ?? []).length
   afirmar(etapasMaterial === 3, `el filtro tiene ${etapasMaterial} opciones en lugar de Parcial, Final y Todas`)
   const { TablasDeExamen, KitExamen } = await servidor.ssrLoadModule('/src/componentes/Material.tsx')

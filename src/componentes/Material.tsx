@@ -14,7 +14,7 @@ import type { Evaluacion } from '../dominio/evaluaciones'
 import type { Tabla } from '../dominio/tipos'
 import { alTerminarDeDesplazar, usarSeccionVisible } from './desplazamiento'
 import { GraficoTabla } from './GraficoTabla'
-import { IconoDesplegar } from './Iconos'
+import { IconoSiguiente } from './Iconos'
 import { Formula, Mate } from './Mate'
 import { irA } from './MapaEjercicios'
 import { TablaDeDistribuciones } from './TablaDistribuciones'
@@ -321,7 +321,7 @@ export function IndiceMaterial({
                   aria-controls={`indice-guia-${h.guia}`}
                   onClick={() => bajar(h.guia, anclaGuia(h.guia))}
                 >
-                  <IconoDesplegar />
+                  <IconoSiguiente />
                   Guía {h.guia}
                 </button>
                 <div class="indice__plegable" id={`indice-guia-${h.guia}`} inert={!abierto}>

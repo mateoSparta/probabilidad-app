@@ -151,10 +151,7 @@ export function VistaMachete() {
 
       <div key={`material-${pestana}-${idAlcance}`} class={'material' + (entrada ? ' material--' + entrada : '')} role="tabpanel">
         {hay ? (
-          <>
-            {contenido(true)}
-            <Suerte />
-          </>
+          contenido(true)
         ) : (
           <p class="vacio">
             {pestana === 'formulas'

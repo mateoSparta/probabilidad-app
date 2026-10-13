@@ -28,7 +28,11 @@
   column-gap: var(--e-4);
   row-gap: var(--e-1);
   height: 100%;
-  padding: var(--e-3) var(--e-5);
+  /* Del borde de arriba a la tinta del nombre hay lo mismo que del borde
+     izquierdo al ícono (--e-5): al relleno se le resta lo que el renglón
+     deja en blanco sobre las letras (medio interlineado más el hueco sobre
+     las mayúsculas, unos 0,45 rem). Abajo, lo mismo. */
+  padding: calc(var(--e-5) - 0.45rem) var(--e-5);
   background: var(--superficie);
   border: 1px solid var(--borde);
   border-radius: var(--radio-lg);
