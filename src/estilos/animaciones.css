@@ -3,8 +3,7 @@
    Criterio: cortas (entre 150 y 450 ms), con salida suave, y siempre al
    servicio de algo: que se note qué cambió, de dónde salió un elemento o que
    una acción tuvo efecto. Nada se anima en bucle salvo el reloj del
-   simulacro cuando quedan menos de cinco minutos y el ícono de Seguimiento
-   del menú mientras el puntero está encima.
+   simulacro cuando quedan menos de cinco minutos.
 
    Los escalonados usan `--i`, el índice del elemento, que pone cada
    componente en su `style`.
@@ -195,26 +194,19 @@
   animation: levantar 1.1s ease-in-out both;
 }
 
-/* Skills: un destello de cuatro puntas se enciende sobre la medalla, gira y
-   se apaga; cuando se está apagando, se enciende otro en diagonal, abajo a
-   la izquierda. Los dos terminan apagados. */
-@keyframes destellar-uno {
+/* Skills: un destello de cuatro puntas se enciende sobre la medalla, gira,
+   resplandece y se apaga. */
+@keyframes destellar {
   0% { opacity: 0; transform: scale(0.2) rotate(-90deg); filter: none; }
-  22% { opacity: 1; transform: scale(1.25) rotate(0deg); filter: drop-shadow(0 0 2.5px currentColor); }
-  36% { opacity: 1; transform: scale(0.95); filter: drop-shadow(0 0 1px currentColor); }
-  55%, 100% { opacity: 0; transform: scale(0.2) rotate(45deg); filter: none; }
-}
-@keyframes destellar-dos {
-  0%, 45% { opacity: 0; transform: scale(0.2) rotate(-90deg); filter: none; }
-  68% { opacity: 1; transform: scale(1.2) rotate(0deg); filter: drop-shadow(0 0 2.5px currentColor); }
-  80% { opacity: 1; transform: scale(0.95); filter: drop-shadow(0 0 1px currentColor); }
+  40% { opacity: 1; transform: scale(1.25) rotate(0deg); filter: drop-shadow(0 0 2.5px currentColor); }
+  65% { opacity: 1; transform: scale(0.95); filter: drop-shadow(0 0 1px currentColor); }
   100% { opacity: 0; transform: scale(0.2) rotate(45deg); filter: none; }
 }
-.icono__destello { opacity: 0; }
-.icono__destello--uno { transform-origin: 18.5px 3.5px; }
-.icono__destello--dos { transform-origin: 4.8px 13px; }
-.menu__opcion--anima .icono__destello--uno { animation: destellar-uno 1.6s ease-out both; }
-.menu__opcion--anima .icono__destello--dos { animation: destellar-dos 1.6s ease-out both; }
+.icono__destello {
+  opacity: 0;
+  transform-origin: 18.5px 3.5px;
+}
+.menu__opcion--anima .icono__destello { animation: destellar 900ms ease-out both; }
 
 /* Simulacro: la aguja avanza dos tics, de golpe, como la de un cronómetro.
    `steps(2, start)` da el primero apenas entra el puntero y el segundo a
@@ -230,20 +222,19 @@
 }
 
 /* Seguimiento: el círculo tildado sale por la izquierda, entra otro sin
-   tilde por la derecha y, ya centrado, se tilda. El resto de la vuelta es
-   quieto, y se ve igual que el ícono sin animar: el bucle no tiene costura y
-   VistaMenu puede cortarlo ahí sin que se note (ver QUIETO_DESDE). */
+   tilde por la derecha y, ya centrado, se tilda. Una vez por hover: el final
+   se ve igual que el ícono sin animar, así que al sacar la clase no salta. */
 @keyframes correr-carril {
   0% { transform: none; animation-timing-function: cubic-bezier(0.6, 0, 0.3, 1); }
-  30%, 100% { transform: translateX(-38px); }
+  55%, 100% { transform: translateX(-38px); }
 }
 @keyframes tildar {
-  0%, 36% { stroke-dashoffset: 1; animation-timing-function: ease-out; }
-  56%, 100% { stroke-dashoffset: 0; }
+  0%, 62% { stroke-dashoffset: 1; animation-timing-function: ease-out; }
+  100% { stroke-dashoffset: 0; }
 }
 .icono__tilde { stroke-dasharray: 1; stroke-dashoffset: 1; }
-.menu__opcion--anima .icono__carril { animation: correr-carril 2s infinite; }
-.menu__opcion--anima .icono__tilde { animation: tildar 2s infinite; }
+.menu__opcion--anima .icono__carril { animation: correr-carril 1.1s both; }
+.menu__opcion--anima .icono__tilde { animation: tildar 1.1s both; }
 
 /* Fórmulas: la sumatoria gira apenas. */
 .menu__icono .icono--formulas {
@@ -255,10 +246,12 @@
 
 /* Distribuciones: una línea vertical recorre la campana desde la izquierda
    pintando el área bajo la curva hasta tres cuartos del ancho, y vuelve
-   borrándola, hasta dejar el ícono como estaba. */
+   borrándola, hasta dejar el ícono como estaba. Ida y vuelta sin pausa en
+   el extremo: cada mitad es una curva senoidal (la de easeInOutSine), que
+   frena justo hasta cero en el giro y no se queda ahí. */
 @keyframes barrer {
-  0% { transform: none; animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1); }
-  55%, 65% { transform: translateX(15px); animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1); }
+  0% { transform: none; animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
+  50% { transform: translateX(15px); animation-timing-function: cubic-bezier(0.37, 0, 0.63, 1); }
   100% { transform: none; }
 }
 @keyframes mostrar-corte {
