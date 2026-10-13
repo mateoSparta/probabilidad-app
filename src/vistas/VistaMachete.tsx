@@ -1,38 +1,54 @@
 /**
- * Machete (PLAN.md §12): lo que se lleva al examen. Muestra las fórmulas de
- * cada guía y las tablas de la cátedra, filtradas por etapa: todo, lo del
- * parcial o los temas propios del final. Un solo botón imprime lo que se ve,
- * o lo guarda en PDF desde el diálogo del navegador. A la izquierda, un
- * índice como el de las guías.
+ * Machete (PLAN.md §12): lo que se lleva al examen, y el único lugar desde el
+ * que se imprime. Tres pestañas: las fórmulas de cada guía, las tablas de la
+ * cátedra y la teoría de las distribuciones. Las dos primeras se filtran por
+ * etapa (todo, lo del parcial o los temas propios del final); la teoría de
+ * las distribuciones es la misma en todas. A la izquierda, un índice como el
+ * de las guías.
  *
- * Las pestañas Fórmulas y Tablas cambian el contenido con un desplazamiento
- * horizontal, en el sentido de la pestaña elegida; el filtro, con un fundido.
+ * Dos botones al lado del selector de etapa:
+ *
+ * - Imprimir lo que se ve (o guardarlo en PDF desde el diálogo del
+ *   navegador). Dice qué: la última palabra rueda como un tambor entre
+ *   "fórmulas", "tablas" y "distribuciones", y el botón no cambia de ancho.
+ * - El kit para el examen: las fórmulas y las tablas de la etapa, más la
+ *   tabla de distribuciones, en un solo documento.
+ *
+ * Las pestañas cambian el contenido con un desplazamiento horizontal, en el
+ * sentido de la pestaña elegida; el filtro, con un fundido.
  */
 import { useState } from 'preact/hooks'
 
-import { IconoImprimir } from '../componentes/Iconos'
+import { IconoBotiquin, IconoImprimir } from '../componentes/Iconos'
 import {
   hayFormulas,
   hayTablas,
   HojaDeFormulas,
   IndiceMaterial,
+  KitExamen,
   Suerte,
   TablasDeExamen,
 } from '../componentes/Material'
 import { SubirLateral, usarSubir } from '../componentes/SubirLateral'
+import { TablaDeDistribuciones } from '../componentes/TablaDistribuciones'
+import { TeoriaDistribuciones } from '../componentes/TeoriaDistribuciones'
 import { imprimir } from '../componentes/imprimir'
 import { config } from '../datos/contenido'
-import { alcances, rangoGuias } from '../dominio/evaluaciones'
+import { alcances, guiasDeLaMateria, rangoGuias } from '../dominio/evaluaciones'
 
-type Pestana = 'formulas' | 'tablas'
+export type Pestana = 'formulas' | 'tablas' | 'distribuciones'
 
-const PESTANAS: { id: Pestana; nombre: string }[] = [
-  { id: 'formulas', nombre: 'Fórmulas' },
-  { id: 'tablas', nombre: 'Tablas' },
+/** `palabra` es la que rueda en el botón de imprimir. */
+const PESTANAS: { id: Pestana; nombre: string; palabra: string }[] = [
+  { id: 'formulas', nombre: 'Fórmulas', palabra: 'fórmulas' },
+  { id: 'tablas', nombre: 'Tablas', palabra: 'tablas' },
+  { id: 'distribuciones', nombre: 'Distribuciones', palabra: 'distribuciones' },
 ]
 
 /** Cómo entra el contenido: de qué lado, o con un fundido. */
 type Entrada = 'derecha' | 'izquierda' | 'fundido' | null
+
+const TITULO = 'Probabilidad y Estadística B'
 
 export function VistaMachete() {
   const opciones = alcances(config.evaluaciones)
@@ -45,6 +61,11 @@ export function VistaMachete() {
   const indicePestana = PESTANAS.findIndex((p) => p.id === pestana)
   const indiceAlcance = opciones.findIndex((o) => o.id === alcance?.id)
 
+  // El kit es para un examen: el del parcial lleva sus guías; el del final,
+  // y el de "Todas", las de toda la materia, porque el final las evalúa todas.
+  const guiasKit = alcance?.id === 'todas' || alcance?.id === 'final' ? guiasDeLaMateria(config.evaluaciones) : guias
+  const examenKit = alcance?.id === 'parcial' ? 'el parcial' : 'el final'
+
   function elegirPestana(p: Pestana): void {
     if (p === pestana) return
     setEntrada(PESTANAS.findIndex((q) => q.id === p) > indicePestana ? 'derecha' : 'izquierda')
@@ -56,15 +77,27 @@ export function VistaMachete() {
     setIdAlcance(id)
   }
 
-  const hay = pestana === 'formulas' ? hayFormulas(guias) : hayTablas(guias)
+  const hay = pestana === 'formulas' ? hayFormulas(guias) : pestana === 'tablas' ? hayTablas(guias) : true
   const contenido = (anclas: boolean) =>
     pestana === 'formulas' ? (
       <HojaDeFormulas guias={guias} anclas={anclas} />
-    ) : (
+    ) : pestana === 'tablas' ? (
       <TablasDeExamen guias={guias} anclas={anclas} />
+    ) : (
+      <TeoriaDistribuciones anclas={anclas} />
     )
 
   function imprimirActual(): void {
+    if (pestana === 'distribuciones') {
+      void imprimir(
+        <div class="impreso impreso--distribuciones">
+          <TablaDeDistribuciones />
+          <Suerte />
+        </div>,
+        `Tabla de distribuciones - ${TITULO}`,
+      )
+      return
+    }
     const que = pestana === 'formulas' ? 'Fórmulas' : 'Tablas'
     const de = alcance.id === 'todas' ? 'de todas las guías' : `del ${alcance.id}`
     void imprimir(
@@ -75,8 +108,12 @@ export function VistaMachete() {
         {contenido(false)}
         <Suerte />
       </div>,
-      `${que} ${de} - Probabilidad y Estadística B`,
+      `${que} ${de} - ${TITULO}`,
     )
+  }
+
+  function imprimirKit(): void {
+    void imprimir(<KitExamen guias={guiasKit} />, `Kit para ${examenKit} - ${TITULO}`)
   }
 
   return (
@@ -87,14 +124,15 @@ export function VistaMachete() {
       <section class="guia__intro">
         <h2>Machete</h2>
         <p class="guia__descripcion">
-          Las fórmulas de cada guía y las tres tablas de la cátedra, para imprimir o guardar en PDF.
+          Las fórmulas de cada guía, las tablas de la cátedra y la teoría de las distribuciones,
+          para imprimir o guardar en PDF.
         </p>
       </section>
 
       <section class="material-config" aria-label="Qué mostrar">
         <div class="material-config__fila">
           <div
-            class="segmentado segmentado--linea segmentado--revelar"
+            class="segmentado segmentado--linea segmentado--revelar segmentado--apilado"
             role="radiogroup"
             aria-label="Etapa"
             style={{ '--n': opciones.length, '--activa': indiceAlcance }}
@@ -127,13 +165,50 @@ export function VistaMachete() {
               )
             })}
           </div>
-          <button class="boton boton--acento boton--icono" disabled={!hay} onClick={imprimirActual}>
-            <IconoImprimir />
-            Imprimir o guardar PDF
-          </button>
+
+          <div class="material-config__acciones">
+            <button
+              class="boton boton--acento boton--icono"
+              disabled={!hay}
+              aria-label={`Imprimir o guardar en PDF las ${PESTANAS[indicePestana].palabra}`}
+              data-tip="Imprimir o guardar en PDF"
+              onClick={imprimirActual}
+            >
+              <IconoImprimir />
+              {/* La última palabra rueda como un tambor, del lado de la pestaña
+                  elegida. El tambor mide lo que la palabra más larga, así que el
+                  botón no cambia de ancho. */}
+              <span class="material-config__texto" aria-hidden="true">
+                Imprimir{' '}
+                <span class="rodillo rodillo--varias" style={{ '--i': indicePestana }}>
+                  <span class="rodillo__cinta">
+                    {PESTANAS.map((p) => (
+                      <span key={p.id} class="rodillo__palabra">
+                        {p.palabra}
+                      </span>
+                    ))}
+                  </span>
+                </span>
+              </span>
+            </button>
+            <button
+              class="boton boton--icono"
+              disabled={!hayFormulas(guiasKit) && !hayTablas(guiasKit)}
+              data-tip={`Para ${examenKit}: las fórmulas y las tablas de las ${rangoGuias(guiasKit)} y la tabla de distribuciones, en un solo documento`}
+              onClick={imprimirKit}
+            >
+              <IconoBotiquin />
+              Kit para el examen
+            </button>
+          </div>
         </div>
 
-        <div class="pestanas pestanas--llenas" role="tablist" aria-label="Material" style={{ '--activa': indicePestana }}>
+        <div
+          class="pestanas pestanas--llenas"
+          role="tablist"
+          aria-label="Material"
+          style={{ '--activa': indicePestana, '--n': PESTANAS.length }}
+        >
           {PESTANAS.map((p) => (
             <button
               key={p.id}
@@ -149,7 +224,12 @@ export function VistaMachete() {
         </div>
       </section>
 
-      <div key={`material-${pestana}-${idAlcance}`} class={'material' + (entrada ? ' material--' + entrada : '')} role="tabpanel">
+      {/* La teoría de las distribuciones no depende de la etapa: cambiarla no la vuelve a montar. */}
+      <div
+        key={`material-${pestana}-${pestana === 'distribuciones' ? '' : idAlcance}`}
+        class={'material' + (entrada ? ' material--' + entrada : '')}
+        role="tabpanel"
+      >
         {hay ? (
           contenido(true)
         ) : (

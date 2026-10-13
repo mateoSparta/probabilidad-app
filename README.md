@@ -32,14 +32,15 @@ independientes, y el build los contrasta en cada corrida.
 Está cargado el núcleo recomendado por la cátedra (los ejercicios marcados `!`
 en la guía) de las ocho guías.
 
-**Machete para el examen.** La sección Machete imprime (o guarda en PDF) la
-hoja de fórmulas, las tablas de la cátedra (normal, $t$ y
-$\chi^2$) y un kit con todo junto. Las tablas las genera y verifica
+**Machete para el examen.** Todo lo que se imprime (o se guarda en PDF) está
+en la sección Machete, en tres pestañas: la hoja de fórmulas, las tablas de la
+cátedra (normal, $t$ y $\chi^2$) y la teoría de las distribuciones. Al lado,
+un kit para el examen con todo junto. Las tablas las genera y verifica
 `tools/verify/tablas.py`; ver [revision/formulas.md](revision/formulas.md).
 
 **Distribuciones.** Las 19 distribuciones de la tabla de la cátedra, cada una
 con una calculadora (los valores se escriben en la fórmula o se arrastran sus
 líneas sobre el gráfico) y, plegadas, su ficha y tips para la intuición. Cada
-cuenta se contrasta con mpmath y con las tablas. Un botón imprime la tabla de
-distribuciones de la cátedra, que también va en el kit; ver
+cuenta se contrasta con mpmath y con las tablas. La tabla de distribuciones de
+la cátedra se imprime desde el Machete; ver
 [revision/distribuciones.md](revision/distribuciones.md).

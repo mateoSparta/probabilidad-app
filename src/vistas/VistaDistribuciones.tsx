@@ -10,20 +10,18 @@
  * guías; en pantallas angostas, un selector.
  *
  * Las cuentas están en dominio/distribuciones.ts y se contrastan con mpmath
- * (tools/verify/distribuciones.py). El botón de imprimir arma la tabla de
- * distribuciones de la cátedra (componentes/TablaDistribuciones.tsx).
+ * (tools/verify/distribuciones.py). La tabla de distribuciones de la cátedra
+ * se imprime desde el Machete, como todo lo que se imprime.
  */
 import type { ComponentChildren } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 
 import { decimalesArrastre, GraficoDistribucion, type Manija } from '../componentes/GraficoDistribucion'
-import { IconoDesplegar, IconoImprimir } from '../componentes/Iconos'
+import { IconoDesplegar } from '../componentes/Iconos'
 import { Formula, Mate } from '../componentes/Mate'
 import { Indicador } from '../componentes/Indicador'
-import { Suerte } from '../componentes/Material'
 import { SubirLateral, usarSubir } from '../componentes/SubirLateral'
-import { sinMiembroIzquierdo, TablaDeDistribuciones } from '../componentes/TablaDistribuciones'
-import { imprimir } from '../componentes/imprimir'
+import { sinMiembroIzquierdo } from '../componentes/TablaDistribuciones'
 import { fichasDistribuciones } from '../datos/contenido'
 import {
   condicionalBivariada,
@@ -80,29 +78,13 @@ export function VistaDistribuciones() {
     setAbiertasLocal(abiertasAntes)
   }
 
-  function imprimirTabla(): void {
-    void imprimir(
-      <div class="impreso impreso--distribuciones">
-        <TablaDeDistribuciones />
-        <Suerte />
-      </div>,
-      'Tabla de distribuciones - Probabilidad y Estadística B',
-    )
-  }
-
   return (
     <>
       <IndiceDistribuciones actual={ficha.id} onElegir={elegir} />
       <SubirLateral visible={subir} />
 
-      <section class="guia__intro dist-intro">
-        <div class="dist-intro__fila">
-          <h2>Distribuciones</h2>
-          <button class="boton boton--icono" onClick={imprimirTabla}>
-            <IconoImprimir />
-            Imprimir la tabla
-          </button>
-        </div>
+      <section class="guia__intro">
+        <h2>Distribuciones</h2>
         <p class="guia__descripcion">
           Cada distribución del curso con su gráfico y una calculadora.
         </p>
@@ -228,7 +210,9 @@ function Desplegable({
 function Cabeza({ ficha, children }: { ficha: FichaDistribucion; children?: ComponentChildren }) {
   return (
     <header class="dist__cabeza">
-      <h3 id="dist-nombre" class="dist__nombre">
+      {/* Un nombre largo (Hipergeométrica) va un escalón más chico, para que
+          el selector de la derecha no baje de renglón. */}
+      <h3 id="dist-nombre" class={'dist__nombre' + (ficha.nombre.length > 14 ? ' dist__nombre--largo' : '')}>
         {ficha.nombre}
       </h3>
       <span class="dist__notacion">

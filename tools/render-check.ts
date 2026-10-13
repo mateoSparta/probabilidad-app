@@ -314,7 +314,8 @@ try {
     'la ficha y los tips no arrancan plegados')
   afirmar(dist.includes('Intuición y relaciones') && dist.includes('teorema central del límite'),
     'faltan los tips de la normal')
-  afirmar(dist.includes('Imprimir la tabla'), 'falta el botón que imprime la tabla de distribuciones')
+  // Todo lo que se imprime está en el Machete: Distribuciones ya no tiene su botón.
+  afirmar(!dist.includes('Imprimir la tabla') && !dist.includes('IconoImprimir'), 'Distribuciones sigue teniendo un botón de imprimir')
   const { TablaDeDistribuciones } = await servidor.ssrLoadModule('/src/componentes/TablaDistribuciones.tsx')
   const tablaDist = render(createElement(TablaDeDistribuciones, {}))
   afirmar(!tablaDist.includes('mate-roto') && (tablaDist.match(/<tr>/g) ?? []).length >= 19 &&
@@ -325,8 +326,30 @@ try {
   // --- machete ---
   const { VistaMachete } = await servidor.ssrLoadModule('/src/vistas/VistaMachete.tsx')
   const formulas = render(createElement(VistaMachete, {}))
-  afirmar(formulas.includes('<h2>Machete</h2>') && formulas.includes('Imprimir o guardar PDF'),
+  afirmar(formulas.includes('<h2>Machete</h2>') && formulas.includes('data-tip="Imprimir o guardar en PDF"'),
     'el Machete no se dibuja o no tiene el botón de imprimir')
+  // El botón dice qué imprime: la palabra rueda entre las tres pestañas.
+  afirmar(
+    formulas.includes('class="rodillo rodillo--varias"') &&
+      formulas.includes(
+        '<span class="rodillo__cinta"><span class="rodillo__palabra">fórmulas</span><span class="rodillo__palabra">tablas</span><span class="rodillo__palabra">distribuciones</span>',
+      ),
+    'el botón de imprimir no dice qué imprime con el rodillo de tres palabras',
+  )
+  // La teoría de las distribuciones: una ficha por distribución, agrupadas
+  // como en la tabla de la cátedra, con sus anclas para el índice.
+  {
+    const { TeoriaDistribuciones } = await servidor.ssrLoadModule('/src/componentes/TeoriaDistribuciones.tsx')
+    const teoria = render(createElement(TeoriaDistribuciones, { anclas: true }))
+    const fichas = (teoria.match(/<article class="ficha-dist/g) ?? []).length
+    afirmar(fichas === contenido.fichasDistribuciones.length && !teoria.includes('mate-roto') &&
+      teoria.includes('id="teoria-hipergeometrica"') && teoria.includes('>Equivalencias</h3>') &&
+      teoria.indexOf('Distribuciones discretas') < teoria.indexOf('Distribuciones continuas'),
+      `la teoría de distribuciones tiene ${fichas} fichas, o le faltan secciones o anclas`)
+  }
+  // Al lado, el kit para el examen, con el botiquín; y las tres pestañas.
+  afirmar(formulas.includes('Kit para el examen') && (formulas.match(/role="tab"/g) ?? []).length === 3 &&
+    formulas.includes('>Distribuciones</button>'), 'falta el kit al lado de imprimir, o la pestaña Distribuciones')
   // "Todas" es la primera opción y la elegida al entrar.
   afirmar(/name="alcance-material" value="todas" checked/.test(formulas) &&
     formulas.indexOf('value="todas"') < formulas.indexOf('value="parcial"'),
@@ -363,7 +386,7 @@ try {
     'no están las tres tablas de la cátedra, cada una con su gráfico')
   afirmar(tablasParcial.includes('<td>0,50399</td>') && tablasParcial.includes('<td>0,97500</td>'),
     'la tabla normal no tiene los valores de la cátedra')
-  const kit = render(createElement(KitExamen, { evaluacion: contenido.config.evaluaciones[0] }))
+  const kit = render(createElement(KitExamen, { guias: contenido.config.evaluaciones[0].guias }))
   afirmar(!kit.includes('Kit para el parcial') && !kit.includes('kit__caratula'), 'el kit sigue teniendo carátula')
   afirmar(kit.indexOf('Fórmulas') < kit.indexOf('Tablas') && kit.indexOf('Tablas') < kit.indexOf('Tabla de distribuciones') &&
     kit.includes('Suerte en el examen'),
@@ -663,8 +686,7 @@ try {
     /class="interruptores"[\s\S]*class="sim-arranque"[\s\S]*<\/section><section class="pool desplegable"/.test(simulacro),
     'el botón de arrancar no quedó dentro del recuadro, debajo de los interruptores, con el pool afuera',
   )
-  afirmar(simulacro.includes('class="kit-aviso"') && simulacro.includes('Kit para el parcial'),
-    'el simulacro no ofrece el kit para el parcial')
+  afirmar(!simulacro.includes('kit-aviso'), 'el kit sigue en el simulacro: ahora está en el Machete')
   // El pool arranca plegado.
   afirmar(
     simulacro.includes('aria-expanded="false"') &&

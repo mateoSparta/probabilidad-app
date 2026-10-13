@@ -889,6 +889,9 @@
   transition: transform 420ms cubic-bezier(0.34, 1.25, 0.64, 1);
 }
 .rodillo--abajo .rodillo__cinta { transform: translateY(0); }
+/* Con más de dos palabras (el botón de imprimir del Machete), la cinta se
+   corre tantos renglones como diga --i: la palabra elegida. */
+.rodillo--varias .rodillo__cinta { transform: translateY(calc(var(--i, 0) * -1lh)); }
 .rodillo__palabra { height: 1lh; }
 
 .boton--grande {
@@ -1370,6 +1373,14 @@
   opacity: 1;
   transition-delay: 120ms;
 }
+/* Apilado (el Machete): el nombre arriba y el dato abajo, para que el
+   selector sea angosto y entren los botones al lado. */
+.segmentado--apilado .segmentado__opcion {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+}
 /* En un teléfono no entran en un renglón: el dato va debajo del nombre. */
 @media (max-width: 40rem) {
   .segmentado--linea .segmentado__opcion {
@@ -1749,9 +1760,16 @@
   align-items: stretch;
   gap: var(--e-3);
 }
-/* El selector ocupa lo que deja el botón, y los dos tienen el mismo alto. */
-.material-config__fila .segmentado { flex: 1 1 24rem; }
-.material-config__fila .boton { flex: none; }
+/* El selector de etapa a la izquierda y los dos botones a la derecha, todos
+   del mismo alto. Si no entran en un renglón, los botones bajan. */
+.material-config__fila .segmentado { flex: 1 1 18rem; }
+.material-config__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+}
+.material-config__acciones .boton { flex: none; }
+.material-config__texto { white-space: nowrap; }
 
 /* Pestañas subrayadas: la activa en acento, sobre un filete común. Las
    llenas ocupan el ancho de la columna en partes iguales, y el subrayado se
@@ -1783,7 +1801,7 @@
 .pestanas--llenas {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr));
   gap: 0;
 }
 .pestanas--llenas .pestana,
@@ -1792,7 +1810,7 @@
   position: absolute;
   left: 0;
   bottom: -1px;
-  width: 50%;
+  width: calc(100% / var(--n, 2));
   border-bottom: 2px solid var(--acento);
   transform: translateX(calc(var(--activa) * 100%));
   transition: transform 320ms cubic-bezier(0.3, 0.8, 0.3, 1);
@@ -1873,6 +1891,98 @@
   margin: var(--e-3) 0 0;
   font-size: var(--t-sm);
   color: var(--tinta-2);
+}
+
+/* La teoría de las distribuciones (Machete): una ficha por distribución, de
+   la misma familia que las de fórmulas. Arriba el nombre con su notación y
+   para qué se usa; debajo, las propiedades en filas, con el rótulo en gris a
+   la izquierda y la fórmula a la derecha, separadas por filetes finos. Las
+   multivariadas ocupan la fila entera. */
+.ficha-dist {
+  display: flex;
+  flex-direction: column;
+  padding: var(--e-3) var(--e-4) var(--e-2);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  scroll-margin-top: var(--e-4);
+}
+.ficha-dist--ancha { grid-column: 1 / -1; }
+.ficha-dist__cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 var(--e-3);
+}
+.ficha-dist__nombre {
+  margin: 0;
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+.ficha-dist__notacion {
+  font-size: var(--t-sm);
+  color: var(--acento);
+}
+.ficha-dist__modelo {
+  margin: 2px 0 var(--e-2);
+  font-size: var(--t-xs);
+  line-height: 1.4;
+  color: var(--tinta-2);
+}
+.ficha-dist__lista {
+  margin: auto 0 0;
+  font-size: var(--t-sm);
+}
+.ficha-dist__fila {
+  display: grid;
+  grid-template-columns: 5.25rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--e-2);
+  padding: 0.3rem 0;
+  border-top: 1px solid var(--borde);
+}
+.ficha-dist__fila dt {
+  font-size: var(--t-xs);
+  color: var(--tinta-3);
+}
+.ficha-dist__fila dd {
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.ficha-dist__varias {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.ficha-dist__nota {
+  margin: var(--e-1) 0 0;
+  font-size: var(--t-xs);
+  color: var(--tinta-2);
+}
+.ficha-dist__nota:first-of-type {
+  padding-top: var(--e-1);
+  border-top: 1px solid var(--borde);
+}
+.teoria-dist__equivalencias {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e-2) var(--e-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-sm);
+}
+.teoria-dist__equivalencias li {
+  padding: var(--e-2) var(--e-3);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  overflow-x: auto;
+}
+@media (max-width: 40rem) {
+  .teoria-dist__equivalencias { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* Las tablas, con el formato de las de la cátedra: el gráfico de la
@@ -1988,39 +2098,10 @@
   color: var(--tinta-2);
 }
 
-/* El kit en el simulacro: una línea de texto y el botón. */
-.kit-aviso {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--e-3) var(--e-5);
-  margin-top: var(--e-6);
-  padding-top: var(--e-4);
-  border-top: 1px solid var(--borde);
-}
-.kit-aviso__texto {
-  flex: 1 1 20rem;
-  margin: 0;
-  font-size: var(--t-sm);
-  color: var(--tinta-2);
-}
-
 /* El contenedor de impresión no se ve en pantalla (ver impresion.css). */
 #impresion { display: none; }
 
 /* --------------------------------------------------- distribuciones */
-
-/* El título y, a su derecha, el botón que imprime la tabla de la cátedra. */
-.dist-intro__fila {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--e-2) var(--e-4);
-  margin-bottom: var(--e-3);
-}
-.dist-intro__fila h2 { margin: 0; }
 
 /* En pantallas angostas no está el índice: la distribución se elige acá. */
 .dist-elegir {
@@ -2048,6 +2129,7 @@
   margin-bottom: var(--e-4);
 }
 .dist__nombre { margin: 0; font-size: var(--t-lg); }
+.dist__nombre--largo { font-size: var(--t-md); }
 .dist__notacion { color: var(--tinta-2); }
 /* Qué calcular (o qué marginal graficar), contra el margen derecho. */
 .dist__cabeza .calc__modos {

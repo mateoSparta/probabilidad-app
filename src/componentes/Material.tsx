@@ -9,8 +9,7 @@
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks'
 
-import { guiaPorNumero, hojasFormulas, tablas } from '../datos/contenido'
-import type { Evaluacion } from '../dominio/evaluaciones'
+import { fichasDistribuciones, guiaPorNumero, hojasFormulas, tablas } from '../datos/contenido'
 import type { Tabla } from '../dominio/tipos'
 import { alTerminarDeDesplazar, usarSeccionVisible } from './desplazamiento'
 import { GraficoTabla } from './GraficoTabla'
@@ -18,6 +17,7 @@ import { IconoSiguiente } from './Iconos'
 import { Formula, Mate } from './Mate'
 import { irA } from './MapaEjercicios'
 import { TablaDeDistribuciones } from './TablaDistribuciones'
+import { anclaDistribucion, anclaGrupoDistribucion, GRUPOS_DISTRIBUCION } from './TeoriaDistribuciones'
 
 /** Si hay algo que mostrar para esas guías. */
 export const hayFormulas = (guias: readonly number[]) =>
@@ -251,7 +251,7 @@ export function IndiceMaterial({
   pestana,
   guias,
 }: {
-  pestana: 'formulas' | 'tablas'
+  pestana: 'formulas' | 'tablas' | 'distribuciones'
   guias: readonly number[]
 }) {
   const hojas = hojasFormulas.filter((h) => guias.includes(h.guia))
@@ -265,6 +265,45 @@ export function IndiceMaterial({
   )
   const [abierta, setAbierta] = useState<number | null>(visible)
   useEffect(() => setAbierta(visible), [visible])
+
+  // La teoría de las distribuciones: los grupos como rótulos que cortan la
+  // línea, igual que en la sección Distribuciones, y las equivalencias al final.
+  if (pestana === 'distribuciones') {
+    return (
+      <aside class="indice indice--grupos" aria-label="Índice de las distribuciones">
+        <div class="indice__contenido">
+          <ol class="indice__lista">
+            {GRUPOS_DISTRIBUCION.map(({ grupo, rotulo }, i) => (
+              <li key={grupo} class="indice__grupo" style={{ '--i': i }}>
+                <p class="indice__rotulo">{rotulo}</p>
+                <ol class="indice__sublista indice__sublista--fija">
+                  {fichasDistribuciones
+                    .filter((f) => f.grupo === grupo)
+                    .map((f) => (
+                      <li key={f.id}>
+                        <button class="indice__tema" onClick={() => irA(anclaDistribucion(f.id))}>
+                          {f.nombre}
+                        </button>
+                      </li>
+                    ))}
+                </ol>
+              </li>
+            ))}
+            <li class="indice__grupo" style={{ '--i': GRUPOS_DISTRIBUCION.length }}>
+              <p class="indice__rotulo">Relaciones</p>
+              <ol class="indice__sublista indice__sublista--fija">
+                <li>
+                  <button class="indice__tema" onClick={() => irA(anclaGrupoDistribucion('equivalencias'))}>
+                    Equivalencias
+                  </button>
+                </li>
+              </ol>
+            </li>
+          </ol>
+        </div>
+      </aside>
+    )
+  }
 
   if (pestana === 'tablas') {
     const lista = tablas.filter((t) => guias.includes(t.guia))
@@ -287,19 +326,43 @@ export function IndiceMaterial({
     )
   }
 
-  /** Baja hasta un ancla de la guía, con el acordeón quieto mientras dura el desplazamiento. */
-  function bajar(guia: number, ancla: string, alLlegar?: () => void): void {
+  /**
+   * Baja hasta un ancla de la guía, con el acordeón quieto mientras dura el
+   * desplazamiento. Con `destino`, baja hasta esa posición en lugar de dejar
+   * el ancla arriba.
+   */
+  function bajar(guia: number, ancla: string, alLlegar?: () => void, destino?: number): void {
     setAbierta(guia)
     pausa.current = true
-    irA(ancla)
+    if (destino === undefined) irA(ancla)
+    else scrollTo({ top: destino, behavior: 'smooth' })
     alTerminarDeDesplazar(() => {
       pausa.current = false
       dispatchEvent(new Event('scroll'))
       alLlegar?.()
     })
   }
-  const irATema = (guia: number, i: number) =>
-    bajar(guia, anclaTema(guia, i), () => resaltarTema(anclaTema(guia, i)))
+  /**
+   * Un tema del índice. El primero es lo mismo que la guía: baja hasta su
+   * título. Los demás quedan arriba, salvo que así el título de la guía
+   * siguiente pasara la mitad de la pantalla (el último tema de una guía
+   * corta, por ejemplo): el acordeón abriría la siguiente. Entonces el tema
+   * queda justo por debajo de la mitad, y la guía que se lee sigue abierta.
+   */
+  function irATema(guia: number, i: number): void {
+    const ancla = anclaTema(guia, i)
+    const resaltar = () => resaltarTema(ancla)
+    if (i === 0) return bajar(guia, anclaGuia(guia), resaltar)
+    const tema = document.getElementById(ancla)
+    const siguiente = hojas[hojas.findIndex((h) => h.guia === guia) + 1]
+    const titulo = siguiente && document.getElementById(anclaGuia(siguiente.guia))
+    if (!tema || !titulo) return bajar(guia, ancla, resaltar)
+    const arriba = tema.getBoundingClientRect().top + scrollY
+    const normal = arriba - (parseFloat(getComputedStyle(tema).scrollMarginTop) || 0)
+    const tituloSiguiente = titulo.getBoundingClientRect().top + scrollY
+    if (tituloSiguiente - normal > innerHeight / 2) return bajar(guia, ancla, resaltar)
+    bajar(guia, ancla, resaltar, Math.max(0, arriba - innerHeight / 2 - 16))
+  }
 
   if (hojas.length === 0) return null
   return (
@@ -354,8 +417,7 @@ export function Suerte() {
  * fórmulas y las tablas de sus guías, la tabla de distribuciones de la
  * cátedra y el saludo. Cada parte empieza en una página nueva.
  */
-export function KitExamen({ evaluacion }: { evaluacion: Evaluacion }) {
-  const { guias } = evaluacion
+export function KitExamen({ guias }: { guias: readonly number[] }) {
   return (
     <div class="kit">
       {hayFormulas(guias) && (

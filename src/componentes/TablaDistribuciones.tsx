@@ -6,7 +6,9 @@
  *
  * Se arma con los datos de content/distribuciones.yaml, los mismos de las
  * fichas de la sección Distribuciones; no se publica el PDF de la cátedra.
- * Se imprime desde Distribuciones y va también en el kit para el examen.
+ * Se imprime desde la pestaña Distribuciones del Machete (que en pantalla
+ * muestra lo mismo en fichas, TeoriaDistribuciones) y va en el kit para el
+ * examen.
  */
 import { fichasDistribuciones } from '../datos/contenido'
 import type { FichaDistribucion } from '../dominio/tipos'
@@ -84,7 +86,7 @@ function NotasSoporte({ fichas }: { fichas: FichaDistribucion[] }) {
 }
 
 /** Las equivalencias, sin repetir la misma con los miembros al revés. */
-function equivalencias(fichas: FichaDistribucion[]): string[] {
+export function equivalencias(fichas: FichaDistribucion[]): string[] {
   const vistas = new Set<string>()
   const salida: string[] = []
   for (const e of fichas.flatMap((f) => f.equivalencias ?? [])) {
