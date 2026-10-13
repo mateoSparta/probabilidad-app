@@ -1,7 +1,8 @@
 /**
- * Los accesos de la esquina inferior derecha del inicio: invitar un cafecito
- * y el código del proyecto en GitHub. Se ven sólo en el inicio, para no
- * molestar mientras se estudia.
+ * Los accesos de la esquina inferior derecha del inicio: invitar un cafecito,
+ * el código del proyecto en GitHub y el modo nocturno. Se ven sólo en el
+ * inicio, para no molestar mientras se estudia; el modo elegido vale en toda
+ * la app.
  *
  * Son círculos chicos con el ícono solo (el globo dice qué hace cada uno).
  * Entran subiendo desde el borde inferior, de a uno, se pasan un poco de su
@@ -16,7 +17,8 @@
 import type { ComponentType } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 
-import { IconoGithub, LogoCafecito } from './Iconos'
+import { usarTema } from '../datos/usarTema'
+import { IconoGithub, IconoLuna, IconoSol, LogoCafecito } from './Iconos'
 
 type Acceso = { href: string; ayuda: string; etiqueta: string; Icono: ComponentType }
 
@@ -41,8 +43,13 @@ function sinMovimiento(): boolean {
   return typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
+/** Cuántos círculos hay: los enlaces y el del modo. */
+const CANTIDAD = ACCESOS.length + 1
+
 export function Accesos({ visible }: { visible: boolean }) {
   const [fase, setFase] = useState<Fase>(visible ? 'entrando' : 'oculto')
+  const { tema, alternar } = usarTema()
+  const oscuro = tema === 'oscuro'
 
   useEffect(() => {
     if (visible) setFase('entrando')
@@ -59,10 +66,7 @@ export function Accesos({ visible }: { visible: boolean }) {
           class="accesos__item"
           // Al entrar, de abajo hacia arriba (--j); al salir, el de arriba
           // primero (--i), así el último en irse es el de abajo.
-          style={{ '--i': i, '--j': ACCESOS.length - 1 - i }}
-          onAnimationEnd={(e) => {
-            if (e.target === e.currentTarget && fase === 'saliendo' && i === ACCESOS.length - 1) setFase('oculto')
-          }}
+          style={{ '--i': i, '--j': CANTIDAD - 1 - i }}
         >
           <a
             class="accesos__boton"
@@ -77,6 +81,31 @@ export function Accesos({ visible }: { visible: boolean }) {
           </a>
         </li>
       ))}
+      {/* El último en irse es el de abajo, el del modo: al terminar su
+          salida se desmonta todo. */}
+      <li
+        class="accesos__item"
+        style={{ '--i': CANTIDAD - 1, '--j': 0 }}
+        onAnimationEnd={(e) => {
+          if (e.target === e.currentTarget && fase === 'saliendo') setFase('oculto')
+        }}
+      >
+        <button
+          class={'accesos__boton accesos__tema' + (oscuro ? ' accesos__tema--oscuro' : '')}
+          aria-label="Modo nocturno"
+          aria-pressed={oscuro}
+          data-tip={oscuro ? 'Modo claro' : 'Modo nocturno'}
+          tabIndex={fase === 'saliendo' ? -1 : undefined}
+          onClick={alternar}
+        >
+          <span class="accesos__icono accesos__icono--luna" aria-hidden="true">
+            <IconoLuna />
+          </span>
+          <span class="accesos__icono accesos__icono--sol" aria-hidden="true">
+            <IconoSol />
+          </span>
+        </button>
+      </li>
     </ul>
   )
 }

@@ -506,7 +506,7 @@
   background: var(--superficie-alta);
   border: 1px solid var(--borde);
   border-radius: var(--radio-lg);
-  box-shadow: 0 2px 6px #2b262012, 0 14px 36px #2b26201f;
+  box-shadow: var(--sombra-flotante);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-4px);
@@ -775,7 +775,7 @@
   background: var(--superficie-alta);
   border: 1px solid var(--borde);
   border-radius: var(--radio-lg);
-  box-shadow: 0 2px 4px #2b262014, 0 12px 32px #2b26201f;
+  box-shadow: var(--sombra-flotante);
   transform-origin: top right;
 }
 .navegacion__lista[hidden] { display: none; }

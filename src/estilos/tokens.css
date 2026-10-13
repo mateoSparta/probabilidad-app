@@ -62,4 +62,72 @@
   --radio-pill: 999px;
 
   --sombra: 0 1px 2px #2b262010, 0 2px 8px #2b26200a;
+  /* --- sombras y velos --- */
+  --sombra-relieve: 0 1px 3px #2b26201c;
+  --sombra-alta: 0 2px 4px #2b262012, 0 12px 28px #2b262018;
+  --sombra-flotante: 0 2px 6px #2b262012, 0 14px 36px #2b26201f;
+  --sombra-modal: 0 4px 12px #2b26201a, 0 24px 60px #2b262033;
+  /* El fondo de las ventanas modales, detrás del desenfoque. */
+  --velo: #2b262047;
+  /* El texto sobre el acento o sobre el rojo de "borrar". */
+  --sobre-acento: #ffffff;
+
+  color-scheme: light;
+}
+
+/* Modo nocturno (data-tema en <html>, que pone index.html antes de dibujar
+   y cambia el botón de la luna del inicio). Un oscuro cálido, no un gris:
+   el fondo es un marrón casi negro, el texto un crema apagado y el acento
+   la misma terracota, más clara para que tenga contraste. Los estados
+   conservan su tono y suben de luz por la misma razón. Sólo en pantalla:
+   lo que se imprime sale siempre en claro. */
+@media screen {
+  :root[data-tema='oscuro'] {
+    --fondo: #1a1714;
+    --superficie: #221e1a;
+    --superficie-alta: #2a2520;
+    --superficie-teoria: #29221b;
+    --borde-teoria: #d9845c38;
+    --tinta: #ebe3d6;
+    --tinta-2: #b4a998;
+    --tinta-3: #877d71;
+    --acento: #d9845c;
+    --acento-suave: #d9845c26;
+    --borde: #ebe3d61c;
+    --borde-fuerte: #ebe3d63a;
+
+    --dominado: #86b07e;
+    --desarrollo: #d6ab5e;
+    --flojo: #dd8070;
+    --sin-explorar: #877d71;
+
+    --dominado-suave: #86b07e26;
+    --desarrollo-suave: #d6ab5e26;
+    --flojo-suave: #dd807026;
+
+    --sombra: 0 1px 2px #00000033, 0 2px 8px #00000026;
+    --sombra-relieve: 0 1px 3px #00000059;
+    --sombra-alta: 0 2px 4px #00000040, 0 12px 28px #00000059;
+    --sombra-flotante: 0 2px 6px #00000047, 0 14px 36px #00000066;
+    --sombra-modal: 0 4px 12px #00000059, 0 24px 60px #00000080;
+    --velo: #0a080699;
+    --sobre-acento: #1a1714;
+
+    color-scheme: dark;
+  }
+}
+
+/* Al cambiar de modo, los colores pasan de uno a otro en un instante, en
+   lugar de saltar (usarTema pone la clase un momento). */
+.tema-cambiando,
+.tema-cambiando *,
+.tema-cambiando *::before,
+.tema-cambiando *::after {
+  transition:
+    background-color 280ms ease,
+    border-color 280ms ease,
+    color 280ms ease,
+    fill 280ms ease,
+    stroke 280ms ease,
+    box-shadow 280ms ease !important;
 }

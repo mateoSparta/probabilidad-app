@@ -168,7 +168,7 @@
 }
 .menu__opcion:hover {
   transform: translateY(-3px);
-  box-shadow: 0 2px 4px #2b262010, 0 12px 28px #2b262016;
+  box-shadow: var(--sombra-alta);
 }
 
 /* Cada ícono tiene su propia animación al pasar el puntero (o al llegar con

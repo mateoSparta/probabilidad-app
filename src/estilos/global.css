@@ -162,7 +162,7 @@ a.migas__codigo:focus-visible {
 .tab[aria-current='page'],
 .tab[aria-current='page']:hover {
   background: transparent;
-  color: var(--superficie-alta);
+  color: var(--sobre-acento);
   font-weight: 500;
 }
 .tabs .indicador {
@@ -198,7 +198,7 @@ a.migas__codigo:focus-visible {
 .boton--acento {
   background: var(--acento);
   border-color: var(--acento);
-  color: #fff;
+  color: var(--sobre-acento);
 }
 .boton--acento:hover { filter: brightness(1.08); background: var(--acento); }
 .boton--fantasma { background: transparent; border-color: transparent; color: var(--tinta-2); }

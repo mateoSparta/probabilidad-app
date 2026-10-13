@@ -9,6 +9,8 @@
  *
  * Uso:  npm run render-check
  */
+import { readFileSync } from 'node:fs'
+
 import { createElement } from 'preact'
 import { render } from 'preact-render-to-string'
 import { createServer } from 'vite'
@@ -863,6 +865,25 @@ try {
     'los accesos del inicio no llevan a cafecito y a GitHub, o no tienen su globo',
   )
   afirmar(render(createElement(Accesos, { visible: false })) === '', 'los accesos se dibujan fuera del inicio')
+  // El tercero es el modo nocturno: un botón con la luna y el sol.
+  afirmar(
+    /<button class="accesos__boton accesos__tema"[^>]*aria-label="Modo nocturno" aria-pressed="false"/.test(accesos) &&
+      accesos.includes('accesos__icono--luna') && accesos.includes('accesos__icono--sol'),
+    'falta el botón del modo nocturno en los accesos del inicio',
+  )
+  // El modo nocturno depende de que todos los colores sean variables: fuera
+  // de tokens.css (y de la impresión, que es en blanco y negro) no puede
+  // quedar ninguno fijo. Y la paleta oscura es sólo para la pantalla.
+  for (const hoja of ['global', 'componentes', 'navegacion', 'animaciones']) {
+    const css = readFileSync(new URL(`../src/estilos/${hoja}.css`, import.meta.url), 'utf8')
+    const fijos = css.match(/#[0-9a-fA-F]{3,8}/g) ?? []
+    afirmar(fijos.length === 0, `${hoja}.css tiene colores fijos (${fijos.join(', ')}): van en tokens.css`)
+  }
+  const tokens = readFileSync(new URL('../src/estilos/tokens.css', import.meta.url), 'utf8')
+  afirmar(tokens.replace(/\s+/g, ' ').includes("@media screen { :root[data-tema='oscuro'] {"),
+    'la paleta oscura no está limitada a la pantalla')
+  const indice = readFileSync(new URL('../index.html', import.meta.url), 'utf8')
+  afirmar(indice.includes('document.documentElement.dataset.tema'), 'index.html no fija el modo antes de dibujar')
   // El sello de la FIUBA se fue: la página de la cátedra está en el código de la materia.
   const cabeceraInicio = render(createElement(Cabecera, { ruta: { seccion: 'menu', guia: 1 } }))
   afirmar(cabeceraInicio.includes('<a class="migas__codigo" href="https://campusgrado.fi.uba.ar/course/view.php?id=46"'),
