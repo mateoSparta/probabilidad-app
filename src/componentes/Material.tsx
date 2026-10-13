@@ -27,21 +27,6 @@ const anclaGuia = (g: number) => `formulas-guia-${g}`
 const anclaTema = (g: number, i: number) => `formulas-${g}-${i + 1}`
 const anclaTabla = (id: string) => `tabla-${id}`
 
-/**
- * La tabla que pidió otra sección (la ficha de una distribución). Al entrar,
- * el Machete abre la pestaña de tablas y baja hasta ella. No va en la
- * URL porque la ruta sólo lleva la sección y la guía.
- */
-let tablaPedida: string | null = null
-export function pedirTabla(id: string): void {
-  tablaPedida = id
-}
-export function tomarTablaPedida(): string | null {
-  const t = tablaPedida
-  tablaPedida = null
-  return t
-}
-export const irATabla = (id: string) => irA(anclaTabla(id), false)
 
 type PropsHoja = {
   guias: readonly number[]
@@ -150,32 +135,32 @@ export function TablasDeExamen({ guias, anclas }: PropsHoja) {
 }
 
 /**
- * La cruz de una tabla: con el puntero sobre una cifra se marcan su fila y su
- * columna, hasta los rótulos, para ver a qué par de valores (ν y α, o las dos
- * partes de z) corresponde. Se tocan las clases a mano, sin estado, para no
- * volver a pasar por KaTeX los rótulos de toda la tabla en cada movimiento.
+ * Las coordenadas de una cifra: con el puntero encima se marcan la cifra, el
+ * rótulo de su fila y el de su columna, para ver a qué par de valores (ν y α,
+ * o las dos partes de z) corresponde. Se tocan las clases a mano, sin estado,
+ * para no volver a pasar por KaTeX los rótulos de toda la tabla en cada
+ * movimiento.
  */
-const CRUZ = 'tabla-num__cruz'
-const CENTRO = 'tabla-num__centro'
+const ROTULO = 'tabla-num__rotulo-marcado'
+const CIFRA = 'tabla-num__cifra-marcada'
 
-function borrarCruz(e: Event): void {
+function desmarcar(e: Event): void {
   const tabla = e.currentTarget as HTMLTableElement
-  tabla.querySelectorAll(`.${CRUZ}, .${CENTRO}`).forEach((c) => c.classList.remove(CRUZ, CENTRO))
+  tabla.querySelectorAll(`.${ROTULO}, .${CIFRA}`).forEach((c) => c.classList.remove(ROTULO, CIFRA))
 }
 
-function marcarCruz(e: Event): void {
+function marcar(e: Event): void {
   const tabla = e.currentTarget as HTMLTableElement
   const celda = (e.target as Element).closest('td')
   if (!celda) {
-    borrarCruz(e)
+    desmarcar(e)
     return
   }
-  if (celda.classList.contains(CENTRO)) return
-  borrarCruz(e)
-  const columna = celda.cellIndex
-  for (const fila of Array.from(tabla.rows)) fila.cells[columna]?.classList.add(CRUZ)
-  for (const c of Array.from((celda.parentElement as HTMLTableRowElement).cells)) c.classList.add(CRUZ)
-  celda.classList.add(CENTRO)
+  if (celda.classList.contains(CIFRA)) return
+  desmarcar(e)
+  for (const fila of Array.from(tabla.tHead?.rows ?? [])) fila.cells[celda.cellIndex]?.classList.add(ROTULO)
+  ;(celda.parentElement as HTMLTableRowElement).cells[0]?.classList.add(ROTULO)
+  celda.classList.add(CIFRA)
 }
 
 function TablaNumerica({ tabla, ancla }: { tabla: Tabla; ancla?: string }) {
@@ -203,7 +188,7 @@ function TablaNumerica({ tabla, ancla }: { tabla: Tabla; ancla?: string }) {
               </h4>
             )}
             <div class="tabla-num__marco">
-              <table onPointerOver={marcarCruz} onPointerLeave={borrarCruz}>
+              <table onPointerOver={marcar} onPointerLeave={desmarcar}>
                 <thead>
                   <tr>
                     <th scope="col" class="tabla-num__esquina">

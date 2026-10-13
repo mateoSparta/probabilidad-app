@@ -26,6 +26,7 @@ import {
   IconoReloj,
   IconoSimulacro,
 } from '../componentes/Iconos'
+import { Indicador } from '../componentes/Indicador'
 import { ItemEjercicio } from '../componentes/ItemEjercicio'
 import { KitExamen } from '../componentes/Material'
 import { imprimir } from '../componentes/imprimir'
@@ -513,7 +514,8 @@ function Configuracion({
 
             <fieldset class="tipo-examen">
               <legend class="sim-config__etiqueta">Examen</legend>
-              <div class="segmentado">
+              <div class="segmentado segmentado--deslizante">
+                <Indicador selector=".segmentado__opcion--activa" clave={config.tipo} />
                 {TIPOS.map(({ tipo, nombre, descripcion, vacio }) => {
                   const cantidad = pools[tipo].length
                   return (

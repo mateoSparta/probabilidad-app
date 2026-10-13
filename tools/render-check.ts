@@ -297,7 +297,9 @@ try {
     'la calculadora no dibuja el gráfico o el resultado de la normal')
   afirmar(/class="resultado__valor">0,\d{6}</.test(dist), 'la calculadora no muestra la probabilidad con seis decimales')
   afirmar(dist.includes('class="hueco"'), 'los valores no se escriben en la frase')
-  afirmar(dist.includes('class="dist__tabla" href="#/machete"'), 'la ficha de la normal no lleva a su tabla')
+  // Qué calcular va en la cabecera de la tarjeta, junto al nombre.
+  afirmar(/<header class="dist__cabeza">(?:(?!<\/header>).)*class="calc__modos"/s.test(dist) && !dist.includes('dist__tabla'),
+    'el selector de qué calcular no está en la cabecera de la tarjeta')
   // La ficha y los tips, plegados: en el pantallazo inicial no se ven.
   afirmar((dist.match(/class="desplegable dist-mas__seccion"/g) ?? []).length === 2 && dist.includes('aria-expanded="false"'),
     'la ficha y los tips no arrancan plegados')

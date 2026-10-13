@@ -1380,6 +1380,31 @@
   transition: transform 320ms cubic-bezier(0.3, 0.8, 0.3, 1);
 }
 
+/* El fondo que se desliza hasta la opción elegida en los grupos de opciones
+   de distinto ancho (componentes/Indicador.tsx). El grupo lo posiciona y las
+   opciones, posicionadas también, quedan encima. */
+.indicador {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: var(--radio);
+  background: var(--superficie-alta);
+  box-shadow: 0 1px 3px #2b26201c;
+  pointer-events: none;
+  transition:
+    transform 320ms cubic-bezier(0.3, 0.8, 0.3, 1),
+    width 320ms cubic-bezier(0.3, 0.8, 0.3, 1),
+    height 320ms cubic-bezier(0.3, 0.8, 0.3, 1);
+}
+.indicador--quieto { transition: none; }
+
+.segmentado--deslizante { position: relative; }
+.segmentado--deslizante .segmentado__opcion { position: relative; }
+.segmentado--deslizante .segmentado__opcion--activa {
+  background: none;
+  box-shadow: none;
+}
+
 /* --------------------------------------------------------------- modal */
 
 .modal {
@@ -1801,15 +1826,16 @@
 }
 .tabla-num tbody tr:nth-child(5n) > * { border-bottom-color: var(--borde-fuerte); }
 .tabla-num__esquina { border-right: 1px solid var(--borde-fuerte); }
-/* La cruz: la fila y la columna de la cifra bajo el puntero, con sus
-   rótulos en el color de acento, y la cifra misma más marcada. Sin cambiar
-   el peso de la letra: las cifras en negrita son más anchas y las columnas
-   saltarían. */
+/* La cifra bajo el puntero y sus dos rótulos (el de la fila y el de la
+   columna), marcados en acento. Sin cambiar el peso de la letra: las cifras
+   en negrita son más anchas y las columnas saltarían. */
 .tabla-num td,
 .tabla-num th { transition: background 90ms, color 90ms; }
-.tabla-num .tabla-num__cruz { background: var(--acento-suave); }
-.tabla-num th.tabla-num__cruz { color: var(--acento); }
-.tabla-num td.tabla-num__centro {
+.tabla-num .tabla-num__rotulo-marcado {
+  background: var(--acento-suave);
+  color: var(--acento);
+}
+.tabla-num .tabla-num__cifra-marcada {
   background: color-mix(in srgb, var(--acento) 28%, transparent);
   color: var(--tinta);
 }
@@ -1912,30 +1938,28 @@
 }
 .dist__nombre { margin: 0; font-size: var(--t-lg); }
 .dist__notacion { color: var(--tinta-2); }
-.dist__tabla {
+/* Qué calcular (o qué marginal graficar), contra el margen derecho. */
+.dist__cabeza .calc__modos {
   margin-left: auto;
-  font-size: var(--t-sm);
-  color: var(--acento);
-  text-underline-offset: 2px;
+  align-self: center;
 }
 
-/* La calculadora: arriba los parámetros y qué calcular, al medio el
-   gráfico y abajo la frase con el resultado. */
+/* La calculadora: arriba los parámetros, al medio el gráfico y abajo la
+   frase con el resultado, todo sobre el eje central. */
 .calc {
   display: grid;
   gap: var(--e-3);
 }
 .calc__controles {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--e-3) var(--e-5);
+  justify-content: center;
+  text-align: center;
 }
 .calc__campos {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
+  justify-content: center;
   gap: var(--e-2) var(--e-4);
 }
 .calc__campo {
@@ -1961,8 +1985,10 @@
   color: var(--tinta-3);
 }
 
-/* Qué calcular: un grupo compacto, con la opción elegida en relieve. */
+/* Qué calcular: un grupo compacto, con la opción elegida en relieve. El
+   relieve es un Indicador que se desliza de una opción a otra. */
 .calc__modos {
+  position: relative;
   display: inline-flex;
   flex-wrap: wrap;
   gap: 2px;
@@ -1970,7 +1996,9 @@
   border-radius: var(--radio);
   background: var(--borde);
 }
+.calc__modos .indicador { border-radius: calc(var(--radio) - 2px); }
 .calc__modo {
+  position: relative;
   appearance: none;
   padding: 1px var(--e-2);
   border: 0;
@@ -1984,11 +2012,7 @@
 }
 .calc__modo:hover { color: var(--tinta); }
 .calc__modo--activo,
-.calc__modo--activo:hover {
-  background: var(--superficie-alta);
-  color: var(--acento);
-  box-shadow: 0 1px 3px #2b26201c;
-}
+.calc__modo--activo:hover { color: var(--acento); }
 .calc__modo:focus-visible { outline: 2px solid var(--acento); outline-offset: 1px; }
 
 .calc__grafico { margin: 0 calc(-1 * var(--e-2)); }
@@ -2019,6 +2043,25 @@
   gap: 0.35em;
   margin: 0;
   font-size: var(--t-md);
+}
+/* Con lugar, el último "=" queda fijo en el centro: la frase crece hacia la
+   izquierda y el valor hacia la derecha. Así, al arrastrar el gráfico, que
+   el valor pase de un decimal a dos (o el hueco se ensanche) no corre toda
+   la frase de un lado a otro. Si la frase sola es más ancha que media
+   columna, el "=" se corre lo justo. */
+@media (min-width: 40rem) {
+  .resultado {
+    display: grid;
+    grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
+    column-gap: 0.35em;
+  }
+  .resultado > .frase { justify-self: end; }
+  .resultado > :last-child:not(.frase) { justify-self: start; }
+  /* Sin valor (hay un error en el evento), la frase va centrada. */
+  .resultado > .frase:only-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
 }
 .resultado__valor {
   font-size: var(--t-lg);
@@ -2117,13 +2160,17 @@
   font-size: var(--t-sm);
   color: var(--tinta-2);
 }
+/* El rótulo, a la izquierda; el contenido, centrado en su columna (`safe`:
+   si no entra, se desplaza desde el principio en lugar de cortarse). */
 .dist-ficha__fila dd {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
+  justify-content: safe center;
   gap: var(--e-1) var(--e-2);
   margin: 0;
   overflow-x: auto;
+  text-align: center;
 }
 .dist-ficha__valor {
   display: inline-flex;
@@ -2140,7 +2187,7 @@
 }
 .dist-ficha__varias {
   flex-direction: column;
-  align-items: flex-start;
+  align-items: safe center;
 }
 .dist-ficha__pie {
   margin: var(--e-2) 0 0;

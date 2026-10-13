@@ -8,7 +8,7 @@
  * Las pestañas Fórmulas y Tablas cambian el contenido con un desplazamiento
  * horizontal, en el sentido de la pestaña elegida; el filtro, con un fundido.
  */
-import { useEffect, useState } from 'preact/hooks'
+import { useState } from 'preact/hooks'
 
 import { IconoImprimir } from '../componentes/Iconos'
 import {
@@ -16,10 +16,8 @@ import {
   hayTablas,
   HojaDeFormulas,
   IndiceMaterial,
-  irATabla,
   Suerte,
   TablasDeExamen,
-  tomarTablaPedida,
 } from '../componentes/Material'
 import { SubirLateral, usarSubir } from '../componentes/SubirLateral'
 import { imprimir } from '../componentes/imprimir'
@@ -38,18 +36,9 @@ type Entrada = 'derecha' | 'izquierda' | 'fundido' | null
 
 export function VistaMachete() {
   const opciones = alcances(config.evaluaciones)
-  // Si se llegó desde la ficha de una distribución, se abre su tabla. "Todas"
-  // es la primera opción y la incluye siempre.
-  const [pedida] = useState(tomarTablaPedida)
   const [idAlcance, setIdAlcance] = useState(opciones[0]?.id ?? 'todas')
-  const [pestana, setPestana] = useState<Pestana>(pedida ? 'tablas' : 'formulas')
+  const [pestana, setPestana] = useState<Pestana>('formulas')
   const [entrada, setEntrada] = useState<Entrada>(null)
-  // Después de que la app suba al principio por el cambio de sección.
-  useEffect(() => {
-    if (!pedida) return
-    const t = setTimeout(() => irATabla(pedida), 0)
-    return () => clearTimeout(t)
-  }, [])
   const alcance = opciones.find((o) => o.id === idAlcance) ?? opciones[0]
   const guias = alcance?.guias ?? []
   const subir = usarSubir()
