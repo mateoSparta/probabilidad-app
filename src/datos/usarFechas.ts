@@ -78,8 +78,6 @@ export const objetivoGuardado = (): Evaluacion | null => evaluacionObjetivo(eval
 export type ApiEvaluaciones = {
   /** Las evaluaciones con las fechas del usuario aplicadas. */
   evaluaciones: readonly Evaluacion[]
-  /** Las de content/config.yaml, para ofrecer volver a la fecha original. */
-  originales: readonly Evaluacion[]
   cambiarFecha: (nombre: string, fecha: string | null) => void
   /** La evaluación que se está preparando: la elegida o, si no, la que toca. */
   objetivo: Evaluacion | null
@@ -111,7 +109,6 @@ export function usarFechas(): ApiEvaluaciones {
     const evaluaciones = conFechas(config.evaluaciones, fechas)
     return {
       evaluaciones,
-      originales: config.evaluaciones,
       cambiarFecha,
       objetivo: evaluacionObjetivo(evaluaciones, elegido),
       elegirObjetivo,
@@ -121,7 +118,6 @@ export function usarFechas(): ApiEvaluaciones {
 
 export const ContextoEvaluaciones = createContext<ApiEvaluaciones>({
   evaluaciones: config.evaluaciones,
-  originales: config.evaluaciones,
   cambiarFecha: () => {},
   objetivo: evaluacionObjetivo(config.evaluaciones, null),
   elegirObjetivo: () => {},

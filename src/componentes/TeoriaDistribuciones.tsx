@@ -10,13 +10,33 @@
  * dos, agrupadas como en la tabla: discretas, continuas, multivariadas (que
  * ocupan la fila entera) y las equivalencias al final.
  *
- * Lo que se imprime desde esta pestaña es la tabla de la cátedra
- * (TablaDeDistribuciones), con su formato de siempre.
+ * Se imprime igual que la hoja de fórmulas (impresion.css): las fichas en
+ * dos columnas, con un filete a la izquierda; va también en el kit para el
+ * examen.
  */
 import { fichasDistribuciones } from '../datos/contenido'
 import type { FichaDistribucion } from '../dominio/tipos'
 import { Formula, Mate } from './Mate'
-import { equivalencias, sinMiembroIzquierdo } from './TablaDistribuciones'
+
+/** `p_X(x) = \dfrac{...}` sin el miembro izquierdo. */
+export const sinMiembroIzquierdo = (funcion: string) => funcion.replace(/^[^=]*=\s*/, '')
+
+/** Las equivalencias, sin repetir la misma con los miembros al revés. */
+function equivalencias(fichas: FichaDistribucion[]): string[] {
+  const vistas = new Set<string>()
+  const salida: string[] = []
+  for (const e of fichas.flatMap((f) => f.equivalencias ?? [])) {
+    const clave = e
+      .split('\\equiv')
+      .map((m) => m.replace(/\s+/g, ''))
+      .sort()
+      .join('|')
+    if (vistas.has(clave)) continue
+    vistas.add(clave)
+    salida.push(e)
+  }
+  return salida
+}
 
 export type GrupoDistribucion = FichaDistribucion['grupo']
 
@@ -106,7 +126,11 @@ export function TeoriaDistribuciones({ anclas = false }: { anclas?: boolean }) {
         const fichas = fichasDistribuciones.filter((f) => f.grupo === grupo)
         if (fichas.length === 0) return null
         return (
-          <section key={grupo} class="hoja__guia" id={anclas ? anclaGrupoDistribucion(grupo) : undefined}>
+          <section
+            key={grupo}
+            class={'hoja__guia teoria-dist__grupo teoria-dist__grupo--' + grupo}
+            id={anclas ? anclaGrupoDistribucion(grupo) : undefined}
+          >
             <h3 class="hoja__titulo">{titulo}</h3>
             <div class="hoja__fichas">
               {fichas.map((f) => (
@@ -122,7 +146,10 @@ export function TeoriaDistribuciones({ anclas = false }: { anclas?: boolean }) {
         )
       })}
 
-      <section class="hoja__guia" id={anclas ? anclaGrupoDistribucion('equivalencias') : undefined}>
+      <section
+        class="hoja__guia teoria-dist__grupo teoria-dist__grupo--equivalencias"
+        id={anclas ? anclaGrupoDistribucion('equivalencias') : undefined}
+      >
         <h3 class="hoja__titulo">Equivalencias</h3>
         <ul class="teoria-dist__equivalencias">
           {equivalencias(fichasDistribuciones).map((e) => (

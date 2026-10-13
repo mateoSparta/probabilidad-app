@@ -13,7 +13,7 @@
  *   navegador). Dice qué: la última palabra rueda como un tambor entre
  *   "fórmulas", "tablas" y "distribuciones", y el botón no cambia de ancho.
  * - El kit para el examen: las fórmulas y las tablas de la etapa, más la
- *   tabla de distribuciones, en un solo documento. A su derecha, qué contiene.
+ *   teoría de las distribuciones, en un solo documento. A su derecha, qué contiene.
  *
  * Las pestañas cambian el contenido con un desplazamiento horizontal, en el
  * sentido de la pestaña elegida; el filtro, con un fundido.
@@ -31,7 +31,6 @@ import {
   TablasDeExamen,
 } from '../componentes/Material'
 import { SubirLateral, usarSubir } from '../componentes/SubirLateral'
-import { TablaDeDistribuciones } from '../componentes/TablaDistribuciones'
 import { TeoriaDistribuciones } from '../componentes/TeoriaDistribuciones'
 import { imprimir } from '../componentes/imprimir'
 import { config } from '../datos/contenido'
@@ -89,27 +88,16 @@ export function VistaMachete() {
     )
 
   function imprimirActual(): void {
-    if (pestana === 'distribuciones') {
-      void imprimir(
-        <div class="impreso impreso--distribuciones">
-          <TablaDeDistribuciones />
-          <Suerte />
-        </div>,
-        `Tabla de distribuciones - ${TITULO}`,
-      )
-      return
-    }
-    const que = pestana === 'formulas' ? 'Fórmulas' : 'Tablas'
-    const de = alcance.id === 'todas' ? 'de todas las guías' : `del ${alcance.id}`
+    // La teoría de las distribuciones es la misma en todas las etapas.
+    const que = PESTANAS[indicePestana].nombre
+    const de = pestana === 'distribuciones' ? '' : alcance.id === 'todas' ? 'de todas las guías' : `del ${alcance.id}`
     void imprimir(
       <div class={'impreso impreso--' + pestana}>
-        <h1 class="impreso__titulo">
-          {que} {de}
-        </h1>
+        <h1 class="impreso__titulo">{de ? `${que} ${de}` : que}</h1>
         {contenido(false)}
         <Suerte />
       </div>,
-      `${que} ${de} - ${TITULO}`,
+      `${de ? `${que} ${de}` : que} - ${TITULO}`,
     )
   }
 
@@ -122,7 +110,7 @@ export function VistaMachete() {
       <IndiceMaterial key={`indice-${pestana}-${idAlcance}`} pestana={pestana} guias={guias} />
       <SubirLateral visible={subir} />
 
-      <section class="guia__intro">
+      <section class="guia__intro guia__intro--machete">
         <h2>Machete</h2>
         {/* La descripción a la izquierda y el selector de etapa a la derecha;
             en pantallas angostas, el selector baja. */}

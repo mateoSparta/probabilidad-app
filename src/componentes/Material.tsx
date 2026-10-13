@@ -16,8 +16,12 @@ import { GraficoTabla } from './GraficoTabla'
 import { IconoSiguiente } from './Iconos'
 import { Formula, Mate } from './Mate'
 import { irA } from './MapaEjercicios'
-import { TablaDeDistribuciones } from './TablaDistribuciones'
-import { anclaDistribucion, anclaGrupoDistribucion, GRUPOS_DISTRIBUCION } from './TeoriaDistribuciones'
+import {
+  anclaDistribucion,
+  anclaGrupoDistribucion,
+  GRUPOS_DISTRIBUCION,
+  TeoriaDistribuciones,
+} from './TeoriaDistribuciones'
 
 /** Si hay algo que mostrar para esas guías. */
 export const hayFormulas = (guias: readonly number[]) =>
@@ -414,8 +418,8 @@ export function Suerte() {
 
 /**
  * Todo lo que hace falta para una evaluación, en un solo documento: las
- * fórmulas y las tablas de sus guías, la tabla de distribuciones de la
- * cátedra y el saludo. Cada parte empieza en una página nueva.
+ * fórmulas y las tablas de sus guías, la teoría de las distribuciones y el
+ * saludo. Cada parte empieza en una página nueva.
  */
 export function KitExamen({ guias }: { guias: readonly number[] }) {
   return (
@@ -433,7 +437,8 @@ export function KitExamen({ guias }: { guias: readonly number[] }) {
         </section>
       )}
       <section class="kit__parte kit__parte--nueva-pagina">
-        <TablaDeDistribuciones />
+        <h2 class="kit__parte-titulo">Distribuciones</h2>
+        <TeoriaDistribuciones />
       </section>
       <Suerte />
     </div>

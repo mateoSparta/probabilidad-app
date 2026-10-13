@@ -41,6 +41,6 @@ un kit para el examen con todo junto. Las tablas las genera y verifica
 **Distribuciones.** Las 19 distribuciones de la tabla de la cátedra, cada una
 con una calculadora (los valores se escriben en la fórmula o se arrastran sus
 líneas sobre el gráfico) y, plegadas, su ficha y tips para la intuición. Cada
-cuenta se contrasta con mpmath y con las tablas. La tabla de distribuciones de
-la cátedra se imprime desde el Machete; ver
+cuenta se contrasta con mpmath y con las tablas. La teoría de las
+distribuciones se imprime desde el Machete; ver
 [revision/distribuciones.md](revision/distribuciones.md).

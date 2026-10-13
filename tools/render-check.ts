@@ -316,12 +316,6 @@ try {
     'faltan los tips de la normal')
   // Todo lo que se imprime está en el Machete: Distribuciones ya no tiene su botón.
   afirmar(!dist.includes('Imprimir la tabla') && !dist.includes('IconoImprimir'), 'Distribuciones sigue teniendo un botón de imprimir')
-  const { TablaDeDistribuciones } = await servidor.ssrLoadModule('/src/componentes/TablaDistribuciones.tsx')
-  const tablaDist = render(createElement(TablaDeDistribuciones, {}))
-  afirmar(!tablaDist.includes('mate-roto') && (tablaDist.match(/<tr>/g) ?? []).length >= 19 &&
-    tablaDist.includes('Distribuciones discretas univariadas') && tablaDist.includes('Distribuciones continuas univariadas') &&
-    tablaDist.includes('Distribuciones multivariadas') && tablaDist.includes('Equivalencias'),
-    'la tabla de distribuciones no tiene las secciones de la de la cátedra')
 
   // --- machete ---
   const { VistaMachete } = await servidor.ssrLoadModule('/src/vistas/VistaMachete.tsx')
@@ -388,9 +382,11 @@ try {
     'la tabla normal no tiene los valores de la cátedra')
   const kit = render(createElement(KitExamen, { guias: contenido.config.evaluaciones[0].guias }))
   afirmar(!kit.includes('Kit para el parcial') && !kit.includes('kit__caratula'), 'el kit sigue teniendo carátula')
-  afirmar(kit.indexOf('Fórmulas') < kit.indexOf('Tablas') && kit.indexOf('Tablas') < kit.indexOf('Tabla de distribuciones') &&
-    kit.includes('Suerte en el examen'),
-    'el kit no tiene fórmulas, tablas, la tabla de distribuciones y el saludo, en ese orden')
+  // El kit lleva la teoría de las distribuciones en fichas, como las fórmulas.
+  afirmar(kit.indexOf('Fórmulas') < kit.indexOf('Tablas') &&
+    kit.indexOf('Tablas') < kit.indexOf('kit__parte-titulo">Distribuciones') &&
+    kit.includes('<article class="ficha-dist') && kit.includes('Suerte en el examen'),
+    'el kit no tiene fórmulas, tablas, las distribuciones en fichas y el saludo, en ese orden')
   for (const [nombre, href] of [
     ['Ejercicios', '#/ejercicios/3'],
     ['Habilidades', '#/habilidades'],

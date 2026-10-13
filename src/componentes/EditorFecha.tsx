@@ -4,14 +4,12 @@
  * encabezado.
  *
  * Arriba, el mes, que se recorre con las flechas; abajo, la fecha elegida con
- * los días que faltan. También se puede dejar sin fecha o volver a la de
- * content/config.yaml. Nada se guarda hasta apretar "Guardar".
+ * los días que faltan. Nada se guarda hasta apretar "Guardar".
  */
 import { useEffect, useState } from 'preact/hooks'
 
 import { usarEvaluaciones } from '../datos/usarFechas'
 import { diasHasta } from '../dominio/evaluaciones'
-import { fechaCorta } from '../dominio/ritmo'
 import { IconoAnterior, IconoSiguiente } from './Iconos'
 import { Dialogo } from './Modal'
 
@@ -55,7 +53,7 @@ type Props = {
 }
 
 export function EditorFecha({ abierto, nombre, onCerrar }: Props) {
-  const { evaluaciones, originales, cambiarFecha } = usarEvaluaciones()
+  const { evaluaciones, cambiarFecha } = usarEvaluaciones()
   const ev = evaluaciones.find((e) => e.nombre === nombre)
   const [elegida, setElegida] = useState<string | null>(ev?.fecha ?? null)
   const [mes, setMes] = useState<Mes>(mesDe(null))
@@ -69,7 +67,6 @@ export function EditorFecha({ abierto, nombre, onCerrar }: Props) {
     setSentido(null)
   }, [abierto, nombre])
 
-  const original = originales.find((e) => e.nombre === nombre)?.fecha ?? null
   const hoy = hoyIso()
 
   function moverMes(paso: 1 | -1): void {
@@ -160,25 +157,6 @@ export function EditorFecha({ abierto, nombre, onCerrar }: Props) {
           </>
         ) : (
           <strong>Sin fecha</strong>
-        )}
-      </p>
-      <p class="editor-fecha__otras">
-        {elegida && (
-          <button class="enlace" onClick={() => setElegida(null)}>
-            Dejar sin fecha
-          </button>
-        )}
-        {original !== elegida && (
-          <button
-            class="enlace"
-            onClick={() => {
-              setElegida(original)
-              setMes(mesDe(original))
-              setSentido(null)
-            }}
-          >
-            {original ? `Volver a la fecha original (${fechaCorta(original)})` : 'Volver a sin fecha'}
-          </button>
         )}
       </p>
     </Dialogo>

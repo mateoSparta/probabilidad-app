@@ -1632,15 +1632,6 @@
   font-size: var(--t-sm);
   color: var(--tinta-2);
 }
-.editor-fecha__otras {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--e-1) var(--e-4);
-  min-height: 1.5em;
-  margin: var(--e-2) 0 0;
-  font-size: var(--t-sm);
-}
 
 /* --------------------------------------------------------------- globo */
 
@@ -1726,13 +1717,14 @@
   place-items: center;
   transition: opacity 260ms ease, transform 380ms cubic-bezier(0.3, 1.3, 0.5, 1);
 }
+/* El mismo giro que el del menú de hamburguesa al pasar al de contacto. */
 .accesos__icono--sol {
   opacity: 0;
-  transform: rotate(-90deg) scale(0.5);
+  transform: scale(0.4) rotate(-120deg);
 }
 .accesos__tema--oscuro .accesos__icono--luna {
   opacity: 0;
-  transform: rotate(90deg) scale(0.5);
+  transform: scale(0.4) rotate(120deg);
 }
 .accesos__tema--oscuro .accesos__icono--sol {
   opacity: 1;
@@ -1765,6 +1757,8 @@
 }
 .machete-intro .guia__descripcion { flex: 1 1 20rem; margin: 0; }
 .machete-intro .segmentado { flex: none; }
+/* El filete de abajo queda a la misma distancia de los dos bloques. */
+.guia__intro--machete { margin-bottom: var(--e-4); }
 /* Los botones de imprimir y del kit en su renglón, del tamaño de siempre, y
    al lado qué contiene el kit (como junto a "Simular parcial"). */
 .material-config__acciones {
@@ -1772,6 +1766,9 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--e-3);
+  /* Un filete lo separa de la descripción y el selector. */
+  padding-top: var(--e-4);
+  border-top: 1px solid var(--borde);
 }
 .material-config__acciones .boton { flex: none; }
 .material-config__acciones .dato-chico { flex: 1 1 16rem; margin: 0; }
@@ -1954,14 +1951,17 @@
   font-size: var(--t-xs);
   color: var(--tinta-3);
 }
+/* Los rótulos a la izquierda y las fórmulas centradas en su columna. */
 .ficha-dist__fila dd {
   margin: 0;
+  text-align: center;
   overflow-x: auto;
   overflow-y: hidden;
 }
 .ficha-dist__varias {
   display: flex;
   flex-direction: column;
+  align-items: safe center;
   gap: 0.2rem;
 }
 .ficha-dist__nota {

@@ -10,8 +10,8 @@
  * guías; en pantallas angostas, un selector.
  *
  * Las cuentas están en dominio/distribuciones.ts y se contrastan con mpmath
- * (tools/verify/distribuciones.py). La tabla de distribuciones de la cátedra
- * se imprime desde el Machete, como todo lo que se imprime.
+ * (tools/verify/distribuciones.py). La teoría de las distribuciones se
+ * imprime desde el Machete, como todo lo que se imprime.
  */
 import type { ComponentChildren } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
@@ -21,7 +21,7 @@ import { IconoDesplegar } from '../componentes/Iconos'
 import { Formula, Mate } from '../componentes/Mate'
 import { Indicador } from '../componentes/Indicador'
 import { SubirLateral, usarSubir } from '../componentes/SubirLateral'
-import { sinMiembroIzquierdo } from '../componentes/TablaDistribuciones'
+import { sinMiembroIzquierdo } from '../componentes/TeoriaDistribuciones'
 import { fichasDistribuciones } from '../datos/contenido'
 import {
   condicionalBivariada,
