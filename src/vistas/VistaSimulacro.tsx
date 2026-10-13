@@ -35,7 +35,7 @@ import { Enunciado, TextoMarcado } from '../componentes/Mate'
 import { Tags, usarResaltado } from '../componentes/Tags'
 // `config` es la de la cursada (content/config.yaml); la del simulacro es estado local.
 import { claveItemExamen, config as configCursada, examenes, examenPorId } from '../datos/contenido'
-import { evaluacionesGuardadas, usarEvaluaciones } from '../datos/usarFechas'
+import { objetivoGuardado, usarEvaluaciones } from '../datos/usarFechas'
 import type { ApiProgreso } from '../datos/usarProgreso'
 import type { ApiSesion } from '../datos/usarSesion'
 import {
@@ -57,7 +57,7 @@ import {
   type Examen,
   type TipoExamen,
 } from '../dominio/simulacro'
-import { evaluacionActual, guiasDeLaMateria, rangoGuias } from '../dominio/evaluaciones'
+import { guiasDeLaMateria, rangoGuias } from '../dominio/evaluaciones'
 import type { Intento } from '../dominio/tipos'
 
 const CLAVE_CONFIG = 'probabilidad-app:simulacro-config:v1'
@@ -72,12 +72,11 @@ type Config = {
 }
 
 /**
- * El tipo de examen con el que se practica la evaluación que toca (el parcial
- * antes de su fecha, el final después), si ya hay alguno para rendir; si no,
- * el otro.
+ * El tipo de examen con el que se practica el objetivo (el parcial o un
+ * recuperatorio, o el final), si ya hay alguno para rendir; si no, el otro.
  */
 function tipoPorDefecto(): TipoExamen {
-  const preferido = evaluacionActual(evaluacionesGuardadas())?.simulacro ?? 'parcial'
+  const preferido = objetivoGuardado()?.simulacro ?? 'parcial'
   if (poolDe(examenes, preferido).length > 0) return preferido
   return preferido === 'parcial' ? 'integradora' : 'parcial'
 }
@@ -685,11 +684,11 @@ function Configuracion({
 }
 
 /**
- * El kit para el examen que toca (PLAN.md §12.3): las fórmulas y las tablas
+ * El kit para el objetivo (PLAN.md §12.3): las fórmulas y las tablas
  * de sus guías en un solo documento, para imprimir o guardar en PDF.
  */
 function KitParaElExamen() {
-  const ev = evaluacionActual(usarEvaluaciones().evaluaciones)
+  const ev = usarEvaluaciones().objetivo
   if (!ev) return null
   return (
     <section class="kit-aviso" aria-label={`Kit para el ${ev.nombre}`}>

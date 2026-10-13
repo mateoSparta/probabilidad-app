@@ -56,6 +56,19 @@ export function evaluacionActual(
   return evaluaciones.at(-1) ?? null
 }
 
+/**
+ * El objetivo: la evaluación que se está preparando. Es la que eligió el
+ * usuario (con los chevrones del aviso o en Seguimiento), si todavía existe;
+ * si no eligió ninguna, la que toca por fecha.
+ */
+export function evaluacionObjetivo(
+  evaluaciones: readonly Evaluacion[],
+  elegida: string | null,
+  ahora = new Date(),
+): Evaluacion | null {
+  return evaluaciones.find((ev) => ev.nombre === elegida) ?? evaluacionActual(evaluaciones, ahora)
+}
+
 /** Las fechas que cambió el usuario, por nombre de evaluación; null es "sin fecha". */
 export type FechasCambiadas = Readonly<Record<string, string | null>>
 

@@ -1,12 +1,14 @@
 /**
- * El aviso del próximo examen, en dos formatos. El examen es el que toque
- * según content/config.yaml: el parcial, el final o el que siga (ver
- * dominio/evaluaciones.ts); el texto lo nombra a partir de ahí.
+ * El aviso del examen objetivo, en dos formatos. El objetivo es el que eligió
+ * el usuario o, si no eligió, el que toca según content/config.yaml: el
+ * parcial, un recuperatorio o el final (ver dominio/evaluaciones.ts); el
+ * texto lo nombra a partir de ahí.
  *
  * `AvisoExamenCompacto` va en el encabezado, en un recuadro del ancho de la
- * columna: el examen, su fecha y los días que faltan, teñidos según el ritmo.
- * Es lo único que se ve siempre, y por eso no dice nada más. En el extremo
- * derecho, un lápiz abre el calendario para cambiar la fecha (EditorFecha).
+ * columna: el examen, su fecha y los días que faltan, teñidos según el ritmo,
+ * y un lápiz que abre el calendario para editar las fechas (EditorFecha). Es
+ * lo único que se ve siempre, y por eso no dice nada más. Los chevrones de
+ * los extremos cambian el objetivo, que es el mismo de Seguimiento.
  *
  * `AvisoExamenDetalle` va en Seguimiento, con la cuenta completa: qué falta,
  * cuántos ítems por día y si el ritmo de los últimos días alcanza.
@@ -14,11 +16,12 @@
 import type { ComponentChildren } from 'preact'
 import { useState } from 'preact/hooks'
 
-import { rotulo } from '../dominio/evaluaciones'
+import { usarEvaluaciones } from '../datos/usarFechas'
+import { rotulo, type Evaluacion } from '../dominio/evaluaciones'
 import { ETIQUETA_VEREDICTO, fechaCorta, type Plan } from '../dominio/ritmo'
 import type { Seccion } from '../dominio/ruta'
 import { EditorFecha } from './EditorFecha'
-import { IconoCalendario, IconoEditar } from './Iconos'
+import { IconoAnterior, IconoCalendario, IconoEditar, IconoSiguiente } from './Iconos'
 
 /** La clase de color que corresponde a cada veredicto. */
 function tono(plan: Plan): string {
@@ -40,8 +43,21 @@ function tono(plan: Plan): string {
 
 export function AvisoExamenCompacto({ plan, seccion }: { plan: Plan; seccion?: Seccion }) {
   const [editando, setEditando] = useState(false)
+  /** De qué lado entra el texto al cambiar de examen. */
+  const [sentido, setSentido] = useState<'adelante' | 'atras' | null>(null)
+  const { evaluaciones, elegirObjetivo } = usarEvaluaciones()
   const ev = plan.evaluacion
   if (!ev) return null
+
+  // Los chevrones recorren las evaluaciones en orden y dan la vuelta.
+  const i = evaluaciones.findIndex((e) => e.nombre === ev.nombre)
+  const n = evaluaciones.length
+  const anterior = evaluaciones[(i - 1 + n) % n]
+  const siguiente = evaluaciones[(i + 1) % n]
+  function cambiar(a: Evaluacion, s: 'adelante' | 'atras'): void {
+    setSentido(s)
+    elegirObjetivo(a.nombre)
+  }
   const dias = plan.diasRestantes
   const texto =
     dias === null
@@ -59,32 +75,63 @@ export function AvisoExamenCompacto({ plan, seccion }: { plan: Plan; seccion?: S
   // son texto: un enlace a la misma página no lleva a ningún lado.
   return (
     <>
-      <p class={'aviso-examen ' + tono(plan)}>
-        <IconoCalendario />
-        <Enlace
-          clase="aviso-examen__fecha"
-          destino="simulacro"
-          actual={seccion}
-          ayuda="Practicar con un simulacro"
+      <div class={'aviso-examen ' + tono(plan)}>
+        {n > 1 && (
+          <button
+            class="aviso-examen__cambiar aviso-examen__cambiar--antes"
+            aria-label={`Ver el ${anterior.nombre}`}
+            data-tip={rotulo(anterior)}
+            onClick={() => cambiar(anterior, 'atras')}
+          >
+            <IconoAnterior />
+          </button>
+        )}
+        {/* La key vuelve a montar el texto al cambiar de examen: entra deslizándose
+            del lado del chevrón. */}
+        <p
+          key={ev.nombre}
+          class={'aviso-examen__texto' + (sentido ? ' aviso-examen__texto--' + sentido : '')}
+          aria-live="polite"
         >
-          {rotulo(ev)}
-          {ev.fecha && ` ${fechaCorta(ev.fecha)}`}
-        </Enlace>
-        <span class="aviso-examen__sep" aria-hidden="true">
-          ·
-        </span>
-        <Enlace clase="aviso-examen__dias" destino="seguimiento" actual={seccion} ayuda="Ver el seguimiento">
-          {texto}
-        </Enlace>
-        <button
-          class="aviso-examen__editar"
-          aria-label="Cambiar la fecha del examen"
-          data-tip="Cambiar la fecha"
-          onClick={() => setEditando(true)}
-        >
-          <IconoEditar />
-        </button>
-      </p>
+          <IconoCalendario />
+          <Enlace
+            clase="aviso-examen__fecha"
+            destino="simulacro"
+            actual={seccion}
+            ayuda="Practicar con un simulacro"
+          >
+            {rotulo(ev)}
+            {ev.fecha && ` ${fechaCorta(ev.fecha)}`}
+          </Enlace>
+          <span class="aviso-examen__sep" aria-hidden="true">
+            ·
+          </span>
+          <Enlace clase="aviso-examen__dias" destino="seguimiento" actual={seccion} ayuda="Ver el seguimiento">
+            {texto}
+          </Enlace>
+          <span class="aviso-examen__sep" aria-hidden="true">
+            ·
+          </span>
+          <button
+            class="aviso-examen__editar"
+            aria-label="Editar las fechas de los exámenes"
+            data-tip="Editar fechas"
+            onClick={() => setEditando(true)}
+          >
+            <IconoEditar />
+          </button>
+        </p>
+        {n > 1 && (
+          <button
+            class="aviso-examen__cambiar aviso-examen__cambiar--despues"
+            aria-label={`Ver el ${siguiente.nombre}`}
+            data-tip={rotulo(siguiente)}
+            onClick={() => cambiar(siguiente, 'adelante')}
+          >
+            <IconoSiguiente />
+          </button>
+        )}
+      </div>
       <EditorFecha abierto={editando} inicial={ev.nombre} onCerrar={() => setEditando(false)} />
     </>
   )

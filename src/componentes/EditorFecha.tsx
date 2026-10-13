@@ -1,6 +1,6 @@
 /**
- * El calendario para cambiar la fecha de un examen, en una ventana modal. Se
- * abre con el lápiz del aviso del encabezado.
+ * El calendario para editar las fechas de los exámenes, en una ventana modal.
+ * Se abre con el lápiz del aviso del encabezado.
  *
  * Arriba se elige qué evaluación (si hay más de una); al medio, el mes, que
  * se recorre con las flechas; abajo, la fecha elegida con los días que
@@ -10,10 +10,11 @@
 import { useEffect, useState } from 'preact/hooks'
 
 import { usarEvaluaciones } from '../datos/usarFechas'
-import { diasHasta, rotulo } from '../dominio/evaluaciones'
+import { diasHasta } from '../dominio/evaluaciones'
 import { fechaCorta } from '../dominio/ritmo'
 import { IconoAnterior, IconoSiguiente } from './Iconos'
 import { Dialogo } from './Modal'
+import { SelectorExamen } from './SelectorExamen'
 
 const MESES = [
   'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -99,12 +100,11 @@ export function EditorFecha({ abierto, inicial, onCerrar }: Props) {
 
   const enBlanco = diaDeLaSemana(mes.anio, mes.mes, 1)
   const cantidad = new Date(mes.anio, mes.mes + 1, 0).getDate()
-  const indice = evaluaciones.findIndex((ev) => ev.nombre === nombre)
 
   return (
     <Dialogo
       abierto={abierto}
-      titulo="Fecha del examen"
+      titulo="Fechas de los exámenes"
       clase="modal--fecha"
       onCerrar={onCerrar}
       acciones={
@@ -119,33 +119,15 @@ export function EditorFecha({ abierto, inicial, onCerrar }: Props) {
       }
     >
       {evaluaciones.length > 1 && (
-        <div
-          class="segmentado segmentado--linea editor-fecha__examen"
-          role="radiogroup"
-          aria-label="Examen"
-          style={{ '--n': evaluaciones.length, '--activa': indice }}
-        >
-          <span class="segmentado__indicador" aria-hidden="true" />
-          {evaluaciones.map((ev) => {
-            const f = borrador[ev.nombre] ?? null
-            return (
-              <label
-                key={ev.nombre}
-                class={'segmentado__opcion' + (ev.nombre === nombre ? ' segmentado__opcion--activa' : '')}
-              >
-                <input
-                  class="sr-solo"
-                  type="radio"
-                  name="examen-fecha"
-                  checked={ev.nombre === nombre}
-                  onChange={() => elegirEvaluacion(ev.nombre)}
-                />
-                <span class="segmentado__nombre">{rotulo(ev)}</span>
-                <span class="segmentado__dato">{f ? fechaCorta(f) : 'sin fecha'}</span>
-              </label>
-            )
-          })}
-        </div>
+        <SelectorExamen
+          evaluaciones={evaluaciones}
+          elegida={nombre}
+          onElegir={elegirEvaluacion}
+          nombre="examen-fecha"
+          etiqueta="Examen"
+          fechaDe={(ev) => borrador[ev.nombre] ?? null}
+          clase="editor-fecha__examen"
+        />
       )}
 
       <div class="calendario">

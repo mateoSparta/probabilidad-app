@@ -900,7 +900,8 @@
 
 .pool__titulo,
 .pendientes__titulo,
-.dist-mas__titulo {
+.dist-mas__titulo,
+.objetivo__titulo {
   font-size: var(--t-xs);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -910,6 +911,10 @@
 }
 
 .pool__titulo { margin-bottom: var(--e-1); }
+
+/* El objetivo de Seguimiento: el selector, arriba del detalle del ritmo. */
+.objetivo { margin-bottom: var(--e-5); }
+.objetivo__titulo { margin-bottom: var(--e-2); }
 
 /* El pool es un desplegable, plegado al entrar: el título es el botón y el
    triángulo gira al abrirlo. El contenido se despliega animando la fila de
@@ -1407,6 +1412,20 @@
 .segmentado--deslizante .segmentado__opcion--activa {
   background: none;
   box-shadow: none;
+}
+
+/* Las evaluaciones (Seguimiento y el calendario): una grilla con el nombre
+   arriba y la fecha abajo. En un teléfono, de a dos. */
+.selector-examen {
+  grid-template-columns: repeat(var(--columnas, 2), minmax(0, 1fr));
+}
+.selector-examen .segmentado__opcion {
+  gap: 0;
+  padding: var(--e-1) var(--e-3);
+}
+.selector-examen .segmentado__nombre { font-size: var(--t-sm); }
+@media (max-width: 40rem) {
+  .selector-examen { grid-template-columns: repeat(min(2, var(--columnas, 2)), minmax(0, 1fr)); }
 }
 
 /* --------------------------------------------------------------- modal */

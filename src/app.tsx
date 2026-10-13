@@ -31,15 +31,17 @@ export function App() {
   /** El ancla (ejercicio o teoría) a la que hay que bajar cuando se dibuje su guía. */
   const [destino, setDestino] = useState<string | null>(null)
 
-  // Las evaluaciones, con las fechas que el usuario haya cambiado.
+  // Las evaluaciones, con las fechas que el usuario haya cambiado, y el objetivo.
   const evaluaciones = usarFechas()
 
-  // El plan depende del progreso y de las fechas, así que se recalcula cuando cambian.
+  // El plan depende del progreso, de las fechas y del objetivo, así que se
+  // recalcula cuando cambian.
   const plan = useMemo(
     () =>
       armarPlan(api.progreso, skillsConItems(), skillsDeItem, {
         ...config,
         evaluaciones: [...evaluaciones.evaluaciones],
+        objetivo: evaluaciones.objetivo?.nombre ?? null,
       }),
     [api.progreso, evaluaciones],
   )

@@ -17,7 +17,7 @@
  */
 // Con extension explicita: tools/smoke.ts importa este modulo directo con
 // node, que no resuelve extensiones. Vite lo acepta igual.
-import { diasHasta, evaluacionActual, type Evaluacion } from './evaluaciones.ts'
+import { diasHasta, evaluacionObjetivo, type Evaluacion } from './evaluaciones.ts'
 import { avanceSkill, limpiosParaDominar, type Progreso } from './progreso.ts'
 
 export { diasHasta } from './evaluaciones.ts'
@@ -27,6 +27,11 @@ export type Config = {
   evaluaciones: Evaluacion[]
   curso: string | null
   ritmo_comodo_por_dia: number
+  /**
+   * La evaluación que eligió preparar el usuario, por nombre. Sin elegir (o
+   * si ya no existe), el plan apunta a la que toca por fecha.
+   */
+  objetivo?: string | null
 }
 
 export type Veredicto =
@@ -185,7 +190,7 @@ export function armarPlan(
   config: Config,
   ahora = new Date(),
 ): Plan {
-  const evaluacion = evaluacionActual(config.evaluaciones, ahora)
+  const evaluacion = evaluacionObjetivo(config.evaluaciones, config.objetivo ?? null, ahora)
   const diasRestantes = evaluacion?.fecha ? diasHasta(evaluacion.fecha, ahora) : null
 
   // Entran los skills de las guías que evalúa (los que no dicen su guía,

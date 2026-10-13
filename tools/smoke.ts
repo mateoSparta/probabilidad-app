@@ -65,6 +65,7 @@ import {
   conFechas,
   etapas,
   evaluacionActual,
+  evaluacionObjetivo,
   guiasDeLaMateria,
   rangoGuias,
   temaDe,
@@ -998,6 +999,11 @@ for (const [valor, alternativa] of equivalentes) {
     'con todo vencido no se queda con la última',
   )
   afirmar(evaluacionActual([], new Date()) === null, 'sin evaluaciones no devuelve null')
+  // El objetivo elegido gana; sin elegir (o uno que no existe), el que toca.
+  const antes = new Date('2026-10-20T10:00:00')
+  afirmar(evaluacionObjetivo(evs, 'final', antes) === final, 'el objetivo elegido no gana sobre el que toca')
+  afirmar(evaluacionObjetivo(evs, null, antes) === parcial && evaluacionObjetivo(evs, 'otro', antes) === parcial,
+    'sin objetivo elegido no apunta al que toca')
 
   const [e1, e2] = etapas(evs)
   afirmar(

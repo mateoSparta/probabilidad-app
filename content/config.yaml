@@ -5,18 +5,29 @@
 # navegador; la de acá queda como la original.
 
 # Las evaluaciones de la cursada, en orden cronológico, cada una con las guías
-# que evalúa. El aviso del encabezado y el plan de Seguimiento apuntan a la
-# primera que todavía no pasó; una sin fecha (`fecha: null`) cuenta como
-# pendiente, y el aviso dice "sin fecha" hasta que se cargue.
+# que evalúa. El aviso del encabezado y el plan de Seguimiento apuntan de
+# entrada a la primera que todavía no pasó; una sin fecha (`fecha: null`)
+# cuenta como pendiente, y el aviso dice "sin fecha" hasta que se cargue. Desde
+# la app se puede elegir otra como objetivo (los chevrones del aviso, o el
+# selector de Seguimiento).
 #
 # Las guías que entran por primera vez en una evaluación son sus temas: el
-# panel de skills las agrupa así ("parcial" y "final"). Un recuperatorio se
-# agrega como otra evaluación con las mismas guías que el parcial.
+# panel de skills las agrupa así ("parcial" y "final"). Los recuperatorios
+# tienen las mismas guías que el parcial, así que no forman una etapa.
 #
+# `nombre` va en el texto con "el" delante ("faltan 3 días para el parcial").
 # `simulacro` es el tipo de examen con el que se practica cada una.
 evaluaciones:
   - nombre: parcial
     fecha: "2026-10-30"
+    guias: [1, 2, 3, 4, 5, 6, 7, 8]
+    simulacro: parcial
+  - nombre: 1er recuperatorio
+    fecha: null
+    guias: [1, 2, 3, 4, 5, 6, 7, 8]
+    simulacro: parcial
+  - nombre: 2do recuperatorio
+    fecha: null
     guias: [1, 2, 3, 4, 5, 6, 7, 8]
     simulacro: parcial
   - nombre: final

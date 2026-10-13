@@ -1,13 +1,19 @@
 /**
- * Seguimiento: el ritmo respecto del próximo examen y el estado de cada ejercicio,
- * agrupado por unidad.
+ * Seguimiento: el ritmo respecto del examen objetivo y el estado de cada
+ * ejercicio, agrupado por unidad.
+ *
+ * El objetivo se elige arriba (el parcial, un recuperatorio o el final), y es
+ * el mismo que cambian los chevrones del aviso del encabezado: el plan, el
+ * color del aviso y el simulacro por defecto lo siguen.
  *
  * Los círculos son los mismos del mapa de cada guía, pero acá los ejercicios
  * no están en la página: elegir uno lleva a su guía y baja hasta él.
  */
 import { AvisoExamenDetalle } from '../componentes/AvisoExamen'
 import { MapaEjercicios } from '../componentes/MapaEjercicios'
+import { SelectorExamen } from '../componentes/SelectorExamen'
 import { guias } from '../datos/contenido'
+import { usarEvaluaciones } from '../datos/usarFechas'
 import type { ApiSesion } from '../datos/usarSesion'
 import type { Plan } from '../dominio/ritmo'
 import { ETIQUETA_ESTADO_EJERCICIO, type EstadoEjercicio } from '../dominio/sesion'
@@ -21,6 +27,7 @@ type Props = {
 }
 
 export function VistaSeguimiento({ plan, sesion, onIrAEjercicio }: Props) {
+  const { evaluaciones, objetivo, elegirObjetivo } = usarEvaluaciones()
   const conContenido = guias
     .filter((g) => g.secuencia.some((p) => p.tipo === 'ejercicio'))
     .sort((a, b) => a.numero - b.numero)
@@ -36,7 +43,24 @@ export function VistaSeguimiento({ plan, sesion, onIrAEjercicio }: Props) {
         </p>
       </section>
 
-      <AvisoExamenDetalle plan={plan} />
+      {evaluaciones.length > 1 && objetivo && (
+        <section class="objetivo" aria-labelledby="titulo-objetivo">
+          <h3 id="titulo-objetivo" class="objetivo__titulo">
+            Objetivo
+          </h3>
+          <SelectorExamen
+            evaluaciones={evaluaciones}
+            elegida={objetivo.nombre}
+            onElegir={elegirObjetivo}
+            nombre="objetivo"
+            etiqueta="Examen que se prepara"
+            columnas={4}
+          />
+        </section>
+      )}
+
+      {/* La key repite la entrada del detalle al cambiar de objetivo. */}
+      <AvisoExamenDetalle key={plan.evaluacion?.nombre} plan={plan} />
 
       <section class="seguimiento" aria-labelledby="titulo-unidades">
         <h3 id="titulo-unidades">Ejercicios por unidad</h3>

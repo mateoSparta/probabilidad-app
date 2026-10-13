@@ -420,15 +420,12 @@
    neutro y sólo la fecha lleva el color del ritmo: tiene que verse sin
    llamar la atención. */
 .aviso-examen {
+  position: relative;
   margin: var(--e-3) 0 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--e-2);
-  /* A los dos lados, el lugar del lápiz: el texto queda centrado y no pasa
-     por debajo. */
+  /* A los dos lados, el lugar de los chevrones: el texto queda centrado y no
+     pasa por debajo. Recorta el texto que entra deslizándose. */
   padding: var(--e-2) 2.75rem;
+  overflow: hidden;
   font-size: var(--t-xs);
   color: var(--tinta-2);
   text-align: center;
@@ -436,6 +433,17 @@
   border: 1px solid var(--borde);
   border-radius: var(--radio-lg);
 }
+.aviso-examen__texto {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+  margin: 0;
+}
+/* Al cambiar de examen, el texto entra del lado del chevrón apretado. */
+.aviso-examen__texto--adelante { animation: desde-derecha 260ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+.aviso-examen__texto--atras { animation: desde-izquierda 260ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
 .aviso-examen .icono {
   color: var(--color-ritmo, var(--tinta-3));
   font-size: 1.1em;
@@ -463,12 +471,10 @@
 .aviso-examen__sep {
   color: var(--tinta-3);
 }
-/* El lápiz, contra el borde derecho del recuadro: abre el calendario. */
-.aviso-examen { position: relative; }
-.aviso-examen__editar {
+/* Los chevrones, contra los bordes del recuadro: cambian el examen. */
+.aviso-examen__cambiar {
   position: absolute;
   top: 50%;
-  right: var(--e-2);
   display: grid;
   place-items: center;
   width: 1.75rem;
@@ -482,11 +488,32 @@
   transform: translateY(-50%);
   transition: background 150ms, color 150ms;
 }
+.aviso-examen__cambiar--antes { left: var(--e-2); }
+.aviso-examen__cambiar--despues { right: var(--e-2); }
+/* El lápiz, después de los días: abre el calendario. Con margen negativo
+   arriba y abajo, para no hacer más alto el renglón. */
+.aviso-examen__editar {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: -0.3rem -0.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radio);
+  background: transparent;
+  color: var(--tinta-2);
+  cursor: pointer;
+  transition: background 150ms, color 150ms;
+}
+.aviso-examen__cambiar:hover,
+.aviso-examen__cambiar:focus-visible,
 .aviso-examen__editar:hover,
 .aviso-examen__editar:focus-visible {
   background: color-mix(in srgb, var(--tinta) 7%, transparent);
   color: var(--tinta);
 }
+.aviso-examen .aviso-examen__cambiar .icono,
 .aviso-examen .aviso-examen__editar .icono {
   font-size: 1rem;
   color: inherit;

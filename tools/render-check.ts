@@ -765,16 +765,32 @@ try {
   const vistaVencida = render(createElement(AvisoExamenDetalle, { plan: planVencido }))
   afirmar(vistaVencida.includes('La fecha del parcial ya pasó'), 'con la fecha pasada el detalle no avisa')
 
-  // Pasado el parcial, el aviso apunta al final, que todavía no tiene fecha.
-  const planFinal = ritmoMod.armarPlan(
+  // Pasado el parcial, el aviso apunta al 1er recuperatorio, que todavía no
+  // tiene fecha.
+  const planRecu = ritmoMod.armarPlan(
     progresoMod.PROGRESO_VACIO,
     skillsReales,
     contenido.skillsDeItem,
     contenido.config,
     new Date('2026-11-05'),
   )
-  const avisoFinal = render(createElement(AvisoExamenCompacto, { plan: planFinal }))
-  afirmar(/Final<\/a>/.test(avisoFinal) && avisoFinal.includes('sin fecha'), `el aviso del final dice: ${avisoFinal}`)
+  const avisoRecu = render(createElement(AvisoExamenCompacto, { plan: planRecu }))
+  afirmar(/1er recuperatorio<\/a>/.test(avisoRecu) && avisoRecu.includes('sin fecha'),
+    'pasado el parcial, el aviso no apunta al 1er recuperatorio')
+  // Los chevrones recorren las evaluaciones, y el lápiz va después de los días.
+  afirmar(avisoRecu.includes('aria-label="Ver el parcial"') && avisoRecu.includes('aria-label="Ver el 2do recuperatorio"'),
+    'los chevrones del aviso no llevan al examen anterior y al siguiente')
+  afirmar(/sin fecha<\/a><span class="aviso-examen__sep"[^>]*>·<\/span><button class="aviso-examen__editar"[^>]*data-tip="Editar fechas"/.test(avisoRecu),
+    'el lápiz no va después de los días, o no dice "Editar fechas"')
+  // Elegido otro objetivo, el plan apunta a ése aunque no sea el que toca.
+  const planFinal = ritmoMod.armarPlan(
+    progresoMod.PROGRESO_VACIO,
+    skillsReales,
+    contenido.skillsDeItem,
+    { ...contenido.config, objetivo: 'final' },
+    new Date('2026-10-20'),
+  )
+  afirmar(planFinal.evaluacion?.nombre === 'final', 'el plan no sigue el objetivo elegido')
   const detalleFinal = render(createElement(AvisoExamenDetalle, { plan: planFinal }))
   afirmar(detalleFinal.includes('Todavía no hay fecha para el final'), 'el detalle no avisa que el final no tiene fecha')
   // Con fecha, el detalle nombra el examen al contar los días.
