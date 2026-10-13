@@ -876,7 +876,7 @@ try {
   // quedar ninguno fijo. Y la paleta oscura es sólo para la pantalla.
   for (const hoja of ['global', 'componentes', 'navegacion', 'animaciones']) {
     const css = readFileSync(new URL(`../src/estilos/${hoja}.css`, import.meta.url), 'utf8')
-    const fijos = css.match(/#[0-9a-fA-F]{3,8}/g) ?? []
+    const fijos = css.match(/#[0-9a-fA-F]{3,8}\b/g) ?? []
     afirmar(fijos.length === 0, `${hoja}.css tiene colores fijos (${fijos.join(', ')}): van en tokens.css`)
   }
   const tokens = readFileSync(new URL('../src/estilos/tokens.css', import.meta.url), 'utf8')
