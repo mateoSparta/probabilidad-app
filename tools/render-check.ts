@@ -295,7 +295,10 @@ try {
   afirmar(/indice__tema--activo"[^>]*>Normal</.test(dist), 'la normal no arranca marcada en el índice')
   afirmar(dist.includes('class="grafico-dist"') && dist.includes('class="resultado__valor"') && !dist.includes('mate-roto'),
     'la calculadora no dibuja el gráfico o el resultado de la normal')
-  afirmar(/class="resultado__valor">0,\d{6}</.test(dist), 'la calculadora no muestra la probabilidad con seis decimales')
+  afirmar(/class="resultado__valor"[^>]*>0,\d{6}</.test(dist), 'la calculadora no muestra la probabilidad con seis decimales')
+  // Los huecos tienen el ancho del valor más largo que pueden tomar, no el
+  // del valor de ahora: en la normal estándar, "−0,00" (unos 5,7ch más 1,2).
+  afirmar(/class="hueco" [^>]*style="width: ?6\.\d+ch/.test(dist), 'el hueco de x no tiene el ancho fijo del valor más largo')
   afirmar(dist.includes('class="hueco"'), 'los valores no se escriben en la frase')
   // Qué calcular va en la cabecera de la tarjeta, junto al nombre.
   afirmar(/<header class="dist__cabeza">(?:(?!<\/header>).)*class="calc__modos"/s.test(dist) && !dist.includes('dist__tabla'),
@@ -452,9 +455,14 @@ try {
   const posFinal = limpio.indexOf('id="etapa-final"')
   afirmar(
     posParcial > 0 && posFinal > posParcial &&
-      limpio.indexOf('Guía 8') < posFinal && limpio.indexOf('Guía 9') > posFinal,
+      limpio.indexOf('grupo-skills__titulo">Guía 8') < posFinal && limpio.indexOf('grupo-skills__titulo">Guía 9') > posFinal,
     'el panel no separa las guías del parcial (1 a 8) de los temas del final (9 a 12)',
   )
+  // A la izquierda, un índice con las guías de cada etapa que baja hasta ellas.
+  const enIndiceSkills = (limpio.match(/<button class="indice__tema( indice__tema--activo)?"[^>]*>Guía \d+</g) ?? []).length
+  const anclasSkills = (limpio.match(/id="skills-guia-\d+"/g) ?? []).length
+  afirmar(limpio.includes('aria-label="Índice de las guías"') && enIndiceSkills === 12 && anclasSkills === 12,
+    `el índice del panel tiene ${enIndiceSkills} guías y el panel ${anclasSkills} anclas, en lugar de 12`)
   afirmar(/guías 1 a 8 · 30\/10/.test(limpio) && /guías 9 a 12, más lo del parcial · sin fecha/.test(limpio),
     'las etapas no dicen qué guías suman ni cuándo son')
   afirmar(!limpio.includes('disminuye si se deja de practicar'),

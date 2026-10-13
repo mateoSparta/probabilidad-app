@@ -12,9 +12,11 @@
  * Es la vista que contesta "¿dónde estoy flojo?" de un vistazo, que es el
  * punto de medir el dominio sobre intentos recientes y no acumulados.
  */
-import { useState } from 'preact/hooks'
+import { useRef, useState } from 'preact/hooks'
 
+import { alTerminarDeDesplazar, usarSeccionVisible } from '../componentes/desplazamiento'
 import { IconoCandado, IconoComprobar } from '../componentes/Iconos'
+import { irA } from '../componentes/MapaEjercicios'
 import { Formula, Mate } from '../componentes/Mate'
 import { Dialogo } from '../componentes/Modal'
 import { SubirLateral, usarSubir } from '../componentes/SubirLateral'
@@ -128,8 +130,19 @@ export function PanelSkills({
     ir?.()
   }
 
+  // Las etapas con sus guías, para el panel y para el índice.
+  const porEtapa = etapasMateria
+    .map((etapa, k) => ({
+      etapa,
+      id: `etapa-${etapa.evaluacion.nombre}`,
+      dato: datoEtapa(etapa, etapasMateria[k - 1]),
+      grupos: grupos.filter((g) => etapa.propias.includes(g.guia)),
+    }))
+    .filter((e) => e.grupos.length > 0)
+
   return (
     <>
+      <IndiceSkills etapas={porEtapa} api={api} />
       <SubirLateral visible={subir} />
 
       <section class="guia__intro">
@@ -156,20 +169,17 @@ export function PanelSkills({
         </ul>
       </section>
 
-      {etapasMateria.map((etapa, k) => {
-        const deEtapa = grupos.filter((g) => etapa.propias.includes(g.guia))
-        if (deEtapa.length === 0) return null
-        const id = `etapa-${etapa.evaluacion.nombre}`
+      {porEtapa.map(({ etapa, id, dato, grupos: deEtapa }) => {
         return (
           <section key={id} class="etapa" aria-labelledby={id}>
             <header class="etapa__cabeza">
               <h3 id={id} class="etapa__titulo">
                 {rotulo(etapa.evaluacion)}
               </h3>
-              <p class="etapa__dato">{datoEtapa(etapa, etapasMateria[k - 1])}</p>
+              <p class="etapa__dato">{dato}</p>
             </header>
             {deEtapa.map(({ guia, skills }) => (
-              <section key={guia} class="grupo-skills">
+              <section key={guia} id={anclaGuia(guia)} class="grupo-skills">
                 <h4 class="grupo-skills__titulo">
                   Guía {guia}
                   {skills.every(skillBloqueado) && <IconoCandado />}
@@ -209,6 +219,83 @@ export function PanelSkills({
         />
       )}
     </>
+  )
+}
+
+const anclaGuia = (guia: number) => `skills-guia-${guia}`
+
+type GrupoGuia = ReturnType<typeof skillsPorGuia>[number]
+
+/**
+ * El índice de la izquierda: las guías agrupadas por etapa, como el panel,
+ * con cuántos de sus skills están dominados. Al hacer clic baja hasta la
+ * guía; al desplazarse, queda marcada la que se está leyendo.
+ */
+function IndiceSkills({
+  etapas,
+  api,
+}: {
+  etapas: { id: string; etapa: Etapa; grupos: GrupoGuia[] }[]
+  api: ApiProgreso
+}) {
+  const pausa = useRef(false)
+  const guias = etapas.flatMap((e) => e.grupos.map((g) => g.guia))
+  const visible = usarSeccionVisible(guias, anclaGuia, pausa)
+  // Al saltar se marca enseguida la elegida, sin esperar a que llegue.
+  const [elegida, setElegida] = useState<number | null>(null)
+  const marcada = elegida ?? visible
+
+  function ir(guia: number): void {
+    setElegida(guia)
+    pausa.current = true
+    irA(anclaGuia(guia))
+    alTerminarDeDesplazar(() => {
+      pausa.current = false
+      setElegida(null)
+      dispatchEvent(new Event('scroll'))
+    })
+  }
+
+  return (
+    <aside class="indice indice--grupos" aria-label="Índice de las guías">
+      <div class="indice__contenido">
+        <ol class="indice__lista">
+          {etapas.map(({ id, etapa, grupos }, i) => (
+            <li key={id} class="indice__grupo" style={{ '--i': i }}>
+              <p class="indice__rotulo">{rotulo(etapa.evaluacion)}</p>
+              <ol class="indice__sublista indice__sublista--fija">
+                {grupos.map(({ guia, skills }) => {
+                  const habilitados = skills.filter((s) => !skillBloqueado(s))
+                  const dominados = habilitados.filter(
+                    (s) => estadoSkill(api.progreso, itemsPorSkill.get(s.id) ?? VACIO) === 'dominado',
+                  ).length
+                  return (
+                    <li key={guia}>
+                      <button
+                        class={'indice__tema' + (guia === marcada ? ' indice__tema--activo' : '')}
+                        aria-current={guia === marcada ? 'true' : undefined}
+                        onClick={() => ir(guia)}
+                      >
+                        Guía {guia}
+                      </button>
+                      {habilitados.length > 0 ? (
+                        <span class="indice__avance" data-tip="Skills dominados">
+                          {dominados}/{habilitados.length}
+                        </span>
+                      ) : (
+                        <span class="indice__avance" data-tip="Todavía sin cargar">
+                          <IconoCandado />
+                        </span>
+                      )}
+                    </li>
+                  )
+                })}
+              </ol>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </aside>
   )
 }
 

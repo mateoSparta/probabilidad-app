@@ -16,7 +16,7 @@
 import type { ComponentChildren } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 
-import { GraficoDistribucion, type Manija } from '../componentes/GraficoDistribucion'
+import { decimalesArrastre, GraficoDistribucion, type Manija } from '../componentes/GraficoDistribucion'
 import { IconoDesplegar, IconoImprimir } from '../componentes/Iconos'
 import { Formula, Mate } from '../componentes/Mate'
 import { Indicador } from '../componentes/Indicador'
@@ -34,6 +34,7 @@ import {
   multinomial,
   Phi,
   probabilidad,
+  rangoGrafico,
   univariadaPorId,
   type Bivariada,
   type Evento,
@@ -272,19 +273,44 @@ function Selector<T extends string | number>({
 // ------------------------------------------------------------ huecos
 
 /**
+ * Lo que ocupa un texto en la tipografía de KaTeX, en `ch` (el ancho de un
+ * dígito, que es el mismo para todos): la coma es más angosta y el signo
+ * menos, más ancho.
+ */
+function anchoCh(s: string): number {
+  let ancho = 0
+  for (const c of s) ancho += c === ',' || c === '.' ? 0.56 : c === '−' || c === '-' ? 1.56 : 1
+  return ancho
+}
+
+/**
+ * El número más ancho que puede tomar un valor entre `desde` y `hasta` con
+ * hasta `decimales` decimales: "−00,00" para uno entre −4 y 12 con dos.
+ */
+function moldeNumero(desde: number, hasta: number, decimales: number): string {
+  if (!Number.isFinite(desde) || !Number.isFinite(hasta)) return '0'
+  const enteros = String(Math.floor(Math.max(Math.abs(desde), Math.abs(hasta)))).length
+  return (desde < 0 ? '−' : '') + '0'.repeat(enteros) + (decimales > 0 ? ',' + '0'.repeat(decimales) : '')
+}
+
+/**
  * Un valor que se escribe dentro de una fórmula: un hueco subrayado, con la
- * tipografía de KaTeX, que crece con lo que se escribe. La ayuda (el rango
- * del parámetro) aparece en un globo.
+ * tipografía de KaTeX. Mide lo que el valor más largo que puede tomar al
+ * arrastrar el gráfico (`molde`), así la frase no se mueve cuando el valor
+ * pasa de "0" a "−4,22"; sólo crece si se escribe algo más largo. La ayuda
+ * (el rango del parámetro) aparece en un globo.
  */
 function Hueco({
   valor,
   etiqueta,
+  molde = '',
   error,
   ayuda,
   onCambiar,
 }: {
   valor: string
   etiqueta: string
+  molde?: string
   error?: boolean
   ayuda?: string
   onCambiar: (v: string) => void
@@ -297,7 +323,7 @@ function Hueco({
       spellcheck={false}
       autoComplete="off"
       value={valor}
-      style={{ width: `${Math.max(2, valor.length) + 1.2}ch` }}
+      style={{ width: `${Math.max(2, anchoCh(molde), anchoCh(valor)) + 1.2}ch` }}
       aria-label={etiqueta}
       aria-invalid={error ? true : undefined}
       data-tip={ayuda}
@@ -439,10 +465,17 @@ function CalculadoraUnivariada({
   let valor: string | null = null
   let region: [number, number] = [0, -1]
   let manijas: Manija[] = []
-  const hx = <Hueco valor={xT} etiqueta="x" error={!Number.isFinite(x)} onCambiar={setX} />
-  const ha = <Hueco valor={aT} etiqueta="a" error={!Number.isFinite(a)} onCambiar={setA} />
-  const hb = <Hueco valor={bT} etiqueta="b" error={!Number.isFinite(b)} onCambiar={setB} />
-  const halfa = <Hueco valor={alfaT} etiqueta="α" error={!(alfa > 0 && alfa < 1)} onCambiar={setAlfa} />
+  // Los anchos fijos: lo más largo que dejan el rango del gráfico y el
+  // redondeo del arrastre. α se arrastra con cuatro decimales.
+  const [lo, hi] = valido ? rangoGrafico(d, p) : [0, 1]
+  const moldeX = moldeNumero(discreta ? Math.floor(lo) : lo, discreta ? Math.ceil(hi) : hi, decimalesArrastre(discreta, lo, hi))
+  const moldeValor = modo === 'cuantil' ? moldeNumero(lo, hi, discreta ? 0 : 6) : '0,000000'
+  const hx = <Hueco valor={xT} etiqueta="x" molde={moldeX} error={!Number.isFinite(x)} onCambiar={setX} />
+  const ha = <Hueco valor={aT} etiqueta="a" molde={moldeX} error={!Number.isFinite(a)} onCambiar={setA} />
+  const hb = <Hueco valor={bT} etiqueta="b" molde={moldeX} error={!Number.isFinite(b)} onCambiar={setB} />
+  const halfa = (
+    <Hueco valor={alfaT} etiqueta="α" molde="0,0000" error={!(alfa > 0 && alfa < 1)} onCambiar={setAlfa} />
+  )
   const le = discreta ? '\\le' : '<'
   const piezas: Pieza[] =
     modo === 'igual'
@@ -536,7 +569,9 @@ function CalculadoraUnivariada({
               {valor !== null && (
                 <>
                   <Formula tex="=" />
-                  <strong class="resultado__valor">{valor}</strong>
+                  <strong class="resultado__valor" style={{ minWidth: `${anchoCh(moldeValor)}ch` }}>
+                    {valor}
+                  </strong>
                 </>
               )}
             </p>
@@ -597,6 +632,7 @@ function CalculadoraMultinomial({ ficha }: { ficha: FichaDistribucion }) {
       <Hueco
         valor={xsT[i] ?? ''}
         etiqueta={`x${i + 1}`}
+        molde={moldeNumero(0, n, 0)}
         error={!(Number.isInteger(xs[i]) && xs[i] >= 0)}
         onCambiar={(v) => setXs((s) => Object.assign([...s], { [i]: v }))}
       />,
@@ -721,8 +757,15 @@ function CalculadoraBivariada({ ficha }: { ficha: FichaDistribucion }) {
   const campo = (k: string, texParam: string, error: boolean) => (
     <CampoParametro texParam={texParam} valor={t[k]} error={error} onCambiar={cambiar(k)} />
   )
+  // Los anchos fijos: a (y x₁) y b se mueven en el rango del gráfico, con los
+  // decimales del arrastre (a lo sumo tres, como se escriben).
+  const molde = (mu: number, s: number) => {
+    const [desde, hasta] = [mu - 3.6 * s, mu + 3.6 * s]
+    return moldeNumero(desde, hasta, Math.min(3, decimalesArrastre(false, desde, hasta)))
+  }
+  const moldes: Record<string, string> = { a: molde(par.mu1, par.s1), x1: molde(par.mu1, par.s1), b: molde(par.mu2, par.s2) }
   const hueco = (k: string, etiqueta: string) => (
-    <Hueco valor={t[k]} etiqueta={etiqueta} error={!Number.isFinite(v[k])} onCambiar={cambiar(k)} />
+    <Hueco valor={t[k]} etiqueta={etiqueta} molde={moldes[k]} error={!Number.isFinite(v[k])} onCambiar={cambiar(k)} />
   )
 
   return (

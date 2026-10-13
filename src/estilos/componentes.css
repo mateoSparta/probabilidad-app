@@ -476,7 +476,11 @@
 .estado--sin_explorar  { --color-estado: var(--sin-explorar); }
 .resumen__item strong { color: var(--color-estado); }
 
-.grupo-skills { margin-bottom: var(--e-5); }
+.grupo-skills {
+  margin-bottom: var(--e-5);
+  /* El índice salta hasta acá: que el título no quede pegado al borde. */
+  scroll-margin-top: var(--e-4);
+}
 .grupo-skills__titulo {
   font-size: var(--t-xs);
   text-transform: uppercase;

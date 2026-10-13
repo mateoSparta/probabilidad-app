@@ -26,6 +26,15 @@ type Props = {
   onMover: (id: Manija['id'], valor: number) => void
 }
 
+/**
+ * Con cuántos decimales queda lo que se arrastra en un gráfico que va de `lo`
+ * a `hi`: enteros en las discretas; en las continuas, dos cifras
+ * significativas más que el rango. La calculadora lo usa también para darle
+ * a cada hueco el ancho del valor más largo que puede tomar.
+ */
+export const decimalesArrastre = (discreta: boolean, lo: number, hi: number) =>
+  discreta ? 0 : Math.max(0, 2 - Math.floor(Math.log10(hi - lo)))
+
 const ANCHO = 640
 const ALTO = 280
 const IZQ = 52
@@ -104,9 +113,8 @@ export function GraficoDistribucion({ d, p, region, manijas, onMover }: Props) {
   const marcasX = discreta && hi - lo <= 12 ? enteros : marcasEje(lo, hi, 7).filter((v) => !discreta || Number.isInteger(v))
   const marcasY = marcasEje(0, ymax, 4).filter((v) => v <= ymax * 1.05)
 
-  // Redondeo de lo que se arrastra: enteros en las discretas; en las
-  // continuas, dos cifras significativas más que el rango.
-  const decimales = discreta ? 0 : Math.max(0, 2 - Math.floor(Math.log10(hi - lo)))
+  // Redondeo de lo que se arrastra.
+  const decimales = decimalesArrastre(discreta, lo, hi)
   const redondear = (v: number) => (discreta ? Math.round(v) : Number(v.toFixed(decimales)))
   const paso = discreta ? 1 : 10 ** -decimales * Math.max(1, Math.round((hi - lo) / 100 / 10 ** -decimales))
 

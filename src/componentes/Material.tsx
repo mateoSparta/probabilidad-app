@@ -12,6 +12,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks'
 import { guiaPorNumero, hojasFormulas, tablas } from '../datos/contenido'
 import type { Evaluacion } from '../dominio/evaluaciones'
 import type { Tabla } from '../dominio/tipos'
+import { alTerminarDeDesplazar, usarSeccionVisible } from './desplazamiento'
 import { GraficoTabla } from './GraficoTabla'
 import { IconoDesplegar } from './Iconos'
 import { Formula, Mate } from './Mate'
@@ -223,29 +224,6 @@ function TablaNumerica({ tabla, ancla }: { tabla: Tabla; ancla?: string }) {
 }
 
 /**
- * Corre `listo` cuando termina el desplazamiento en curso, o enseguida si no
- * hay ninguno: mira la posición cada 80 ms y espera dos lecturas iguales. No
- * usa `scrollend` porque no todos los navegadores lo emiten.
- */
-function alTerminarDeDesplazar(listo: () => void): void {
-  let ultima = scrollY
-  let quietas = 0
-  let vueltas = 0
-  const t = setInterval(() => {
-    vueltas++
-    if (scrollY === ultima) quietas++
-    else {
-      quietas = 0
-      ultima = scrollY
-    }
-    if (quietas >= 2 || vueltas > 50) {
-      clearInterval(t)
-      listo()
-    }
-  }, 80)
-}
-
-/**
  * Pinta de naranja muy claro las fichas de un tema: un fundido de entrada y
  * otro de salida, el doble de largo, sin pausa entre los dos (`resaltar` en
  * animaciones.css). Si ya estaba pintado, la animación vuelve a empezar.
@@ -257,39 +235,6 @@ function resaltarTema(id: string): void {
   void bloque.offsetWidth
   bloque.classList.add('hoja__bloque--resaltado')
   setTimeout(() => bloque.classList.remove('hoja__bloque--resaltado'), 1000)
-}
-
-/**
- * La guía que se está leyendo: la última cuyo título ya pasó la mitad de la
- * pantalla, o la primera si ninguna. Mientras `pausa` está prendida (un salto
- * desde el índice en curso) no se actualiza, para que el acordeón no abra
- * cada guía por la que pasa el desplazamiento.
- */
-function usarGuiaVisible(guias: readonly number[], pausa: { current: boolean }): number | null {
-  const [visible, setVisible] = useState<number | null>(guias[0] ?? null)
-  useEffect(() => {
-    let cuadro = 0
-    const revisar = () => {
-      cuadro = 0
-      if (pausa.current) return
-      let actual = guias[0] ?? null
-      for (const g of guias) {
-        const titulo = document.getElementById(anclaGuia(g))
-        if (titulo && titulo.getBoundingClientRect().top <= innerHeight / 2) actual = g
-      }
-      setVisible(actual)
-    }
-    const alDesplazar = () => {
-      if (!cuadro) cuadro = requestAnimationFrame(revisar)
-    }
-    revisar()
-    addEventListener('scroll', alDesplazar, { passive: true })
-    return () => {
-      removeEventListener('scroll', alDesplazar)
-      cancelAnimationFrame(cuadro)
-    }
-  }, [guias.join()])
-  return visible
 }
 
 /**
@@ -311,8 +256,11 @@ export function IndiceMaterial({
 }) {
   const hojas = hojasFormulas.filter((h) => guias.includes(h.guia))
   const pausa = useRef(false)
-  const visible = usarGuiaVisible(
+  // La guía que se está leyendo; el acordeón no abre cada guía por la que
+  // pasa un salto, porque `pausa` la congela mientras dura.
+  const visible = usarSeccionVisible(
     hojas.map((h) => h.guia),
+    anclaGuia,
     pausa,
   )
   const [abierta, setAbierta] = useState<number | null>(visible)
