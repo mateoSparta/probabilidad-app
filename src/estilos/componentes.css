@@ -1707,28 +1707,50 @@
   color: var(--acento);
   transform: translateY(-2px);
 }
-/* El botón del modo: la luna y el sol apilados en el mismo lugar. Al
-   cambiar, uno gira y se desvanece mientras el otro entra. */
-.accesos__tema { position: relative; }
-.accesos__icono {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  transition: opacity 260ms ease, transform 380ms cubic-bezier(0.3, 1.3, 0.5, 1);
+/* El ícono del modo (IconoModo): un solo dibujo que pasa de luna a sol y de
+   sol a luna. Todas las piezas giran y crecen alrededor del centro del
+   ícono.
+
+   Luna (modo claro): el disco con radio 9, los rayos afuera y apagados, y
+   la sombra encima, mordiendo el disco. Sol (modo oscuro): el disco con
+   radio 4, los rayos en su lugar y la sombra afuera, arriba a la derecha.
+
+   Cada transición usa los tiempos de su destino. Hacia la luna: el disco
+   crece y empuja los rayos (enseguida), y recién cuando tiene su tamaño
+   entra la sombra. Hacia el sol, al revés: primero sale la sombra y después
+   el disco se achica y los rayos vuelven. */
+.icono-modo { overflow: visible; }
+.icono-modo * {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
 }
-/* El mismo giro que el del menú de hamburguesa al pasar al de contacto. */
-.accesos__icono--sol {
+.icono-modo__disco {
+  transform: scale(2.25);
+  transition: transform 340ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.icono-modo__rayos {
   opacity: 0;
-  transform: scale(0.4) rotate(-120deg);
+  transform: scale(1.45);
+  transition:
+    transform 340ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 240ms ease;
 }
-.accesos__tema--oscuro .accesos__icono--luna {
-  opacity: 0;
-  transform: scale(0.4) rotate(120deg);
+.icono-modo__sombra {
+  transform: none;
+  transition: transform 320ms cubic-bezier(0.3, 0, 0.2, 1) 300ms;
 }
-.accesos__tema--oscuro .accesos__icono--sol {
+.icono-modo--sol .icono-modo__disco {
+  transform: none;
+  transition-delay: 260ms;
+}
+.icono-modo--sol .icono-modo__rayos {
   opacity: 1;
   transform: none;
+  transition-delay: 260ms;
+}
+.icono-modo--sol .icono-modo__sombra {
+  transform: translate(8px, -8px);
+  transition-delay: 0ms;
 }
 @media (max-width: 40rem) {
   .accesos {
@@ -1939,9 +1961,11 @@
   margin: auto 0 0;
   font-size: var(--t-sm);
 }
+/* Como en la ficha de Distribuciones: una tercera columna vacía, del ancho
+   del rótulo, centra la fórmula en la ficha entera. */
 .ficha-dist__fila {
   display: grid;
-  grid-template-columns: 7rem minmax(0, 1fr);
+  grid-template-columns: 7rem minmax(0, 1fr) 7rem;
   align-items: baseline;
   gap: var(--e-2);
   padding: 0.3rem 0;
@@ -1951,7 +1975,14 @@
   font-size: var(--t-xs);
   color: var(--tinta-3);
 }
-/* Los rótulos a la izquierda y las fórmulas centradas en su columna. */
+/* El rótulo dice qué significa al pasar el mouse (acá y en la ficha de
+   Distribuciones). */
+.ficha-dist__fila dt[data-tip],
+.dist-ficha__fila dt[data-tip] { cursor: help; }
+@media (max-width: 40rem) {
+  .ficha-dist__fila { grid-template-columns: 5.5rem minmax(0, 1fr); }
+}
+/* Los rótulos a la izquierda y las fórmulas centradas. */
 .ficha-dist__fila dd {
   margin: 0;
   text-align: center;
@@ -2333,21 +2364,27 @@
   color: var(--tinta-2);
 }
 .dist-ficha__lista { margin: 0; }
+/* Tres columnas: el rótulo, el contenido y una vacía del ancho del rótulo,
+   para que el contenido quede centrado en el ancho de la ficha entera y no
+   corrido a la derecha. En un teléfono, dos, para no perder ancho. */
 .dist-ficha__fila {
   display: grid;
-  grid-template-columns: 7.5rem minmax(0, 1fr);
+  grid-template-columns: 7.5rem minmax(0, 1fr) 7.5rem;
   align-items: baseline;
   gap: var(--e-3);
   padding: var(--e-2) 0;
   border-bottom: 1px solid var(--borde);
 }
 .dist-ficha__fila:first-child { border-top: 1px solid var(--borde); }
+@media (max-width: 40rem) {
+  .dist-ficha__fila { grid-template-columns: 6rem minmax(0, 1fr); }
+}
 .dist-ficha__fila dt {
   font-size: var(--t-sm);
   color: var(--tinta-2);
 }
-/* El rótulo, a la izquierda; el contenido, centrado en su columna (`safe`:
-   si no entra, se desplaza desde el principio en lugar de cortarse). */
+/* El rótulo, a la izquierda; el contenido, centrado (`safe`: si no entra,
+   se desplaza desde el principio en lugar de cortarse). */
 .dist-ficha__fila dd {
   display: flex;
   flex-wrap: wrap;

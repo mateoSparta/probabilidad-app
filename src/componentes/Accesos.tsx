@@ -13,7 +13,7 @@
 import type { ComponentType } from 'preact'
 
 import { usarTema } from '../datos/usarTema'
-import { IconoGithub, IconoLuna, IconoSol, LogoCafecito } from './Iconos'
+import { IconoGithub, IconoModo, LogoCafecito } from './Iconos'
 
 type Acceso = { href: string; ayuda: string; etiqueta: string; Icono: ComponentType }
 
@@ -66,12 +66,8 @@ export function Accesos() {
           data-tip-lado="arriba"
           onClick={alternar}
         >
-          <span class="accesos__icono accesos__icono--luna" aria-hidden="true">
-            <IconoLuna />
-          </span>
-          <span class="accesos__icono accesos__icono--sol" aria-hidden="true">
-            <IconoSol />
-          </span>
+          {/* En el modo claro, la luna (pasar al nocturno); en el oscuro, el sol. */}
+          <IconoModo oscuro={oscuro} />
         </button>
       </li>
     </ul>

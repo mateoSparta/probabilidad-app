@@ -336,6 +336,10 @@ try {
     const { TeoriaDistribuciones } = await servidor.ssrLoadModule('/src/componentes/TeoriaDistribuciones.tsx')
     const teoria = render(createElement(TeoriaDistribuciones, { anclas: true }))
     const fichas = (teoria.match(/<article class="ficha-dist/g) ?? []).length
+    // Cada rótulo dice qué significa al pasar el mouse.
+    afirmar(/<dt data-tip="Soporte: |<dt data-tip="Los valores que puede tomar la variable"/.test(teoria) &&
+      teoria.includes('data-tip="Esperanza: el valor medio de X"'),
+      'los rótulos de las fichas no tienen su ayuda')
     afirmar(fichas === contenido.fichasDistribuciones.length && !teoria.includes('mate-roto') &&
       teoria.includes('id="teoria-hipergeometrica"') && teoria.includes('>Equivalencias</h3>') &&
       teoria.indexOf('Distribuciones discretas') < teoria.indexOf('Distribuciones continuas'),
@@ -919,7 +923,8 @@ try {
   // El tercero es el modo nocturno: un botón con la luna y el sol.
   afirmar(
     /<button class="accesos__boton accesos__tema"[^>]*aria-label="Modo nocturno" aria-pressed="false"/.test(accesos) &&
-      accesos.includes('accesos__icono--luna') && accesos.includes('accesos__icono--sol'),
+      ['icono-modo__disco', 'icono-modo__rayos', 'icono-modo__sombra', '<mask', '<clipPath'].every((t) => accesos.includes(t)) &&
+      !accesos.includes('icono-modo--sol'),
     'falta el botón del modo nocturno en los accesos del inicio',
   )
   // El modo nocturno depende de que todos los colores sean variables: fuera

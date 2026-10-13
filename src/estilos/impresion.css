@@ -125,11 +125,14 @@
 
   /* --- teoría de las distribuciones: igual que la hoja de fórmulas, las
      fichas en dos columnas con un filete a la izquierda, el título de cada
-     grupo a todo el ancho y ninguna ficha partida. Los grupos siguen uno
-     después del otro (no hace falta una página por grupo); las
-     multivariadas, de fórmulas largas, van a una columna --- */
+     grupo a todo el ancho y ninguna ficha partida. Cada tipo de distribución
+     empieza en una página nueva (las equivalencias siguen a las
+     multivariadas); las multivariadas, de fórmulas largas, van a una
+     columna --- */
 
-  #impresion .teoria-dist .hoja__guia + .hoja__guia {
+  #impresion .teoria-dist__grupo--continua,
+  #impresion .teoria-dist__grupo--multivariada { break-before: page; }
+  #impresion .teoria-dist__grupo--equivalencias {
     break-before: auto;
     margin-top: 5mm;
   }
@@ -157,7 +160,7 @@
   }
   #impresion .ficha-dist__lista { font-size: 7.6pt; }
   #impresion .ficha-dist__fila {
-    grid-template-columns: 15mm minmax(0, 1fr);
+    grid-template-columns: 15mm minmax(0, 1fr) 15mm;
     gap: 1.5mm;
     padding: 0.35mm 0;
     border-top: 0.3pt solid #d4d4d4;

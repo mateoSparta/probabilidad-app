@@ -21,7 +21,7 @@ import { IconoDesplegar } from '../componentes/Iconos'
 import { Formula, Mate } from '../componentes/Mate'
 import { Indicador } from '../componentes/Indicador'
 import { SubirLateral, usarSubir } from '../componentes/SubirLateral'
-import { sinMiembroIzquierdo } from '../componentes/TeoriaDistribuciones'
+import { AYUDA_ROTULO, ayudaFuncion, sinMiembroIzquierdo } from '../componentes/TeoriaDistribuciones'
 import { fichasDistribuciones } from '../datos/contenido'
 import {
   condicionalBivariada,
@@ -917,24 +917,30 @@ function Propiedades({ ficha, d, valores }: { ficha: FichaDistribucion; d?: Univ
   const funcion = ficha.grupo === 'discreta' ? 'p_X(x)' : ficha.grupo === 'continua' ? 'f_X(x)' : null
   const conValores = d && valores ? { d, valores } : null
   const varianza = conValores ? conValores.d.varianza(conValores.valores) : null
-  const filas: { rotulo: ComponentChildren; tex?: string; valor?: string | null; nota?: string }[] = [
-    { rotulo: funcion ? <Formula tex={funcion} /> : 'Función', tex: funcion ? sinMiembroIzquierdo(ficha.funcion) : ficha.funcion },
-    { rotulo: 'Soporte', tex: ficha.soporte, nota: ficha.nota_soporte },
-    { rotulo: 'Parámetros', tex: ficha.parametros },
+  const filas: { rotulo: ComponentChildren; ayuda: string; tex?: string; valor?: string | null; nota?: string }[] = [
+    {
+      rotulo: funcion ? <Formula tex={funcion} /> : 'Función',
+      ayuda: ayudaFuncion(ficha.grupo),
+      tex: funcion ? sinMiembroIzquierdo(ficha.funcion) : ficha.funcion,
+    },
+    { rotulo: 'Soporte', ayuda: AYUDA_ROTULO.soporte, tex: ficha.soporte, nota: ficha.nota_soporte },
+    { rotulo: 'Parámetros', ayuda: AYUDA_ROTULO.parametros, tex: ficha.parametros },
     {
       rotulo: ficha.grupo === 'multivariada' ? 'Esperanzas' : <Formula tex="E[X]" />,
+      ayuda: ficha.grupo === 'multivariada' ? AYUDA_ROTULO.esperanzas : AYUDA_ROTULO.esperanza,
       tex: ficha.esperanza,
       valor: conValores ? momento(conValores.d.esperanza(conValores.valores)) : null,
     },
     {
       rotulo: ficha.grupo === 'multivariada' ? 'Varianzas' : <Formula tex="\operatorname{var}(X)" />,
+      ayuda: ficha.grupo === 'multivariada' ? AYUDA_ROTULO.varianzas : AYUDA_ROTULO.varianza,
       tex: ficha.varianza,
       valor: varianza === null ? null : momento(varianza),
     },
     ...(typeof varianza === 'number'
-      ? [{ rotulo: <Formula tex="\sigma_X" />, valor: formatearNumero(Math.sqrt(varianza), 4, true) }]
+      ? [{ rotulo: <Formula tex="\sigma_X" />, ayuda: AYUDA_ROTULO.desvio, valor: formatearNumero(Math.sqrt(varianza), 4, true) }]
       : []),
-    ...(ficha.supervivencia ? [{ rotulo: 'Supervivencia', tex: ficha.supervivencia }] : []),
+    ...(ficha.supervivencia ? [{ rotulo: 'Supervivencia', ayuda: AYUDA_ROTULO.supervivencia, tex: ficha.supervivencia }] : []),
   ]
   return (
     <div class="dist-ficha">
@@ -944,7 +950,7 @@ function Propiedades({ ficha, d, valores }: { ficha: FichaDistribucion; d?: Univ
       <dl class="dist-ficha__lista">
         {filas.map((f, i) => (
           <div key={i} class="dist-ficha__fila">
-            <dt>{f.rotulo}</dt>
+            <dt data-tip={f.ayuda}>{f.rotulo}</dt>
             <dd>
               {f.tex && <Formula tex={f.tex} />}
               {f.valor != null && (
@@ -963,7 +969,7 @@ function Propiedades({ ficha, d, valores }: { ficha: FichaDistribucion; d?: Univ
         ))}
         {ficha.propiedades?.length ? (
           <div class="dist-ficha__fila">
-            <dt>Propiedades</dt>
+            <dt data-tip={AYUDA_ROTULO.propiedades}>Propiedades</dt>
             <dd class="dist-ficha__varias">
               {ficha.propiedades.map((p) => (
                 <Formula key={p} tex={p} />
@@ -973,7 +979,7 @@ function Propiedades({ ficha, d, valores }: { ficha: FichaDistribucion; d?: Univ
         ) : null}
         {ficha.equivalencias?.length ? (
           <div class="dist-ficha__fila">
-            <dt>Equivalencias</dt>
+            <dt data-tip={AYUDA_ROTULO.equivalencias}>Equivalencias</dt>
             <dd class="dist-ficha__varias">
               {ficha.equivalencias.map((e) => (
                 <Formula key={e} tex={e} />

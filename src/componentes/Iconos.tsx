@@ -199,27 +199,69 @@ export const LogoCafecito = () => (
   </Svg>
 )
 
-/** Modo nocturno: la luna (de Lucide). */
-export const IconoLuna = () => (
-  <Svg>
-    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-  </Svg>
-)
-
-/** Modo claro: el sol (de Lucide). */
-export const IconoSol = () => (
-  <Svg>
-    <circle cx="12" cy="12" r="4" />
-    <path d="M12 2v2" />
-    <path d="M12 20v2" />
-    <path d="m4.93 4.93 1.41 1.41" />
-    <path d="m17.66 17.66 1.41 1.41" />
-    <path d="M2 12h2" />
-    <path d="M20 12h2" />
-    <path d="m6.34 17.66-1.41 1.41" />
-    <path d="m19.07 4.93-1.41 1.41" />
-  </Svg>
-)
+/**
+ * El ícono del botón del modo: el sol y la luna son el mismo dibujo, que se
+ * transforma de uno al otro (las transiciones están en componentes.css).
+ *
+ * - El disco: el círculo del sol (radio 4), que crece hasta el de la luna
+ *   (radio 9). Crece con `scale` y el trazo no engorda porque es
+ *   `non-scaling-stroke`.
+ * - Los rayos: el disco los empuja hacia afuera mientras crece, y se
+ *   desvanecen.
+ * - La sombra: un círculo que entra desde arriba a la derecha y, con una
+ *   máscara, le quita al disco el mordisco de la medialuna; su borde,
+ *   recortado al disco, dibuja el arco de adentro. Afuera del ícono no se ve.
+ *
+ * De sol a luna: primero crece el disco, después entra la sombra. De luna a
+ * sol, lo mismo al revés. La sombra pasa por los puntos (12, 3) y (21, 12),
+ * como el trazado de la luna de Lucide.
+ */
+export function IconoModo({ oscuro }: { oscuro: boolean }) {
+  const id = useId()
+  const mascara = `${id}-mascara`
+  const recorte = `${id}-recorte`
+  return (
+    <svg
+      class={'icono icono-modo' + (oscuro ? ' icono-modo--sol' : '')}
+      viewBox="0 0 24 24"
+      width="1em"
+      height="1em"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <defs>
+        <mask id={mascara} maskUnits="userSpaceOnUse" x="-6" y="-6" width="36" height="36">
+          <rect x="-6" y="-6" width="36" height="36" fill="#fff" stroke="none" />
+          <circle class="icono-modo__sombra" cx="17.5" cy="6.5" r="6.5" fill="#000" stroke="none" />
+        </mask>
+        <clipPath id={recorte}>
+          <circle cx="12" cy="12" r="9" />
+        </clipPath>
+      </defs>
+      <g class="icono-modo__rayos">
+        <path d="M12 2v2" vector-effect="non-scaling-stroke" />
+        <path d="M12 20v2" vector-effect="non-scaling-stroke" />
+        <path d="m4.93 4.93 1.41 1.41" vector-effect="non-scaling-stroke" />
+        <path d="m17.66 17.66 1.41 1.41" vector-effect="non-scaling-stroke" />
+        <path d="M2 12h2" vector-effect="non-scaling-stroke" />
+        <path d="M20 12h2" vector-effect="non-scaling-stroke" />
+        <path d="m6.34 17.66-1.41 1.41" vector-effect="non-scaling-stroke" />
+        <path d="m19.07 4.93-1.41 1.41" vector-effect="non-scaling-stroke" />
+      </g>
+      <g mask={`url(#${mascara})`}>
+        <circle class="icono-modo__disco" cx="12" cy="12" r="4" vector-effect="non-scaling-stroke" />
+      </g>
+      <g clip-path={`url(#${recorte})`}>
+        <circle class="icono-modo__sombra" cx="17.5" cy="6.5" r="6.5" />
+      </g>
+    </svg>
+  )
+}
 
 /** Contacto: un globo de diálogo con renglones. */
 export const IconoMensaje = () => (

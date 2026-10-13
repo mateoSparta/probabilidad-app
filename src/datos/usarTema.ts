@@ -6,16 +6,20 @@
  * Si el usuario nunca eligió, sigue al sistema, también si cambia con la
  * página abierta (el modo nocturno automático de muchos teléfonos). Al
  * elegir con el botón, la elección se guarda en localStorage y deja de
- * seguirlo. Al cambiar, los colores pasan de uno a otro con una transición
- * corta (la clase `tema-cambiando`).
+ * seguirlo.
+ *
+ * Al cambiar, la página se funde de un modo al otro con la View Transitions
+ * API: el navegador funde una captura de la pantalla vieja con la nueva, así
+ * que cuesta lo mismo en el Machete (miles de elementos de KaTeX) que en el
+ * inicio. Antes se animaba el color de cada elemento, y en las páginas
+ * cargadas se trababa. Sin la API, o con movimiento reducido, el cambio es
+ * instantáneo.
  */
 import { useEffect, useState } from 'preact/hooks'
 
 export type Tema = 'claro' | 'oscuro'
 
 const CLAVE = 'probabilidad-app:tema:v1'
-/** Lo que dura la transición de colores; tiene que coincidir con tokens.css. */
-const TRANSICION_MS = 300
 
 function guardado(): Tema | null {
   try {
@@ -35,14 +39,13 @@ function actual(): Tema {
   return t === 'oscuro' || t === 'claro' ? t : (guardado() ?? sistema())
 }
 
-let fin = 0
-
 function aplicar(t: Tema): void {
-  const html = document.documentElement
-  html.classList.add('tema-cambiando')
-  html.dataset.tema = t
-  clearTimeout(fin)
-  fin = window.setTimeout(() => html.classList.remove('tema-cambiando'), TRANSICION_MS)
+  const cambiar = () => {
+    document.documentElement.dataset.tema = t
+  }
+  const conMovimiento = !matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (conMovimiento && typeof document.startViewTransition === 'function') document.startViewTransition(cambiar)
+  else cambiar()
 }
 
 export function usarTema(): { tema: Tema; alternar: () => void } {
