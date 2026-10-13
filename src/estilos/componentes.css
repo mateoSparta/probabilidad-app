@@ -1715,10 +1715,13 @@
    la sombra encima, mordiendo el disco. Sol (modo oscuro): el disco con
    radio 4, los rayos en su lugar y la sombra afuera, arriba a la derecha.
 
-   Cada transición usa los tiempos de su destino. Hacia la luna: el disco
-   crece y empuja los rayos (enseguida), y recién cuando tiene su tamaño
-   entra la sombra. Hacia el sol, al revés: primero sale la sombra y después
-   el disco se achica y los rayos vuelven. */
+   Cada transición usa los tiempos de su destino, y es un solo movimiento,
+   no dos seguidos: hacia la luna, la sombra arranca cuando el disco va por
+   la mitad de su crecimiento, así lo muerde mientras crece; hacia el sol,
+   el disco empieza a achicarse mientras la sombra sale. La sombra parte de
+   apenas afuera del borde de la luna, (6, -6): si partiera más lejos, el
+   primer tramo no se vería y parecería una pausa. En el sol, con el disco
+   chico, desde ahí no lo toca. */
 .icono-modo { overflow: visible; }
 .icono-modo * {
   transform-box: view-box;
@@ -1726,30 +1729,30 @@
 }
 .icono-modo__disco {
   transform: scale(2.25);
-  transition: transform 340ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 400ms cubic-bezier(0.45, 0, 0.25, 1);
 }
 .icono-modo__rayos {
   opacity: 0;
   transform: scale(1.45);
   transition:
-    transform 340ms cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 240ms ease;
+    transform 400ms cubic-bezier(0.45, 0, 0.25, 1),
+    opacity 260ms ease;
 }
 .icono-modo__sombra {
   transform: none;
-  transition: transform 320ms cubic-bezier(0.3, 0, 0.2, 1) 300ms;
+  transition: transform 420ms cubic-bezier(0.3, 0.1, 0.25, 1) 160ms;
 }
 .icono-modo--sol .icono-modo__disco {
   transform: none;
-  transition-delay: 260ms;
+  transition-delay: 140ms;
 }
 .icono-modo--sol .icono-modo__rayos {
   opacity: 1;
   transform: none;
-  transition-delay: 260ms;
+  transition-delay: 160ms;
 }
 .icono-modo--sol .icono-modo__sombra {
-  transform: translate(8px, -8px);
+  transform: translate(6px, -6px);
   transition-delay: 0ms;
 }
 @media (max-width: 40rem) {
