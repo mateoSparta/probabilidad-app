@@ -65,7 +65,7 @@ export function evaluacionActual(
 
 /**
  * El objetivo: la evaluación que se está preparando. Es la que eligió el
- * usuario (con los chevrones del aviso o en Seguimiento), si todavía existe;
+ * usuario (en el desplegable del aviso del encabezado), si todavía existe;
  * si no eligió ninguna, la que toca por fecha.
  */
 export function evaluacionObjetivo(

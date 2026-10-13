@@ -6,11 +6,12 @@
  *
  * `AvisoExamenCompacto` va en el encabezado: un botón del ancho de la columna
  * con el examen y cuándo es ("Parcial · 30/10 (faltan 18 días)"), teñido
- * según el ritmo. Al apretarlo, el chevrón gira y se despliega la lista de
- * todas las evaluaciones, agrupadas: elegir una la vuelve el objetivo, y el
- * lápiz que aparece al pasar el mouse abre el calendario para cambiar su
- * fecha (EditorFecha). En Seguimiento se pliega, porque el objetivo se elige
- * ahí mismo.
+ * según el ritmo. Al apretarlo, el chevrón gira y se despliega, del mismo
+ * ancho, la lista de todas las evaluaciones en una columna (el parcial y sus
+ * recuperatorios, después los llamados a final): elegir una la vuelve el
+ * objetivo, y el lápiz que aparece al pasar el mouse abre el calendario para
+ * cambiar su fecha (EditorFecha). Es el único lugar donde se elige el
+ * objetivo.
  *
  * `AvisoExamenDetalle` va en Seguimiento, con la cuenta completa: qué falta,
  * cuántos ítems por día y si el ritmo de los últimos días alcanza.
@@ -44,7 +45,7 @@ function tono(plan: Plan): string {
 /** Qué evaluación edita el calendario. Se conserva al cerrarlo, para que salga con su contenido. */
 type Edicion = { nombre: string; abierto: boolean }
 
-export function AvisoExamenCompacto({ plan, oculto = false }: { plan: Plan; oculto?: boolean }) {
+export function AvisoExamenCompacto({ plan }: { plan: Plan }) {
   const { evaluaciones, elegirObjetivo } = usarEvaluaciones()
   const [abierto, setAbierto] = useState(false)
   const [edicion, setEdicion] = useState<Edicion | null>(null)
@@ -54,11 +55,6 @@ export function AvisoExamenCompacto({ plan, oculto = false }: { plan: Plan; ocul
   const boton = useRef<HTMLButtonElement>(null)
   const idMenu = useId()
   const ev = plan.evaluacion
-
-  // Plegado (en Seguimiento), la lista se cierra.
-  useEffect(() => {
-    if (oculto) setAbierto(false)
-  }, [oculto])
 
   // Abierta, se cierra con un clic afuera, y el foco va a la elegida.
   useEffect(() => {
@@ -94,8 +90,7 @@ export function AvisoExamenCompacto({ plan, oculto = false }: { plan: Plan; ocul
   return (
     <div
       ref={marco}
-      class={'aviso' + (oculto ? ' aviso--oculto' : '') + (abierto ? ' aviso--abierto' : '')}
-      inert={oculto}
+      class={'aviso' + (abierto ? ' aviso--abierto' : '')}
       onKeyDown={(e) => {
         if (e.key === 'Escape' && abierto) {
           setAbierto(false)
@@ -103,35 +98,32 @@ export function AvisoExamenCompacto({ plan, oculto = false }: { plan: Plan; ocul
         }
       }}
     >
-      <div class="aviso__plegable">
-        <div class="aviso__interior">
-          <button
-            ref={boton}
-            class={'aviso-examen ' + tono(plan)}
-            aria-expanded={abierto}
-            aria-controls={idMenu}
-            aria-label={`Examen objetivo: ${ev.nombre}, ${cuandoEs(ev.fecha, plan.diasRestantes)}. Cambiar el examen o su fecha`}
-            onClick={() => setAbierto((a) => !a)}
-          >
-            {/* La key vuelve a montar el texto al cambiar de examen: entra
-                deslizándose del lado de la elegida. */}
-            <span
-              key={ev.nombre}
-              class={'aviso-examen__texto' + (sentido ? ' aviso-examen__texto--' + sentido : '')}
-            >
-              <IconoCalendario />
-              <span class="aviso-examen__examen">{rotulo(ev)}</span>
-              <span class="aviso-examen__sep" aria-hidden="true">
-                ·
-              </span>
-              <span class="aviso-examen__cuando">{cuandoEs(ev.fecha, plan.diasRestantes)}</span>
-            </span>
-            <span class="aviso-examen__chevron" aria-hidden="true">
-              <IconoSiguiente />
-            </span>
-          </button>
-        </div>
-      </div>
+      <button
+        ref={boton}
+        class={'aviso-examen ' + tono(plan)}
+        aria-expanded={abierto}
+        aria-controls={idMenu}
+        data-tip="Objetivo"
+        aria-label={`Examen objetivo: ${ev.nombre}, ${cuandoEs(ev.fecha, plan.diasRestantes)}. Cambiar el examen o su fecha`}
+        onClick={() => setAbierto((a) => !a)}
+      >
+        {/* La key vuelve a montar el texto al cambiar de examen: entra
+            deslizándose del lado de la elegida. */}
+        <span
+          key={ev.nombre}
+          class={'aviso-examen__texto' + (sentido ? ' aviso-examen__texto--' + sentido : '')}
+        >
+          <IconoCalendario />
+          <span class="aviso-examen__examen">{rotulo(ev)}</span>
+          <span class="aviso-examen__sep" aria-hidden="true">
+            ·
+          </span>
+          <span class="aviso-examen__cuando">{cuandoEs(ev.fecha, plan.diasRestantes)}</span>
+        </span>
+        <span class="aviso-examen__chevron" aria-hidden="true">
+          <IconoSiguiente />
+        </span>
+      </button>
 
       <div id={idMenu} class="aviso-menu" inert={!abierto} role="group" aria-label="Examen objetivo">
         {agrupar(evaluaciones).map((g) => (
@@ -199,14 +191,14 @@ export function AvisoExamenDetalle({ plan }: { plan: Plan }) {
         </p>
       ) : veredicto === 'vencido' ? (
         <p>
-          La fecha del {nombre} ya pasó. Si cambió, actualizala con el lápiz de su opción, arriba.
+          La fecha del {nombre} ya pasó. Si cambió, actualizala desde el aviso de arriba.
         </p>
       ) : veredicto === 'sin_fecha' ? (
         <p>
           Todavía no hay fecha para {examen}. Faltan <strong>{plan.itemsFaltantes} ítems</strong>,
           distribuidos en {plan.ejerciciosFaltantes} ejercicios, para dominar los{' '}
           {plan.skillsTotal - plan.skillsDominados} skills pendientes. Cuando la fecha esté
-          definida, cargala con el lápiz de su opción, arriba, para calcular cuántos ítems por día
+          definida, cargala desde el aviso de arriba para calcular cuántos ítems por día
           hacen falta.
         </p>
       ) : (

@@ -6,7 +6,7 @@
  * el cambio.
  *
  * También el objetivo: la evaluación que se está preparando, que se elige con
- * los chevrones del aviso o en Seguimiento. Se guarda aparte; sin elegir, es
+ * el desplegable del aviso del encabezado. Se guarda aparte; sin elegir, es
  * la que toca por fecha. Uno cuya fecha ya pasó no se recupera al volver a
  * abrir la app: no tiene sentido seguir preparando un examen que ya fue.
  *

@@ -409,14 +409,8 @@ try {
     }),
   )
   afirmar(seguimiento.includes('class="ritmo'), 'Seguimiento no muestra el recuadro del ritmo')
-  // El objetivo se elige en dos pasos: parcial o final, y después la
-  // instancia de ese grupo, cada una con su lápiz.
-  const instancias = (seguimiento.match(/name="objetivo" value="/g) ?? []).length
-  afirmar(
-    (seguimiento.match(/name="objetivo-grupo"/g) ?? []).length === 2 && /value="parcial" checked/.test(seguimiento) &&
-      instancias === 3 && (seguimiento.match(/class="selector-examen__editar"/g) ?? []).length === 3,
-    `el objetivo de Seguimiento no ofrece parcial o final y las 3 instancias del parcial (hay ${instancias})`,
-  )
+  // El objetivo se elige sólo en el aviso del encabezado.
+  afirmar(!seguimiento.includes('name="objetivo'), 'Seguimiento sigue teniendo su propio selector del objetivo')
   afirmar(seguimiento.includes('class="leyenda"'), 'Seguimiento no explica los colores')
   const puntosSeguimiento = (seguimiento.match(/class="punto punto--/g) ?? []).length
   // La leyenda suma cuatro círculos de muestra.
@@ -828,12 +822,14 @@ try {
       posAviso < cabeceraConPlan.indexOf('class="barra-guias"'),
     'el aviso del parcial no quedó entre el título y las pestañas',
   )
-  afirmar(!cabeceraConPlan.includes('aviso--oculto'), 'fuera de Seguimiento el aviso está plegado')
-  // En Seguimiento se pliega, porque el objetivo se elige ahí.
+  afirmar(/<button class="aviso-examen [^"]*"[^>]*data-tip="Objetivo"/.test(cabeceraConPlan),
+    'al pasar el mouse por el aviso no dice "Objetivo"')
+  // También en Seguimiento: es el único lugar donde se cambia el objetivo.
   const cabeceraSeguimiento = render(
     createElement(Cabecera, { ruta: { seccion: 'seguimiento', guia: 1 }, plan: planVacio }),
   )
-  afirmar(/class="aviso aviso--oculto" inert/.test(cabeceraSeguimiento), 'en Seguimiento el aviso no se pliega')
+  afirmar(cabeceraSeguimiento.includes('class="aviso-examen') && !cabeceraSeguimiento.includes('inert=""><button class="aviso-examen'),
+    'en Seguimiento el aviso no está a la vista')
 
   // La leyenda del ritmo dice en qué unidad está.
   let conRitmo = progresoMod.PROGRESO_VACIO

@@ -113,8 +113,7 @@ export function Cabecera({ ruta, plan }: Props) {
             <MenuNavegacion ruta={ruta} />
           </div>
 
-          {/* En Seguimiento se pliega: el objetivo se elige ahí. */}
-          {plan && <AvisoExamenCompacto plan={plan} oculto={seccion === 'seguimiento'} />}
+          {plan && <AvisoExamenCompacto plan={plan} />}
         </div>
       </header>
 

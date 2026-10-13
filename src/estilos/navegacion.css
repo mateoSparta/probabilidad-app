@@ -420,23 +420,8 @@
 
 /* -------------------------------------------- aviso del examen */
 
-/* El marco: el botón y, debajo, el desplegable, que flota sobre la página.
-   En Seguimiento se pliega con el truco de la grilla de 1fr a 0fr, y el
-   encabezado se achica con él. */
+/* El marco: el botón y, debajo, el desplegable, que flota sobre la página. */
 .aviso { position: relative; }
-.aviso__plegable {
-  display: grid;
-  grid-template-rows: 1fr;
-  transition: grid-template-rows 300ms cubic-bezier(0.3, 0.7, 0.3, 1), opacity 220ms ease;
-}
-.aviso--oculto .aviso__plegable {
-  grid-template-rows: 0fr;
-  opacity: 0;
-}
-.aviso__interior {
-  min-height: 0;
-  overflow: hidden;
-}
 
 /* El botón: un recuadro del ancho de la columna, con el texto centrado. El
    borde es neutro y sólo el examen lleva el color del ritmo: tiene que
@@ -505,18 +490,18 @@
 .aviso-examen:hover .aviso-examen__chevron { color: var(--tinta-2); }
 .aviso--abierto .aviso-examen__chevron { transform: rotate(90deg); }
 
-/* El desplegable: los grupos lado a lado (de a uno en un teléfono), con el
-   rótulo en versalitas como en los índices. Aparece con un fundido y un
-   leve descenso; cerrado, no se ve ni recibe el foco (inert). */
+/* El desplegable: del ancho del botón, con los grupos uno debajo del otro
+   (el parcial y sus recuperatorios, después los llamados a final) y el
+   rótulo de cada uno en versalitas, como en los índices. Aparece con un
+   fundido y un leve descenso; cerrado, no se ve ni recibe el foco (inert). */
 .aviso-menu {
   position: absolute;
   z-index: 40;
   top: calc(100% + var(--e-1));
-  left: 50%;
+  left: 0;
+  right: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: var(--e-2) var(--e-5);
-  width: min(100%, 38rem);
+  gap: var(--e-3);
   padding: var(--e-3) var(--e-4);
   background: var(--superficie-alta);
   border: 1px solid var(--borde);
@@ -524,13 +509,13 @@
   box-shadow: 0 2px 6px #2b262012, 0 14px 36px #2b26201f;
   opacity: 0;
   visibility: hidden;
-  transform: translate(-50%, -4px);
+  transform: translateY(-4px);
   transition: opacity 170ms ease, transform 170ms ease, visibility 0s linear 170ms;
 }
 .aviso--abierto .aviso-menu {
   opacity: 1;
   visibility: visible;
-  transform: translate(-50%, 0);
+  transform: none;
   transition: opacity 170ms ease, transform 170ms ease, visibility 0s;
 }
 .aviso-menu__titulo {
@@ -548,8 +533,9 @@
 }
 
 /* Cada opción: la marca de la elegida, el nombre y cuándo es; a la derecha,
-   el lápiz, que aparece al pasar el mouse (y queda a la vista en pantallas
-   táctiles, que no tienen hover). */
+   el lápiz, que aparece sólo al pasar el mouse por la opción o al llegar con
+   el teclado (no con el foco que recibe la elegida al abrir la lista). En
+   pantallas táctiles, que no tienen hover, queda a la vista. */
 .aviso-menu__opcion {
   display: flex;
   align-items: center;
@@ -557,7 +543,7 @@
   transition: background 120ms;
 }
 .aviso-menu__opcion:hover,
-.aviso-menu__opcion:focus-within { background: color-mix(in srgb, var(--tinta) 5%, transparent); }
+.aviso-menu__opcion:has(:focus-visible) { background: color-mix(in srgb, var(--tinta) 5%, transparent); }
 .aviso-menu__elegir {
   flex: 1;
   min-width: 0;
@@ -609,7 +595,7 @@
   transition: opacity 140ms ease, transform 140ms ease, background 140ms, color 140ms;
 }
 .aviso-menu__opcion:hover .aviso-menu__editar,
-.aviso-menu__opcion:focus-within .aviso-menu__editar {
+.aviso-menu__opcion:has(:focus-visible) .aviso-menu__editar {
   opacity: 1;
   transform: none;
 }

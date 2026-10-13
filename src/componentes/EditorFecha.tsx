@@ -1,7 +1,7 @@
 /**
  * El calendario para cambiar la fecha de un examen, en una ventana modal. Se
- * abre con el lápiz de cada examen: en el desplegable del aviso del
- * encabezado o en el selector de Seguimiento.
+ * abre con el lápiz de cada examen, en el desplegable del aviso del
+ * encabezado.
  *
  * Arriba, el mes, que se recorre con las flechas; abajo, la fecha elegida con
  * los días que faltan. También se puede dejar sin fecha o volver a la de
