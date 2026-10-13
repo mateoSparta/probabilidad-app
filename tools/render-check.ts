@@ -410,11 +410,38 @@ try {
   const seguimiento = render(
     createElement(VistaSeguimiento, {
       plan: planMenu,
+      progreso: { version: 1, intentos: [] },
       sesion: sesionVacia,
       onIrAEjercicio: () => {},
     }),
   )
   afirmar(seguimiento.includes('class="ritmo'), 'Seguimiento no muestra el recuadro del ritmo')
+  // El calendario de actividad va entre el ritmo y los ejercicios por unidad.
+  const posActividad = seguimiento.indexOf('class="actividad"')
+  afirmar(seguimiento.indexOf('class="ritmo') < posActividad && posActividad < seguimiento.indexOf('id="titulo-unidades"'),
+    'el calendario de actividad no quedó entre el ritmo y los ejercicios por unidad')
+  {
+    const { Actividad } = await servidor.ssrLoadModule('/src/componentes/Actividad.tsx')
+    const intento = (item: string, ts: string) =>
+      ({ item, ts, envios: 1, correcto: true, pistas: 0, revelo: false, limpio: true })
+    const progreso = { version: 1, intentos: [
+      intento('g1-04:a', '2026-10-12T15:00:00.000Z'),
+      intento('g1-04:b', '2026-10-12T16:00:00.000Z'),
+      intento('g1-05:a', '2026-10-05T15:00:00.000Z'),
+    ] }
+    // Martes 13: de miércoles a domingo son días por venir, sin cuadradito pintado.
+    const cal = render(createElement(Actividad, { progreso, hoy: new Date('2026-10-13T12:00:00') }))
+    afirmar(
+      cal.includes('data-tip="2 ítems resueltos el 12 de octubre"') &&
+        cal.includes('data-tip="1 ítem resuelto el 5 de octubre"') &&
+        cal.includes('data-tip="Ningún ítem resuelto el 13 de octubre"'),
+      'el globo de los días no dice "N ítems resueltos el D de mes"',
+    )
+    afirmar(/actividad__dia--4[^"]*" data-tip="2 ítems/.test(cal) && /actividad__dia--2[^"]*" data-tip="1 ítem/.test(cal),
+      'la intensidad no crece con los ítems del día')
+    afirmar((cal.match(/actividad__dia--futuro/g) ?? []).length === 5, 'los días por venir de la semana no quedan vacíos')
+    afirmar(cal.includes('3 ítems resueltos en 2 días'), 'el calendario no resume los ítems y los días')
+  }
   // El objetivo se elige sólo en el aviso del encabezado.
   afirmar(!seguimiento.includes('name="objetivo'), 'Seguimiento sigue teniendo su propio selector del objetivo')
   afirmar(seguimiento.includes('class="leyenda"'), 'Seguimiento no explica los colores')

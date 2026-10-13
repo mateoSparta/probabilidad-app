@@ -122,7 +122,7 @@ export function App() {
           {ruta.seccion === 'machete' && <VistaMachete />}
           {ruta.seccion === 'distribuciones' && <VistaDistribuciones />}
           {ruta.seccion === 'seguimiento' && (
-            <VistaSeguimiento plan={plan} sesion={sesion} onIrAEjercicio={irAEjercicio} />
+            <VistaSeguimiento plan={plan} progreso={api.progreso} sesion={sesion} onIrAEjercicio={irAEjercicio} />
           )}
         </div>
       </main>

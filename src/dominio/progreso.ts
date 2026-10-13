@@ -45,6 +45,24 @@ export function dia(ts: string): string {
 }
 
 /**
+ * Cuántos ítems se resolvieron cada día (en hora local), para el calendario
+ * de actividad de Seguimiento. Cuenta ítems distintos: resolver el mismo dos
+ * veces en un día suma uno. Un intento correcto viendo la respuesta no
+ * cuenta como resuelto.
+ */
+export function resueltosPorDia(progreso: Progreso): Map<string, number> {
+  const items = new Map<string, Set<string>>()
+  for (const i of progreso.intentos) {
+    if (!i.correcto || i.revelo) continue
+    const d = dia(i.ts)
+    let del = items.get(d)
+    if (!del) items.set(d, (del = new Set()))
+    del.add(i.item)
+  }
+  return new Map([...items].map(([d, s]) => [d, s.size]))
+}
+
+/**
  * Se cuenta como máximo un intento por ítem por día, para que repetir el
  * mismo ejercicio no sirva para memorizar el número (PLAN.md §5).
  */

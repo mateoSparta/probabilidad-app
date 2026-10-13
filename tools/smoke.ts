@@ -30,6 +30,7 @@ import {
   estadoSkill,
   limpiosParaDominar,
   PROGRESO_VACIO,
+  resueltosPorDia,
   type Progreso,
 } from '../src/dominio/progreso.ts'
 import {
@@ -348,6 +349,26 @@ for (const [valor, alternativa] of equivalentes) {
     false,
   )
   afirmar(otroDia.intentos.length === 2, 'no se registró el intento del día siguiente')
+
+  // El calendario de actividad cuenta ítems distintos resueltos por día: el
+  // mismo dos veces suma uno, y no cuentan los incorrectos ni los revelados.
+  {
+    const r = (item: string, ts: string, extra: Partial<Intento> = {}) => ({ ...mkIntento(item, ts), limpio: true, ...extra })
+    const p: Progreso = {
+      version: 1,
+      intentos: [
+        r('a', '2026-03-01T12:00:00.000Z'),
+        r('a', '2026-03-01T15:00:00.000Z'),
+        r('b', '2026-03-01T16:00:00.000Z'),
+        r('c', '2026-03-01T17:00:00.000Z', { revelo: true }),
+        r('d', '2026-03-01T18:00:00.000Z', { correcto: false }),
+        r('e', '2026-03-02T12:00:00.000Z'),
+      ],
+    }
+    const dias = resueltosPorDia(p)
+    afirmar(dias.get('2026-03-01') === 2 && dias.get('2026-03-02') === 1 && dias.size === 2,
+      `los resueltos por día son ${JSON.stringify([...dias])}`)
+  }
 
   // Exportar e importar tiene que ser ida y vuelta.
   const ida = aJson(otroDia)

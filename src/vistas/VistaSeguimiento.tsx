@@ -1,15 +1,17 @@
 /**
- * Seguimiento: el ritmo respecto del examen objetivo y el estado de cada
- * ejercicio, agrupado por unidad. El objetivo se elige en el desplegable del
- * aviso del encabezado.
+ * Seguimiento: el ritmo respecto del examen objetivo, el calendario de los
+ * días en que se practicó y el estado de cada ejercicio, agrupado por unidad.
+ * El objetivo se elige en el desplegable del aviso del encabezado.
  *
  * Los círculos son los mismos del mapa de cada guía, pero acá los ejercicios
  * no están en la página: elegir uno lleva a su guía y baja hasta él.
  */
+import { Actividad } from '../componentes/Actividad'
 import { AvisoExamenDetalle } from '../componentes/AvisoExamen'
 import { MapaEjercicios } from '../componentes/MapaEjercicios'
 import { guias } from '../datos/contenido'
 import type { ApiSesion } from '../datos/usarSesion'
+import type { Progreso } from '../dominio/progreso'
 import type { Plan } from '../dominio/ritmo'
 import { ETIQUETA_ESTADO_EJERCICIO, type EstadoEjercicio } from '../dominio/sesion'
 
@@ -17,11 +19,13 @@ const LEYENDA: EstadoEjercicio[] = ['sin_intentar', 'en_progreso', 'mal', 'resue
 
 type Props = {
   plan: Plan
+  /** El historial de intentos, para el calendario de actividad. */
+  progreso: Progreso
   sesion?: ApiSesion
   onIrAEjercicio: (idEjercicio: string) => void
 }
 
-export function VistaSeguimiento({ plan, sesion, onIrAEjercicio }: Props) {
+export function VistaSeguimiento({ plan, progreso, sesion, onIrAEjercicio }: Props) {
   const conContenido = guias
     .filter((g) => g.secuencia.some((p) => p.tipo === 'ejercicio'))
     .sort((a, b) => a.numero - b.numero)
@@ -30,15 +34,12 @@ export function VistaSeguimiento({ plan, sesion, onIrAEjercicio }: Props) {
     <>
       <section class="guia__intro">
         <h2>Seguimiento</h2>
-        <p class="guia__descripcion">
-          La meta es dominar todos los temas, y para lograrlo alcanza con un subconjunto de los
-          ejercicios. El cálculo siguiente estima cuántos ítems faltan y cuántos conviene
-          resolver por día hasta la fecha del {plan.evaluacion?.nombre ?? 'examen'}.
-        </p>
       </section>
 
       {/* La key repite la entrada del detalle al cambiar de objetivo. */}
       <AvisoExamenDetalle key={plan.evaluacion?.nombre} plan={plan} />
+
+      <Actividad progreso={progreso} />
 
       <section class="seguimiento" aria-labelledby="titulo-unidades">
         <h3 id="titulo-unidades">Ejercicios por unidad</h3>
