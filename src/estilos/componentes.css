@@ -1754,21 +1754,27 @@
   gap: var(--e-4);
   margin-bottom: var(--e-6);
 }
-.material-config__fila {
+/* La descripción del Machete y, a su derecha, el selector de etapa, del
+   ancho de sus opciones. En pantallas angostas el selector baja. */
+.machete-intro {
   display: flex;
   flex-wrap: wrap;
-  align-items: stretch;
-  gap: var(--e-3);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-3) var(--e-5);
 }
-/* El selector de etapa a la izquierda y los dos botones a la derecha, todos
-   del mismo alto. Si no entran en un renglón, los botones bajan. */
-.material-config__fila .segmentado { flex: 1 1 18rem; }
+.machete-intro .guia__descripcion { flex: 1 1 20rem; margin: 0; }
+.machete-intro .segmentado { flex: none; }
+/* Los botones de imprimir y del kit en su renglón, del tamaño de siempre, y
+   al lado qué contiene el kit (como junto a "Simular parcial"). */
 .material-config__acciones {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--e-2);
+  align-items: center;
+  gap: var(--e-3);
 }
 .material-config__acciones .boton { flex: none; }
+.material-config__acciones .dato-chico { flex: 1 1 16rem; margin: 0; }
 .material-config__texto { white-space: nowrap; }
 
 /* Pestañas subrayadas: la activa en acento, sobre un filete común. Las
@@ -1908,6 +1914,8 @@
   scroll-margin-top: var(--e-4);
 }
 .ficha-dist--ancha { grid-column: 1 / -1; }
+/* Una distribución por fila: de a dos quedaban apretadas. */
+.teoria-dist .hoja__fichas { grid-template-columns: minmax(0, 1fr); }
 .ficha-dist__cabeza {
   display: flex;
   flex-wrap: wrap;
@@ -1936,7 +1944,7 @@
 }
 .ficha-dist__fila {
   display: grid;
-  grid-template-columns: 5.25rem minmax(0, 1fr);
+  grid-template-columns: 7rem minmax(0, 1fr);
   align-items: baseline;
   gap: var(--e-2);
   padding: 0.3rem 0;

@@ -6,13 +6,14 @@
  * las distribuciones es la misma en todas. A la izquierda, un índice como el
  * de las guías.
  *
- * Dos botones al lado del selector de etapa:
+ * El selector de etapa va a la derecha de la descripción, y debajo, en su
+ * renglón, dos botones:
  *
  * - Imprimir lo que se ve (o guardarlo en PDF desde el diálogo del
  *   navegador). Dice qué: la última palabra rueda como un tambor entre
  *   "fórmulas", "tablas" y "distribuciones", y el botón no cambia de ancho.
  * - El kit para el examen: las fórmulas y las tablas de la etapa, más la
- *   tabla de distribuciones, en un solo documento.
+ *   tabla de distribuciones, en un solo documento. A su derecha, qué contiene.
  *
  * Las pestañas cambian el contenido con un desplazamiento horizontal, en el
  * sentido de la pestaña elegida; el filtro, con un fundido.
@@ -64,7 +65,7 @@ export function VistaMachete() {
   // El kit es para un examen: el del parcial lleva sus guías; el del final,
   // y el de "Todas", las de toda la materia, porque el final las evalúa todas.
   const guiasKit = alcance?.id === 'todas' || alcance?.id === 'final' ? guiasDeLaMateria(config.evaluaciones) : guias
-  const examenKit = alcance?.id === 'parcial' ? 'el parcial' : 'el final'
+  const examenKit = alcance?.id === 'parcial' ? 'parcial' : 'final'
 
   function elegirPestana(p: Pestana): void {
     if (p === pestana) return
@@ -113,7 +114,7 @@ export function VistaMachete() {
   }
 
   function imprimirKit(): void {
-    void imprimir(<KitExamen guias={guiasKit} />, `Kit para ${examenKit} - ${TITULO}`)
+    void imprimir(<KitExamen guias={guiasKit} />, `Kit para el ${examenKit} - ${TITULO}`)
   }
 
   return (
@@ -123,14 +124,13 @@ export function VistaMachete() {
 
       <section class="guia__intro">
         <h2>Machete</h2>
-        <p class="guia__descripcion">
-          Las fórmulas de cada guía, las tablas de la cátedra y la teoría de las distribuciones,
-          para imprimir o guardar en PDF.
-        </p>
-      </section>
-
-      <section class="material-config" aria-label="Qué mostrar">
-        <div class="material-config__fila">
+        {/* La descripción a la izquierda y el selector de etapa a la derecha;
+            en pantallas angostas, el selector baja. */}
+        <div class="machete-intro">
+          <p class="guia__descripcion">
+            Las fórmulas de cada guía, las tablas de la cátedra y la teoría de las distribuciones,
+            para imprimir o guardar en PDF.
+          </p>
           <div
             class="segmentado segmentado--linea segmentado--revelar segmentado--apilado"
             role="radiogroup"
@@ -165,42 +165,50 @@ export function VistaMachete() {
               )
             })}
           </div>
+        </div>
+      </section>
 
-          <div class="material-config__acciones">
-            <button
-              class="boton boton--acento boton--icono"
-              disabled={!hay}
-              aria-label={`Imprimir o guardar en PDF las ${PESTANAS[indicePestana].palabra}`}
-              data-tip="Imprimir o guardar en PDF"
-              onClick={imprimirActual}
-            >
-              <IconoImprimir />
-              {/* La última palabra rueda como un tambor, del lado de la pestaña
-                  elegida. El tambor mide lo que la palabra más larga, así que el
-                  botón no cambia de ancho. */}
-              <span class="material-config__texto" aria-hidden="true">
-                Imprimir{' '}
-                <span class="rodillo rodillo--varias" style={{ '--i': indicePestana }}>
-                  <span class="rodillo__cinta">
-                    {PESTANAS.map((p) => (
-                      <span key={p.id} class="rodillo__palabra">
-                        {p.palabra}
-                      </span>
-                    ))}
-                  </span>
+      <section class="material-config" aria-label="Imprimir">
+        {/* Los dos botones en su renglón, del tamaño de siempre, y a la derecha
+            del kit qué contiene, como al lado de "Simular parcial". */}
+        <div class="material-config__acciones">
+          <button
+            class="boton boton--acento boton--icono"
+            disabled={!hay}
+            aria-label={`Imprimir o guardar en PDF las ${PESTANAS[indicePestana].palabra}`}
+            data-tip="Imprimir o guardar en PDF"
+            onClick={imprimirActual}
+          >
+            <IconoImprimir />
+            {/* La última palabra rueda como un tambor, del lado de la pestaña
+                elegida. El tambor mide lo que la palabra más larga, así que el
+                botón no cambia de ancho. */}
+            <span class="material-config__texto" aria-hidden="true">
+              Imprimir{' '}
+              <span class="rodillo rodillo--varias" style={{ '--i': indicePestana }}>
+                <span class="rodillo__cinta">
+                  {PESTANAS.map((p) => (
+                    <span key={p.id} class="rodillo__palabra">
+                      {p.palabra}
+                    </span>
+                  ))}
                 </span>
               </span>
-            </button>
-            <button
-              class="boton boton--icono"
-              disabled={!hayFormulas(guiasKit) && !hayTablas(guiasKit)}
-              data-tip={`Para ${examenKit}: las fórmulas y las tablas de las ${rangoGuias(guiasKit)} y la tabla de distribuciones, en un solo documento`}
-              onClick={imprimirKit}
-            >
-              <IconoBotiquin />
-              Kit para el examen
-            </button>
-          </div>
+            </span>
+          </button>
+          <button
+            class="boton boton--icono"
+            disabled={!hayFormulas(guiasKit) && !hayTablas(guiasKit)}
+            data-tip={`Todo lo necesario para rendir el ${examenKit}`}
+            onClick={imprimirKit}
+          >
+            <IconoBotiquin />
+            Kit para el examen
+          </button>
+          <p class="dato-chico">
+            Contiene todas las fórmulas, las tablas y las distribuciones que se usan en el{' '}
+            {examenKit}, en un solo documento.
+          </p>
         </div>
 
         <div
