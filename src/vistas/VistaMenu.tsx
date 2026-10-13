@@ -54,37 +54,86 @@ type Props = {
 const VACIO: ReadonlySet<string> = new Set()
 
 /*
- * El ícono de Seguimiento anima en bucle mientras el puntero está sobre la
- * opción (la clase `--viva`). Al salir no se corta: se espera al final de la
- * vuelta en curso, que se ve igual que el ícono quieto. Se toca la clase a
- * mano, sin estado, porque no cambia nada más del menú.
+ * Las animaciones de los íconos (estilos/animaciones.css) corren mientras la
+ * opción tiene la clase `--anima`. Se pone al entrar el puntero (o el foco
+ * del teclado) y, al salir, no se saca enseguida: se espera a que la
+ * animación vuelva a la posición inicial, para que no se corte de golpe.
+ *
+ * - Las de una vuelta avisan con `animationend`.
+ * - La de Seguimiento es un bucle: la vuelta se ve quieta (igual que el ícono
+ *   sin animar) desde la fracción QUIETO_DESDE, así que al salir se corta ni
+ *   bien llega ahí, sin empezar otra vuelta.
+ *
+ * Se toca la clase a mano, sin estado, porque no cambia nada más del menú.
  */
-const VIVA = 'menu__opcion--viva'
+const ANIMA = 'menu__opcion--anima'
+const QUIETO_DESDE = 0.56
 
-function avivar(e: Event): void {
-  const a = e.currentTarget as HTMLElement
-  delete a.dataset.saliendo
-  a.classList.add(VIVA)
+type Encima = { puntero: boolean; foco: boolean; espera?: number }
+const encimas = new WeakMap<HTMLElement, Encima>()
+
+function encimaDe(a: HTMLElement): Encima {
+  let e = encimas.get(a)
+  if (!e) encimas.set(a, (e = { puntero: false, foco: false }))
+  return e
 }
 
-function aquietar(e: Event): void {
-  const a = e.currentTarget as HTMLElement
-  if (a.classList.contains(VIVA)) a.dataset.saliendo = ''
+function encender(a: HTMLElement): void {
+  const e = encimaDe(a)
+  clearTimeout(e.espera)
+  a.classList.add(ANIMA)
 }
 
-function terminarVuelta(e: Event): void {
-  const a = e.currentTarget as HTMLElement
-  if (!('saliendo' in a.dataset)) return
-  delete a.dataset.saliendo
-  a.classList.remove(VIVA)
+/** Saca `--anima` si nada la retiene: ni el puntero, ni el foco, ni una vuelta a medias. */
+function apagar(a: HTMLElement): void {
+  const e = encimaDe(a)
+  if (e.puntero || e.foco) return
+  const corriendo = a
+    .getAnimations({ subtree: true })
+    .filter((x) => x instanceof CSSAnimation && x.playState === 'running')
+  const bucle = corriendo.find((x) => x.effect?.getTiming().iterations === Infinity)
+  if (bucle) {
+    const vuelta = Number(bucle.effect!.getComputedTiming().duration)
+    const enVuelta = Number(bucle.currentTime) % vuelta
+    clearTimeout(e.espera)
+    e.espera = window.setTimeout(
+      () => apagar(a),
+      Math.max(0, QUIETO_DESDE * vuelta - enVuelta),
+    )
+    // El bucle sigue corriendo: se lo corta en la próxima llamada, ya quieto.
+    if (enVuelta < QUIETO_DESDE * vuelta) return
+  } else if (corriendo.length > 0) {
+    return // la última que termine vuelve a llamar con `animationend`
+  }
+  clearTimeout(e.espera)
+  a.classList.remove(ANIMA)
 }
 
-const BUCLE = {
-  onPointerEnter: avivar,
-  onPointerLeave: aquietar,
-  onFocus: avivar,
-  onBlur: aquietar,
-  onAnimationIteration: terminarVuelta,
+const ANIMACION = {
+  onPointerEnter(ev: PointerEvent) {
+    const a = ev.currentTarget as HTMLElement
+    encimaDe(a).puntero = true
+    encender(a)
+  },
+  onPointerLeave(ev: PointerEvent) {
+    const a = ev.currentTarget as HTMLElement
+    encimaDe(a).puntero = false
+    apagar(a)
+  },
+  onFocus(ev: FocusEvent) {
+    const a = ev.currentTarget as HTMLElement
+    if (!a.matches(':focus-visible')) return
+    encimaDe(a).foco = true
+    encender(a)
+  },
+  onBlur(ev: FocusEvent) {
+    const a = ev.currentTarget as HTMLElement
+    encimaDe(a).foco = false
+    apagar(a)
+  },
+  onAnimationEnd(ev: AnimationEvent) {
+    apagar(ev.currentTarget as HTMLElement)
+  },
 }
 
 export function VistaMenu({ guia, api, sesion, plan }: Props) {
@@ -157,11 +206,7 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
         <ul class="menu__grilla">
           {opciones.map(({ seccion, Icono, descripcion, dato }, i) => (
             <li key={seccion} style={{ '--i': i }}>
-              <a
-                class="menu__opcion"
-                href={escribirRuta({ seccion, guia })}
-                {...(seccion === 'seguimiento' ? BUCLE : {})}
-              >
+              <a class="menu__opcion" href={escribirRuta({ seccion, guia })} {...ANIMACION}>
                 <span class="menu__icono">
                   <Icono />
                 </span>

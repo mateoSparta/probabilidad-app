@@ -83,23 +83,30 @@ export const IconoInicio = () => (
 export const IconoEjercicios = () => (
   <Svg>
     <g class="icono__pesa">
-      <path d="M8 12h8" />
-      <rect x="5" y="6.5" width="3" height="11" rx="1" />
-      <rect x="16" y="6.5" width="3" height="11" rx="1" />
-      <path d="M3.25 9v6" />
-      <path d="M20.75 9v6" />
+      <rect x="3.5" y="7" width="5" height="10" rx="1.2" />
+      <path d="M8.5 12h7" />
+      <rect x="15.5" y="7" width="5" height="10" rx="1.2" />
     </g>
   </Svg>
 )
 
-/** La medalla, y un destello de cuatro puntas que aparece al pasar el puntero. */
+/**
+ * La medalla, y dos destellos de cuatro puntas que se encienden uno después
+ * del otro al pasar el puntero: arriba a la derecha y abajo a la izquierda.
+ */
 export const IconoSkills = () => (
   <Svg>
     <path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526" />
     <circle cx="12" cy="8" r="6" />
     <path
-      class="icono__destello"
+      class="icono__destello icono__destello--uno"
       d="M18.5 0.5Q19 3 21.5 3.5 19 4 18.5 6.5 18 4 15.5 3.5 18 3 18.5 0.5Z"
+      fill="currentColor"
+      stroke="none"
+    />
+    <path
+      class="icono__destello icono__destello--dos"
+      d="M4.8 10.6Q5.2 12.6 7.2 13 5.2 13.4 4.8 15.4 4.4 13.4 2.4 13 4.4 12.6 4.8 10.6Z"
       fill="currentColor"
       stroke="none"
     />
