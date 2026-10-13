@@ -185,8 +185,8 @@ export function AvisoExamenDetalle({ plan }: { plan: Plan }) {
 
       {veredicto === 'listo' ? (
         <p>
-          Los {plan.skillsTotal} skills que entran en {examen} están dominados. Hasta la fecha
-          conviene seguir practicando, porque el estado de cada skill se calcula sobre sus
+          Las {plan.skillsTotal} habilidades que entran en {examen} están dominadas. Hasta la fecha
+          conviene seguir practicando, porque el estado de cada habilidad se calcula sobre sus
           últimos 5 intentos y los errores nuevos desplazan a los aciertos anteriores.
         </p>
       ) : veredicto === 'vencido' ? (
@@ -196,8 +196,8 @@ export function AvisoExamenDetalle({ plan }: { plan: Plan }) {
       ) : veredicto === 'sin_fecha' ? (
         <p>
           Todavía no hay fecha para {examen}. Faltan <strong>{plan.itemsFaltantes} ítems</strong>,
-          distribuidos en {plan.ejerciciosFaltantes} ejercicios, para dominar los{' '}
-          {plan.skillsTotal - plan.skillsDominados} skills pendientes. Cuando la fecha esté
+          distribuidos en {plan.ejerciciosFaltantes} ejercicios, para dominar las{' '}
+          {plan.skillsTotal - plan.skillsDominados} habilidades pendientes. Cuando la fecha esté
           definida, cargala desde el aviso de arriba para calcular cuántos ítems por día
           hacen falta.
         </p>
@@ -214,8 +214,8 @@ export function AvisoExamenDetalle({ plan }: { plan: Plan }) {
             Faltan <strong>{plan.itemsFaltantes} ítems</strong>, distribuidos en{' '}
             {plan.ejerciciosFaltantes} ejercicios, para dominar los temas pendientes, y quedan{' '}
             {plan.diasRestantes} días para {examen}. No es necesario resolver todos los
-            ejercicios de las guías; esos ítems alcanzan para cubrir los{' '}
-            {plan.skillsTotal - plan.skillsDominados} skills que faltan.
+            ejercicios de las guías; esos ítems alcanzan para cubrir las{' '}
+            {plan.skillsTotal - plan.skillsDominados} habilidades que faltan.
           </p>
         </>
       )}
@@ -225,7 +225,7 @@ export function AvisoExamenDetalle({ plan }: { plan: Plan }) {
           <strong>
             {plan.skillsDominados}/{plan.skillsTotal}
           </strong>{' '}
-          skills dominados
+          habilidades dominadas
         </li>
         {veredicto !== 'sin_arrancar' && veredicto !== 'listo' && veredicto !== 'sin_fecha' && (
           <li>

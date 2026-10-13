@@ -3,7 +3,7 @@
  *
  *   #/                     menú principal
  *   #/ejercicios/3         guía 3
- *   #/skills, #/simulacro, #/seguimiento, #/machete, #/distribuciones
+ *   #/habilidades, #/simulacro, #/seguimiento, #/machete, #/distribuciones
  *
  * Va en el hash y no en el path porque GitHub Pages sirve archivos estáticos:
  * un path inventado devolvería 404 al recargar. Que la ruta viva en la URL es
@@ -16,7 +16,7 @@
 export type Seccion =
   | 'menu'
   | 'ejercicios'
-  | 'skills'
+  | 'habilidades'
   | 'simulacro'
   | 'seguimiento'
   | 'machete'
@@ -33,7 +33,7 @@ export const RUTA_INICIAL: Ruta = { seccion: 'menu', guia: 1 }
 /** El nombre de cada sección tal como aparece en las migas y en el menú. */
 export const NOMBRE_SECCION: Record<Exclude<Seccion, 'menu'>, string> = {
   ejercicios: 'Ejercicios',
-  skills: 'Skills',
+  habilidades: 'Habilidades',
   simulacro: 'Simulacro',
   seguimiento: 'Seguimiento',
   machete: 'Machete',
@@ -43,7 +43,7 @@ export const NOMBRE_SECCION: Record<Exclude<Seccion, 'menu'>, string> = {
 const SECCIONES = new Set<string>(Object.keys(NOMBRE_SECCION))
 
 /** Nombres viejos de secciones, para que un enlace guardado siga andando. */
-const ALIAS: Record<string, Seccion> = { formulas: 'machete' }
+const ALIAS: Record<string, Seccion> = { formulas: 'machete', skills: 'habilidades' }
 
 /**
  * Interpreta el hash. Cualquier cosa que no se reconozca lleva al menú: una

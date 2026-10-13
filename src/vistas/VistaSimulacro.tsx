@@ -550,8 +550,8 @@ function Configuracion({
 
             <ul class="interruptores">
               <Interruptor
-                etiqueta="Mostrar tags de skills"
-                descripcion="Indica desde el comienzo qué skills combina cada ejercicio."
+                etiqueta="Mostrar tags de habilidades"
+                descripcion="Indica desde el comienzo qué habilidades combina cada ejercicio."
                 activo={config.mostrarTags}
                 onCambiar={(v) => onCambiar({ mostrarTags: v })}
               />

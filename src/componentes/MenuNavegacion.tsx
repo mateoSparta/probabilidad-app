@@ -30,7 +30,7 @@ import {
   IconoMensaje,
   IconoSeguimiento,
   IconoSimulacro,
-  IconoSkills,
+  IconoHabilidades,
 } from './Iconos'
 
 /** Lo que dura la salida del desplegable; tiene que coincidir con el CSS. */
@@ -41,7 +41,7 @@ type Opcion = { seccion: Seccion; nombre: string; Icono: ComponentType }
 const OPCIONES: Opcion[] = [
   { seccion: 'menu', nombre: 'Inicio', Icono: IconoInicio },
   { seccion: 'ejercicios', nombre: NOMBRE_SECCION.ejercicios, Icono: IconoEjercicios },
-  { seccion: 'skills', nombre: NOMBRE_SECCION.skills, Icono: IconoSkills },
+  { seccion: 'habilidades', nombre: NOMBRE_SECCION.habilidades, Icono: IconoHabilidades },
   { seccion: 'simulacro', nombre: NOMBRE_SECCION.simulacro, Icono: IconoSimulacro },
   { seccion: 'seguimiento', nombre: NOMBRE_SECCION.seguimiento, Icono: IconoSeguimiento },
   { seccion: 'machete', nombre: NOMBRE_SECCION.machete, Icono: IconoFormulas },

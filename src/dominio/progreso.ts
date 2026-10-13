@@ -135,8 +135,8 @@ export function distractoresFrecuentes(
 export const ETIQUETA_ESTADO: Record<EstadoSkill, string> = {
   sin_explorar: 'Sin explorar',
   en_desarrollo: 'En desarrollo',
-  dominado: 'Dominado',
-  flojo: 'Flojo',
+  dominado: 'Dominada',
+  flojo: 'Floja',
 }
 
 export function contarPorEstado(estados: EstadoSkill[]): Record<EstadoSkill, number> {

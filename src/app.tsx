@@ -16,7 +16,7 @@ import { usarRuta } from './datos/usarRuta'
 import { usarSesion } from './datos/usarSesion'
 import { armarPlan } from './dominio/ritmo'
 import type { Ruta } from './dominio/ruta'
-import { PanelSkills } from './vistas/PanelSkills'
+import { PanelHabilidades } from './vistas/PanelHabilidades'
 import { VistaDistribuciones } from './vistas/VistaDistribuciones'
 import { VistaMachete } from './vistas/VistaMachete'
 import { VistaGuia } from './vistas/VistaGuia'
@@ -110,8 +110,8 @@ export function App() {
               onDestinoAlcanzado={() => setDestino(null)}
             />
           )}
-          {ruta.seccion === 'skills' && (
-            <PanelSkills
+          {ruta.seccion === 'habilidades' && (
+            <PanelHabilidades
               api={api}
               sesion={sesion}
               onIrAEjercicio={irAEjercicio}

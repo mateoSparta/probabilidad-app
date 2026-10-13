@@ -82,7 +82,7 @@ try {
   afirmar(!cabecera.includes('cabecera__acciones'), 'volvieron los botones de la esquina')
 
   // Las pestañas de las guías sólo existen en Ejercicios.
-  for (const seccion of ['menu', 'skills', 'simulacro', 'seguimiento']) {
+  for (const seccion of ['menu', 'habilidades', 'simulacro', 'seguimiento']) {
     const otra = render(createElement(Cabecera, { ruta: { seccion, guia: 1 } }))
     afirmar(!otra.includes('class="barra-guias"'), `en ${seccion} se ven las pestañas de guías`)
   }
@@ -112,7 +112,7 @@ try {
   afirmar(!enMenu.includes('id="menu-navegacion"'), 'en el inicio hay desplegable')
   for (const [seccion, nombre] of [
     ['ejercicios', 'Ejercicios'],
-    ['skills', 'Skills'],
+    ['habilidades', 'Habilidades'],
     ['simulacro', 'Simulacro'],
     ['seguimiento', 'Seguimiento'],
     ['machete', 'Machete'],
@@ -370,7 +370,7 @@ try {
     'el kit no tiene fórmulas, tablas, la tabla de distribuciones y el saludo, en ese orden')
   for (const [nombre, href] of [
     ['Ejercicios', '#/ejercicios/3'],
-    ['Skills', '#/skills'],
+    ['Habilidades', '#/habilidades'],
     ['Simulacro', '#/simulacro'],
     ['Seguimiento', '#/seguimiento'],
   ]) {
@@ -430,7 +430,7 @@ try {
   }
 
   // --- panel de skills (fase 3) ---
-  const { PanelSkills } = await servidor.ssrLoadModule('/src/vistas/PanelSkills.tsx')
+  const { PanelHabilidades } = await servidor.ssrLoadModule('/src/vistas/PanelHabilidades.tsx')
   const progresoMod = await servidor.ssrLoadModule('/src/dominio/progreso.ts')
 
   const api = (p: unknown) => ({
@@ -441,8 +441,9 @@ try {
   })
 
   // Sin progreso: todo sin explorar.
-  const limpio = render(createElement(PanelSkills, { api: api(progresoMod.PROGRESO_VACIO) }))
-  afirmar(limpio.includes('Panel de skills'), 'el panel no se dibuja')
+  const limpio = render(createElement(PanelHabilidades, { api: api(progresoMod.PROGRESO_VACIO) }))
+  afirmar(limpio.includes('Panel de habilidades') && !/\bskills?\b/i.test(limpio.replace(/<[^>]*>/g, '')),
+    'el panel no se dibuja, o todavía dice "skill"')
   afirmar(limpio.includes('class="grilla-skills"'), 'no se ve la grilla de skills')
   afirmar(limpio.includes('estado--sin_explorar'), 'sin intentos no se ve ningún sin_explorar')
   // "Tus datos" se mudó al pie del menú principal.
@@ -513,7 +514,7 @@ try {
       true,
     )
   })
-  const conInsignia = render(createElement(PanelSkills, { api: api(sembrado) }))
+  const conInsignia = render(createElement(PanelHabilidades, { api: api(sembrado) }))
   afirmar(conInsignia.includes('estado--dominado'), 'tres limpios no pintan el skill como dominado')
   afirmar(conInsignia.includes('3/3 limpios'), 'no se ve el avance de limpios')
 
@@ -645,7 +646,7 @@ try {
     'el pool no arranca plegado',
   )
   afirmar(!simulacro.includes('rendibles'), 'sigue el indicador de ejercicios rendibles')
-  afirmar(simulacro.includes('Mostrar tags de skills'), 'falta el interruptor de tags de skills')
+  afirmar(simulacro.includes('Mostrar tags de habilidades'), 'falta el interruptor de tags de habilidades')
   afirmar(!simulacro.includes('Mostrar tags al entregar'), 'sigue el interruptor viejo de tags')
   afirmar(
     (simulacro.match(/class="examen__ver"/g) ?? []).length ===
@@ -758,7 +759,7 @@ try {
   // El detalle da la cuenta completa.
   const detalleRitmo = render(createElement(AvisoExamenDetalle, { plan: planVacio }))
   afirmar(detalleRitmo.includes('Todavía no empezaste'), 'el detalle no avisa que no se empezó')
-  afirmar(detalleRitmo.includes('skills dominados'), 'el detalle no muestra los skills dominados')
+  afirmar(detalleRitmo.includes('habilidades dominadas'), 'el detalle no muestra las habilidades dominadas')
   afirmar(
     detalleRitmo.includes(String(planVacio.porDia)),
     'el detalle no muestra el ritmo necesario por día',

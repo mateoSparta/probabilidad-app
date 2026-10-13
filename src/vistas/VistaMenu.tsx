@@ -15,7 +15,7 @@ import {
   IconoFormulas,
   IconoSeguimiento,
   IconoSimulacro,
-  IconoSkills,
+  IconoHabilidades,
 } from '../componentes/Iconos'
 import { TusDatos } from '../componentes/TusDatos'
 import {
@@ -125,7 +125,7 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
       ) === 'resuelto',
   ).length
 
-  // Los skills de guías todavía sin cargar no cuentan: no se pueden practicar.
+  // Las habilidades de guías todavía sin cargar no cuentan: no se pueden practicar.
   const dominados = skillsHabilitados.filter(
     (s) => estadoSkill(api.progreso, itemsPorSkill.get(s.id) ?? VACIO) === 'dominado',
   ).length
@@ -144,10 +144,10 @@ export function VistaMenu({ guia, api, sesion, plan }: Props) {
       dato: `${resueltos} de ${ejercicios.length} ejercicios resueltos`,
     },
     {
-      seccion: 'skills',
-      Icono: IconoSkills,
+      seccion: 'habilidades',
+      Icono: IconoHabilidades,
       descripcion: 'El dominio de cada tema, medido sobre los intentos más recientes.',
-      dato: `${dominados} de ${skillsHabilitados.length} skills dominados`,
+      dato: `${dominados} de ${skillsHabilitados.length} habilidades dominadas`,
     },
     {
       seccion: 'simulacro',

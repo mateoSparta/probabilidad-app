@@ -941,7 +941,9 @@ for (const [valor, alternativa] of equivalentes) {
     ['#/', 'menu', 1],
     ['#/ejercicios/3', 'ejercicios', 3],
     ['#/ejercicios', 'ejercicios', 1],
-    ['#/skills', 'skills', 1],
+    ['#/habilidades', 'habilidades', 1],
+    // El nombre viejo sigue andando, para los enlaces guardados.
+    ['#/skills', 'habilidades', 1],
     ['#/simulacro', 'simulacro', 1],
     ['#/seguimiento', 'seguimiento', 1],
     ['#/machete', 'machete', 1],
@@ -959,9 +961,9 @@ for (const [valor, alternativa] of equivalentes) {
     )
   }
   // La guía anterior se conserva al pasar por una sección que no la lleva.
-  afirmar(leerRuta('#/skills', 5).guia === 5, 'pasar por Skills hizo perder la guía')
+  afirmar(leerRuta('#/habilidades', 5).guia === 5, 'pasar por Habilidades hizo perder la guía')
   // Escribir y volver a leer da la misma ruta.
-  for (const seccion of ['menu', 'ejercicios', 'skills', 'simulacro', 'seguimiento', 'machete', 'distribuciones'] as const) {
+  for (const seccion of ['menu', 'ejercicios', 'habilidades', 'simulacro', 'seguimiento', 'machete', 'distribuciones'] as const) {
     const r = { seccion, guia: 4 }
     const vuelta = leerRuta(escribirRuta(r), 4)
     afirmar(vuelta.seccion === seccion && vuelta.guia === 4, `ida y vuelta de la ruta ${seccion}`)

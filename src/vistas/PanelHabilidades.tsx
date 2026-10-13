@@ -1,12 +1,12 @@
 /**
- * Panel de skills (PLAN.md §5): una grilla agrupada por guía con el estado de
- * cada skill. Al hacer clic en un skill se abre una ventana que explica de qué
- * trata (descripción y fórmulas), con los ítems que lo evalúan y un enlace a
- * su teoría.
+ * Panel de habilidades (PLAN.md §5, donde se las llama skills): una grilla
+ * agrupada por guía con el estado de cada habilidad. Al hacer clic en una se
+ * abre una ventana que explica de qué trata (descripción y fórmulas), con los
+ * ítems que la evalúan y un enlace a su teoría.
  *
  * Las guías se agrupan por etapa, según las evaluaciones de
  * content/config.yaml: primero las que entran en el parcial y después los
- * temas del final. Los skills de una guía todavía sin cargar se ven
+ * temas del final. Las habilidades de una guía todavía sin cargar se ven
  * bloqueados, para que la segunda etapa ya tenga su lugar en el panel.
  *
  * Es la vista que contesta "¿dónde estoy flojo?" de un vistazo, que es el
@@ -97,7 +97,7 @@ function inicial(nombre: string): string {
   return nombre.trim().charAt(0).toUpperCase()
 }
 
-export function PanelSkills({
+export function PanelHabilidades({
   api,
   sesion,
   onIrAEjercicio,
@@ -142,18 +142,18 @@ export function PanelSkills({
 
   return (
     <>
-      <IndiceSkills etapas={porEtapa} api={api} />
+      <IndiceHabilidades etapas={porEtapa} api={api} />
       <SubirLateral visible={subir} />
 
       <section class="guia__intro">
-        <h2>Panel de skills</h2>
+        <h2>Panel de habilidades</h2>
         <p class="guia__descripcion">
-          El estado de cada skill se calcula sobre sus últimos {VENTANA} intentos, contando
+          El estado de cada habilidad se calcula sobre sus últimos {VENTANA} intentos, contando
           como máximo uno por ítem y por día. Un intento es <strong>limpio</strong> si el ítem
           se resuelve sin ver la respuesta, en el primer envío si es de opción múltiple y en
           hasta dos envíos en los demás casos. El tiempo sin practicar no modifica el estado.
           Lo modifican los intentos nuevos, que desplazan a los más antiguos de la ventana, de
-          modo que un skill dominado vuelve a estar en desarrollo si los últimos intentos no
+          modo que una habilidad dominada vuelve a estar en desarrollo si los últimos intentos no
           son limpios.
         </p>
 
@@ -231,7 +231,7 @@ type GrupoGuia = ReturnType<typeof skillsPorGuia>[number]
  * con cuántos de sus skills están dominados. Al hacer clic baja hasta la
  * guía; al desplazarse, queda marcada la que se está leyendo.
  */
-function IndiceSkills({
+function IndiceHabilidades({
   etapas,
   api,
 }: {
@@ -279,7 +279,7 @@ function IndiceSkills({
                         Guía {guia}
                       </button>
                       {habilitados.length > 0 ? (
-                        <span class="indice__avance" data-tip="Skills dominados">
+                        <span class="indice__avance" data-tip="Habilidades dominadas">
                           {dominados}/{habilitados.length}
                         </span>
                       ) : (
@@ -415,7 +415,7 @@ function VentanaSkill({
         </div>
       ) : null}
 
-      <h4>Ítems que lo evalúan</h4>
+      <h4>Ítems que la evalúan</h4>
       {deGuias.length > 0 && (
         <ul class="lista-items lista-items--columnas">
           {deGuias.map((clave) => {
@@ -438,7 +438,7 @@ function VentanaSkill({
       )}
       {deExamenes.length > 0 && (
         <p class="dato-chico">
-          {deGuias.length > 0 ? 'Además lo ' : 'Lo '}
+          {deGuias.length > 0 ? 'Además la ' : 'La '}
           {deExamenes.length === 1
             ? 'evalúa 1 ítem de examen, que se practica'
             : `evalúan ${deExamenes.length} ítems de exámenes, que se practican`}{' '}
