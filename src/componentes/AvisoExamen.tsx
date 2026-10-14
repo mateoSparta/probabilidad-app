@@ -231,12 +231,13 @@ export function AvisoExamenDetalle({ plan }: { plan: Plan }) {
           </strong>{' '}
           habilidades dominadas
         </li>
+        {/* Breve, para que los dos datos entren en un renglón. */}
         {veredicto !== 'sin_arrancar' && veredicto !== 'listo' && veredicto !== 'sin_fecha' && (
           <li>
             ritmo de los últimos 7 días:{' '}
             <strong>{String(plan.ritmoReciente).replace('.', ',')}</strong>{' '}
-            {plan.ritmoReciente === 1 ? 'ítem resuelto' : 'ítems resueltos'} en limpio por día
-            {plan.alDia ? ' (suficiente)' : ' (inferior al necesario)'}
+            {plan.ritmoReciente === 1 ? 'ítem' : 'ítems'} en limpio por día
+            {plan.alDia ? ' (suficiente)' : ' (insuficiente)'}
           </li>
         )}
       </ul>

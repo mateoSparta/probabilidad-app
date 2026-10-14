@@ -181,6 +181,20 @@
    un aviso aparece sin correr nada. */
 .item { --aire: var(--e-7); }
 
+/* "✓ Correcto.", arriba a la derecha del ítem, en la línea de la pregunta.
+   El que entra y el que sale al reintentar ocupan la misma celda. */
+.item__logro {
+  flex: none;
+  display: grid;
+  margin-left: auto;
+  padding-left: var(--e-3);
+}
+.item__logro > * { grid-area: 1 / 1; }
+.item__logro .feedback {
+  margin: 0;
+  white-space: nowrap;
+}
+
 /* Un campo: la frase "P(B_1) = [ ] [Comprobar]", centrada. El botón y el
    valor que lo reemplaza al acertar comparten una celda del ancho del botón,
    así la frase no se mueve. */
@@ -427,9 +441,10 @@
 
 /* ----------------------------------------------------------- feedback */
 
-/* Los avisos van en el aire de debajo de la respuesta, centrados en él. Uno
-   largo (un error típico de dos renglones) lo estira. El que se va al
-   reintentar ocupa la misma celda que el que entra. */
+/* Los avisos (el error, "Elegí una opción.") van en el aire de debajo de la
+   respuesta, centrados en él. Uno largo (un error típico de dos renglones)
+   lo estira. El que se va al reintentar ocupa la misma celda que el que
+   entra. */
 .item__mensajes {
   display: grid;
   place-items: center;

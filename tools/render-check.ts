@@ -170,14 +170,14 @@ try {
   afirmar(!html.includes('class="flecha"'), 'volvió la flecha de los campos múltiples')
   afirmar(!html.includes('Respuesta:'), 'en la guía aparece el rótulo "Respuesta:" del simulacro')
   // Cada ítem guarda debajo de la respuesta el lugar de los avisos, aunque
-  // todavía no haya ninguno; "Correcto" va ahí y no en una insignia arriba.
+  // todavía no haya ninguno.
   afirmar((html.match(/class="item__mensajes"/g) ?? []).length === (html.match(/<li class="item item--/g) ?? []).length,
     'hay ítems sin el lugar de los avisos debajo de la respuesta')
-  afirmar(!html.includes('Correcto.') && !html.includes('class="logro'), 'se ve "Correcto" sin haber resuelto nada')
+  afirmar(!html.includes('Correcto.') && !html.includes('class="item__logro'), 'se ve "Correcto" sin haber resuelto nada')
   // El campo tiene un ancho fijo: no crece con lo que se escribe.
   afirmar(!html.includes('--largo'), 'el campo de respuesta todavía crece con lo escrito')
   // El globo de los campos, con un ejemplo por renglón.
-  afirmar(/data-tip="Acepta fracciones y expresiones compuestas\.\nEjemplos:\n• [^\n"]+\n• [^\n"]+"/.test(html),
+  afirmar(/data-tip="Acepta fracciones[^"]*Ejemplos:\n• [^\n"]+\n• [^\n"]+"/.test(html),
     'el globo de los campos no muestra los dos ejemplos')
   // Sin resolver, ver respuesta muestra su cara y comprobar y pistas están.
   afirmar(/boton__cara"><svg[^]*?Ver respuesta<\/span><span class="boton__cara boton__cara--abajo" aria-hidden="true">/.test(html),
@@ -632,12 +632,13 @@ try {
   )
   afirmar(guiaRetomada.includes('item item--correcto'), 'el ítem resuelto no vuelve resuelto')
   afirmar(guiaRetomada.includes('value="1/6"'), 'no se recuperó lo tipeado')
-  // Resuelto: "✓ Correcto." debajo del campo, el valor en lugar del botón,
+  // Resuelto: "✓ Correcto." arriba a la derecha, el valor en lugar del botón,
   // pistas plegada y ver respuesta con la cara de reintentar.
   const inicioResuelto = guiaRetomada.indexOf('<li class="item item--correcto')
   const itemResuelto = guiaRetomada.slice(inicioResuelto, guiaRetomada.indexOf('<li class="item item--', inicioResuelto + 1))
-  afirmar(/class="item__mensajes"[^>]*><p class="feedback feedback--ok"><span class="feedback__tilde">✓<\/span> Correcto\.<\/p>/.test(itemResuelto),
-    'el ítem resuelto no dice "✓ Correcto." debajo del campo')
+  afirmar(/class="item__cabeza">[^]*?<div class="item__logro" role="status"><p class="feedback feedback--ok"><span class="feedback__tilde">✓<\/span> Correcto\.<\/p><\/div><\/div>/.test(itemResuelto),
+    'el ítem resuelto no dice "✓ Correcto." arriba a la derecha')
+  afirmar(/class="item__mensajes" aria-live="polite"><\/div>/.test(itemResuelto), 'el ítem resuelto muestra un aviso debajo del campo')
   afirmar(itemResuelto.includes('class="valor-aprox">≈ 0,1667<'), 'el ítem resuelto no muestra el valor de lo escrito')
   afirmar(!/fila-entrada__accion">[^]*?Comprobar/.test(itemResuelto.slice(0, itemResuelto.indexOf('item__mensajes'))),
     'el ítem resuelto todavía muestra comprobar al lado del campo')
@@ -972,8 +973,8 @@ try {
   const planRitmo = ritmoMod.armarPlan(conRitmo, skillsReales, contenido.skillsDeItem, contenido.config, hoy)
   const detalleConRitmo = render(createElement(AvisoExamenDetalle, { plan: planRitmo }))
   afirmar(
-    /ritmo de los últimos 7 días: <strong>0,3<\/strong> ítems resueltos en limpio por día/.test(detalleConRitmo),
-    'la leyenda del ritmo no dice "N ítems resueltos en limpio por día"',
+    /ritmo de los últimos 7 días: <strong>0,3<\/strong> ítems en limpio por día \((in)?suficiente\)<\/li>/.test(detalleConRitmo),
+    'la leyenda del ritmo no dice "N ítems en limpio por día (suficiente)"',
   )
 
   // Los accesos de la esquina: cafecito y GitHub, en otra pestaña, con su

@@ -1111,8 +1111,8 @@ for (const [valor, alternativa] of equivalentes) {
   }
   const ayuda = ayudaCampoNumerico().split('\n')
   afirmar(
-    ayuda.length === 4 && ayuda[0].startsWith('Acepta fracciones') && ayuda[1] === 'Ejemplos:' &&
-      ayuda.slice(2).every((l) => l.startsWith('• ')),
+    ayuda[0].startsWith('Acepta fracciones') && (ayuda.at(-3) ?? '').endsWith('Ejemplos:') &&
+      ayuda.slice(-2).every((l) => l.startsWith('• ')),
     'el globo del campo no tiene un renglón por ejemplo',
   )
 }

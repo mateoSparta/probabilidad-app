@@ -319,6 +319,12 @@
 .feedback {
   animation: desplegar 240ms ease-out both;
 }
+/* "Correcto" no lleva la entrada de los avisos: la suya es la del acierto
+   (.feedback--nuevo). Si la llevara, al terminar la celebración y quitarse
+   esa clase volvería a correr la de los avisos y el texto parpadearía. */
+.feedback--ok {
+  animation: none;
+}
 /* El error entra sacudiéndose. Como el párrafo lleva la cantidad de envíos
    como `key`, cada nuevo error lo vuelve a montar y la animación se repite. */
 @keyframes error-entrar {
@@ -356,8 +362,8 @@
 /* Un acierto. El recuadro se pinta de verde con una onda que se expande
    desde el borde; en la frase, el botón de comprobar se encoge y se va y en
    su lugar entra el valor de lo escrito (en los checkpoints, uno tras otro);
-   debajo, "✓ Correcto." sube apenas y su tilde se marca con un pulso. Sólo
-   al acertar: un ítem que ya venía resuelto se ve quieto. */
+   arriba a la derecha, "✓ Correcto." sube apenas y su tilde se marca con un
+   pulso. Sólo al acertar: un ítem que ya venía resuelto se ve quieto. */
 @keyframes logro-onda {
   0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 40%, transparent); }
   100% { box-shadow: 0 0 0 14px transparent; }
@@ -385,7 +391,7 @@
   animation: valor-entrar 380ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
   animation-delay: calc(190ms + var(--i, 0) * 70ms);
 }
-.feedback--nuevo { animation: logro-aviso 520ms 140ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+.feedback--ok.feedback--nuevo { animation: logro-aviso 520ms 140ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
 .feedback--nuevo .feedback__tilde { animation: tilde-marcar 520ms 280ms cubic-bezier(0.3, 1.3, 0.5, 1) both; }
 
 /* Reintentar, la vuelta atrás. El recuadro pierde el color mientras un
@@ -415,7 +421,8 @@
 .boton.entrante { animation: boton-entrar 360ms 140ms cubic-bezier(0.3, 1.3, 0.5, 1) both; }
 .valor-aprox.saliente,
 .marca.saliente { animation: valor-salir 260ms ease-in both; }
-.item__mensajes .saliente { animation: aviso-salir 260ms ease-in both; }
+.item__mensajes .saliente,
+.item__logro .saliente { animation: aviso-salir 260ms ease-in both; }
 .item__mensajes .saliente .feedback,
 .plegandose .pistas li,
 .plegandose .respuesta { animation: none; }

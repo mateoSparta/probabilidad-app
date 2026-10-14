@@ -756,6 +756,12 @@
   font-size: var(--t-sm);
   color: var(--tinta-2);
 }
+/* Un dato nunca se parte en dos renglones: si los dos no entran juntos (en
+   un teléfono), el segundo pasa entero al renglón de abajo. En pantallas
+   anchas entran los dos en uno, porque las frases son breves. */
+@media (min-width: 760px) {
+  .ritmo__datos li { white-space: nowrap; }
+}
 /* Un punto centrado entre dato y dato, para que se lean como cosas
    distintas. */
 .ritmo__datos li + li::before {

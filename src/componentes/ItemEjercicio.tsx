@@ -3,10 +3,11 @@
  *
  * La respuesta se escribe en una frase: lo que se calcula, el campo y el
  * botón de comprobar, "P(B_1) = [ 1/3 ] [Comprobar]", centrada y con el mismo
- * aire arriba que abajo. El aire de abajo es el lugar de los avisos ("✓
- * Correcto.", "✗ La respuesta no es correcta…"), así que un aviso aparece
- * sin correr nada. Al acertar, el botón se va y en su lugar aparece el valor
- * decimal de lo escrito ("≈ 0,3333"). Cuando hay varios campos
+ * aire arriba que abajo. El aire de abajo es el lugar de los avisos ("✗ La
+ * respuesta no es correcta…"), así que un aviso aparece sin correr nada. Al
+ * acertar, "✓ Correcto." aparece arriba a la derecha, y el botón se va y en
+ * su lugar aparece el valor decimal de lo escrito ("≈ 0,3333"). Cuando hay
+ * varios campos
  * (checkpoints), van apilados con sus signos igual alineados, y el botón de
  * comprobar pasa a la fila de abajo, a la derecha de las ayudas (fórmulas,
  * pistas graduadas, ver respuesta). Lo mismo con la opción múltiple.
@@ -113,30 +114,20 @@ type Anterior = {
 /**
  * Los avisos de debajo de la respuesta. Los de error llevan la cantidad de
  * envíos como key: cada error nuevo los vuelve a montar y la sacudida se
- * repite. "Correcto" entra con su propia animación sólo en el momento de
- * acertar (`nuevo`).
+ * repite.
  */
 function Avisos({
   estado,
   envios,
   mensaje,
   errorTipico,
-  nuevo = false,
 }: {
   estado: SesionItem['estado']
   envios: number
   mensaje: string | null
   errorTipico: string | null
-  nuevo?: boolean
 }) {
   if (mensaje) return <p class="feedback feedback--aviso">{mensaje}</p>
-  if (estado === 'correcto') {
-    return (
-      <p key="ok" class={'feedback feedback--ok' + (nuevo ? ' feedback--nuevo' : '')}>
-        <span class="feedback__tilde">✓</span> Correcto.
-      </p>
-    )
-  }
   if (estado !== 'incorrecto') return null
   return (
     <p key={envios} class="feedback feedback--mal">
@@ -409,6 +400,21 @@ export function ItemEjercicio({
         <div class="item__pregunta">
           <TextoMarcado texto={item.pregunta} resaltado={resaltado} mostrarMarcas={mostrarMarcas} />
         </div>
+        {/* "Correcto", arriba a la derecha. Entra con su animación sólo en el
+            momento de acertar; al reintentar, se desvanece. */}
+        {(correcto || antes?.estado === 'correcto') && (
+          <div class="item__logro" role="status">
+            {correcto ? (
+              <p class={'feedback feedback--ok' + (celebrando ? ' feedback--nuevo' : '')}>
+                <span class="feedback__tilde">✓</span> Correcto.
+              </p>
+            ) : (
+              <p class="feedback feedback--ok saliente" aria-hidden="true">
+                <span class="feedback__tilde">✓</span> Correcto.
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* --- entrada según el tipo de respuesta --- */}
@@ -551,13 +557,7 @@ export function ItemEjercicio({
 
       {/* --- los avisos, en el aire de debajo de la respuesta --- */}
       <div class="item__mensajes" aria-live="polite">
-        <Avisos
-          estado={est.estado}
-          envios={est.envios}
-          mensaje={mensaje}
-          errorTipico={errorTipico}
-          nuevo={celebrando}
-        />
+        <Avisos estado={est.estado} envios={est.envios} mensaje={mensaje} errorTipico={errorTipico} />
         {anterior && (
           <div class="saliente" aria-hidden="true">
             <Avisos
