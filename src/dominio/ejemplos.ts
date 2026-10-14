@@ -65,8 +65,7 @@ export function cuentaAlAzar(azar: Azar = Math.random): string {
 /** El texto del globo de un campo numérico, con un renglón por ejemplo. */
 export function ayudaCampoNumerico(azar: Azar = Math.random): string {
   return [
-    'Acepta fracciones y expresiones compuestas.',
-    'Ejemplos:',
+    'Acepta fracciones y cuentas. Ejemplos:',
     `• ${fraccionAlAzar(azar)}`,
     `• ${cuentaAlAzar(azar)}`,
   ].join('\n')
