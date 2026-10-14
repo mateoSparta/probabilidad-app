@@ -283,6 +283,8 @@ ${secciones.join('\n')}
 
 ${seccionesExamen.join('\n')}`
 
-const anterior = existsSync(SALIDA) ? readFileSync(SALIDA, 'utf8') : ''
+// Git en Windows puede dejar el archivo con CRLF: se compara sin los finales
+// de línea, para no reescribirlo en cada corrida.
+const anterior = existsSync(SALIDA) ? readFileSync(SALIDA, 'utf8').replace(/\r\n/g, '\n') : ''
 if (anterior !== texto) writeFileSync(SALIDA, texto)
 console.log(`resultados: ${nValores} valores en revision/resultados.md${anterior === texto ? ' (sin cambios)' : ''}.`)
