@@ -88,7 +88,12 @@ export type Respuesta =
 
 // ---------------------------------------------------------- verificación
 
-export type EstadoVerificacion = 'verificado' | 'discrepancia' | 'sin_fuente'
+/**
+ * `verificado`: la resuelta y tools/verify/ coinciden. `discrepancia`: no
+ * coinciden, y la nota dice qué se cargó. `docente`: lo cargó o lo corrigió
+ * el docente (DOCENTE.md), con una fuente `origen: docente`.
+ */
+export type EstadoVerificacion = 'verificado' | 'discrepancia' | 'sin_fuente' | 'docente'
 
 /**
  * De dónde salió un valor. Puede haber varias fuentes para el mismo ítem:

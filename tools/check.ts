@@ -13,11 +13,16 @@
  *     de las expresiones que la guía de estilo descarta
  *   - un ejercicio o un bloque de la secuencia no existe
  *   - un valor del YAML no coincide con lo que calculó tools/verify/
+ *   - un ejercicio no está en la secuencia de su guía (no se vería en la app)
+ *   - un ejercicio o un examen no se llama como su id, o repite uno
+ *   - una plantilla de plantillas/ no cumple estas mismas reglas
  *
  * Y avisa (sin fallar) por cada ítem con `estado` distinto de `verificado`.
+ * Un valor con estado `docente` (lo cargó o lo corrigió el docente, ver
+ * DOCENTE.md) que no coincide con tools/verify/ también es un aviso.
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { basename, dirname, join, relative, resolve } from 'node:path'
 
 import { load } from 'js-yaml'
 import katex from 'katex'
@@ -36,12 +41,30 @@ const errores: string[] = []
 const avisos: string[] = []
 
 const err = (m: string) => errores.push(m)
+/** Una ruta como se la nombra en los mensajes: desde la raíz del proyecto. */
+const rel = (ruta: string) => relative(RAIZ, ruta).replace(/\\/g, '/')
 const avisar = (m: string) => avisos.push(m)
 
 // --------------------------------------------------------------- lectura
 
+/**
+ * Lee un YAML. Si tiene un error de escritura, el check no puede seguir: lo
+ * dice con el archivo y el renglón, en lugar de caerse con un volcado de pila
+ * que no se entiende sin programar.
+ */
 function leerYaml<T>(ruta: string): T {
-  return load(readFileSync(ruta, 'utf8')) as T
+  try {
+    return load(readFileSync(ruta, 'utf8')) as T
+  } catch (e) {
+    const x = e as { mark?: { line: number }; reason?: string; message?: string }
+    const donde = x.mark ? `, renglón ${x.mark.line + 1}` : ''
+    console.error(
+      `  ✗ ${rel(ruta)}${donde}: el archivo no se puede leer (${x.reason ?? x.message}). ` +
+        'Suele ser la sangría (los espacios al principio del renglón, que no pueden ser tabulaciones) ' +
+        'o un texto con dos puntos o con fórmulas que no está entre comillas.',
+    )
+    process.exit(1)
+  }
 }
 
 function listar(dir: string, ext: string): string[] {
@@ -328,73 +351,147 @@ const dirsGuia = existsSync(join(CONTENT, 'guias'))
   : []
 
 const ejercicios: Ejercicio[] = []
+/** id del ejercicio -> el archivo donde está, para los mensajes. */
+const rutaDeEjercicio = new Map<string, string>()
 const teoriaIds = new Set<string>()
 /** skill -> ítems que lo evalúan */
 const evaluadoPor = new Map<string, string[]>()
 
-for (const dir of dirsGuia) {
-  for (const ruta of listar(join(dir, 'ejercicios'), '.yaml')) {
-    const ej = leerYaml<Ejercicio>(ruta)
-    if (!ej?.id) {
-      err(`${ruta}: falta \`id\``)
-      continue
+const ESTADOS_VERIFICACION = ['verificado', 'discrepancia', 'sin_fuente', 'docente']
+
+/**
+ * El estado de verificación de un ítem. `docente` es un valor que cargó o
+ * corrigió el docente (DOCENTE.md): lleva una fuente `origen: docente` con
+ * ese mismo valor, y si difiere de lo que calcula tools/verify/ queda como
+ * aviso hasta revisar el script, en lugar de romper el build.
+ */
+function validarVerificacion(quien: string, item: Item): void {
+  const v = item.verificacion
+  const estado = v?.estado
+  if (estado !== undefined && !ESTADOS_VERIFICACION.includes(estado)) {
+    err(`${quien}: \`estado\` tiene que ser uno de: ${ESTADOS_VERIFICACION.join(', ')}`)
+    return
+  }
+  if (estado !== 'docente') {
+    if (estado !== 'verificado') avisar(`${quien}: estado de verificación \`${estado ?? 'ausente'}\``)
+    return
+  }
+  const delDocente = v?.fuentes_valor?.find((f) => f.origen === 'docente')
+  if (!delDocente) {
+    err(
+      `${quien}: el estado es \`docente\` pero falta la fuente del docente. ` +
+        'Agregar en `fuentes_valor` las líneas `- origen: docente` y `valor: "…"` (ver DOCENTE.md).',
+    )
+    return
+  }
+  const r = item.respuesta
+  if (r && (r.tipo === 'numerica' || r.tipo === 'expresion') && !mismoValor(String(delDocente.valor), String(r.valor))) {
+    err(
+      `${quien}: la fuente del docente dice \`${delDocente.valor}\` pero la respuesta dice \`${r.valor}\`; ` +
+        'tienen que ser el mismo valor.',
+    )
+  }
+}
+
+/** Si dos valores escritos son el mismo: iguales como texto o, si son números, como números. */
+function mismoValor(a: string, b: string): boolean {
+  if (a.replace(/\s+/g, '') === b.replace(/\s+/g, '')) return true
+  try {
+    return Math.abs(Number(evaluate(a)) - Number(evaluate(b))) <= 1e-9 * Math.max(1, Math.abs(Number(evaluate(b))))
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Valida un archivo de ejercicio de guía. Con `registrar` en falso (las
+ * plantillas) se aplican las mismas reglas, pero el ejercicio no cuenta como
+ * contenido.
+ */
+function validarEjercicio(ruta: string, ej: Ejercicio, registrar: boolean): void {
+  if (!ej?.id) {
+    err(`${rel(ruta)}: falta \`id\``)
+    return
+  }
+  if (registrar) {
+    // Al copiar una plantilla o un ejercicio, lo primero que se olvida es
+    // cambiar el id: dos iguales harían que uno tape al otro en la app.
+    if (rutaDeEjercicio.has(ej.id)) {
+      err(`${rel(ruta)}: el id \`${ej.id}\` ya lo usa ${rel(rutaDeEjercicio.get(ej.id)!)}`)
+    }
+    const archivo = basename(ruta, '.yaml')
+    if (archivo !== ej.id) {
+      err(`${rel(ruta)}: el archivo se llama \`${archivo}.yaml\` pero el \`id\` es \`${ej.id}\`; tienen que coincidir`)
+    }
+    const carpeta = basename(dirname(dirname(ruta)))
+    if (carpeta !== `guia-${ej.guia}`) {
+      err(`${rel(ruta)}: el ejercicio dice \`guia: ${ej.guia}\` pero está en la carpeta ${carpeta}`)
     }
     ejercicios.push(ej)
+    rutaDeEjercicio.set(ej.id, ruta)
+  }
+  if (typeof ej.guia !== 'number') err(`${ej.id}: falta \`guia\``)
+  if (!ej.numero) err(`${ej.id}: falta \`numero\``)
 
-    const items = ej.items ?? []
-    if (items.length === 0) err(`${ej.id}: no tiene items`)
+  const items = ej.items ?? []
+  if (items.length === 0) err(`${ej.id}: no tiene items`)
 
-    for (const item of items) {
-      const quien = `${ej.id}(${item.id})`
-      revisarTextoDeItem(quien, item)
+  for (const item of items) {
+    const quien = `${ej.id}(${item.id})`
+    revisarTextoDeItem(quien, item)
 
-      if (!item.skills?.length) err(`${quien}: no declara skills`)
-      if (!item.pistas?.length) err(`${quien}: no tiene pistas`)
+    if (!item.skills?.length) err(`${quien}: no declara skills`)
+    if (!item.pistas?.length) err(`${quien}: no tiene pistas`)
 
-      for (const s of item.skills ?? []) {
-        if (!idsSkills.has(s)) err(`${quien}: el skill \`${s}\` no existe en skills.yaml`)
-        evaluadoPor.set(s, [...(evaluadoPor.get(s) ?? []), quien])
-      }
-
-      validarRespuesta(quien, item.respuesta)
-
-      const estado = item.verificacion?.estado
-      if (estado !== 'verificado') {
-        avisar(`${quien}: estado de verificación \`${estado ?? 'ausente'}\``)
-      }
-      if (!item.verificacion?.fuentes_valor?.length) {
-        avisar(`${quien}: no registra de dónde salió el valor`)
-      }
+    for (const s of item.skills ?? []) {
+      if (!idsSkills.has(s)) err(`${quien}: el skill \`${s}\` no existe en skills.yaml`)
+      if (registrar) evaluadoPor.set(s, [...(evaluadoPor.get(s) ?? []), quien])
     }
 
-    exigirTexto(`${ej.id} enunciado`, ej.enunciado)
-    validarMarcas(ej.id, ej.enunciado, items)
-    revisarPuntuacionTrasDisplay(ej.id, ej.enunciado)
+    validarRespuesta(quien, item.respuesta)
+    validarVerificacion(quien, item)
+    if (registrar && !item.verificacion?.fuentes_valor?.length) {
+      avisar(`${quien}: no registra de dónde salió el valor`)
+    }
   }
 
-  for (const ruta of listar(join(dir, 'teoria'), '.md')) {
-    const txt = readFileSync(ruta, 'utf8')
-    const m = txt.match(/^---\r?\n([\s\S]*?)\r?\n---/)
-    if (!m) {
-      err(`${ruta}: falta el frontmatter`)
-      continue
-    }
-    const meta = (load(m[1]) ?? {}) as { id?: string; skills?: string[] }
-    if (!meta.id) {
-      err(`${ruta}: el frontmatter no tiene \`id\``)
-      continue
-    }
+  exigirTexto(`${ej.id} enunciado`, ej.enunciado)
+  validarMarcas(ej.id, ej.enunciado, items)
+  revisarPuntuacionTrasDisplay(ej.id, ej.enunciado)
+}
+
+/** Valida un bloque de teoría; con `registrar` en falso (la plantilla), no cuenta como contenido. */
+function validarTeoria(ruta: string, registrar: boolean): void {
+  const txt = readFileSync(ruta, 'utf8')
+  const m = txt.match(/^---\r?\n([\s\S]*?)\r?\n---/)
+  if (!m) {
+    err(`${ruta}: falta el frontmatter`)
+    return
+  }
+  const meta = (load(m[1]) ?? {}) as { id?: string; skills?: string[] }
+  if (!meta.id) {
+    err(`${ruta}: el frontmatter no tiene \`id\``)
+    return
+  }
+  if (registrar) {
     // La app indexa la teoría por id: con dos iguales, una guía mostraría
     // el bloque de la otra.
     if (teoriaIds.has(meta.id)) err(`${ruta}: el id \`${meta.id}\` ya lo usa otro bloque de teoría`)
     teoriaIds.add(meta.id)
-    const cuerpo = txt.slice(m[0].length)
-    revisarEstilo(`teoría ${meta.id}`, cuerpo)
-    revisarPuntuacionTrasDisplay(`teoría ${meta.id}`, cuerpo)
-    for (const s of meta.skills ?? []) {
-      if (!idsSkills.has(s)) err(`teoría ${meta.id}: el skill \`${s}\` no existe`)
-    }
   }
+  const cuerpo = txt.slice(m[0].length)
+  revisarEstilo(`teoría ${meta.id}`, cuerpo)
+  revisarPuntuacionTrasDisplay(`teoría ${meta.id}`, cuerpo)
+  for (const s of meta.skills ?? []) {
+    if (!idsSkills.has(s)) err(`teoría ${meta.id}: el skill \`${s}\` no existe`)
+  }
+}
+
+for (const dir of dirsGuia) {
+  for (const ruta of listar(join(dir, 'ejercicios'), '.yaml')) {
+    validarEjercicio(ruta, leerYaml<Ejercicio>(ruta), true)
+  }
+  for (const ruta of listar(join(dir, 'teoria'), '.md')) validarTeoria(ruta, true)
 }
 
 const idsEjercicios = new Set(ejercicios.map((e) => e.id))
@@ -421,11 +518,22 @@ type Examen = {
   ejercicios?: EjercicioExamen[]
 }
 
-const examenes: Examen[] = listar(join(CONTENT, 'examenes'), '.yaml').map((r) =>
-  leerYaml<Examen>(r),
-)
+const rutasExamenes = listar(join(CONTENT, 'examenes'), '.yaml')
+const examenes: Examen[] = rutasExamenes.map((r) => leerYaml<Examen>(r))
 
-for (const ex of examenes) {
+rutasExamenes.forEach((ruta, i) => {
+  const id = examenes[i]?.id
+  if (id && basename(ruta, '.yaml') !== id) {
+    err(`${rel(ruta)}: el archivo se llama \`${basename(ruta)}\` pero el \`id\` es \`${id}\`; tienen que coincidir`)
+  }
+})
+for (const ex of examenes) validarExamen(ex, true)
+
+/**
+ * Valida un examen. Con `registrar` en falso (la plantilla) se aplican las
+ * mismas reglas, pero sus ítems no cuentan como contenido.
+ */
+function validarExamen(ex: Examen, registrar: boolean): void {
   const donde = `examen ${ex.id ?? '(sin id)'}`
   if (!ex.id) err(`${donde}: falta \`id\``)
   if (ex.tipo !== 'parcial' && ex.tipo !== 'integradora') {
@@ -469,15 +577,13 @@ for (const ex of examenes) {
       if (!item.skills?.length) err(`${quien}: no declara skills`)
       for (const s of item.skills ?? []) {
         if (!idsSkills.has(s)) err(`${quien}: el skill \`${s}\` no existe`)
-        evaluadoPor.set(s, [...(evaluadoPor.get(s) ?? []), quien])
+        if (registrar) evaluadoPor.set(s, [...(evaluadoPor.get(s) ?? []), quien])
       }
       // En el simulacro no se muestran pistas, pero al entregar sí, así que
       // igual hacen falta.
       if (!item.pistas?.length) err(`${quien}: no tiene pistas`)
       validarRespuesta(quien, item.respuesta)
-      if (item.verificacion?.estado !== 'verificado') {
-        avisar(`${quien}: estado de verificación \`${item.verificacion?.estado ?? 'ausente'}\``)
-      }
+      validarVerificacion(quien, item)
     }
 
     exigirTexto(`${quienEj} enunciado`, ej.enunciado)
@@ -487,6 +593,9 @@ for (const ex of examenes) {
 }
 
 // ------------------------------------------------------------------ guías
+
+/** ejercicio -> las guías cuya secuencia lo incluye (una vez por aparición). */
+const enSecuencia = new Map<string, number[]>()
 
 for (const dir of dirsGuia) {
   const ruta = join(dir, 'guia.yaml')
@@ -498,6 +607,7 @@ for (const dir of dirsGuia) {
   }
   revisarEstilo(`guía ${guia.numero} (descripción)`, guia.descripcion)
   for (const paso of guia.secuencia ?? []) {
+    if (paso.ejercicio) enSecuencia.set(paso.ejercicio, [...(enSecuencia.get(paso.ejercicio) ?? []), guia.numero])
     if (paso.ejercicio && !idsEjercicios.has(paso.ejercicio)) {
       err(`guía ${guia.numero}: la secuencia referencia el ejercicio \`${paso.ejercicio}\`, que no existe`)
     }
@@ -507,6 +617,23 @@ for (const dir of dirsGuia) {
     if (!paso.ejercicio && !paso.teoria) {
       err(`guía ${guia.numero}: un paso de la secuencia no es ni teoría ni ejercicio`)
     }
+  }
+}
+
+// Un ejercicio que no está en ninguna secuencia no se ve en la app, pero sus
+// ítems cuentan para las habilidades, y el plan de Seguimiento podría pedir
+// uno que nadie ve. Tiene que estar en la secuencia de su guía, una vez.
+for (const ej of ejercicios) {
+  const guias = enSecuencia.get(ej.id) ?? []
+  if (guias.length === 0) {
+    err(
+      `${ej.id}: no está en la secuencia de ninguna guía, así que no se ve en la app. ` +
+        `Agregar \`- ejercicio: ${ej.id}\` en content/guias/guia-${ej.guia}/guia.yaml, en el lugar donde tiene que aparecer.`,
+    )
+  } else if (guias.length > 1) {
+    err(`${ej.id}: aparece ${guias.length} veces en las secuencias (guías ${guias.join(', ')}); tiene que aparecer una sola`)
+  } else if (guias[0] !== ej.guia) {
+    err(`${ej.id}: dice \`guia: ${ej.guia}\` pero está en la secuencia de la guía ${guias[0]}`)
   }
 }
 
@@ -523,6 +650,57 @@ for (const dir of dirsGuia) {
         err(`teoría ${meta.id}: el skill \`${s}\` no lo evalúa ningún ítem`)
       }
     }
+  }
+}
+
+// ------------------------------------------------------------- plantillas
+
+/**
+ * Las plantillas de plantillas/ (para cargar contenido a mano, ver
+ * DOCENTE.md) se validan con las mismas reglas que el contenido: si el
+ * formato cambia, una plantilla vieja rompe el check en lugar de enseñar algo
+ * que ya no anda. No cuentan como contenido.
+ */
+const PLANTILLAS = join(RAIZ, 'plantillas')
+const esperadas = [
+  'ejercicio-numerica.yaml',
+  'ejercicio-expresion.yaml',
+  'ejercicio-checkpoints.yaml',
+  'ejercicio-opcion.yaml',
+  'examen.yaml',
+  'habilidad.yaml',
+  'teoria.md',
+]
+for (const nombre of esperadas) {
+  const ruta = join(PLANTILLAS, nombre)
+  if (!existsSync(ruta)) {
+    err(`falta la plantilla plantillas/${nombre}`)
+    continue
+  }
+  if (nombre.startsWith('ejercicio-')) {
+    const ej = leerYaml<Ejercicio>(ruta)
+    validarEjercicio(ruta, ej, false)
+    const tipo = nombre.slice('ejercicio-'.length, -'.yaml'.length)
+    if (!(ej.items ?? []).some((i) => i.respuesta?.tipo === tipo)) {
+      err(`plantillas/${nombre}: no tiene ningún ítem de tipo \`${tipo}\``)
+    }
+  } else if (nombre === 'examen.yaml') {
+    validarExamen(leerYaml<Examen>(ruta), false)
+  } else if (nombre === 'habilidad.yaml') {
+    const nuevas = leerYaml<(Skill & { descripcion?: string })[]>(ruta) ?? []
+    if (nuevas.length === 0) err('plantillas/habilidad.yaml: no tiene ninguna habilidad')
+    for (const s of nuevas) {
+      if (!s.id || !s.nombre || typeof s.guia !== 'number' || !s.descripcion) {
+        err('plantillas/habilidad.yaml: la habilidad tiene que tener id, nombre, guia y descripcion')
+      }
+      revisarEstilo('plantillas/habilidad.yaml', s.descripcion)
+      for (const f of s.formulas ?? []) {
+        const e = errorKatex(f)
+        if (e) err(`plantillas/habilidad.yaml: la fórmula \`${f}\` no parsea (${e})`)
+      }
+    }
+  } else {
+    validarTeoria(ruta, false)
   }
 }
 
@@ -668,13 +846,30 @@ if (existsSync(VERIFICACION)) {
 
   const num = (x: unknown) => (typeof x === 'number' ? x : Number(x))
 
-  /** Compara un valor del YAML contra el que calculó el pipeline. */
-  function contrastar(quien: string, delYaml: string, calculado: string): void {
-    if (Math.abs(num(evaluate(delYaml)) - num(evaluate(calculado))) > 1e-9) {
-      err(
-        `${quien}: el YAML dice \`${delYaml}\` pero tools/verify calculó ` +
-          `\`${calculado}\`. Volvé a correr \`npm run verificar\` o corregí el valor.`,
+  /**
+   * Lo que pasa cuando un valor del YAML no coincide con el del pipeline. Si
+   * es del docente, queda como aviso hasta revisar el script; si no, rompe
+   * el build, y el mensaje dice cómo registrar una corrección.
+   */
+  function diferencia(quien: string, delYaml: string, calculado: string, docente: boolean, detalle = ''): void {
+    if (docente) {
+      avisar(
+        `${quien}: corrección del docente. El YAML dice \`${delYaml}\` y tools/verify calcula ` +
+          `\`${calculado}\`${detalle}; falta revisar el script.`,
       )
+      return
+    }
+    err(
+      `${quien}: el YAML dice \`${delYaml}\` pero tools/verify calculó \`${calculado}\`${detalle}. ` +
+        'Si el valor del YAML es una corrección, marcarla como del docente (DOCENTE.md, "Corregir un resultado"); ' +
+        'si no, volver a correr `npm run verificar`.',
+    )
+  }
+
+  /** Compara un valor del YAML contra el que calculó el pipeline. */
+  function contrastar(quien: string, delYaml: string, calculado: string, docente: boolean): void {
+    if (Math.abs(num(evaluate(delYaml)) - num(evaluate(calculado))) > 1e-9) {
+      diferencia(quien, delYaml, calculado, docente)
     }
   }
 
@@ -688,6 +883,7 @@ if (existsSync(VERIFICACION)) {
     delYaml: string,
     calculado: string,
     vars: Record<string, [number, number]>,
+    docente: boolean,
   ): void {
     for (const t of [0.25, 0.5, 0.75]) {
       const punto = Object.fromEntries(
@@ -702,10 +898,7 @@ if (existsSync(VERIFICACION)) {
         return
       }
       if (Math.abs(y - c) > 1e-9 * Math.max(1, Math.abs(c))) {
-        err(
-          `${quien}: el YAML dice \`${delYaml}\` pero tools/verify calculó ` +
-            `\`${calculado}\`, y difieren en ${JSON.stringify(punto)}.`,
-        )
+        diferencia(quien, delYaml, calculado, docente, ` (difieren en ${JSON.stringify(punto)})`)
         return
       }
     }
@@ -720,15 +913,16 @@ if (existsSync(VERIFICACION)) {
       const r = item.respuesta
       if (!r) continue
       const esperado = calculado.items[item.id]
+      const docente = item.verificacion?.estado === 'docente'
 
       if (r.tipo === 'numerica' && esperado) {
-        contrastar(`${quien}(${item.id})`, String(r.valor), esperado.valor)
+        contrastar(`${quien}(${item.id})`, String(r.valor), esperado.valor, docente)
         contrastados++
       }
 
       if (r.tipo === 'expresion' && esperado) {
         const vars = (r.vars ?? {}) as Record<string, [number, number]>
-        contrastarExpresion(`${quien}(${item.id})`, String(r.valor), esperado.valor, vars)
+        contrastarExpresion(`${quien}(${item.id})`, String(r.valor), esperado.valor, vars, docente)
         contrastados++
       }
 
@@ -739,7 +933,7 @@ if (existsSync(VERIFICACION)) {
         for (const [i, c] of cps.entries()) {
           const esperadoCp = calculado.items[`${item.id}${i + 1}`]
           if (!esperadoCp || c.valor === undefined) continue
-          contrastar(`${quien}(${item.id}) checkpoint ${i + 1}`, String(c.valor), esperadoCp.valor)
+          contrastar(`${quien}(${item.id}) checkpoint ${i + 1}`, String(c.valor), esperadoCp.valor, docente)
           contrastados++
         }
       }

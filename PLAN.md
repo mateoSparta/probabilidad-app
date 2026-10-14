@@ -79,6 +79,8 @@ porque son un hueco de contenido y no del alumno.
 probabilidad-app/
 ├── CLAUDE.md                     # convenciones para Claude Code (ver §9)
 ├── PLAN.md                       # este documento
+├── DOCENTE.md                    # guía para cargar y corregir contenido sin programar
+├── plantillas/                   # un ejercicio por tipo de respuesta, examen, habilidad, teoría
 ├── fuentes/                      # material original, solo lectura
 │   ├── guias/parte1.pdf          # enunciados guías 1–8
 │   ├── guias/parte2.pdf          # enunciados guías 9–12 (futuro)
@@ -101,9 +103,11 @@ probabilidad-app/
 │   ├── verify/                   # modelos Python (exacto + Monte Carlo)
 │   ├── check.ts                  # validador de contenido (corre en build)
 │   ├── smoke.ts                  # el motor contra el contenido real
-│   └── render-check.ts           # renderiza la app y revisa el HTML
+│   ├── render-check.ts           # renderiza la app y revisa el HTML
+│   └── resultados.ts             # genera revision/resultados.md
 ├── revision/
-│   └── guia-N.md                 # discrepancias para que Mateo revise
+│   ├── guia-N.md                 # discrepancias para que Mateo revise
+│   └── resultados.md             # todos los resultados, generado por el check
 └── src/                          # la app
 ```
 
@@ -173,7 +177,7 @@ items:
       - "Particioná según el color de la primera bola."
       - "Plan: P(B₂) = P(B₂|R₁)P(R₁) + P(B₂|B₁)P(B₁), leyendo cada factor del árbol."
     verificacion:
-      estado: verificado        # verificado | discrepancia | sin_fuente
+      estado: verificado        # verificado | discrepancia | sin_fuente | docente
       metodo: exacto+montecarlo
       fuentes_valor:            # de dónde salió, una entrada por fuente
         - origen: "GUIA 1 RES 1.pdf#p9"
@@ -210,6 +214,15 @@ error), que aparecen sin correr nada. Al resolver, la fila de las ayudas se
 cierra como un sándwich (pistas se pliega, fórmulas y ver respuesta se
 ensanchan y ver respuesta pasa a ser reintentar), y reintentar la vuelve a
 abrir con lo que había saliendo animado.
+
+**Valores del docente.** Un valor que carga o corrige el docente lleva
+`estado: docente` y una fuente `origen: docente` con ese mismo valor
+(DOCENTE.md, "Corregir un resultado"). Si difiere de lo que calcula
+`tools/verify/`, el validador lo informa como aviso en lugar de romper el
+build, y `revision/resultados.md` lo lista en "Para revisar primero" hasta
+que se actualice el script. Es la entrada en revision/ que la regla de no
+inventar resultados pide para una discrepancia, sin que el docente tenga que
+escribirla.
 
 **Por qué `fuentes_valor` es una lista.** El paso 5 de §7 reconcilia *varias*
 resueltas contra el cálculo independiente, así que hace falta poder registrar
@@ -281,11 +294,18 @@ El build falla si se da alguno de estos casos:
 - Un bloque de teoría tiene un skill sin ningún ítem que lo evalúe.
 - Un ítem no tiene skills o no tiene pistas.
 - El `valor` no parsea, o una marca `[[skill|…]]` usa un skill que el ítem no declara.
-- Un ejercicio en la secuencia no existe.
+- Un ejercicio en la secuencia no existe, o un ejercicio no está en la
+  secuencia de su guía (una vez): no se vería en la app, pero sus ítems
+  contarían para las habilidades y el plan podría pedir uno invisible.
+- Un ejercicio o un examen no se llama como su `id`, o repite uno; o un
+  ejercicio está en la carpeta de otra guía.
+- Una plantilla de `plantillas/` no cumple estas mismas reglas.
+- Un YAML no se puede leer: el mensaje dice el archivo y el renglón.
 
 - Un valor del YAML no coincide con lo que calculó `tools/verify/`. Esto es lo
   que hace cumplir la regla de no inventar resultados: tocar un número a mano
-  sin recalcularlo rompe el build.
+  sin recalcularlo rompe el build. La excepción son los valores del docente
+  (§4.4), que quedan como aviso.
 - Un ejercicio de examen dice `cargado: true` sin ítems, o tiene ítems sin
   declararse cargado. Es el campo que decide si el simulacro lo presenta.
 - Un skill de un ítem no está marcado ni en el enunciado ni en la pregunta
@@ -296,6 +316,9 @@ El build falla si se da alguno de estos casos:
 - El texto propio usa una expresión que la sección 4.9 descarta.
 
 Además, emite un warning por cada ítem con `estado ≠ verificado`.
+
+Al final, `npm run check` regenera `revision/resultados.md`, el listado de
+todos los resultados con el enlace a su línea (sólo escribe si cambió).
 
 `npm run check` corre además dos chequeos que el typecheck y el bundle no
 cubren:

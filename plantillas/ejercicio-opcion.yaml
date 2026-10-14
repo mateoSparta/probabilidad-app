@@ -1,0 +1,51 @@
+# PLANTILLA · Ejercicio de opción múltiple
+#
+# Para lo que no es numérico: "¿son independientes?", "¿cuál es la menor
+# álgebra?", identificar una distribución. La app muestra las opciones en
+# orden al azar. Se usa igual que la plantilla numérica (ver
+# ejercicio-numerica.yaml o DOCENTE.md).
+
+id: g1-98                   # igual al nombre del archivo, sin .yaml
+guia: 1
+numero: "1.98"
+prioridad: normal
+
+enunciado: |
+  Sean $A$ y $B$ dos eventos tales que $P(A) = 0{,}5$, $P(B) = 0{,}4$ y
+  $P(A \cap B) = 0{,}2$.
+
+items:
+  - id: a
+    pregunta: '¿Son [[independencia|independientes]] los eventos $A$ y $B$?'
+    skills: [independencia]
+    respuesta:
+      tipo: opcion
+      opciones:
+        # Exactamente una opción lleva `correcta: true`. Cada id es único
+        # dentro del ejercicio (a1, a2… para el ítem a; b1, b2… para el b).
+        - id: a1
+          texto: 'Sí, porque $P(A \cap B) = P(A)\,P(B)$.'
+          correcta: true
+        # Cada distractor explica en `error_tipico` qué razonamiento lleva a
+        # elegirlo. Se muestra al elegirlo, y es lo que permite detectar los
+        # errores frecuentes.
+        - id: a2
+          texto: 'No, porque $P(A \cap B) \neq 0$.'
+          error_tipico: >-
+            Una intersección con probabilidad positiva descarta que los eventos
+            sean disjuntos. La independencia se decide comparando
+            $P(A \cap B)$ con el producto $P(A)\,P(B)$.
+        - id: a3
+          texto: 'No se puede decidir sin conocer $P(A \cup B)$.'
+          error_tipico: >-
+            Los tres datos del enunciado alcanzan, porque la definición de
+            independencia sólo involucra $P(A)$, $P(B)$ y $P(A \cap B)$.
+    pistas:
+      - Conviene recordar la definición de eventos independientes.
+      - La definición compara la probabilidad de la intersección con un producto.
+      - 'Plan: calcular $P(A)\,P(B)$ y compararlo con $P(A \cap B)$.'
+    verificacion:
+      estado: docente
+      fuentes_valor:
+        - origen: docente
+          valor: "a1"       # el id de la opción correcta

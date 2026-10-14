@@ -1,0 +1,42 @@
+# PLANTILLA · Ejercicio con respuesta en función de una variable
+#             (un campo "en función de p": "P(N > 3) = [   ]")
+#
+# Para lo que se responde con una fórmula en lugar de un número: "hallar, en
+# función de p", "para cada n", etc. Se usa igual que la plantilla numérica
+# (ver los cuatro pasos en ejercicio-numerica.yaml o en DOCENTE.md).
+
+id: g6-99                   # igual al nombre del archivo, sin .yaml
+guia: 6
+numero: "6.99"
+prioridad: normal
+
+enunciado: |
+  Se lanza sucesivas veces una moneda que sale cara con probabilidad $p$,
+  hasta obtener la primera cara. Sea $N$ la cantidad de lanzamientos.
+
+items:
+  - id: a
+    pregunta: >-
+      Hallar, en función de $p$, [[geometrica-pascal|la probabilidad de que se
+      necesiten más de tres lanzamientos]].
+    skills: [geometrica-pascal]
+    respuesta:
+      tipo: expresion
+      rotulo: 'P(N > 3)'    # lo que se calcula, en LaTeX y sin $
+      # La fórmula, escrita como en una calculadora: * para multiplicar,
+      # ^ para las potencias, exp(x), sqrt(x). Sólo con las variables de `vars`.
+      valor: "(1 - p)^3"
+      # Cada variable con el rango donde la fórmula tiene sentido. La app
+      # evalúa la respuesta y el valor en puntos de ese rango y los compara,
+      # así que acepta cualquier forma equivalente: (1-p)^3, 1 - 3p + 3p^2 - p^3…
+      vars:
+        p: [0.05, 0.95]
+    pistas:
+      - Más de tres lanzamientos significa que los tres primeros fueron ceca.
+      - Los lanzamientos son independientes.
+      - 'Plan: multiplicar la probabilidad de ceca por sí misma tantas veces como lanzamientos tienen que fallar.'
+    verificacion:
+      estado: docente
+      fuentes_valor:
+        - origen: docente
+          valor: "(1 - p)^3"

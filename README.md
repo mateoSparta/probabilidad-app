@@ -17,17 +17,27 @@ npm run dev
 En Windows, los scripts de Python se invocan por los scripts de npm, así que
 no hace falta activar el venv a mano.
 
+## Para el docente
+
+Para cambiar las fechas de los exámenes, corregir un resultado o cargar
+ejercicios sin programar, ver **[DOCENTE.md](DOCENTE.md)**. Las plantillas
+para copiar están en [plantillas/](plantillas/), y todos los resultados, en
+un solo listado, en [revision/resultados.md](revision/resultados.md).
+
 ## Contenido
 
-| Guías 1 a 8 | **53 ejercicios, 113 ítems, 44 skills, 31 bloques de teoría** |
-| Simulacro | motor completo; 2 parciales con 1 ejercicio verificado cada uno |
+| Guías 1 a 8 | **71 ejercicios, 163 ítems, 46 habilidades, 33 bloques de teoría** |
+| Simulacro | motor completo; 14 exámenes con 65 ítems |
 | Progreso | log de intentos, estados de skill, insignias, export/import |
 | Persistencia | todo en `localStorage`, sin servidor |
 | Navegación | mapa de círculos por ejercicio, índice de temas al costado |
 | Ritmo | días hasta el parcial y cuántos ítems por día hacen falta para llegar |
 
-Los **128 valores numéricos** del contenido están verificados por dos caminos
-independientes, y el build los contrasta en cada corrida.
+Los **324 resultados** del contenido están listados en
+[revision/resultados.md](revision/resultados.md): 321 están verificados por
+dos caminos independientes (la resolución de la cátedra y un cálculo propio
+en `tools/verify/`), y 3 son discrepancias documentadas. El build los
+contrasta en cada corrida.
 
 Está cargado el núcleo recomendado por la cátedra (los ejercicios marcados `!`
 en la guía) de las ocho guías.

@@ -1,0 +1,26 @@
+# PLANTILLA · Habilidad (skill)
+#
+# Las habilidades son los temas que mide la app: cada ítem declara cuáles
+# evalúa, y el panel de Habilidades y el plan de Seguimiento se calculan con
+# ellas. Están todas en un solo archivo, content/skills.yaml.
+#
+# Cómo usarla (detalle en DOCENTE.md, "Agregar una habilidad"):
+#   1. Copiar el bloque de abajo (desde `- id:`) al final de content/skills.yaml.
+#   2. Reemplazar el ejemplo. El id no puede repetirse.
+#   3. Usar el id en los `skills` de los ítems que la evalúan y marcar el
+#      fragmento del enunciado con [[id|texto]].
+#   4. Correr `npm run check`.
+#
+# Una habilidad cuya guía todavía no tiene ejercicios aparece bloqueada en el
+# panel y no cuenta para el plan.
+
+- id: nueva-habilidad       # en minúsculas, con guiones, sin espacios ni tildes
+  nombre: Nombre de la habilidad   # como se muestra en la app
+  guia: 1                   # la guía donde se presenta
+  descripcion: >-
+    Qué tiene que poder hacer el alumno para dominarla, en una o dos
+    oraciones.
+  # Las fórmulas que se muestran en el panel "Fórmulas" de cada ítem que la
+  # evalúa. En LaTeX, sin $, entre comillas simples. Son opcionales.
+  formulas:
+    - 'P(A \cup B) = P(A) + P(B) - P(A \cap B)'

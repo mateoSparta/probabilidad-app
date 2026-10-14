@@ -8,13 +8,14 @@
     "dev": "vite",
     "build": "npm run check && vite build",
     "preview": "vite preview",
-    "check": "tsc --noEmit && node tools/check.ts && node tools/smoke.ts && node tools/render-check.ts",
+    "check": "tsc --noEmit && node tools/check.ts && node tools/smoke.ts && node tools/render-check.ts && node tools/resultados.ts",
     "extraer": ".venv/Scripts/python tools/extract/guia.py",
     "inventario": ".venv/Scripts/python tools/extract/inventario.py",
     "rasterizar": ".venv/Scripts/python tools/rasterize.py",
     "verificar": ".venv/Scripts/python tools/verify/runner.py",
     "smoke": "node tools/smoke.ts",
-    "render-check": "node tools/render-check.ts"
+    "render-check": "node tools/render-check.ts",
+    "resultados": "node tools/resultados.ts"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",

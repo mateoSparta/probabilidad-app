@@ -1,0 +1,65 @@
+# PLANTILLA · Ejercicio con respuesta numérica (un campo: "P(...) = [   ]")
+#
+# Cómo usarla (detalle en DOCENTE.md, "Cargar un ejercicio"):
+#   1. Copiar este archivo a content/guias/guia-N/ejercicios/ y renombrarlo
+#      con el id del ejercicio. El 1.30, por ejemplo, va en
+#      content/guias/guia-1/ejercicios/g1-30.yaml.
+#   2. Reemplazar el ejemplo (una urna con bolas) por el ejercicio real. Lo
+#      que sigue a un # es una explicación: se puede dejar o borrar.
+#   3. Agregar la línea `- ejercicio: g1-30` en content/guias/guia-N/guia.yaml,
+#      en el lugar de la secuencia donde tiene que aparecer.
+#   4. Correr `npm run check`. Si falta algo, el mensaje dice qué y dónde.
+#
+# Un ejercicio puede tener ítems de tipos distintos: cada ítem se copia de la
+# plantilla de su tipo (numérica, expresión, checkpoints u opción múltiple).
+#
+# Reglas de escritura:
+#   - Las fórmulas van entre $...$ (en el texto) o $$...$$ (en su renglón).
+#   - Un texto con fórmulas o con dos puntos va entre comillas simples '...',
+#     o en un bloque que empieza con | o con >- (como el enunciado).
+#   - Los valores van entre comillas dobles: "3/10".
+
+id: g1-99                   # igual al nombre del archivo, sin .yaml
+guia: 1                     # el número de la guía (el de la carpeta guia-N)
+numero: "1.99"              # el número del ejercicio en la guía, entre comillas
+prioridad: normal           # recomendado (los "!" de la guía), normal, muy_dificil o curva_peligrosa
+fuente:
+  enunciado: fuentes/guias/parte1.pdf#p4   # opcional: de dónde se transcribió
+
+# El fragmento del enunciado (o de la pregunta) que justifica cada habilidad
+# se marca así: [[id-de-la-habilidad|texto]]. Al resolver el ítem aparece la
+# etiqueta de la habilidad, y al pasarle el mouse se resalta ese fragmento.
+# Cada habilidad de cada ítem tiene que estar marcada en algún lugar.
+enunciado: |
+  Una urna contiene 3 bolas rojas y 2 blancas. [[laplace|Se extraen dos bolas
+  al azar y sin reposición.]]
+
+items:
+  - id: a                   # a, b, c… como en la guía
+    pregunta: Calcular la probabilidad de que las dos bolas extraídas sean rojas.
+    skills: [laplace]       # ids de content/skills.yaml, separados por coma
+    respuesta:
+      tipo: numerica
+      # Lo que se calcula, en LaTeX y sin $. La app muestra "P(ambas rojas) = [campo]".
+      # Notación del ejercicio si la tiene (P(B_1), E[X]); si no, un texto breve
+      # dentro de la probabilidad, como acá. Conviene que no pase de unos 36
+      # caracteres, para que la frase entre en un renglón.
+      rotulo: 'P(\text{ambas rojas})'
+      # El valor exacto. Puede ser una fracción o una cuenta (3/10,
+      # 1 - (5/6)^4, exp(-2)): la app acepta cualquier respuesta que dé el
+      # mismo número, con una tolerancia del 1 %.
+      valor: "3/10"
+      # tol_rel: 0.02       # opcional: otra tolerancia relativa (0.02 = 2 %)
+    # Pistas graduadas, de la más general a la más concreta. La última es un
+    # plan sin cuentas; nunca la resolución completa.
+    pistas:
+      - Los casos posibles son los pares de bolas que pueden extraerse.
+      - Si se numeran las bolas, todos los pares son igualmente probables.
+      - 'Plan: contar los pares formados por dos bolas rojas y dividir por la cantidad de pares posibles.'
+    # De dónde salió el valor. Un valor cargado por el docente lleva estas
+    # cuatro líneas, con el mismo valor que respuesta.valor.
+    verificacion:
+      estado: docente
+      fuentes_valor:
+        - origen: docente
+          valor: "3/10"

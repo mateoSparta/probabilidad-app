@@ -1,0 +1,60 @@
+# PLANTILLA · Examen para el simulacro (un parcial o un integrador)
+#
+# Cómo usarla (detalle en DOCENTE.md, "Cargar un examen"):
+#   1. Copiar este archivo a content/examenes/ con el nombre de su id: el
+#      parcial del 30 de octubre de 2026 va en content/examenes/ep-20261030.yaml.
+#   2. Reemplazar el ejemplo por el examen real. Cada ítem se escribe igual
+#      que en los ejercicios de las guías (ver las plantillas ejercicio-*.yaml).
+#   3. Correr `npm run check`.
+#
+# No hace falta agregarlo a ninguna lista: el simulacro toma todos los
+# exámenes de content/examenes/. Los ítems de un examen también cuentan para
+# las habilidades, igual que los de las guías.
+
+id: ep-20261030             # ep- y la fecha AAAAMMDD; igual al nombre del archivo
+tipo: parcial               # parcial o integradora
+titulo: Parcial, segundo cuatrimestre de 2026
+fecha: "2026-10-30"         # AAAA-MM-DD, entre comillas
+duracion_min: 240           # la duración del examen, en minutos
+fuente: "fuentes/examenes/parciales/EP20261030.pdf"   # opcional
+aprueba_con: 3              # cuántos ejercicios bien resueltos aprueban
+# requiere_alguno_de: [4, 5]  # opcional: ejercicios de los que hay que tener alguno bien
+
+ejercicios:
+  # Un ejercicio que la app no puede presentar (una simulación, una
+  # demostración) se lista igual, con su enunciado, `cargado: false`, sin
+  # ítems y una nota que explique por qué.
+  - numero: 1
+    guias: [2]              # de qué guías sale
+    en_alcance: false
+    cargado: false
+    nota: Pide simular valores con números aleatorios, que queda fuera del alcance de la app.
+    enunciado: |
+      Usando los números aleatorios $0{,}54$ y $0{,}94$, simular dos valores de
+      una variable con distribución exponencial de media $2$.
+    items: []
+
+  # Un ejercicio cargado: `cargado: true` y sus ítems.
+  - numero: 2
+    guias: [6]
+    en_alcance: true
+    cargado: true
+    enunciado: |
+      [[bernoulli-binomial|Se lanza 10 veces una moneda equilibrada.]]
+    items:
+      - id: a
+        pregunta: Calcular la probabilidad de obtener exactamente 5 caras.
+        skills: [bernoulli-binomial]
+        respuesta:
+          tipo: numerica
+          rotulo: 'P(X = 5)'
+          valor: "63/256"
+        pistas:
+          - La cantidad de caras en lanzamientos independientes tiene una distribución conocida.
+          - Cada lanzamiento sale cara con probabilidad $1/2$.
+          - 'Plan: identificar la distribución de la cantidad de caras con sus parámetros y evaluar su función de probabilidad en 5.'
+        verificacion:
+          estado: docente
+          fuentes_valor:
+            - origen: docente
+              valor: "63/256"

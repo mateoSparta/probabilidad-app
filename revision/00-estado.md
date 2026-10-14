@@ -107,6 +107,20 @@ enunciado (por ejemplo $P(N(6) = 1 \mid N(60) = 14)$ en el 4 del
 pregunta para no perder la unidad que antes iba en el rótulo: 7.10 (a)
 "la media (en metros)" y 7.15 (a) "la media (en minutos)".
 
+### 2.6 Todos los resultados en un listado, y las correcciones del docente
+
+[resultados.md](resultados.md) lista los 324 resultados de la app, con su
+decimal, su estado y un enlace a la línea del archivo donde está. Lo genera
+`npm run check` en cada corrida, así que no se edita a mano. Arriba, en
+"Para revisar primero", van las discrepancias y los valores del docente.
+
+Un valor que carga o corrige el docente lleva `estado: docente` y una fuente
+`origen: docente` (ver [DOCENTE.md](../DOCENTE.md)). Si difiere de lo que
+calcula `tools/verify/`, el check lo informa como aviso y el listado lo
+muestra hasta que alguien revise el script: si el docente tiene razón, se
+corrige el script; si no, se le consulta antes de volver al valor anterior.
+Por ahora no hay ninguno.
+
 ## 3. Lo que falta, por qué
 
 ### 3.1 Los siete del núcleo que no se cargan

@@ -5,6 +5,7 @@ App local para estudiar Probabilidad (FIUBA) con guías gamificadas. Ver PLAN.md
 - Todo el contenido y la UI en español rioplatense neutro.
 - La materia es PyE B (61.09/81.04, CB003). Nada de la cursada de Industrial: sin simulación, sin R, sin exámenes *-ProbIND.
 - Nunca inventar un resultado: cada `valor` debe venir de una resuelta Y/O de un script en tools/verify/. Si no coinciden, estado `discrepancia` y entrada en revision/.
+- Los valores con `estado: docente` los cargó o corrigió el docente (DOCENTE.md): no se reemplazan por lo que calcule un script sin consultarlo. Si difieren, se revisa el script.
 - No incluir demostraciones ni ejercicios Ï.
 - Contenido = datos. No hardcodear ejercicios en src/.
 - Correr `npm run check` y `npm run build` antes de dar una tarea por terminada.

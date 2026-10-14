@@ -1,0 +1,43 @@
+# PLANTILLA · Ejercicio con varios campos apilados (checkpoints)
+#
+# Para lo que no se responde con un solo número: "hallar la función de
+# distribución", "hallar la densidad", "graficar". Una función no se puede
+# validar entera, así que se la reemplaza por 2 a 4 valores concretos
+# (F_X(0,5), P(X = 1), f_Y(2)). El ítem está bien si acierta todos.
+# Se usa igual que la plantilla numérica (ver ejercicio-numerica.yaml o
+# DOCENTE.md).
+
+id: g2-99                   # igual al nombre del archivo, sin .yaml
+guia: 2
+numero: "2.99"
+prioridad: normal
+
+enunciado: |
+  Sea $X$ una variable aleatoria con distribución uniforme en el intervalo
+  $(0, 2)$.
+
+items:
+  - id: a
+    pregunta: Hallar [[funcion-distribucion|la función de distribución de $X$]].
+    skills: [funcion-distribucion]
+    respuesta:
+      tipo: checkpoints
+      checkpoints:
+        # La pregunta de cada campo es, en lo posible, una fórmula sola entre
+        # $...$: la app la muestra con su signo igual, "F_X(0,5) = [campo]",
+        # y alinea los iguales de los campos. La coma decimal se escribe {,}.
+        - pregunta: '$F_X(0{,}5)$'
+          valor: "1/4"
+        - pregunta: '$F_X(1)$'
+          valor: "1/2"
+        - pregunta: '$F_X(3)$'
+          valor: "1"
+    pistas:
+      - La densidad es constante en $(0, 2)$ y vale cero fuera de ese intervalo.
+      - Para $x$ entre $0$ y $2$, $F_X(x)$ es el área bajo la densidad hasta $x$.
+      - 'Plan: escribir $F_X$ en los tres tramos (antes de $0$, entre $0$ y $2$, después de $2$) y evaluarla.'
+    verificacion:
+      estado: docente
+      fuentes_valor:
+        - origen: docente
+          valor: "1/4, 1/2, 1"   # los valores de los campos, en orden
