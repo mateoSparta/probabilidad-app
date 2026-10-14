@@ -304,8 +304,8 @@
   }
   .indice__contenido {
     position: sticky;
-    top: 4.5rem;
-    max-height: calc(100vh - 6rem);
+    top: calc(var(--alto-fijo, 0px) + var(--e-5));
+    max-height: calc(100vh - var(--alto-fijo, 0px) - 2 * var(--e-5));
     overflow-y: auto;
     scrollbar-width: thin;
   }
@@ -470,7 +470,7 @@
   }
   .subir {
     position: sticky;
-    top: var(--e-5);
+    top: calc(var(--alto-fijo, 0px) + var(--e-5));
     margin-top: var(--e-6);
     display: inline-flex;
     align-items: center;
@@ -498,11 +498,6 @@
     color: var(--acento);
   }
   .subir__flecha { display: inline-block; }
-  /* Donde no hay barra fija arriba, "Subir" se pega a la misma distancia del
-     borde superior que de la columna (28,8 px de tinta en los dos lados; la
-     tinta empieza 4,8 px por debajo del borde del botón). En las guías baja
-     hasta quedar debajo de la barra de pestañas. */
-  .vista--ejercicios .subir { top: 4.25rem; }
 }
 
 /* -------------------------------------------- aviso del examen */

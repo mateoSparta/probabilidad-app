@@ -362,7 +362,9 @@ export function IndiceMaterial({
     const titulo = siguiente && document.getElementById(anclaGuia(siguiente.guia))
     if (!tema || !titulo) return bajar(guia, ancla, resaltar)
     const arriba = tema.getBoundingClientRect().top + scrollY
-    const normal = arriba - (parseFloat(getComputedStyle(tema).scrollMarginTop) || 0)
+    // Donde quedaría el tema: debajo del encabezado fijo y de su margen.
+    const fijo = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0
+    const normal = arriba - fijo - (parseFloat(getComputedStyle(tema).scrollMarginTop) || 0)
     const tituloSiguiente = titulo.getBoundingClientRect().top + scrollY
     if (tituloSiguiente - normal > innerHeight / 2) return bajar(guia, ancla, resaltar)
     bajar(guia, ancla, resaltar, Math.max(0, arriba - innerHeight / 2 - 16))

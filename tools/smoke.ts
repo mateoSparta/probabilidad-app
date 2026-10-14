@@ -86,6 +86,7 @@ import {
   type SkillConItems,
 } from '../src/dominio/ritmo.ts'
 import { claveItem, type Ejercicio, type Intento, type Item } from '../src/dominio/tipos.ts'
+import { ayudaCampoNumerico, cuentaAlAzar, fraccionAlAzar } from '../src/dominio/ejemplos.ts'
 import {
   cuantil,
   distribucionBivariada,
@@ -1092,6 +1093,27 @@ for (const [valor, alternativa] of equivalentes) {
   afirmar(
     enFinal.diasRestantes === null && enFinal.veredicto === 'sin_fecha' && enFinal.porDia === 0,
     `sin fecha el plan da ${enFinal.veredicto}, ${enFinal.diasRestantes} días y ${enFinal.porDia} por día`,
+  )
+}
+
+// ------------------------------------- ejemplos del globo de los campos
+
+// Los ejemplos al azar del globo tienen que ser respuestas que el campo
+// acepte: si uno no diera un número, el globo enseñaría algo que falla.
+{
+  for (let i = 0; i < 400; i++) {
+    const f = fraccionAlAzar()
+    const vf = evaluarEscalar(f)
+    afirmar(vf !== null && vf > 0 && vf < 1 && /^\d+\/\d+$/.test(f), `la fracción de ejemplo ${f} no es una fracción entre 0 y 1`)
+    const c = cuentaAlAzar()
+    const vc = evaluarEscalar(c)
+    afirmar(vc !== null && Number.isFinite(vc) && vc > 0, `la cuenta de ejemplo ${c} no da un número positivo`)
+  }
+  const ayuda = ayudaCampoNumerico().split('\n')
+  afirmar(
+    ayuda.length === 4 && ayuda[0].startsWith('Acepta fracciones') && ayuda[1] === 'Ejemplos:' &&
+      ayuda.slice(2).every((l) => l.startsWith('• ')),
+    'el globo del campo no tiene un renglón por ejemplo',
   )
 }
 

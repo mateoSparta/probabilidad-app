@@ -2,13 +2,20 @@
  * Un ítem de un ejercicio: la unidad validable (PLAN.md §3).
  *
  * La respuesta se escribe en una frase: lo que se calcula, el campo y el
- * botón de comprobar, "P(B_1) = [ 1/3 ] [Comprobar]", centrada y con aire
- * arriba y abajo. Al acertar, el botón se va y en su lugar aparece el valor
- * decimal de lo escrito ("≈ 0,3333"), y arriba a la derecha, "Correcto".
- * Cuando hay varios campos (checkpoints), van apilados con sus signos igual
- * alineados, y el botón de comprobar pasa a la fila de abajo, a la derecha de
- * las ayudas (fórmulas, pistas graduadas, ver respuesta). Lo mismo con la
- * opción múltiple.
+ * botón de comprobar, "P(B_1) = [ 1/3 ] [Comprobar]", centrada y con el mismo
+ * aire arriba que abajo. El aire de abajo es el lugar de los avisos ("✓
+ * Correcto.", "✗ La respuesta no es correcta…"), así que un aviso aparece
+ * sin correr nada. Al acertar, el botón se va y en su lugar aparece el valor
+ * decimal de lo escrito ("≈ 0,3333"). Cuando hay varios campos
+ * (checkpoints), van apilados con sus signos igual alineados, y el botón de
+ * comprobar pasa a la fila de abajo, a la derecha de las ayudas (fórmulas,
+ * pistas graduadas, ver respuesta). Lo mismo con la opción múltiple.
+ *
+ * Al resolver el ítem, la fila de abajo se cierra como un sándwich: pistas (y
+ * comprobar, si estaba ahí) se van, fórmulas y ver respuesta se ensanchan, y
+ * ver respuesta pasa a ser reintentar. Reintentar la vuelve a abrir, y lo que
+ * deja de estar (el valor, el aviso, las pistas, la respuesta revelada) sale
+ * animado en lugar de desaparecer.
  *
  * Los tags no van acá sino debajo del enunciado (ver TarjetaEjercicio), y
  * aparecen recién cuando el ítem se resuelve o se revela: recuperación activa
@@ -16,13 +23,14 @@
  *
  * El estado vive en un solo objeto y se persiste completo en cada cambio, así
  * recargar la página no te hace perder el lugar. Lo único que no se guarda es
- * si el panel de fórmulas está abierto, que no vale la pena, y la celebración
- * de un acierto, que es sólo del momento en que ocurre.
+ * si el panel de fórmulas está abierto, que no vale la pena, y las
+ * animaciones de acertar y de reintentar, que son sólo del momento.
  */
 import type { ComponentChildren } from 'preact'
 import { useEffect, useState } from 'preact/hooks'
 
 import { formulasDeItem } from '../datos/contenido'
+import { ayudaCampoNumerico } from '../dominio/ejemplos'
 import { formatearNumero } from '../dominio/formato'
 import {
   evaluarCheckpoints,
@@ -76,6 +84,8 @@ function aproximacion(texto: string): string | null {
 
 /** Lo que dura la celebración de un acierto; tiene que cubrir las animaciones del CSS. */
 const CELEBRACION_MS = 1400
+/** Lo que dura la salida de lo que se va al reintentar; ídem. */
+const REINICIO_MS = 700
 
 /**
  * El rótulo de un campo de un checkpoint, con su signo igual. Si es una
@@ -89,6 +99,58 @@ function RotuloCampo({ texto }: { texto: string }) {
     <>
       <Mate>{texto}</Mate> <Formula tex="=" />
     </>
+  )
+}
+
+/** Lo que se veía del ítem antes de reintentar, para que salga animado. */
+type Anterior = {
+  est: SesionItem
+  detalleCp: boolean[] | null
+  mensaje: string | null
+  errorTipico: string | null
+}
+
+/**
+ * Los avisos de debajo de la respuesta. Los de error llevan la cantidad de
+ * envíos como key: cada error nuevo los vuelve a montar y la sacudida se
+ * repite. "Correcto" entra con su propia animación sólo en el momento de
+ * acertar (`nuevo`).
+ */
+function Avisos({
+  estado,
+  envios,
+  mensaje,
+  errorTipico,
+  nuevo = false,
+}: {
+  estado: SesionItem['estado']
+  envios: number
+  mensaje: string | null
+  errorTipico: string | null
+  nuevo?: boolean
+}) {
+  if (mensaje) return <p class="feedback feedback--aviso">{mensaje}</p>
+  if (estado === 'correcto') {
+    return (
+      <p key="ok" class={'feedback feedback--ok' + (nuevo ? ' feedback--nuevo' : '')}>
+        <span class="feedback__tilde">✓</span> Correcto.
+      </p>
+    )
+  }
+  if (estado !== 'incorrecto') return null
+  return (
+    <p key={envios} class="feedback feedback--mal">
+      ✗ {errorTipico ? <Mate>{errorTipico}</Mate> : 'La respuesta no es correcta. Revisala y probá de nuevo.'}
+    </p>
+  )
+}
+
+/** Lo que se pliega al reintentar (las pistas, la respuesta revelada). */
+function Plegandose({ children }: { children: ComponentChildren }) {
+  return (
+    <div class="plegandose" aria-hidden="true">
+      <div>{children}</div>
+    </div>
   )
 }
 
@@ -137,17 +199,27 @@ export function ItemEjercicio({
   const [detalleCp, setDetalleCp] = useState<boolean[] | null>(null)
   // Sólo justo después de acertar: un ítem que ya venía resuelto no festeja.
   const [celebrando, setCelebrando] = useState(false)
+  // Sólo justo después de reintentar: lo que había, mientras sale.
+  const [anterior, setAnterior] = useState<Anterior | null>(null)
   // El orden se fija al montar el ítem, para que no cambie mientras se
   // responde. La opción elegida se guarda por id, así que no depende de él.
   const [opciones] = useState(() =>
     item.respuesta.tipo === 'opcion' ? barajar(item.respuesta.opciones) : [],
   )
+  // Los ejemplos del globo de los campos, al azar pero fijos en cada ítem.
+  const [ayuda] = useState(() => ayudaCampoNumerico())
 
   useEffect(() => {
     if (!celebrando) return
     const t = setTimeout(() => setCelebrando(false), CELEBRACION_MS)
     return () => clearTimeout(t)
   }, [celebrando])
+
+  useEffect(() => {
+    if (!anterior) return
+    const t = setTimeout(() => setAnterior(null), REINICIO_MS)
+    return () => clearTimeout(t)
+  }, [anterior])
 
   /** Mezcla el cambio en el estado y lo persiste de una. */
   function actualizar(parcial: Partial<SesionItem>): void {
@@ -183,6 +255,7 @@ export function ItemEjercicio({
     const n = est.envios + 1
     setMensaje(null)
     setErrorTipico(null)
+    setAnterior(null)
     const distractores = est.distractores ?? []
 
     if (r.tipo === 'opcion') {
@@ -228,6 +301,7 @@ export function ItemEjercicio({
   }
 
   function reintentar() {
+    setAnterior({ est, detalleCp, mensaje, errorTipico })
     setEst(ITEM_NUEVO)
     setMensaje(null)
     setErrorTipico(null)
@@ -241,6 +315,7 @@ export function ItemEjercicio({
   // El botón de comprobar va en la frase cuando hay un solo campo; si no
   // (varios campos, opción múltiple), en la fila de abajo, a la derecha.
   const unCampo = r.tipo === 'numerica' || r.tipo === 'expresion'
+  const antes = anterior?.est
 
   const botonComprobar = (clase = '') => (
     <button class={'boton boton--acento boton--icono' + clase} onClick={enviar}>
@@ -249,11 +324,15 @@ export function ItemEjercicio({
     </button>
   )
 
-  // --- la fila de abajo: las ayudas y, si no va en la frase, comprobar ---
-  const botones: { clave: string; nodo: ComponentChildren }[] = []
+  // --- la fila de abajo ---
+  // Cada botón tiene su lugar fijo. Los que no corresponden al estado se
+  // pliegan (el CSS anima el ancho) en lugar de desaparecer: así, al
+  // resolver, pistas se cierra entre fórmulas y ver respuesta.
+  const lugares: { clave: string; visible: boolean; clase?: string; nodo: ComponentChildren }[] = []
   if (puedeMostrarFormulas) {
-    botones.push({
+    lugares.push({
       clave: 'formulas',
+      visible: true,
       nodo: (
         <button
           class={'boton boton--icono' + (formulasAbiertas ? ' boton--activo' : '')}
@@ -266,9 +345,10 @@ export function ItemEjercicio({
       ),
     })
   }
-  if (item.pistas.length > 0 && !resuelto && !modoExamen) {
-    botones.push({
+  if (item.pistas.length > 0 && !modoExamen) {
+    lugares.push({
       clave: 'pistas',
+      visible: !resuelto,
       nodo: (
         <button
           class="boton boton--icono"
@@ -283,59 +363,52 @@ export function ItemEjercicio({
       ),
     })
   }
-  if (!resuelto && !modoExamen) {
-    botones.push({
-      clave: 'ver',
-      nodo: (
-        <button class="boton boton--icono" onClick={revelar}>
-          <IconoVer />
-          Ver respuesta
-        </button>
-      ),
-    })
-  }
-  // Sin esto, el ítem quedaría congelado para siempre una vez resuelto. El
+  // Ver respuesta y reintentar son el mismo botón, que cambia de cara. Sin
+  // reintentar, el ítem quedaría congelado para siempre una vez resuelto. El
   // intento ya contó; rehacerlo no vuelve a contar el mismo día.
-  if (resuelto && !modoExamen) {
-    botones.push({
-      clave: 'reintentar',
+  if (!modoExamen) {
+    lugares.push({
+      clave: 'ver',
+      visible: true,
       nodo: (
-        <button class="boton boton--icono" onClick={reintentar}>
-          <IconoReintentar />
-          Reintentar
+        <button class="boton boton--icono boton--doble" onClick={resuelto ? reintentar : revelar}>
+          <span class={'boton__cara' + (resuelto ? ' boton__cara--arriba' : '')} aria-hidden={resuelto || undefined}>
+            <IconoVer />
+            Ver respuesta
+          </span>
+          <span class={'boton__cara' + (resuelto ? '' : ' boton__cara--abajo')} aria-hidden={!resuelto || undefined}>
+            <IconoReintentar />
+            Reintentar
+          </span>
         </button>
       ),
     })
   }
-  const comprobarAbajo = !unCampo && !resuelto
-  // Con comprobar abajo son cuatro columnas fijas y comprobar va en la
-  // última; si no, los botones que haya se reparten la fila.
-  const columnas = comprobarAbajo ? 4 : botones.length
+  if (!unCampo) {
+    lugares.push({ clave: 'comprobar', visible: !resuelto, clase: ' botonera__comprobar', nodo: botonComprobar() })
+  }
+  // Con comprobar en la fila y menos de cuatro botones (en el simulacro, por
+  // ejemplo), cada uno ocupa un cuarto y comprobar va contra la derecha.
+  const enCuartos = !unCampo && !resuelto && lugares.length < 4
 
   const rotulo = unCampo ? r.rotulo : undefined
   const claseCampo = (estado: 'ok' | 'mal' | null) =>
     'entrada campo-respuesta' + (estado ? ' campo-respuesta--' + estado : '')
 
   return (
-    <li class={'item item--' + est.estado + (celebrando ? ' item--celebrando' : '')}>
+    <li
+      class={
+        'item item--' +
+        est.estado +
+        (celebrando ? ' item--celebrando' : '') +
+        (anterior ? ' item--reiniciando' : '')
+      }
+    >
       <div class="item__cabeza">
         <span class="item__id">({item.id})</span>
         <div class="item__pregunta">
           <TextoMarcado texto={item.pregunta} resaltado={resaltado} mostrarMarcas={mostrarMarcas} />
         </div>
-        {correcto && (
-          <span class={'logro' + (celebrando ? ' logro--nuevo' : '')} role="status">
-            <IconoComprobar />
-            Correcto
-            {celebrando && (
-              <span class="logro__chispas" aria-hidden="true">
-                {Array.from({ length: 8 }, (_, i) => (
-                  <span key={i} style={{ '--i': i }} />
-                ))}
-              </span>
-            )}
-          </span>
-        )}
       </div>
 
       {/* --- entrada según el tipo de respuesta --- */}
@@ -343,7 +416,12 @@ export function ItemEjercicio({
         <ul class="opciones">
           {opciones.map((o) => (
             <li key={o.id}>
-              <label class={'opcion' + (est.opcion === o.id ? ' opcion--elegida' : '')}>
+              <label
+                class={
+                  'opcion' +
+                  (resuelto ? ' opcion--fija' : est.opcion === o.id ? ' opcion--elegida' : '')
+                }
+              >
                 <input
                   type="radio"
                   name={'op-' + clave}
@@ -367,6 +445,10 @@ export function ItemEjercicio({
             const ok = correcto || detalleCp?.[i] === true
             const mal = !correcto && detalleCp?.[i] === false
             const valor = ok ? aproximacion(est.celdas?.[i] ?? '') : null
+            // Lo que había en la tercera columna antes de reintentar.
+            const okAntes = !!antes && (antes.estado === 'correcto' || anterior?.detalleCp?.[i] === true)
+            const malAntes = !!antes && antes.estado !== 'correcto' && anterior?.detalleCp?.[i] === false
+            const valorAntes = okAntes ? aproximacion(antes?.celdas?.[i] ?? '') : null
             return (
               <li key={i} class="checkpoint">
                 <label class="checkpoint__rotulo" for={`${clave}-${i}`}>
@@ -382,6 +464,7 @@ export function ItemEjercicio({
                   value={est.celdas?.[i] ?? ''}
                   disabled={resuelto}
                   placeholder="?"
+                  data-tip={resuelto ? undefined : ayuda}
                   onInput={(e) => {
                     const celdas = [...(est.celdas ?? [])]
                     celdas[i] = (e.target as HTMLInputElement).value
@@ -396,6 +479,16 @@ export function ItemEjercicio({
                     </span>
                   )}
                   {mal && <span class="marca marca--mal" aria-label="incorrecto">✗</span>}
+                  {valorAntes && (
+                    <span class="valor-aprox saliente" aria-hidden="true">
+                      {valorAntes}
+                    </span>
+                  )}
+                  {malAntes && (
+                    <span class="marca marca--mal saliente" aria-hidden="true">
+                      ✗
+                    </span>
+                  )}
                 </span>
               </li>
             )
@@ -416,30 +509,28 @@ export function ItemEjercicio({
           )}
           <input
             id={`${clave}-respuesta`}
-            class={claseCampo(correcto ? 'ok' : est.estado === 'incorrecto' ? 'mal' : null) + (r.tipo === 'expresion' ? ' campo-respuesta--expresion' : '')}
-            style={{ '--largo': (est.entrada ?? '').length }}
+            class={
+              claseCampo(correcto ? 'ok' : est.estado === 'incorrecto' ? 'mal' : null) +
+              (r.tipo === 'expresion' ? ' campo-respuesta--expresion' : '')
+            }
             type="text"
             autoComplete="off"
             spellcheck={false}
             value={est.entrada ?? ''}
             disabled={resuelto}
             placeholder={r.tipo === 'expresion' ? 'en función de ' + Object.keys(r.vars).join(', ') : '?'}
-            data-tip={r.tipo === 'numerica' && !resuelto ? 'Acepta fracciones y cuentas: 47/120, 1 - (5/6)^4' : undefined}
+            data-tip={r.tipo === 'numerica' && !resuelto ? ayuda : undefined}
             onInput={(e) => actualizar({ entrada: (e.target as HTMLInputElement).value })}
             onKeyDown={(e) => e.key === 'Enter' && enviar()}
           />
           {r.tipo === 'numerica' && r.sufijo && <span class="sufijo">{r.sufijo}</span>}
           {/* El botón y el valor ocupan la misma celda: al acertar, el botón
               se va (sigue un momento, saliendo) y el valor entra en su lugar,
-              sin que el resto de la frase se mueva. */}
+              sin que el resto de la frase se mueva. Al reintentar, al revés. */}
           <div class="fila-entrada__accion">
-            {!resuelto && botonComprobar()}
+            {!resuelto && botonComprobar(anterior ? ' entrante' : '')}
             {correcto && celebrando && (
-              <button
-                class="boton boton--acento boton--icono fila-entrada__saliente"
-                aria-hidden="true"
-                tabIndex={-1}
-              >
+              <button class="boton boton--acento boton--icono saliente" aria-hidden="true" tabIndex={-1}>
                 <IconoComprobar />
                 Comprobar
               </button>
@@ -449,38 +540,48 @@ export function ItemEjercicio({
                 {aproximacion(est.entrada ?? '') ?? '✓'}
               </span>
             )}
+            {antes?.estado === 'correcto' && (
+              <span class="valor-aprox saliente" aria-hidden="true">
+                {aproximacion(antes.entrada ?? '') ?? '✓'}
+              </span>
+            )}
           </div>
         </div>
       )}
 
-      {/* --- mensajes, entre la respuesta y los botones --- */}
-      {/* Los de error llevan la cantidad de envíos como key: cada error nuevo
-          los vuelve a montar y la sacudida se repite. */}
-      {(est.estado === 'incorrecto' || mensaje) && (
-        <div class="item__mensajes">
-          {est.estado === 'incorrecto' && !mensaje && !errorTipico && (
-            <p key={est.envios} class="feedback feedback--mal">
-              ✗ La respuesta no es correcta. Revisala y probá de nuevo.
-            </p>
-          )}
-          {errorTipico && (
-            <p key={est.envios} class="feedback feedback--mal">
-              ✗ <Mate>{errorTipico}</Mate>
-            </p>
-          )}
-          {mensaje && <p class="feedback feedback--aviso">{mensaje}</p>}
-        </div>
-      )}
+      {/* --- los avisos, en el aire de debajo de la respuesta --- */}
+      <div class="item__mensajes" aria-live="polite">
+        <Avisos
+          estado={est.estado}
+          envios={est.envios}
+          mensaje={mensaje}
+          errorTipico={errorTipico}
+          nuevo={celebrando}
+        />
+        {anterior && (
+          <div class="saliente" aria-hidden="true">
+            <Avisos
+              estado={anterior.est.estado}
+              envios={anterior.est.envios}
+              mensaje={anterior.mensaje}
+              errorTipico={anterior.errorTipico}
+            />
+          </div>
+        )}
+      </div>
 
       {/* --- la fila de botones --- */}
-      {(botones.length > 0 || comprobarAbajo) && (
-        <div class="botonera" style={{ '--columnas': columnas }}>
-          {botones.map((b) => (
-            <span key={b.clave} class="botonera__lugar">
-              {b.nodo}
+      {lugares.length > 0 && (
+        <div class={'botonera' + (enCuartos ? ' botonera--cuartos' : '')}>
+          {lugares.map((l) => (
+            <span
+              key={l.clave}
+              class={'botonera__lugar' + (l.clase ?? '') + (l.visible ? '' : ' botonera__lugar--fuera')}
+              inert={!l.visible}
+            >
+              {l.nodo}
             </span>
           ))}
-          {comprobarAbajo && <span class="botonera__lugar botonera__comprobar">{botonComprobar()}</span>}
         </div>
       )}
 
@@ -500,18 +601,33 @@ export function ItemEjercicio({
         </div>
       )}
 
-      {est.pistasAbiertas > 0 && (
-        <ol class="pistas">
-          {item.pistas.slice(0, est.pistasAbiertas).map((p, i) => (
-            <li key={i}>
-              <Mate>{p}</Mate>
-            </li>
-          ))}
-        </ol>
+      {est.pistasAbiertas > 0 && <Pistas pistas={item.pistas} abiertas={est.pistasAbiertas} />}
+      {antes && antes.pistasAbiertas > 0 && (
+        <Plegandose>
+          <Pistas pistas={item.pistas} abiertas={antes.pistasAbiertas} />
+        </Plegandose>
       )}
 
       {est.estado === 'revelado' && <Respuesta item={item} />}
+      {antes?.estado === 'revelado' && (
+        <Plegandose>
+          <Respuesta item={item} />
+        </Plegandose>
+      )}
     </li>
+  )
+}
+
+/** Las pistas abiertas hasta ahora, en orden. */
+function Pistas({ pistas, abiertas }: { pistas: readonly string[]; abiertas: number }) {
+  return (
+    <ol class="pistas">
+      {pistas.slice(0, abiertas).map((p, i) => (
+        <li key={i}>
+          <Mate>{p}</Mate>
+        </li>
+      ))}
+    </ol>
   )
 }
 

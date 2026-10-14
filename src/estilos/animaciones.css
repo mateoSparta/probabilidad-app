@@ -319,10 +319,18 @@
 .feedback {
   animation: desplegar 240ms ease-out both;
 }
-/* El error sacude el mensaje. Como el párrafo lleva la cantidad de envíos
+/* El error entra sacudiéndose. Como el párrafo lleva la cantidad de envíos
    como `key`, cada nuevo error lo vuelve a montar y la animación se repite. */
+@keyframes error-entrar {
+  0% { opacity: 0; transform: none; }
+  15% { opacity: 1; transform: translateX(-5px); }
+  35% { transform: translateX(4px); }
+  55% { transform: translateX(-3px); }
+  75% { transform: translateX(2px); }
+  100% { opacity: 1; transform: none; }
+}
 .feedback--mal {
-  animation: sacudir 380ms ease both;
+  animation: error-entrar 420ms ease both;
 }
 .pistas li,
 .panel,
@@ -346,29 +354,13 @@
 }
 
 /* Un acierto. El recuadro se pinta de verde con una onda que se expande
-   desde el borde; "Correcto" aparece arriba a la derecha con un rebote, su
-   tilde se dibuja y salen ocho chispas de él. En la frase, el botón de
-   comprobar se encoge y se va, y en su lugar entra el valor de lo escrito
-   (en los checkpoints, uno tras otro). Sólo al acertar: un ítem que ya
-   venía resuelto se ve quieto. */
+   desde el borde; en la frase, el botón de comprobar se encoge y se va y en
+   su lugar entra el valor de lo escrito (en los checkpoints, uno tras otro);
+   debajo, "✓ Correcto." sube apenas y su tilde se marca con un pulso. Sólo
+   al acertar: un ítem que ya venía resuelto se ve quieto. */
 @keyframes logro-onda {
   0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 40%, transparent); }
   100% { box-shadow: 0 0 0 14px transparent; }
-}
-@keyframes logro-entrar {
-  0% { opacity: 0; transform: scale(0.4); }
-  55% { opacity: 1; transform: scale(1.14); }
-  80% { transform: scale(0.97); }
-  100% { opacity: 1; transform: none; }
-}
-@keyframes logro-trazar {
-  from { stroke-dashoffset: 24; }
-  to { stroke-dashoffset: 0; }
-}
-@keyframes chispa {
-  0% { opacity: 0; transform: rotate(calc(var(--i) * 45deg)) translateX(6px) scale(0.3); }
-  20% { opacity: 1; }
-  100% { opacity: 0; transform: rotate(calc(var(--i) * 45deg)) translateX(30px) scale(1); }
 }
 @keyframes boton-salir {
   to { opacity: 0; transform: scale(0.82); }
@@ -377,22 +369,61 @@
   from { opacity: 0; transform: translateX(-12px); filter: blur(2px); }
   to { opacity: 1; transform: none; filter: none; }
 }
-.item--celebrando { animation: logro-onda 900ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
-.logro--nuevo { animation: logro-entrar 560ms cubic-bezier(0.3, 1.3, 0.5, 1) both; }
-.logro--nuevo .icono path {
-  stroke-dasharray: 24;
-  stroke-dashoffset: 24;
-  animation: logro-trazar 360ms 220ms ease-out both;
+@keyframes logro-aviso {
+  0% { opacity: 0; transform: translateY(8px); }
+  60% { opacity: 1; transform: translateY(-1px); }
+  100% { opacity: 1; transform: none; }
 }
-.logro__chispas span { animation: chispa 760ms 160ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
-.fila-entrada__saliente { animation: boton-salir 180ms ease-in both; }
+@keyframes tilde-marcar {
+  0% { opacity: 0; transform: scale(0.3) rotate(-25deg); }
+  60% { opacity: 1; transform: scale(1.35) rotate(0deg); }
+  100% { opacity: 1; transform: none; }
+}
+.item--celebrando { animation: logro-onda 900ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+.boton.saliente { animation: boton-salir 180ms ease-in both; }
 .valor-aprox--nuevo {
   animation: valor-entrar 380ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
   animation-delay: calc(190ms + var(--i, 0) * 70ms);
 }
-/* Sin animaciones, el botón que sale no puede quedar tapando el valor. */
+.feedback--nuevo { animation: logro-aviso 520ms 140ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+.feedback--nuevo .feedback__tilde { animation: tilde-marcar 520ms 280ms cubic-bezier(0.3, 1.3, 0.5, 1) both; }
+
+/* Reintentar, la vuelta atrás. El recuadro pierde el color mientras un
+   borde se cierra sobre él (la onda del acierto, al revés); el valor, el
+   aviso y las marcas se desvanecen, el botón de comprobar vuelve a su lugar
+   y las pistas y la respuesta revelada se pliegan. */
+@keyframes rebobinar {
+  0% { box-shadow: 0 0 0 12px transparent; }
+  55% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--acento) 35%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+@keyframes boton-entrar {
+  from { opacity: 0; transform: scale(0.82); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes valor-salir {
+  to { opacity: 0; transform: translateX(10px); filter: blur(2px); }
+}
+@keyframes aviso-salir {
+  to { opacity: 0; transform: translateY(5px); }
+}
+@keyframes plegar {
+  from { grid-template-rows: 1fr; opacity: 1; }
+  to { grid-template-rows: 0fr; opacity: 0; }
+}
+.item--reiniciando { animation: rebobinar 640ms cubic-bezier(0.3, 0.8, 0.3, 1) both; }
+.boton.entrante { animation: boton-entrar 360ms 140ms cubic-bezier(0.3, 1.3, 0.5, 1) both; }
+.valor-aprox.saliente,
+.marca.saliente { animation: valor-salir 260ms ease-in both; }
+.item__mensajes .saliente { animation: aviso-salir 260ms ease-in both; }
+.item__mensajes .saliente .feedback,
+.plegandose .pistas li,
+.plegandose .respuesta { animation: none; }
+.plegandose { animation: plegar 440ms cubic-bezier(0.3, 0.8, 0.3, 1) both; }
+/* Sin animaciones, lo que sale no puede quedar tapando lo que entra. */
 @media (prefers-reduced-motion: reduce) {
-  .fila-entrada__saliente { display: none; }
+  .saliente,
+  .plegandose { display: none; }
 }
 
 /* ---------------------------------------------------- mapa de círculos */

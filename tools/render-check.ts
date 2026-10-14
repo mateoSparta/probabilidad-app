@@ -50,20 +50,30 @@ try {
   const cabecera = render(
     createElement(Cabecera, { ruta: { seccion: 'ejercicios', guia: 1 } }),
   )
+  // Cada pestaña dice "Guía n", pero la palabra va aparte, para que el CSS
+  // la pliegue en todas menos la abierta.
+  const textoPestana = (n: number) => {
+    const m = cabecera.match(new RegExp(`<a class="tab" data-guia="${n}"[^>]*>([\\s\\S]*?)</a>`))
+    return m ? m[1].replace(/<[^>]+>/g, '').replace(/&nbsp;| /g, ' ') : null
+  }
   for (let n = 1; n <= 8; n++) {
-    afirmar(cabecera.includes(`Guía ${n}`), `falta la pestaña de la guía ${n}`)
+    afirmar(textoPestana(n) === `Guía ${n}`, `falta la pestaña de la guía ${n}`)
     afirmar(cabecera.includes(`href="#/ejercicios/${n}"`), `la pestaña ${n} no enlaza a su guía`)
   }
+  afirmar((cabecera.match(/class="tab__palabra"/g) ?? []).length === 8,
+    'la palabra "Guía" no va aparte en cada pestaña')
+  // El encabezado y las pestañas quedan fijos juntos.
+  afirmar(/^<div class="encabezado"><header class="cabecera">/.test(cabecera) && cabecera.endsWith('</nav></div>'),
+    'el encabezado y las pestañas no van en el bloque fijo')
   // Las guías sin contenido aparecen, pero bloqueadas y sin enlace.
   for (let n = 9; n <= 12; n++) {
     if (contenido.guiaTieneContenido(n)) continue
-    const bloqueadas = cabecera
-      .split('<span class="tab tab--bloqueada"')
-      .slice(1)
-      .map((t: string) => t.slice(0, t.indexOf('</span>')))
+    const bloqueadas = cabecera.split('<span class="tab tab--bloqueada"').slice(1)
     afirmar(
       bloqueadas.some(
-        (t: string) => t.endsWith(`Guía ${n}`) && t.includes('data-tip="Tema del final, todavía sin cargar"'),
+        (t: string) =>
+          t.includes(`<span class="sr-solo">Guía </span>${n}</span>`) &&
+          t.includes('data-tip="Tema del final, todavía sin cargar"'),
       ),
       `la guía ${n} no aparece bloqueada`,
     )
@@ -159,7 +169,20 @@ try {
   afirmar(html.includes('botonera__comprobar'), 'en los campos múltiples, comprobar no va en la fila de abajo')
   afirmar(!html.includes('class="flecha"'), 'volvió la flecha de los campos múltiples')
   afirmar(!html.includes('Respuesta:'), 'en la guía aparece el rótulo "Respuesta:" del simulacro')
-  afirmar(!html.includes('✓ Correcto.'), 'volvió el "✓ Correcto." de abajo a la izquierda')
+  // Cada ítem guarda debajo de la respuesta el lugar de los avisos, aunque
+  // todavía no haya ninguno; "Correcto" va ahí y no en una insignia arriba.
+  afirmar((html.match(/class="item__mensajes"/g) ?? []).length === (html.match(/<li class="item item--/g) ?? []).length,
+    'hay ítems sin el lugar de los avisos debajo de la respuesta')
+  afirmar(!html.includes('Correcto.') && !html.includes('class="logro'), 'se ve "Correcto" sin haber resuelto nada')
+  // El campo tiene un ancho fijo: no crece con lo que se escribe.
+  afirmar(!html.includes('--largo'), 'el campo de respuesta todavía crece con lo escrito')
+  // El globo de los campos, con un ejemplo por renglón.
+  afirmar(/data-tip="Acepta fracciones y expresiones compuestas\.\nEjemplos:\n• [^\n"]+\n• [^\n"]+"/.test(html),
+    'el globo de los campos no muestra los dos ejemplos')
+  // Sin resolver, ver respuesta muestra su cara y comprobar y pistas están.
+  afirmar(/boton__cara"><svg[^]*?Ver respuesta<\/span><span class="boton__cara boton__cara--abajo" aria-hidden="true">/.test(html),
+    'ver respuesta no muestra su cara antes de resolver')
+  afirmar(!html.includes('botonera__lugar--fuera'), 'sin resolver nada, hay botones plegados')
 
   // KaTeX tiene que haber corrido: si no, quedaría el `$...$` crudo.
   afirmar(html.includes('katex'), 'KaTeX no renderizó nada')
@@ -608,9 +631,40 @@ try {
     createElement(VistaGuia, { numero: 1, sesion: apiSesion(conItemHecho) }),
   )
   afirmar(guiaRetomada.includes('item item--correcto'), 'el ítem resuelto no vuelve resuelto')
-  afirmar(guiaRetomada.includes('Reintentar'), 'no se ve el botón de reintentar')
   afirmar(guiaRetomada.includes('value="1/6"'), 'no se recuperó lo tipeado')
+  // Resuelto: "✓ Correcto." debajo del campo, el valor en lugar del botón,
+  // pistas plegada y ver respuesta con la cara de reintentar.
+  const inicioResuelto = guiaRetomada.indexOf('<li class="item item--correcto')
+  const itemResuelto = guiaRetomada.slice(inicioResuelto, guiaRetomada.indexOf('<li class="item item--', inicioResuelto + 1))
+  afirmar(/class="item__mensajes"[^>]*><p class="feedback feedback--ok"><span class="feedback__tilde">✓<\/span> Correcto\.<\/p>/.test(itemResuelto),
+    'el ítem resuelto no dice "✓ Correcto." debajo del campo')
+  afirmar(itemResuelto.includes('class="valor-aprox">≈ 0,1667<'), 'el ítem resuelto no muestra el valor de lo escrito')
+  afirmar(!/fila-entrada__accion">[^]*?Comprobar/.test(itemResuelto.slice(0, itemResuelto.indexOf('item__mensajes'))),
+    'el ítem resuelto todavía muestra comprobar al lado del campo')
+  afirmar(/class="botonera__lugar botonera__lugar--fuera" inert(="")?><button[^>]*>[^]*?Pistas/.test(itemResuelto),
+    'al resolver, pistas no se pliega')
+  afirmar(/boton__cara boton__cara--arriba" aria-hidden="true">[^]*?Ver respuesta<\/span><span class="boton__cara"><svg[^]*?Reintentar/.test(itemResuelto),
+    'al resolver, ver respuesta no pasa a reintentar')
   afirmar(guiaRetomada.includes('class="tags"'), 'con un ítem resuelto no aparecen los tags')
+  // Una opción múltiple resuelta no deja la elegida pintada.
+  {
+    const { ItemEjercicio } = await servidor.ssrLoadModule('/src/componentes/ItemEjercicio.tsx')
+    const conOpcion = contenido.ejercicios
+      .flatMap((e: { id: string; items: { id: string; respuesta: { tipo: string } }[] }) =>
+        e.items.map((item) => ({ item, clave: `${e.id}:${item.id}` })))
+      .find((x: { item: { respuesta: { tipo: string } } }) => x.item.respuesta.tipo === 'opcion')
+    const correcta = conOpcion.item.respuesta.opciones.find((o: { correcta?: boolean }) => o.correcta).id
+    const elegir = (estado: string) =>
+      render(createElement(ItemEjercicio, {
+        item: conOpcion.item,
+        clave: conOpcion.clave,
+        inicial: { estado, envios: 1, opcion: correcta, pistasAbiertas: 0 },
+      }))
+    const resuelta = elegir('correcto')
+    afirmar(!resuelta.includes('opcion--elegida') && resuelta.includes('opcion opcion--fija'),
+      'la opción múltiple resuelta deja pintada la elegida')
+    afirmar(elegir('incorrecto').includes('opcion opcion--elegida'), 'sin resolver, la opción elegida no se marca')
+  }
   // Los tags van debajo del enunciado y antes de los ítems, no al final.
   const tarjeta04 = guiaRetomada.slice(
     guiaRetomada.indexOf('id="ej-g1-04"'),

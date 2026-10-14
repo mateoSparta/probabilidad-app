@@ -15,12 +15,12 @@
   margin-block: var(--e-6);
   border-radius: 0 var(--radio-lg) var(--radio-lg) 0;
 }
-/* Los anclas tienen que quedar abajo de la barra fija de las guías al saltar
-   hacia ellas. */
+/* Al saltar a un ancla, el destino queda un poco por debajo del encabezado
+   fijo (el alto del encabezado lo pone `scroll-padding-top`, en global.css). */
 .teoria,
 .tarjeta,
 .guia__intro {
-  scroll-margin-top: 4.25rem;
+  scroll-margin-top: var(--e-5);
 }
 .teoria h2, .teoria h3 { margin-top: 0; font-size: var(--t-md); }
 .teoria > :last-child { margin-bottom: 0; }
@@ -130,7 +130,7 @@
   padding: var(--e-4);
   border: 1px solid transparent;
   border-radius: var(--radio-lg);
-  transition: background-color 280ms ease, border-color 280ms ease;
+  transition: background-color 420ms ease, border-color 420ms ease;
 }
 
 /* Separador entre ítems, en el hueco que los separa. No se dibuja junto a
@@ -176,51 +176,21 @@
 
 /* ------------------------------------------------------------ entrada */
 
-/* "Correcto", arriba a la derecha del ítem, al lado de la pregunta. */
-.logro {
-  position: relative;
-  flex: none;
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--e-1);
-  margin-left: auto;
-  padding: 1px var(--e-2) 1px var(--e-1);
-  border-radius: var(--radio-pill);
-  background: color-mix(in srgb, var(--ok) 14%, transparent);
-  color: var(--ok);
-  font-size: var(--t-sm);
-  font-weight: 600;
-}
-.logro .icono { font-size: 1.1em; }
-/* El estallido de un acierto: ocho puntos que salen del tilde. */
-.logro__chispas {
-  position: absolute;
-  left: calc(var(--e-1) + 0.55em);
-  top: 50%;
-  pointer-events: none;
-}
-.logro__chispas span {
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  margin: -2.5px;
-  border-radius: 50%;
-  background: var(--ok);
-  opacity: 0;
-}
-.logro__chispas span:nth-child(even) { background: var(--acento); }
+/* La respuesta tiene el mismo aire arriba que abajo. El de abajo es el lugar
+   de los avisos (.item__mensajes), que mide lo mismo haya aviso o no: así,
+   un aviso aparece sin correr nada. */
+.item { --aire: var(--e-7); }
 
-/* Un campo: la frase "P(B_1) = [ ] [Comprobar]", centrada y con aire arriba
-   y abajo. El botón y el valor que lo reemplaza al acertar comparten una
-   celda del ancho del botón, así la frase no se mueve. */
+/* Un campo: la frase "P(B_1) = [ ] [Comprobar]", centrada. El botón y el
+   valor que lo reemplaza al acertar comparten una celda del ancho del botón,
+   así la frase no se mueve. */
 .fila-entrada {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: var(--e-2) var(--e-3);
-  margin: var(--e-5) 0;
+  margin-top: var(--aire);
 }
 .fila-entrada__rotulo {
   font-size: var(--t-md);
@@ -238,7 +208,9 @@
 }
 .fila-entrada__accion > * { grid-area: 1 / 1; }
 .fila-entrada__accion .boton { height: var(--alto-campo); }
-.fila-entrada__saliente { pointer-events: none; }
+/* Lo que sale (el botón al acertar; el valor, el aviso y las marcas al
+   reintentar) sigue un momento a la vista, sin responder al mouse. */
+.saliente { pointer-events: none; }
 
 .entrada {
   font-family: var(--mono);
@@ -255,20 +227,25 @@
 .entrada:disabled { background: transparent; color: var(--tinta-2); }
 
 /* El campo de una respuesta: con la tipografía de las fórmulas, el texto
-   centrado y del ancho de una respuesta corta; crece si lo escrito no entra.
-   Verde al acertar, rojo si la respuesta no es correcta. */
+   centrado y un ancho fijo, el de una respuesta corta; lo que no entra se
+   desplaza dentro del campo. El "?" se va al entrar en el campo. Verde al
+   acertar, rojo si la respuesta no es correcta. */
 .campo-respuesta {
   height: var(--alto-campo);
-  width: clamp(9rem, calc(var(--largo, 0) * 0.55em + 2rem), 22rem);
+  width: 9rem;
   max-width: 100%;
   padding: 0 var(--e-3);
   font-family: KaTeX_Main, var(--serif);
   font-size: var(--t-md);
   text-align: center;
-  transition: border-color 200ms, box-shadow 200ms, background-color 280ms, color 280ms;
 }
-.campo-respuesta::placeholder { color: var(--tinta-3); opacity: 1; }
-.campo-respuesta--expresion { width: clamp(15rem, calc(var(--largo, 0) * 0.55em + 2rem), 26rem); }
+.campo-respuesta::placeholder {
+  color: var(--tinta-3);
+  opacity: 1;
+  transition: color 160ms ease;
+}
+.campo-respuesta:not(.campo-respuesta--expresion):focus::placeholder { color: transparent; }
+.campo-respuesta--expresion { width: 15rem; }
 .campo-respuesta--ok,
 .campo-respuesta--ok:disabled {
   border-color: color-mix(in srgb, var(--ok) 50%, transparent);
@@ -289,7 +266,9 @@
 
 .sufijo { font-size: var(--t-sm); color: var(--tinta-2); }
 
-.opciones { list-style: none; margin: var(--e-4) 0; padding: 0; }
+/* Opción múltiple. Mientras se responde, la elegida lleva un fondo suave;
+   resuelto el ítem, el radio alcanza y las opciones quedan quietas. */
+.opciones { list-style: none; margin: var(--aire) 0 0; padding: 0; }
 
 .opcion {
   display: flex;
@@ -298,9 +277,15 @@
   padding: var(--e-1) var(--e-2);
   border-radius: var(--radio);
   cursor: pointer;
+  transition: background-color 280ms ease;
 }
 .opcion:hover { background: var(--borde); }
 .opcion--elegida { background: var(--acento-suave); }
+.opcion--fija,
+.opcion--fija:hover {
+  background: transparent;
+  cursor: default;
+}
 
 /* Varios campos: una grilla de tres columnas (rótulo con su igual, campo y
    resultado) en la que cada fila es una subgrilla. Los rótulos van contra
@@ -309,7 +294,7 @@
    acertar, para que nada se corra. El conjunto va centrado. */
 .checkpoints {
   list-style: none;
-  margin: var(--e-5) auto;
+  margin: var(--aire) auto 0;
   padding: 0;
   display: grid;
   grid-template-columns: max-content 9rem 6.5rem;
@@ -330,7 +315,13 @@
   cursor: text;
 }
 .checkpoint .campo-respuesta { width: 100%; }
-.checkpoint__resultado { justify-self: start; }
+/* El valor que entra y el que sale al reintentar ocupan la misma celda. */
+.checkpoint__resultado {
+  justify-self: start;
+  display: grid;
+  align-items: center;
+}
+.checkpoint__resultado > * { grid-area: 1 / 1; }
 
 /* En un teléfono el rótulo va arriba de su campo. */
 @media (max-width: 480px) {
@@ -354,20 +345,52 @@
   margin-top: var(--e-3);
 }
 
-/* Los botones de un ítem se reparten el ancho: las ayudas (fórmulas, pistas
-   y ver respuesta) en partes iguales. Cuando comprobar va en esta fila (varios
-   campos, opción múltiple), son cuatro columnas y comprobar va en la última,
-   contra el borde derecho. En un celular, dos por fila. */
+/* Los botones de un ítem se reparten el ancho en partes iguales: fórmulas,
+   pistas y ver respuesta, y comprobar a la derecha cuando va en esta fila
+   (varios campos, opción múltiple). Cada uno tiene su lugar, y el que no
+   corresponde se pliega animando el ancho: al resolver, pistas se cierra
+   entre fórmulas y ver respuesta, que se ensanchan, como un sándwich. Los
+   márgenes hacen de separación, porque un `gap` no se puede animar hasta
+   cero. Con menos de cuatro botones y comprobar en la fila, cada uno ocupa
+   un cuarto y comprobar va contra la derecha. En un teléfono, dos por fila. */
 .botonera {
-  display: grid;
-  grid-template-columns: repeat(var(--columnas, 3), minmax(0, 1fr));
-  gap: var(--e-2);
+  display: flex;
+  margin-inline: calc(var(--e-2) / -2);
 }
-.botonera__lugar { display: grid; }
-.botonera__comprobar { grid-column: -2 / -1; }
+.botonera__lugar {
+  display: grid;
+  flex: 1 1 0;
+  min-width: 0;
+  margin-inline: calc(var(--e-2) / 2);
+  transition:
+    flex-grow 460ms cubic-bezier(0.3, 0.8, 0.3, 1),
+    flex-basis 460ms cubic-bezier(0.3, 0.8, 0.3, 1),
+    margin 460ms cubic-bezier(0.3, 0.8, 0.3, 1),
+    opacity 240ms 180ms ease;
+}
+.botonera__lugar > .boton { min-width: 0; overflow: hidden; }
+.botonera__lugar--fuera {
+  flex-grow: 0;
+  flex-basis: 0;
+  margin-inline: 0;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    flex-grow 460ms cubic-bezier(0.3, 0.8, 0.3, 1),
+    flex-basis 460ms cubic-bezier(0.3, 0.8, 0.3, 1),
+    margin 460ms cubic-bezier(0.3, 0.8, 0.3, 1),
+    opacity 180ms ease,
+    visibility 0s 460ms;
+}
+.botonera--cuartos .botonera__lugar { flex: 0 0 calc(25% - var(--e-2)); }
+.botonera--cuartos .botonera__comprobar { margin-left: auto; }
 @media (max-width: 480px) {
-  .botonera { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .botonera__comprobar { grid-column: auto; }
+  .botonera { flex-wrap: wrap; row-gap: var(--e-2); }
+  .botonera__lugar,
+  .botonera--cuartos .botonera__lugar { flex: 1 1 calc(50% - var(--e-2)); }
+  .botonera--cuartos .botonera__comprobar { margin-left: calc(var(--e-2) / 2); }
+  .botonera__lugar--fuera { flex-grow: 0; flex-basis: 0; }
 }
 
 .boton--icono {
@@ -385,13 +408,36 @@
   color: var(--acento);
 }
 
+/* Ver respuesta y reintentar: dos caras del mismo botón, una encima de la
+   otra. Al resolver, la primera sube y se va mientras la segunda entra desde
+   abajo; al reintentar, al revés. */
+.boton--doble { display: grid; }
+.boton__cara {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-2);
+  transition:
+    opacity 260ms ease,
+    transform 420ms cubic-bezier(0.3, 0.8, 0.3, 1);
+}
+.boton__cara--arriba { opacity: 0; transform: translateY(-0.9em); }
+.boton__cara--abajo { opacity: 0; transform: translateY(0.9em); }
+
 /* ----------------------------------------------------------- feedback */
 
-/* Los avisos van entre la respuesta y los botones, centrados. */
+/* Los avisos van en el aire de debajo de la respuesta, centrados en él. Uno
+   largo (un error típico de dos renglones) lo estira. El que se va al
+   reintentar ocupa la misma celda que el que entra. */
 .item__mensajes {
-  margin: calc(-1 * var(--e-2)) 0 var(--e-4);
+  display: grid;
+  place-items: center;
+  min-height: var(--aire);
+  padding-block: var(--e-2);
   text-align: center;
 }
+.item__mensajes > * { grid-area: 1 / 1; }
 .feedback {
   margin: var(--e-3) 0 0;
   font-size: var(--t-sm);
@@ -400,6 +446,12 @@
 .feedback--ok { color: var(--ok); }
 .feedback--mal { color: var(--error); }
 .feedback--aviso { color: var(--desarrollo); }
+.feedback__tilde { display: inline-block; }
+
+/* Lo que se va al reintentar (las pistas, la respuesta revelada) se pliega
+   en lugar de desaparecer de golpe (la animación, en animaciones.css). */
+.plegandose { display: grid; }
+.plegandose > div { min-height: 0; overflow: hidden; }
 
 /* ------------------------------------------------------------- ayudas */
 
@@ -1190,10 +1242,11 @@
 
 /* --- rindiendo --- */
 
-/* Fija arriba mientras se rinde, para que el reloj esté siempre a la vista. */
+/* Fija arriba mientras se rinde, debajo del encabezado, para que el reloj
+   esté siempre a la vista. */
 .sim-barra {
   position: sticky;
-  top: var(--e-2);
+  top: calc(var(--alto-fijo, 0px) + var(--e-2));
   z-index: 9;
   display: flex;
   flex-wrap: wrap;
@@ -1726,6 +1779,9 @@
   font-size: var(--t-xs);
   line-height: 1.35;
   letter-spacing: 0.01em;
+  /* Un salto de línea en el texto es un renglón nuevo (los ejemplos del
+     globo de los campos de respuesta van uno por renglón). */
+  white-space: pre-line;
   box-shadow: var(--sombra-flotante);
   pointer-events: none;
 }

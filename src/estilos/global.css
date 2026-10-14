@@ -10,6 +10,9 @@
 html {
   -webkit-text-size-adjust: 100%;
   scrollbar-gutter: stable;
+  /* Los saltos a un ancla dejan el destino debajo del encabezado fijo, que
+     publica su alto en --alto-fijo (Cabecera.tsx). */
+  scroll-padding-top: var(--alto-fijo, 0px);
 }
 
 body {
@@ -50,8 +53,16 @@ code, kbd, input, textarea, button, select {
 }
 
 /* --- header --- */
-/* El encabezado se va con el scroll; lo único fijo son las pestañas de las
-   guías (ver .barra-guias). */
+/* El encabezado, con las pestañas de las guías cuando las hay, queda fijo
+   arriba: desde cualquier punto de la página se puede cambiar de sección.
+   Va por encima del contenido y de los accesos de la esquina, para que sus
+   desplegables (el del examen, el menú) se vean enteros; por debajo de los
+   globos y los modales. */
+.encabezado {
+  position: sticky;
+  top: 0;
+  z-index: 25;
+}
 .cabecera {
   background: var(--fondo);
   border-bottom: 1px solid var(--borde);
@@ -124,9 +135,6 @@ a.migas__codigo:focus-visible {
    cuando sobra lugar sin cortarle el principio cuando falta, que es lo que
    pasaría con `justify-content: center`. */
 .barra-guias {
-  position: sticky;
-  top: 0;
-  z-index: 10;
   background: color-mix(in srgb, var(--fondo) 90%, transparent);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--borde);
@@ -188,6 +196,19 @@ a.migas__codigo:focus-visible {
   opacity: 0.65;
 }
 .tab--bloqueada .icono { font-size: 0.85em; }
+
+/* "Guía" sólo en la pestaña abierta; en las demás, plegada (ancho cero).
+   El cambio de una a otra lo anima Cabecera.tsx, al compás del indicador. */
+.tab__palabra {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+.tab:not([aria-current='page']) .tab__palabra {
+  width: 0;
+  opacity: 0;
+}
 
 /* --- botones --- */
 .boton {

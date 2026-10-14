@@ -204,7 +204,12 @@ porque muchas describen el evento en una oración, y un rótulo inventado por
 un programa confundiría más que ayudar. Al acertar, el botón se va y en su
 lugar aparece el valor decimal de lo escrito ("≈ 0,3917"); con varios
 campos o con opción múltiple, comprobar va en la fila de las ayudas, a la
-derecha.
+derecha. El campo tiene un ancho fijo, y la respuesta tiene el mismo aire
+arriba que abajo: el de abajo es el lugar de los avisos ("✓ Correcto." o el
+error), que aparecen sin correr nada. Al resolver, la fila de las ayudas se
+cierra como un sándwich (pistas se pliega, fórmulas y ver respuesta se
+ensanchan y ver respuesta pasa a ser reintentar), y reintentar la vuelve a
+abrir con lo que había saliendo animado.
 
 **Por qué `fuentes_valor` es una lista.** El paso 5 de §7 reconcilia *varias*
 resueltas contra el cálculo independiente, así que hace falta poder registrar
