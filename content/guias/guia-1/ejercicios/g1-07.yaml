@@ -16,6 +16,7 @@ items:
     skills: [independencia]
     respuesta:
       tipo: expresion
+      rotulo: 'P(A_n)'
       valor: "(5/6)^(n-1) * (1/6)"
       vars:
         n: [1, 15]
@@ -37,6 +38,7 @@ items:
     skills: [independencia]
     respuesta:
       tipo: numerica
+      rotulo: 'P(A_8)'
       valor: "78125/1679616"
     pistas:
       - Es la fórmula del ítem anterior evaluada en un valor concreto.
@@ -53,6 +55,7 @@ items:
     skills: [independencia]
     respuesta:
       tipo: numerica
+      rotulo: 'P(B_8)'
       valor: "390625/1679616"
     pistas:
       - 'El evento $N > 8$ significa que en las primeras 8 tiradas no salió ningún 6.'
@@ -71,6 +74,7 @@ items:
     skills: [continuidad-P]
     respuesta:
       tipo: numerica
+      rotulo: 'P(B)'
       valor: "0"
       tol_rel: 0.001
     pistas:

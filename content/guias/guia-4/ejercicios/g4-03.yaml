@@ -19,11 +19,11 @@ items:
     respuesta:
       tipo: checkpoints
       checkpoints:
-        - pregunta: 'Con $a = -2$, $b = 1$: $f_Y(-1)$'
+        - pregunta: '$f_{-2X + 1}(-1)$'
           valor: "6 / (pi^2 * (e + 1))"
-        - pregunta: 'Con $a = -2$, $b = 1$: $f_Y(2)$'
+        - pregunta: '$f_{-2X + 1}(2)$'
           valor: "0"
-        - pregunta: 'Con $a = 3$, $b = 0$: $f_Y(3)$'
+        - pregunta: '$f_{3X}(3)$'
           valor: "4 / (pi^2 * (e + 1))"
     pistas:
       - 'Escribí $F_Y(y) = P(aX + b \le y)$ y despejá $X$. Si $a < 0$ la desigualdad se invierte.'

@@ -20,6 +20,7 @@ items:
     skills: [tcl, mezclas, varianza-total]
     respuesta:
       tipo: numerica
+      rotulo: '\text{paladas}'
       valor: "1762"
       # Es el mínimo n exacto: la tolerancia no puede admitir otro entero.
       tol_rel: 0.000001

@@ -85,6 +85,28 @@ resuelta), así que ahí el cálculo independiente sostiene más peso.
 
 ---
 
+### 2.5 Los rótulos de las respuestas
+
+Cada respuesta numérica o de expresión lleva ahora un `rotulo`, lo que se
+calcula, que se ve a la izquierda del campo: "$P(B_1 \mid R_2) =$ [ ]". Son
+156, más 34 rótulos de checkpoints que eran texto ("Juan", "la densidad en
+$x = 5$") y pasaron a fórmula ($P(\text{gana Juan})$,
+$f_{X \mid 3 \le X \le 12}(5)$). **Los escribí yo y conviene leerlos**: son
+notación, no resultados, pero un rótulo que no dice lo mismo que la pregunta
+confunde.
+
+El criterio: la notación del ejercicio cuando la hay; si el evento sólo está
+en palabras, un texto breve dentro de la probabilidad
+($P(\text{ambas rojas})$); y para lo que no es una probabilidad, el símbolo
+o una palabra ($n$, $c$, $\text{umbral}$). Para que la frase entre en un
+renglón, los rótulos tienen a lo sumo unos 36 caracteres; en cinco ítems de
+examen con procesos de Poisson eso obligó a usar la notación de la guía 7,
+$N(t)$ y $S_k$, con el tiempo en minutos desde la hora en que empieza el
+enunciado (por ejemplo $P(N(6) = 1 \mid N(60) = 14)$ en el 4 del
+24-05-2025). Dos ítems cambiaron un poco su
+pregunta para no perder la unidad que antes iba en el rótulo: 7.10 (a)
+"la media (en metros)" y 7.15 (a) "la media (en minutos)".
+
 ## 3. Lo que falta, por qué
 
 ### 3.1 Los siete del núcleo que no se cargan

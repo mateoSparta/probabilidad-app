@@ -17,6 +17,7 @@ items:
     skills: [combinacion-normales, normal]
     respuesta:
       tipo: numerica
+      rotulo: 'P\!\left(X_1 - \tfrac{1}{2} X_2 > 2 - \tfrac{1}{3} X_3\right)'
       valor: "1/2 - erf(sqrt(2))/2"
     pistas:
       - 'Reordená la desigualdad para que el evento quede de la forma $Y > 0$.'

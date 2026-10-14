@@ -20,6 +20,7 @@ items:
     skills: [esperanza-condicional, bernoulli-binomial]
     respuesta:
       tipo: expresion
+      rotulo: '\varphi(x)'
       valor: "4*x/5"
       vars:
         x: [0, 6]
@@ -41,6 +42,7 @@ items:
     skills: [esperanza-condicional, bayes, bernoulli-binomial]
     respuesta:
       tipo: expresion
+      rotulo: '\varphi(y)'
       valor: "y + (6 - y)/16"
       vars:
         y: [0, 6]

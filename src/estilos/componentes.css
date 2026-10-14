@@ -176,22 +176,69 @@
 
 /* ------------------------------------------------------------ entrada */
 
-/* En la guía la entrada va centrada; en el simulacro, a todo el ancho con
-   "Respuesta:" a la izquierda (ver ItemEjercicio, `enSimulacro`). */
+/* "Correcto", arriba a la derecha del ítem, al lado de la pregunta. */
+.logro {
+  position: relative;
+  flex: none;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-1);
+  margin-left: auto;
+  padding: 1px var(--e-2) 1px var(--e-1);
+  border-radius: var(--radio-pill);
+  background: color-mix(in srgb, var(--ok) 14%, transparent);
+  color: var(--ok);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+.logro .icono { font-size: 1.1em; }
+/* El estallido de un acierto: ocho puntos que salen del tilde. */
+.logro__chispas {
+  position: absolute;
+  left: calc(var(--e-1) + 0.55em);
+  top: 50%;
+  pointer-events: none;
+}
+.logro__chispas span {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px;
+  border-radius: 50%;
+  background: var(--ok);
+  opacity: 0;
+}
+.logro__chispas span:nth-child(even) { background: var(--acento); }
+
+/* Un campo: la frase "P(B_1) = [ ] [Comprobar]", centrada y con aire arriba
+   y abajo. El botón y el valor que lo reemplaza al acertar comparten una
+   celda del ancho del botón, así la frase no se mueve. */
 .fila-entrada {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--e-2);
-  margin-top: var(--e-3);
+  gap: var(--e-2) var(--e-3);
+  margin: var(--e-5) 0;
 }
-.fila-entrada--examen { justify-content: flex-start; }
-.fila-entrada--examen .entrada { flex: 1; max-width: none; }
+.fila-entrada__rotulo {
+  font-size: var(--t-md);
+  cursor: text;
+}
 .fila-entrada__etiqueta {
   flex: none;
   font-size: var(--t-sm);
   color: var(--tinta-2);
 }
+.fila-entrada__accion {
+  display: grid;
+  align-items: center;
+  min-width: 8.75rem;
+}
+.fila-entrada__accion > * { grid-area: 1 / 1; }
+.fila-entrada__accion .boton { height: var(--alto-campo); }
+.fila-entrada__saliente { pointer-events: none; }
 
 .entrada {
   font-family: var(--mono);
@@ -207,9 +254,42 @@
 .entrada--corta { max-width: 9rem; }
 .entrada:disabled { background: transparent; color: var(--tinta-2); }
 
+/* El campo de una respuesta: con la tipografía de las fórmulas, el texto
+   centrado y del ancho de una respuesta corta; crece si lo escrito no entra.
+   Verde al acertar, rojo si la respuesta no es correcta. */
+.campo-respuesta {
+  height: var(--alto-campo);
+  width: clamp(9rem, calc(var(--largo, 0) * 0.55em + 2rem), 22rem);
+  max-width: 100%;
+  padding: 0 var(--e-3);
+  font-family: KaTeX_Main, var(--serif);
+  font-size: var(--t-md);
+  text-align: center;
+  transition: border-color 200ms, box-shadow 200ms, background-color 280ms, color 280ms;
+}
+.campo-respuesta::placeholder { color: var(--tinta-3); opacity: 1; }
+.campo-respuesta--expresion { width: clamp(15rem, calc(var(--largo, 0) * 0.55em + 2rem), 26rem); }
+.campo-respuesta--ok,
+.campo-respuesta--ok:disabled {
+  border-color: color-mix(in srgb, var(--ok) 50%, transparent);
+  background: color-mix(in srgb, var(--ok) 6%, var(--superficie-alta));
+  color: var(--tinta);
+}
+.campo-respuesta--mal { border-color: color-mix(in srgb, var(--error) 70%, transparent); }
+
+/* El valor de lo escrito, que aparece al acertar: "≈ 0,3333". */
+.valor-aprox {
+  padding-left: var(--e-1);
+  font-family: KaTeX_Main, var(--serif);
+  font-size: var(--t-md);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ok);
+}
+
 .sufijo { font-size: var(--t-sm); color: var(--tinta-2); }
 
-.opciones { list-style: none; margin: var(--e-3) 0 0; padding: 0; }
+.opciones { list-style: none; margin: var(--e-4) 0; padding: 0; }
 
 .opcion {
   display: flex;
@@ -222,76 +302,43 @@
 .opcion:hover { background: var(--borde); }
 .opcion--elegida { background: var(--acento-suave); }
 
-/* Varios campos en un ítem: una grilla de tres columnas (rótulo con flecha,
-   campo y marca de correcto) en la que cada fila es una subgrilla. Los
-   rótulos quedan alineados a la izquierda entre sí, los campos también, y la
-   flecha de cada fila se estira desde el final de su rótulo hasta el campo.
-   La columna de rótulos mide lo que el más largo (más una flecha mínima). En
-   la guía el conjunto va centrado; en el simulacro ocupa todo el ancho. */
+/* Varios campos: una grilla de tres columnas (rótulo con su igual, campo y
+   resultado) en la que cada fila es una subgrilla. Los rótulos van contra
+   la derecha, así los signos igual quedan en columna; los campos miden lo
+   mismo, y la tercera columna guarda el lugar del valor que aparece al
+   acertar, para que nada se corra. El conjunto va centrado. */
 .checkpoints {
   list-style: none;
-  margin: var(--e-3) auto 0;
+  margin: var(--e-5) auto;
   padding: 0;
   display: grid;
-  grid-template-columns: minmax(min-content, max-content) 9rem 1.1rem;
-  column-gap: var(--e-2);
-  row-gap: var(--e-2);
-  width: fit-content;
-  max-width: 100%;
+  grid-template-columns: max-content 9rem 6.5rem;
+  justify-content: center;
+  column-gap: var(--e-3);
+  row-gap: var(--e-3);
 }
-.checkpoints--examen {
-  grid-template-columns: minmax(min-content, max-content) 1fr 1.1rem;
-  width: 100%;
-}
-
 .checkpoint {
   display: grid;
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
   align-items: center;
 }
-
 .checkpoint__rotulo {
-  display: flex;
-  align-items: center;
-  gap: var(--e-2);
-  cursor: pointer;
+  justify-self: end;
+  font-size: var(--t-md);
+  text-align: right;
+  cursor: text;
 }
-.checkpoint__pregunta { flex: none; }
+.checkpoint .campo-respuesta { width: 100%; }
+.checkpoint__resultado { justify-self: start; }
 
-.entrada--celda { max-width: none; }
-
-.checkpoint__marca { text-align: center; }
-
-/* Flecha que une el rótulo con su campo. Es una línea con punta que ocupa
-   todo el espacio libre de la fila, así que su largo depende del rótulo. */
-.flecha {
-  flex: 1;
-  min-width: 1.25rem;
-  height: 1px;
-  position: relative;
-  background: var(--tinta-3);
-  opacity: 0.7;
-}
-.flecha::after {
-  content: '';
-  position: absolute;
-  right: -1px;
-  top: -3.5px;
-  border-left: 6px solid var(--tinta-3);
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-}
-
-/* En pantallas angostas el rótulo va arriba del campo y la flecha sobra. */
+/* En un teléfono el rótulo va arriba de su campo. */
 @media (max-width: 480px) {
-  .checkpoints,
-  .checkpoints--examen {
-    grid-template-columns: 1fr 1.1rem;
+  .checkpoints {
+    grid-template-columns: minmax(0, 1fr) 5.5rem;
     width: 100%;
   }
-  .checkpoint__rotulo { grid-column: 1 / -1; }
-  .checkpoint .flecha { display: none; }
+  .checkpoint__rotulo { grid-column: 1 / -1; justify-self: start; }
 }
 
 .marca { font-family: var(--mono); }
@@ -307,14 +354,20 @@
   margin-top: var(--e-3);
 }
 
-/* Los botones de un ítem se reparten el ancho de la tarjeta: cuatro en una
-   fila en pantallas anchas, dos por fila en un celular. Cuando quedan menos
-   (ítem resuelto), los que quedan se estiran hasta ocupar la fila. */
+/* Los botones de un ítem se reparten el ancho: las ayudas (fórmulas, pistas
+   y ver respuesta) en partes iguales. Cuando comprobar va en esta fila (varios
+   campos, opción múltiple), son cuatro columnas y comprobar va en la última,
+   contra el borde derecho. En un celular, dos por fila. */
 .botonera {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  grid-template-columns: repeat(var(--columnas, 3), minmax(0, 1fr));
   gap: var(--e-2);
-  margin-top: var(--e-3);
+}
+.botonera__lugar { display: grid; }
+.botonera__comprobar { grid-column: -2 / -1; }
+@media (max-width: 480px) {
+  .botonera { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .botonera__comprobar { grid-column: auto; }
 }
 
 .boton--icono {
@@ -334,10 +387,16 @@
 
 /* ----------------------------------------------------------- feedback */
 
+/* Los avisos van entre la respuesta y los botones, centrados. */
+.item__mensajes {
+  margin: calc(-1 * var(--e-2)) 0 var(--e-4);
+  text-align: center;
+}
 .feedback {
   margin: var(--e-3) 0 0;
   font-size: var(--t-sm);
 }
+.item__mensajes .feedback { margin: 0; }
 .feedback--ok { color: var(--ok); }
 .feedback--mal { color: var(--error); }
 .feedback--aviso { color: var(--desarrollo); }

@@ -151,6 +151,7 @@ items:
     skills: [condicional, funcion-distribucion]
     respuesta:
       tipo: numerica
+      rotulo: 'P(X = -2 \mid \lvert X \rvert = 2)'
       valor: "1/2"
     pistas:
       - '$\lvert X \rvert = 2$ es la unión de $\{X = -2\}$ y $\{X = 2\}$.'

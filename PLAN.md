@@ -165,6 +165,7 @@ items:
     skills: [prob-total]
     respuesta:
       tipo: numerica
+      rotulo: 'P(B_2)'         # lo que se calcula, en LaTeX sin $
       valor: "47/120"          # exacto; la app acepta 47/120, 0.3917, etc.
       tol_rel: 0.01
     pistas:
@@ -187,6 +188,23 @@ items:
 - **`expresion`.** Para respuestas en función de p, λ, n, etc. Se definen variables con rangos (`vars: {p: [0.05, 0.95]}`), y la app evalúa la respuesta y el valor esperado en 6 puntos al azar con tolerancia relativa de 1e-6.
 - **`opcion`.** Multiple choice para lo no numérico (álgebras generadas, "¿son independientes?", identificar distribuciones). Cada distractor lleva un campo `error_tipico` que se muestra al elegirlo, porque es lo que alimenta la detección de puntos ciegos.
 - **`checkpoints`.** Para "hallar y graficar F_W" o "hallar la densidad": el ítem se reemplaza por 2–4 preguntas numéricas concretas, como `F_W(0.5)`, `P(W = 1)` o `f_Y(2)`. Es correcto si acierta todas. Así se valida una función sin parsear funciones a trozos.
+
+**El rótulo y la frase de la respuesta.** La respuesta se escribe en una
+frase: lo que se calcula, el campo y el botón de comprobar,
+"P(B₂) = [ ] [Comprobar]", centrada. Por eso las respuestas `numerica` y
+`expresion` llevan un `rotulo` obligatorio (el validador lo exige y lo
+parsea con KaTeX), y las `pregunta` de los checkpoints son, en lo posible,
+una fórmula sola (`$f_Y(2)$`), que se muestra con su igual y con los iguales
+alineados. El rótulo usa la notación del ejercicio cuando la hay ($E[X]$,
+$P(B_1 \mid R_2)$, $\operatorname{cov}(X, Y)$); cuando el evento sólo está
+descripto en palabras, un texto breve dentro de la probabilidad
+($P(\text{ambas rojas})$); y para lo que no es una probabilidad, el símbolo
+o una palabra ($n$, $c$, $\text{umbral}$). No se deduce de la pregunta
+porque muchas describen el evento en una oración, y un rótulo inventado por
+un programa confundiría más que ayudar. Al acertar, el botón se va y en su
+lugar aparece el valor decimal de lo escrito ("≈ 0,3917"); con varios
+campos o con opción múltiple, comprobar va en la fila de las ayudas, a la
+derecha.
 
 **Por qué `fuentes_valor` es una lista.** El paso 5 de §7 reconcilia *varias*
 resueltas contra el cálculo independiente, así que hace falta poder registrar

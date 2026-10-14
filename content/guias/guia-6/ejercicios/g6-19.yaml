@@ -51,6 +51,7 @@ items:
     skills: [geometrica-pascal]
     respuesta:
       tipo: numerica
+      rotulo: 'P(N > 2)'
       valor: "1000/6859"
     pistas:
       - 'El evento $N > 2$ significa que los tres primeros semáforos relevantes estaban en verde.'

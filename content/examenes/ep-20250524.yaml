@@ -27,6 +27,7 @@ ejercicios:
         skills: [bayes, condicional, laplace]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{blanca y verde} \mid \text{luego dos iguales})'
           valor: "15/61"
         pistas:
           - >-
@@ -70,6 +71,7 @@ ejercicios:
         skills: [esperanza-condicional, conjunta-marginales]
         respuesta:
           tipo: numerica
+          rotulo: 'P(E(Y \mid X) < 10)'
           valor: "sqrt(5)/2 - 1"
         pistas:
           - >-
@@ -156,6 +158,7 @@ ejercicios:
         skills: [condicionar-Nt, superposicion-adelgazamiento]
         respuesta:
           tipo: numerica
+          rotulo: 'P(N(6) = 1 \mid N(60) = 14)'
           valor: "14 * 9^13 / 10^14"
         pistas:
           - >-
@@ -199,6 +202,7 @@ ejercicios:
         skills: [tcl, varianza]
         respuesta:
           tipo: numerica
+          rotulo: '\text{monto}'
           valor: "5115251.67"
           # Acepta el cuantil redondeado de la tabla (de 1,64 a 1,65) y el
           # cuantil de la distribución exacta (5114000), pero no un error en

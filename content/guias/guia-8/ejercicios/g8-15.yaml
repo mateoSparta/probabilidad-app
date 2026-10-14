@@ -19,6 +19,7 @@ items:
     skills: [tcl, normal]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{ganancia} > \$460)'
       valor: "1/2 + erf(2)/2"
     pistas:
       - >-

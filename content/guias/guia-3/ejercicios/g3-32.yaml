@@ -22,6 +22,7 @@ items:
     skills: [varianza, esperanza]
     respuesta:
       tipo: expresion
+      rotulo: '\operatorname{var}[\bar X]'
       valor: "sigma^2 / n"
       vars:
         sigma: [0.5, 3]
@@ -48,6 +49,7 @@ items:
     skills: [esperanza, varianza]
     respuesta:
       tipo: expresion
+      rotulo: 'E[W^2]'
       valor: "sigma^2"
       vars:
         sigma: [0.5, 3]

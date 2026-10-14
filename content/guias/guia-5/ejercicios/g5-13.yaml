@@ -20,6 +20,7 @@ items:
     skills: [esperanza-total, esperanza-condicional]
     respuesta:
       tipo: numerica
+      rotulo: 'E[\text{tiempo hasta salir}]'
       valor: "35"
       tol_rel: 0.005
     pistas:

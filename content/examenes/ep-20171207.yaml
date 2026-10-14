@@ -27,6 +27,7 @@ ejercicios:
         skills: [bayes, prob-total]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{no es spam} \mid \text{detectado})'
           valor: "17/41"
         pistas:
           - >-
@@ -64,6 +65,7 @@ ejercicios:
         skills: [esperanza-total, esperanza-condicional]
         respuesta:
           tipo: numerica
+          rotulo: 'E[XY]'
           valor: "-1/6"
         pistas:
           - >-
@@ -98,6 +100,7 @@ ejercicios:
         skills: [multinomial]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{mayoría verde y algún amarillo})'
           valor: "55/144"
         pistas:
           - >-
@@ -139,6 +142,7 @@ ejercicios:
         skills: [covarianza, superposicion-adelgazamiento, poisson-incrementos]
         respuesta:
           tipo: numerica
+          rotulo: '\operatorname{cov}(\text{piñas caídas}, \text{tejas rotas})'
           valor: "1/2"
         pistas:
           - >-
@@ -177,6 +181,7 @@ ejercicios:
         skills: [tcl, varianza]
         respuesta:
           tipo: numerica
+          rotulo: '\text{pizzas}'
           valor: "164"
           # Es un máximo entero: la tolerancia no puede admitir otro entero.
           tol_rel: 0.000001

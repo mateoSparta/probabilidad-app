@@ -17,9 +17,9 @@ items:
     respuesta:
       tipo: checkpoints
       checkpoints:
-        - pregunta: 'la media del peso final'
+        - pregunta: '$E[\text{peso final}]$'
           valor: "15/2"
-        - pregunta: 'la varianza del peso final'
+        - pregunta: '$\operatorname{var}(\text{peso final})$'
           valor: "11/4"
     pistas:
       - >-

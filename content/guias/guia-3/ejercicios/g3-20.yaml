@@ -16,6 +16,7 @@ items:
     skills: [covarianza, conjunta-marginales]
     respuesta:
       tipo: numerica
+      rotulo: '\operatorname{cov}(X, Y)'
       valor: "1/9"
     pistas:
       - 'Describí el triángulo como región de integración. Para cada $x$, ¿entre qué valores varía $y$?'
@@ -38,6 +39,7 @@ items:
     skills: [covarianza, varianza]
     respuesta:
       tipo: numerica
+      rotulo: '\operatorname{var}[X + Y]'
       valor: "2/3"
     pistas:
       - No hace falta volver a integrar si ya calculaste la covarianza.
@@ -60,6 +62,7 @@ items:
     skills: [covarianza]
     respuesta:
       tipo: numerica
+      rotulo: '\operatorname{cov}(3X - Y + 2,\ X + Y)'
       valor: "2/3"
     pistas:
       - '¿Qué efecto tiene el $+2$ sobre la covarianza?'

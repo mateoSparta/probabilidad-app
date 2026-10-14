@@ -21,11 +21,11 @@ items:
     respuesta:
       tipo: checkpoints
       checkpoints:
-        - pregunta: 'la densidad en $x = 5$'
+        - pregunta: '$f_{X \mid 3 \le X \le 12}(5)$'
           valor: "2/27"
-        - pregunta: 'la densidad en $x = 10$'
+        - pregunta: '$f_{X \mid 3 \le X \le 12}(10)$'
           valor: "4/27"
-        - pregunta: '$P(X < 6)$ entre las no descartadas'
+        - pregunta: '$P(X < 6 \mid 3 \le X \le 12)$'
           valor: "1/5"
     pistas:
       - Primero hace falta la probabilidad de que una arandela no sea descartada.
@@ -51,11 +51,11 @@ items:
     respuesta:
       tipo: checkpoints
       checkpoints:
-        - pregunta: 'la densidad en $x = 2$'
+        - pregunta: '$f_{X \mid X \notin [3, 12]}(2)$'
           valor: "2/45"
-        - pregunta: 'la densidad en $x = 13$'
+        - pregunta: '$f_{X \mid X \notin [3, 12]}(13)$'
           valor: "13/45"
-        - pregunta: 'la densidad en $x = 5$'
+        - pregunta: '$f_{X \mid X \notin [3, 12]}(5)$'
           valor: "0"
     pistas:
       - 'El evento "descartada" es la unión de dos condiciones incompatibles.'

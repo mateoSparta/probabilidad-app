@@ -20,6 +20,7 @@ items:
     skills: [normal, mezclas]
     respuesta:
       tipo: numerica
+      rotulo: 'c'
       valor: "1/2 - log(3)/4"
     pistas:
       - >-

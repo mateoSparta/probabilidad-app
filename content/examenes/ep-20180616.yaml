@@ -25,6 +25,7 @@ ejercicios:
         skills: [ocupacion, inclusion-exclusion]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{alguna urna vacía})'
           valor: "137/143"
         pistas:
           - Conviene pasar al complemento, es decir, que ninguna urna quede vacía.
@@ -60,6 +61,7 @@ ejercicios:
         skills: [esperanza-condicional-evento, funcion-distribucion]
         respuesta:
           tipo: numerica
+          rotulo: 'E[X^2 \mid -1 < X \le 3]'
           valor: "31/9"
         pistas:
           - >-
@@ -145,6 +147,7 @@ ejercicios:
         skills: [superposicion-adelgazamiento, poisson-incrementos]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{multas} > \$4000)'
           valor: "1 - 31/25 * exp(-6/25)"
         pistas:
           - >-
@@ -184,6 +187,7 @@ ejercicios:
         skills: [tcl, varianza]
         respuesta:
           tipo: numerica
+          rotulo: '\text{catálogos}'
           valor: "57"
           # Es un mínimo entero: la tolerancia no puede admitir otro entero.
           tol_rel: 0.000001

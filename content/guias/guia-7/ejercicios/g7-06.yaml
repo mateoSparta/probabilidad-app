@@ -17,6 +17,7 @@ items:
     skills: [tiempos-espera, perdida-memoria]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{peso final} > 7)'
       valor: "exp(-2/3)"
     pistas:
       - >-

@@ -16,6 +16,7 @@ items:
     skills: [conjunta-marginales, prob-geometrica]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\lvert Y \rvert < X)'
       valor: "1/2"
     pistas:
       - Si la distribución conjunta es uniforme, toda probabilidad es un cociente de áreas.

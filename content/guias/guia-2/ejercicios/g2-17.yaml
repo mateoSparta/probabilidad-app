@@ -56,13 +56,13 @@ items:
     respuesta:
       tipo: checkpoints
       checkpoints:
-        - pregunta: '$P(T > 1)$, en los tres casos'
+        - pregunta: '$P(T > 1)$'
           valor: "exp(-1)"
-        - pregunta: '$P(T > 4 \mid T > 3)$ con $\beta = 0{,}5$'
+        - pregunta: '$P_{\beta = 0{,}5}(T > 4 \mid T > 3)$'
           valor: "exp(sqrt(3) - 2)"
-        - pregunta: '$P(T > 4 \mid T > 3)$ con $\beta = 1$'
+        - pregunta: '$P_{\beta = 1}(T > 4 \mid T > 3)$'
           valor: "exp(-1)"
-        - pregunta: '$P(T > 4 \mid T > 3)$ con $\beta = 1{,}5$'
+        - pregunta: '$P_{\beta = 1{,}5}(T > 4 \mid T > 3)$'
           valor: "exp(3 * sqrt(3) - 8)"
     pistas:
       - 'Con $\alpha = 1$, $P(T > t) = e^{-t^\beta}$. En $t = 1$ el exponente no depende de $\beta$.'

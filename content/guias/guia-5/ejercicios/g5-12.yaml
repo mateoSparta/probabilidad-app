@@ -18,6 +18,7 @@ items:
     skills: [esperanza-condicional]
     respuesta:
       tipo: expresion
+      rotulo: 'E[Y \mid X]'
       valor: "36 - X"
       vars:
         X: [0, 36]
@@ -40,6 +41,7 @@ items:
     skills: [covarianza, esperanza-condicional]
     respuesta:
       tipo: numerica
+      rotulo: '\operatorname{cov}(X, Y)'
       valor: "-9"
       tol_rel: 0.005
     pistas:

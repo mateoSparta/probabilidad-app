@@ -15,6 +15,7 @@ items:
     skills: [esperanza, funcion-distribucion]
     respuesta:
       tipo: numerica
+      rotulo: 'E[X]'
       valor: "5/4"
     pistas:
       - >-

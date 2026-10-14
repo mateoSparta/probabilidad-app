@@ -30,7 +30,15 @@ export type Skill = {
  */
 export type TipoRespuesta = 'numerica' | 'expresion' | 'opcion' | 'checkpoints'
 
-export type RespuestaNumerica = {
+/**
+ * Lo que se calcula, en LaTeX sin `$`: va a la izquierda del campo, como en
+ * "P(B_1) = [   ]". Usa la notación del ejercicio cuando la hay ($E[X]$,
+ * $P(B_1 \mid R_2)$); si no, un texto breve dentro de la probabilidad
+ * ($P(	ext{ambas rojas})$).
+ */
+type ConRotulo = { rotulo?: string }
+
+export type RespuestaNumerica = ConRotulo & {
   tipo: 'numerica'
   /** Valor exacto, preferentemente como fracción. */
   valor: string
@@ -40,7 +48,7 @@ export type RespuestaNumerica = {
   sufijo?: string
 }
 
-export type RespuestaExpresion = {
+export type RespuestaExpresion = ConRotulo & {
   tipo: 'expresion'
   valor: string
   /** Rango de muestreo de cada variable libre. */

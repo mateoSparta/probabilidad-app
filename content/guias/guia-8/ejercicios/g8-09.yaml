@@ -22,6 +22,7 @@ items:
     skills: [aproximacion-normal, bernoulli-binomial]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{urna } 4)'
       valor: "-erf(sqrt(6)/4)/2 + erf(5*sqrt(6)/12)/2"
       # Con y sin corrección por continuidad da 0.1188 y 0.1183; el valor
       # exacto de la binomial es 0.1208. La tolerancia acepta las tres.

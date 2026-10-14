@@ -19,6 +19,7 @@ items:
     skills: [esperanza-total]
     respuesta:
       tipo: numerica
+      rotulo: 'E[\text{rollos producidos}]'
       valor: "5"
       tol_rel: 0.005
     pistas:
@@ -39,6 +40,7 @@ items:
     skills: [esperanza-total, truncamiento]
     respuesta:
       tipo: numerica
+      rotulo: 'E[\text{tela producida}]'
       valor: "125"
       tol_rel: 0.001
     pistas:
@@ -71,6 +73,7 @@ items:
     skills: [esperanza-total, truncamiento]
     respuesta:
       tipo: numerica
+      rotulo: 'E[\text{tela a stock}]'
       valor: "96"
       tol_rel: 0.002
     pistas:

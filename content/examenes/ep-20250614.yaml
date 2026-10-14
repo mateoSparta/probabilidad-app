@@ -30,6 +30,7 @@ ejercicios:
         skills: [bayes, prob-total, conteo-muestras]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{hasta 1 defectuosa} \mid \text{rechazada})'
           valor: "6/11"
         pistas:
           - >-
@@ -71,6 +72,7 @@ ejercicios:
         skills: [esperanza-total, hipergeometrica, bernoulli-binomial]
         respuesta:
           tipo: numerica
+          rotulo: 'E[\text{rojas extraídas}]'
           valor: "9/5"
         pistas:
           - >-
@@ -157,6 +159,7 @@ ejercicios:
         skills: [superposicion-adelgazamiento, poisson-incrementos]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{7 o más correos})'
           valor: "1 - 65/2 * exp(-7)"
         pistas:
           - >-
@@ -200,6 +203,7 @@ ejercicios:
         skills: [tcl, varianza]
         respuesta:
           tipo: numerica
+          rotulo: '\text{seguidores}'
           valor: "1134"
           # Es un mínimo entero: la tolerancia no puede admitir otro entero.
           tol_rel: 0.000001

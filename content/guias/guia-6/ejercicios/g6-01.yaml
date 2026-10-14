@@ -17,6 +17,7 @@ items:
     skills: [bernoulli-binomial]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{más de un defectuoso})'
       valor: "1 - 0.99^10 - 10*0.01*0.99^9"
     pistas:
       - '¿Cuántos discos defectuosos admite la garantía? ¿Cuándo se incumple?'
@@ -40,6 +41,7 @@ items:
     skills: [bernoulli-binomial]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{devuelven uno de los tres})'
       valor: "3*(1 - 0.99^10 - 10*0.01*0.99^9)*(0.99^10 + 10*0.01*0.99^9)^2"
       tol_rel: 0.005
     pistas:

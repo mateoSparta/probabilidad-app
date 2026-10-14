@@ -14,15 +14,15 @@ enunciado: |
 items:
   - id: a
     pregunta: >-
-      Hallar la media y la varianza de
+      Hallar la media (en metros) y la varianza de
       [[tiempos-espera|la longitud de los rollos de alambre]].
     skills: [superposicion-adelgazamiento, tiempos-espera]
     respuesta:
       tipo: checkpoints
       checkpoints:
-        - pregunta: 'la media, en metros'
+        - pregunta: '$E[\text{longitud}]$'
           valor: "80/3"
-        - pregunta: 'la varianza'
+        - pregunta: '$\operatorname{var}(\text{longitud})$'
           valor: "6400/9"
           tol_rel: 0.001
     pistas:
@@ -48,6 +48,7 @@ items:
     skills: [superposicion-adelgazamiento, geometrica-pascal]
     respuesta:
       tipo: numerica
+      rotulo: 'E[\text{fallas en un rollo}]'
       valor: "4/3"
       tol_rel: 0.005
     pistas:

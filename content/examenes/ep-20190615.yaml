@@ -26,6 +26,7 @@ ejercicios:
         skills: [ocupacion, condicional]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{primera vacía} \mid \text{3 en la última})'
           valor: "1/4"
         pistas:
           - >-
@@ -122,6 +123,7 @@ ejercicios:
         skills: [superposicion-adelgazamiento, poisson-incrementos, tiempos-espera]
         respuesta:
           tipo: numerica
+          rotulo: 'E[\text{tiempo hasta el cuarto Select}]'
           valor: "55"
         pistas:
           - >-
@@ -162,6 +164,7 @@ ejercicios:
         skills: [tcl, bernoulli-binomial]
         respuesta:
           tipo: numerica
+          rotulo: '\text{pallets}'
           valor: "35"
           # Es un mínimo entero: la tolerancia no puede admitir otro entero.
           tol_rel: 0.000001

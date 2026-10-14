@@ -17,6 +17,7 @@ items:
     skills: [varianza-total, esperanza-condicional]
     respuesta:
       tipo: numerica
+      rotulo: '\operatorname{var}[Y]'
       valor: "6"
       tol_rel: 0.005
     pistas:

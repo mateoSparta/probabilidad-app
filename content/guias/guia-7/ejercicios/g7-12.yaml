@@ -19,6 +19,7 @@ items:
     skills: [superposicion-adelgazamiento, tiempos-espera]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{primera señal después de las 0:10})'
       valor: "exp(-80)"
     pistas:
       - La superposición de los dos procesos es un proceso de Poisson. Su intensidad es la suma.
@@ -43,6 +44,7 @@ items:
     skills: [min-max, superposicion-adelgazamiento]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{la primera es de Lucas})'
       valor: "3/8"
     pistas:
       - La primera señal de Lucas y la primera de Monk son exponenciales independientes.
@@ -65,6 +67,7 @@ items:
     skills: [min-max, tiempos-espera]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{después de las 0:10 y de Lucas})'
       valor: "3/8 * exp(-80)"
     pistas:
       - >-

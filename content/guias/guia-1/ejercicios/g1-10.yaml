@@ -16,6 +16,7 @@ items:
     skills: [prob-geometrica]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{empieza con } 0{,}314)'
       valor: "1/1000"
     pistas:
       - Fijar los primeros tres dígitos equivale a fijar un intervalo. ¿Cuál?
@@ -35,6 +36,7 @@ items:
     skills: [prob-geometrica, independencia]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{sin } 0 \text{ en los primeros } 4)'
       valor: "6561/10000"
     pistas:
       - Los dígitos de un número sorteado al azar en $[0,1]$ son independientes y uniformes en $\{0,\dots,9\}$.
@@ -54,6 +56,7 @@ items:
     skills: [prob-geometrica, continuidad-P]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{ningún dígito } 0)'
       valor: "0"
       tol_rel: 0.001
     pistas:

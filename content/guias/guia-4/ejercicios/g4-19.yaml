@@ -17,6 +17,7 @@ items:
     skills: [suma-independientes]
     respuesta:
       tipo: numerica
+      rotulo: 'P(L + M = 10)'
       valor: "10^10 * exp(-10) / 10!"
     pistas:
       - La suma de dos variables de Poisson independientes tiene distribución de Poisson.
@@ -72,6 +73,7 @@ items:
     skills: [suma-independientes, condicional]
     respuesta:
       tipo: numerica
+      rotulo: 'P(M > 2 \mid L + M = 10)'
       valor: "9764864/9765625"
       tol_rel: 0.0005
     pistas:

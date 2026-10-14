@@ -16,6 +16,7 @@ items:
     skills: [momentos, conjunta-marginales, independencia-va]
     respuesta:
       tipo: numerica
+      rotulo: 'E[X \operatorname{sen}(XY)]'
       valor: "(pi^2 - sin(pi^2))/pi^3"
       tol_rel: 0.005
     pistas:

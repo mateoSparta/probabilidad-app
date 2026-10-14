@@ -21,6 +21,7 @@ items:
     skills: [independencia-va, conjunta-marginales, prob-geometrica]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{se encuentran})'
       valor: "8/9"
     pistas:
       - >-

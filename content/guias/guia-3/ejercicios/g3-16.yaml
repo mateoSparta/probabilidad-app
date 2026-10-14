@@ -17,6 +17,7 @@ items:
     skills: [momentos, varianza]
     respuesta:
       tipo: numerica
+      rotulo: 'E[W]'
       valor: "111"
       # Es un entero exacto: con el 1 % por defecto pasaria 112.
       tol_rel: 0.0005

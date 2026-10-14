@@ -198,6 +198,7 @@ ejercicios:
         skills: [multinomial, geometrica-pascal]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{más Enanos que Hobbits})'
           valor: "1817344/4782969"
         pistas:
           - >-
@@ -248,6 +249,7 @@ ejercicios:
         skills: [combinacion-normales, normal]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{peso} > \text{resistencia})'
           valor: "1/2 - erf(20*sqrt(498)/249)/2"
         pistas:
           - >-

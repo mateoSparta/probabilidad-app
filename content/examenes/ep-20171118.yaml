@@ -46,6 +46,7 @@ ejercicios:
         skills: [truncamiento, suma-independientes]
         respuesta:
           tipo: expresion
+          rotulo: 'F(t)'
           valor: "1 - exp(-t/5) * (1 + t/5)"
           vars:
             t: [0.1, 30]
@@ -89,6 +90,7 @@ ejercicios:
         skills: [covarianza, varianza-total, geometrica-pascal]
         respuesta:
           tipo: numerica
+          rotulo: '\operatorname{cov}(\text{verdes}, \text{amarillas})'
           valor: "5/16"
         pistas:
           - >-
@@ -133,6 +135,7 @@ ejercicios:
         skills: [superposicion-adelgazamiento, tiempos-espera, multinomial]
         respuesta:
           tipo: numerica
+          rotulo: 'P(S_4 > 30,\ \text{hay hobbit y elfo})'
           valor: "exp(-53/60) * (1 + 53/60 + (53/60)^2/2 + (53/60)^3/6) * (1 - ((35/53)^3 + (33/53)^3 - (15/53)^3))"
         pistas:
           - >-
@@ -176,6 +179,7 @@ ejercicios:
         skills: [tcl]
         respuesta:
           tipo: numerica
+          rotulo: '\text{personas}'
           valor: "29"
           # Es un máximo entero: la tolerancia no puede admitir otro entero.
           tol_rel: 0.000001

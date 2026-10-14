@@ -49,9 +49,9 @@ items:
     respuesta:
       tipo: checkpoints
       checkpoints:
-        - pregunta: 'La cota $\varphi(3)/3$'
+        - pregunta: '$\varphi(3)/3$'
           valor: "exp(-9/2) / sqrt(2*pi) / 3"
-        - pregunta: 'El valor tabulado de $P(Z > 3)$'
+        - pregunta: '$1 - \Phi(3)$'
           valor: "1/2 - erf(3/sqrt(2))/2"
     pistas:
       - 'La cota sale de evaluar $\varphi(z_0)/z_0$ en $z_0 = 3$.'
@@ -75,6 +75,7 @@ items:
     skills: [esperanza-condicional-evento, normal]
     respuesta:
       tipo: numerica
+      rotulo: 'E[X \mid X > 12]'
       valor: "10 + 2 * exp(-1/2) / sqrt(2*pi) / (1/2 - erf(1/sqrt(2))/2)"
     pistas:
       - >-

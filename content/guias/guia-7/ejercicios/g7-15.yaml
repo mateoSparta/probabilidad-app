@@ -14,16 +14,16 @@ enunciado: |
 items:
   - id: a
     pregunta: >-
-      Calcular la media y [[varianza-total|la varianza del tiempo de trabajo
+      Calcular la media (en minutos) y [[varianza-total|la varianza del tiempo de trabajo
       consumido]] por el servidor entre las 11:00 y las 12:00.
     skills: [poisson-compuesto, varianza-total]
     respuesta:
       tipo: checkpoints
       checkpoints:
-        - pregunta: 'la media, en minutos'
+        - pregunta: '$E[\text{tiempo de trabajo}]$'
           valor: "20"
           tol_rel: 0.002
-        - pregunta: 'la varianza'
+        - pregunta: '$\operatorname{var}(\text{tiempo de trabajo})$'
           valor: "101"
           tol_rel: 0.002
     pistas:

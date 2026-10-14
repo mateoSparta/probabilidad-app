@@ -52,6 +52,7 @@ items:
     skills: [transformacion-F]
     respuesta:
       tipo: numerica
+      rotulo: 'P(R > 1/2)'
       valor: "1 - pi/16"
     pistas:
       - Es el complemento de una probabilidad que ya calculaste.

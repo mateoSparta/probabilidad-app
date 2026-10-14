@@ -17,6 +17,7 @@ items:
     skills: [momentos, esperanza]
     respuesta:
       tipo: numerica
+      rotulo: 'E[\text{área}]'
       valor: "1800/pi"
       # Respuesta exacta: el 1 % por defecto dejaria pasar un error de 5 unidades.
       tol_rel: 0.001
@@ -46,6 +47,7 @@ items:
     skills: [momentos, esperanza]
     respuesta:
       tipo: numerica
+      rotulo: 'E[\text{perímetro}]'
       valor: "pi*sqrt(15)"
       tol_rel: 0.001
     pistas:

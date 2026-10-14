@@ -21,6 +21,7 @@ items:
     skills: [esperanza-condicional, conjunta-marginales]
     respuesta:
       tipo: expresion
+      rotulo: 'E[Y \mid X]'
       valor: "4*X + 2"
       vars:
         X: [0, 3]
@@ -45,6 +46,7 @@ items:
     skills: [varianza-total]
     respuesta:
       tipo: expresion
+      rotulo: '\operatorname{var}(Y \mid X)'
       valor: "(4*X + 2)^2"
       vars:
         X: [0, 3]
@@ -97,6 +99,7 @@ items:
     skills: [varianza-total]
     respuesta:
       tipo: numerica
+      rotulo: '\operatorname{var}(Y)'
       valor: "24"
       # Es un valor exacto entero: la tolerancia no admite otro entero.
       tol_rel: 0.000001

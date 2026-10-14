@@ -40,6 +40,7 @@ ejercicios:
         skills: [esperanza-total, varianza]
         respuesta:
           tipo: numerica
+          rotulo: 'E[Y^2]'
           valor: "2/3"
         pistas:
           - >-
@@ -79,6 +80,7 @@ ejercicios:
         skills: [prob-total, bernoulli-binomial]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{exactamente 1 bien recibido})'
           valor: "3 * 0.705 * 0.295^2"
         pistas:
           - >-
@@ -119,6 +121,7 @@ ejercicios:
         skills: [poisson-incrementos, condicionar-Nt, prob-geometrica]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{2 emisiones y alarma})'
           valor: "11/18 * exp(-2)"
         pistas:
           - >-
@@ -160,6 +163,7 @@ ejercicios:
         skills: [tcl, esperanza, varianza]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{tiempo total} > 127 \text{ s})'
           valor: "1/2 - erf(sqrt(2)/3)/2"
         pistas:
           - >-

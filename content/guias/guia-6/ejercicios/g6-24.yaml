@@ -19,13 +19,13 @@ items:
     respuesta:
       tipo: checkpoints
       checkpoints:
-        - pregunta: 'con $k = 1$'
+        - pregunta: '$P_{k = 1}(\text{1 blanca y 1 negra})$'
           valor: "1/3"
-        - pregunta: 'con $k = 3$'
+        - pregunta: '$P_{k = 3}(\text{1 blanca y 1 negra})$'
           valor: "15/28"
-        - pregunta: 'con $k = 4$'
+        - pregunta: '$P_{k = 4}(\text{1 blanca y 1 negra})$'
           valor: "5/9"
-        - pregunta: 'con $k = 6$'
+        - pregunta: '$P_{k = 6}(\text{1 blanca y 1 negra})$'
           valor: "6/11"
     pistas:
       - 'Las extracciones son sin reposición. ¿Cuántos pares posibles hay?'

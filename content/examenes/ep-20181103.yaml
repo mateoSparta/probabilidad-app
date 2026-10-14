@@ -26,6 +26,7 @@ ejercicios:
         skills: [condicional, independencia]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{más de 5 tiros} \mid \text{ceca, ceca})'
           valor: "62/125"
         pistas:
           - >-
@@ -66,6 +67,7 @@ ejercicios:
         skills: [prob-geometrica, conjunta-marginales]
         respuesta:
           tipo: numerica
+          rotulo: 'P(X + Y > 1,\ Y < 0{,}75)'
           valor: "1/8"
         pistas:
           - >-
@@ -101,6 +103,7 @@ ejercicios:
         skills: [covarianza, varianza-total]
         respuesta:
           tipo: numerica
+          rotulo: '\operatorname{cov}(X + Y,\ X - Y)'
           valor: "7/12"
         pistas:
           - >-
@@ -141,6 +144,7 @@ ejercicios:
         skills: [tiempos-espera, condicionar-Nt]
         respuesta:
           tipo: numerica
+          rotulo: 'P(N(10) = 1 \mid S_3 = 30)'
           valor: "4/9"
         pistas:
           - >-
@@ -181,6 +185,7 @@ ejercicios:
         skills: [tcl, truncamiento]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{peso total} > 202{,}8 \text{ kg})'
           valor: "1/2 - erf(7*sqrt(3)/25)/2"
         pistas:
           - >-

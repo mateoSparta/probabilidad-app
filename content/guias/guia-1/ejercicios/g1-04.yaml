@@ -14,6 +14,7 @@ items:
     skills: [laplace]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{suma} = 7)'
       valor: "1/6"
     pistas:
       - ¿Cuántos pares ordenados $(i, j)$ hay en total?
@@ -31,6 +32,7 @@ items:
     skills: [laplace]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{primero} > \text{segundo})'
       valor: "5/12"
     pistas:
       - Los 36 pares se dividen en tres grupos según cómo se comparen las dos tiradas.
@@ -50,6 +52,7 @@ items:
     skills: [laplace]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{distintos y suma} \le 7)'
       valor: "1/2"
     pistas:
       - Son dos condiciones simultáneas sobre el mismo par.
@@ -69,6 +72,7 @@ items:
     skills: [laplace]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\lvert \text{diferencia} \rvert > 1)'
       valor: "5/9"
     pistas:
       - 'Conviene contar el complemento, $|i - j| \le 1$, que tiene menos casos.'

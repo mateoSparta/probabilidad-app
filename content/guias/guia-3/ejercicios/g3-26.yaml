@@ -21,6 +21,7 @@ items:
     skills: [desigualdades, varianza]
     respuesta:
       tipo: numerica
+      rotulo: 'n'
       valor: "50000"
       # Es el minimo n exacto: la tolerancia no puede admitir otro entero.
       tol_rel: 0.000001

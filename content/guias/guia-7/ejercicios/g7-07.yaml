@@ -17,6 +17,7 @@ items:
     skills: [condicionar-Nt]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{primera antes de las 9:15})'
       valor: "37/64"
     pistas:
       - >-
@@ -41,6 +42,7 @@ items:
     skills: [condicionar-Nt]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{segunda antes de las 9:30})'
       valor: "1/2"
     pistas:
       - 'Expresá el evento "la segunda llamada llegó antes de las 9:30" como un conteo.'

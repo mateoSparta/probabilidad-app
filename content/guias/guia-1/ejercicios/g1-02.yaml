@@ -16,6 +16,7 @@ items:
     skills: [inclusion-exclusion]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{Álgebra II o Probabilidad})'
       valor: "41/50"
     pistas:
       - Los dos eventos tienen intersección no vacía, porque hay estudiantes que cursan ambas materias.
@@ -33,6 +34,7 @@ items:
     skills: [inclusion-exclusion]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{ni Álgebra II ni Probabilidad})'
       valor: "9/50"
     pistas:
       - 'El evento "ni una ni la otra" es el complemento de un evento que ya calculaste.'
@@ -49,6 +51,7 @@ items:
     skills: [inclusion-exclusion]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{alguna de las tres})'
       valor: "37/40"
     pistas:
       - Con tres eventos hay que descontar las intersecciones de a pares.
@@ -68,6 +71,7 @@ items:
     skills: [inclusion-exclusion]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{sólo una de las tres})'
       valor: "67/200"
     pistas:
       - 'El evento "solo Álgebra II" excluye a quienes además cursan alguna de las otras dos materias.'
@@ -92,6 +96,7 @@ items:
     skills: [inclusion-exclusion]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{ninguna de las tres})'
       valor: "3/40"
     pistas:
       - Es el complemento de uno de los ítems anteriores.

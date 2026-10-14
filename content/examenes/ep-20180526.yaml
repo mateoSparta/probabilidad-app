@@ -139,6 +139,7 @@ ejercicios:
         skills: [mezclas]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{colectivo} \mid \text{55 min})'
           valor: "1/3"
         pistas:
           - >-
@@ -181,6 +182,7 @@ ejercicios:
         skills: [poisson-compuesto, varianza-total]
         respuesta:
           tipo: numerica
+          rotulo: '\operatorname{var}(\text{monto total})'
           valor: "437500"
           # Es un valor exacto entero: la tolerancia no admite otro entero.
           tol_rel: 0.000001
@@ -224,6 +226,7 @@ ejercicios:
         skills: [tcl, varianza]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{menos de 1450 kg})'
           valor: "1/2 + erf(25*sqrt(266)/266)/2"
         pistas:
           - >-

@@ -565,11 +565,31 @@ function avisarSiToleranciaFloja(quien: string, valor: string, tolRel?: number):
   }
 }
 
+/**
+ * El rótulo de una respuesta numérica o de expresión: lo que se calcula, en
+ * LaTeX sin `$`, que va a la izquierda del campo ("P(B_1) = [ ]"). Es
+ * obligatorio, para que todas las entradas se vean igual (PLAN.md §4.4).
+ */
+function validarRotulo(quien: string, rotulo: unknown): void {
+  if (typeof rotulo !== 'string' || !rotulo.trim()) {
+    err(`${quien}: falta \`rotulo\`, lo que se calcula (por ejemplo \`P(A \\mid B)\`)`)
+    return
+  }
+  // Un `\$` es un signo de pesos; un `$` suelto, un delimitador que sobra.
+  if (/(^|[^\\])\$/.test(rotulo)) err(`${quien}: el \`rotulo\` va sin \`$\``)
+  try {
+    katex.renderToString(rotulo, { throwOnError: true })
+  } catch (e) {
+    err(`${quien}: KaTeX no parsea el rótulo \`${rotulo}\` (${e instanceof Error ? e.message : String(e)})`)
+  }
+}
+
 function validarRespuesta(quien: string, r?: Respuesta): void {
   if (!r?.tipo) {
     err(`${quien}: no tiene respuesta`)
     return
   }
+  if (r.tipo === 'numerica' || r.tipo === 'expresion') validarRotulo(quien, r.rotulo)
   switch (r.tipo) {
     case 'numerica': {
       const valor = r.valor as string

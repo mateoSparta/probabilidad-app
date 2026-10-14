@@ -19,6 +19,7 @@ items:
     skills: [multinomial]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{5 de A, 4 de B, 3 de C y 2 de D})'
       valor: "14! / (5! * 4! * 3! * 2!) * 0.4^5 * 0.3^4 * 0.2^3 * 0.1^2"
     pistas:
       - Cada artículo cae en una de cuatro categorías, con probabilidades fijas e independientemente de los demás.
@@ -42,6 +43,7 @@ items:
     skills: [multinomial, condicional]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{3 de } C \mid \text{5 de } A)'
       valor: "1792/6561"
     pistas:
       - Conocer cuántos provienen de $A$ deja 9 artículos que provienen de $B$, $C$ o $D$.

@@ -16,6 +16,7 @@ items:
     skills: [laplace, independencia]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{ambas rojas})'
       valor: "1/4"
     pistas:
       - Las dos extracciones se hacen en urnas distintas, de modo que una no afecta a la otra.
@@ -33,6 +34,7 @@ items:
     skills: [laplace, independencia]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{mismo color})'
       valor: "19/40"
     pistas:
       - 'El evento "del mismo color" se descompone en dos casos incompatibles.'
@@ -50,6 +52,7 @@ items:
     skills: [independencia]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{distinto color})'
       valor: "21/40"
     pistas:
       - Es el complemento del ítem anterior.
@@ -66,6 +69,7 @@ items:
     skills: [laplace]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{blanca de } b)'
       valor: "3/5"
     pistas:
       - El resultado de la urna $a$ no influye en este evento.

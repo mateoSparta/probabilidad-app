@@ -24,6 +24,7 @@ ejercicios:
         skills: [laplace, inclusion-exclusion]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{Alejo antes que Teodoro o Gastón})'
           valor: "2/3"
         pistas:
           - >-
@@ -63,6 +64,7 @@ ejercicios:
         skills: [transformacion-F, funcion-distribucion]
         respuesta:
           tipo: expresion
+          rotulo: 'F_Y(y)'
           valor: "1 - exp(-y)"
           vars:
             y: [0.1, 5]
@@ -100,6 +102,7 @@ ejercicios:
         skills: [esperanza-condicional, bernoulli-binomial]
         respuesta:
           tipo: expresion
+          rotulo: 'E[Y \mid X]'
           valor: "X/10"
           vars:
             X: [0, 10]
@@ -141,6 +144,7 @@ ejercicios:
         skills: [tiempos-espera, truncamiento]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{sale tras las 9:10} \mid \text{llegó antes})'
           valor: "7/4 * (exp(40/21) - 1) / (exp(10/3) - 1)"
         pistas:
           - >-
@@ -183,6 +187,7 @@ ejercicios:
         skills: [tcl, varianza]
         respuesta:
           tipo: numerica
+          rotulo: '\text{camiones}'
           valor: "87"
           # Es un mínimo entero: la tolerancia no puede admitir otro entero.
           tol_rel: 0.000001

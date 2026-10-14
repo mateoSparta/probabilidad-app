@@ -27,6 +27,7 @@ ejercicios:
         skills: [conteo-muestras, laplace]
         respuesta:
           tipo: numerica
+          rotulo: '\max P(\text{decisión incorrecta})'
           valor: "3/20"
         pistas:
           - >-
@@ -66,6 +67,7 @@ ejercicios:
         skills: [prob-geometrica, conjunta-marginales]
         respuesta:
           tipo: numerica
+          rotulo: 'P(8 < X + Y < 12)'
           valor: "9/25"
         pistas:
           - >-
@@ -102,6 +104,7 @@ ejercicios:
         skills: [esperanza-condicional, conjunta-marginales]
         respuesta:
           tipo: numerica
+          rotulo: 'P(E[X \mid Y] > 4/3)'
           valor: "3/4"
         pistas:
           - >-
@@ -144,6 +147,7 @@ ejercicios:
         skills: [superposicion-adelgazamiento, condicionar-Nt, poisson-incrementos]
         respuesta:
           tipo: numerica
+          rotulo: 'P(N(2) \ge 1 \mid N_A(5) = 2)'
           valor: "1 - 9/25 * exp(-7/6)"
         pistas:
           - >-
@@ -184,6 +188,7 @@ ejercicios:
         skills: [aproximacion-normal, bernoulli-binomial]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{más de 170 duran menos de 40 días})'
           valor: "1/2 - erf(41*sqrt(210)/420)/2"
           # Centrado en la aproximación con corrección por continuidad
           # (0.0227). La resuelta da también la versión sin corrección

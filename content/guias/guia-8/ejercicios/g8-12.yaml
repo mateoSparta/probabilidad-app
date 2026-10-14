@@ -21,6 +21,7 @@ items:
     skills: [aproximacion-normal, tcl]
     respuesta:
       tipo: numerica
+      rotulo: '\text{máximo de reservas}'
       valor: "103"
       # Es un entero exacto: la tolerancia no puede admitir otro.
       tol_rel: 0.000001

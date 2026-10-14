@@ -24,6 +24,7 @@ ejercicios:
         skills: [esperanza-condicional, conjunta-marginales]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\operatorname{var}(X \mid Y) > 2)'
           valor: "1 - 7*exp(-2)"
         pistas:
           - >-
@@ -67,6 +68,7 @@ ejercicios:
         skills: [inclusion-exclusion, condicional, bernoulli-binomial]
         respuesta:
           tipo: numerica
+          rotulo: 'P(\text{más de 27 sin fallas})'
           valor: "29 * (41/47)^28 * (6/47) + (41/47)^29"
         pistas:
           - >-
@@ -108,6 +110,7 @@ ejercicios:
         skills: [tcl, truncamiento]
         respuesta:
           tipo: numerica
+          rotulo: '\text{umbral}'
           valor: "199.48"
           # El umbral varía entre 180 y 220: una tolerancia de 0.2 % (±0.4 g)
           # acepta los redondeos razonables y rechaza los planteos sin

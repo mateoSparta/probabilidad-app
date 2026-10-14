@@ -16,6 +16,7 @@ items:
     skills: [geometrica-pascal]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{se llena en el minuto 10})'
       valor: "36*0.8^3*0.2^7"
       tol_rel: 0.005
     pistas:

@@ -16,6 +16,7 @@ items:
     skills: [geometrica-pascal]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{más de 3 tiros})'
       valor: "125/216"
     pistas:
       - '"Después del tercer lanzamiento" significa que el 2 no salió en los tres primeros.'
@@ -36,6 +37,7 @@ items:
     skills: [perdida-memoria, geometrica-pascal]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{más de 6 tiros} \mid \text{más de 3})'
       valor: "125/216"
     pistas:
       - 'Escribí la probabilidad condicional $P(N > 6 \mid N > 3)$.'

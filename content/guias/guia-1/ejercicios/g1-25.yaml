@@ -21,6 +21,7 @@ items:
     skills: [bayes, prob-total]
     respuesta:
       tipo: numerica
+      rotulo: 'P(\text{indica } 1 \mid \text{se emitió } 1)'
       valor: "2089/2090"
       tol_rel: 0.00001
     pistas:

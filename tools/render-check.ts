@@ -148,9 +148,18 @@ try {
     !html.includes('subir-lateral--visible'),
     'el "↑ Subir" se ve sin haber bajado',
   )
-  // Las entradas con varios campos llevan rótulo, flecha y campo.
-  afirmar(html.includes('class="flecha"'), 'los campos múltiples no llevan flecha')
+  // La respuesta se escribe en una frase: "P(B_1) = [ ] [Comprobar]". Los
+  // campos múltiples, apilados con su rótulo y su igual, y comprobar en la
+  // fila de abajo, a la derecha.
+  afirmar(html.includes('class="fila-entrada__rotulo"') && html.includes('class="fila-entrada__accion"'),
+    'la respuesta numérica no va en una frase con su rótulo y el botón al lado')
+  const rotulosCampos = [...html.matchAll(/class="checkpoint__rotulo"[^>]*>([\s\S]*?)<\/label>/g)].map((m) => m[1])
+  afirmar(rotulosCampos.length > 0 && rotulosCampos.every((r) => r.includes('mrel">=')),
+    'los campos múltiples no llevan su rótulo con el igual')
+  afirmar(html.includes('botonera__comprobar'), 'en los campos múltiples, comprobar no va en la fila de abajo')
+  afirmar(!html.includes('class="flecha"'), 'volvió la flecha de los campos múltiples')
   afirmar(!html.includes('Respuesta:'), 'en la guía aparece el rótulo "Respuesta:" del simulacro')
+  afirmar(!html.includes('✓ Correcto.'), 'volvió el "✓ Correcto." de abajo a la izquierda')
 
   // KaTeX tiene que haber corrido: si no, quedaría el `$...$` crudo.
   afirmar(html.includes('katex'), 'KaTeX no renderizó nada')
@@ -166,7 +175,7 @@ try {
   }
 
   // Los cuatro tipos de respuesta tienen que dibujar su entrada.
-  afirmar(html.includes('class="entrada"'), 'no se ve ningún input de respuesta numérica')
+  afirmar(html.includes('class="entrada campo-respuesta"'), 'no se ve ningún input de respuesta numérica')
   afirmar(html.includes('type="radio"'), 'no se ve ninguna opción múltiple')
   afirmar(html.includes('class="checkpoints"'), 'no se ve ningún bloque de checkpoints')
   afirmar(
@@ -740,7 +749,9 @@ try {
   )
   afirmar(retomado.includes('class="reloj'), 'el simulacro guardado no se retoma')
   afirmar(retomado.includes('Entregar'), 'al retomar no se ve el botón de entregar')
-  afirmar(retomado.includes('Respuesta:'), 'en el simulacro falta el rótulo "Respuesta:"')
+  // En el simulacro, los ítems también llevan su rótulo (y "Respuesta:" sólo si faltara).
+  afirmar(retomado.includes('class="fila-entrada__rotulo"') || retomado.includes('class="checkpoint__rotulo"'),
+    'en el simulacro las respuestas no llevan su rótulo')
   afirmar(retomado.includes('class="modal'), 'falta la confirmación para abandonar')
   afirmar(retomado.includes('1:30:00'), `el reloj retomado no marca 1:30:00`)
   // Mientras se rinde no hay pistas ni ver respuesta.
